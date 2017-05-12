@@ -1,3 +1,29 @@
+let rec appendTwoLists lst1 lst2 = 
+    match (lst1, lst2) with
+    | (h1 :: t1, lst2) -> h1 :: append t1 lst2
+    | ([], lst2) -> lst2
+
+let rev list =
+    let rec aux acc = function
+      | [] -> acc
+      | h::t -> aux (h::acc) t in
+    aux [] list;;
+
+let rec last lst =
+    match lst with
+    | [] -> None
+    | [a] -> Some a
+    | _ :: tl -> last tl;;
+
+let rec at k = function
+    | [] -> None
+    | hd::tl -> if k = 1 then Some hd else at (k-1) tl;;
+
+let length lst = 
+    let rec length_rec counter = function
+    | [] -> counter
+    | hd::tl -> length_rec (counter+1) tl in
+    length_rec 0 lst ;;
 
 let findMinimumWithIndex lst =
     let rec aux min minIndex counter= function

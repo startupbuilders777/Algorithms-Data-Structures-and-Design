@@ -11,7 +11,3 @@ let rec selectionSort lst =
         let minimum = getFirst(findMinimumWithIndex lst) in
         let minimumIndex = getSecond(findMinimumWithIndex lst) in
         minimum :: selectionSort(removeIndexedElement(lst)(minimumIndex));;
-
-
-
-(* Can we do this selection sort in-place in OCAML?*)
