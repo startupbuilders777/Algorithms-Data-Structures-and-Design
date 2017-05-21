@@ -21,10 +21,16 @@ let empty = [];;
  
 let isEmpty lst =
   match lst with  
-  | empty -> true
+  | [] -> true
   | _ -> false;;
-
-
+(*
+let extend ele seq= 
+    let rec combineTrees ele seq =
+    match seq with
+    | [] -> [One(Leaf(ele))]
+    | Leaf(a) :: tl ->
+    | Zero :: tl -> One(ele) :: tl
+*)
 
 
  let simplePBLT : string sequence = [ One(Leaf("b"))];;
@@ -37,18 +43,18 @@ let isEmpty lst =
                One(Node(16, 
                     Node(8, 
                         Node(4, 
-                            Node(2, Leaf("f"), Leaf("g")), 
-                            Node(2, Leaf("h"), Leaf("i"))), 
+                            Node(2, Leaf("c"), Leaf("d")), 
+                            Node(2, Leaf("e"), Leaf("f"))), 
                         Node(4, 
-                            Node(2, Leaf("j"), Leaf("k")),
-                            Node(2, Leaf("l"), Leaf("m")))),
+                            Node(2, Leaf("g"), Leaf("h")),
+                            Node(2, Leaf("i"), Leaf("j")))),
                     Node(8, 
                         Node(4, 
-                            Node(2, Leaf("n"), Leaf("o")), 
-                            Node(2, Leaf("p"), Leaf("q"))), 
+                            Node(2, Leaf("k"), Leaf("l")), 
+                            Node(2, Leaf("m"), Leaf("n"))), 
                         Node(4, 
-                            Node(2, Leaf("r"), Leaf("s")), 
-                            Node(2, Leaf("t"), Leaf("u"))))) 
+                            Node(2, Leaf("o"), Leaf("p")), 
+                            Node(2, Leaf("q"), Leaf("r"))))) 
                )];;
 
 let index (index : int) (sequence : 'a sequence) : 'a option =
@@ -60,16 +66,17 @@ let index (index : int) (sequence : 'a sequence) : 'a option =
         | (Node(_,_,_), Node(sizeR, rl,rr))  -> (indexPerfectBinaryTree (index - sizeR) rl rr)
         | _ -> string_of_int(index)
     in
-    let rec indexPerfectBinaryList index sequence =
+    let rec indexPerfectBinaryList index sequence = 
         match sequence with 
         | Zero :: tl -> indexPerfectBinaryList index tl 
         | One(tree) :: tl -> 
             (match tree with
-            | Leaf (value)  ->  if index = 0 then value else indexPerfectBinaryList (index - 1) sequence 
-            | Node (size, l, r) -> if index < size then indexPerfectBinaryTree (index - size) l r
-                                          else indexPerfectBinaryList (index - size) tl)
+            | Leaf (value)  -> if index = 0 then value 
+                               else indexPerfectBinaryList (index - 1) tl
+            | Node (size, l, r) -> if index < size then indexPerfectBinaryTree index l r
+                                   else indexPerfectBinaryList (index - size) tl)
     in
     if index < 0 || sequence = []
         then None 
     else
-         Some (indexPerfectBinaryList index sequence) 
+         Some (indexPerfectBinaryList index sequence) ;;
