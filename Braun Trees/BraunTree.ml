@@ -68,3 +68,11 @@ let seq1 = Node (1,
                     )
                 )
            );;
+(*
+Status: Posted May 1.
+Topic: Braun trees to/from lists.
+Weight: Not for credit
+
+Develop an OCaml implementation of functions that convert a Braun tree representing a sequence of
+n elements to the equivalent list (and vice-versa) in O(n) time.
+*)
