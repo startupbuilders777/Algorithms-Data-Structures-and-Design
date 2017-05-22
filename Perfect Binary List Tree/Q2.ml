@@ -1,19 +1,6 @@
 type 'a tree = Leaf of 'a | Node of int * 'a tree * 'a tree
 type 'a digit = Zero | One of 'a tree
 
-        
-(*
-type 'a sequence
-
-
-val empty : 'a sequence
-val isEmpty : 'a sequence -> bool
-val extend : 'a -> 'a sequence -> 'a sequence
-val first : 'a sequence -> 'a option
-val rest : 'a sequence -> 'a sequence option 
-val index : int -> 'a sequence -> 'a option
- *)
-
 type 'a sequence = 'a digit list
 
 let empty = [];;
@@ -22,15 +9,40 @@ let isEmpty lst =
   match lst with  
   | [] -> true
   | _ -> false;;
-(*
-let extend ele seq= 
-    let rec combineTrees ele seq =
-    match seq with
-    | [] -> [One(Leaf(ele))]
-    | Leaf(a) :: tl ->
-    | Zero :: tl -> One(ele) :: tl
-*)
 
+let rec first seq =
+    let rec getFirstElementInTree tree =
+        match tree with
+        | Leaf(a) -> a
+        | Node(_, l, r) -> getFirstElementInTree l in
+    match seq with 
+    | [] -> None
+    | Zero::tl -> first tl
+    | One(tree) :: _ -> Some (getFirstElementInTree tree);;
+
+let rest seq = 
+    let rec splitTreeAndRemoveFirst tree splitCounter acc =
+        match (tree, splitCounter) with
+        | (_, 0) -> acc
+        | (Node(_, lt, rt), _) -> splitTreeAndRemoveFirst(lt)(splitCounter - 1)(One(rt)::acc) in
+    let rec aux seq splitCounter=
+        match seq with 
+        | [] -> None
+        | Zero :: tl -> aux(tl)(splitCounter + 1)
+        | One(tree) :: tl -> Some(splitTreeAndRemoveFirst(tree)(splitCounter)([Zero]) @ tl)in  
+    aux seq 0;;
+
+let extend ele seq = 
+    let rec combineTrees element rightTree =
+        match (element, rightTree) with
+        | (Leaf(a), Leaf(b))  -> Node(2, Leaf(a), Leaf(b))
+        | (Node(_, _, _), Node(sizeR, _, _)) -> Node(sizeR*2, element, rightTree) in
+    let rec aux element seq =
+        match seq with 
+        | [] -> One(element)::[]
+        | Zero :: tl -> One(element)::tl
+        | One(tree) :: tl -> Zero::aux((combineTrees(element)(tree)))(tl)  in  
+    aux (Leaf (ele)) seq;;
 
  let simplePBLT : string sequence = [ One(Leaf("b"))];;
 
