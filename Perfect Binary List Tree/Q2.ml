@@ -12,7 +12,6 @@ val extend : 'a -> 'a sequence -> 'a sequence
 val first : 'a sequence -> 'a option
 val rest : 'a sequence -> 'a sequence option 
 val index : int -> 'a sequence -> 'a option
-
  *)
 
 type 'a sequence = 'a digit list
@@ -57,6 +56,9 @@ let extend ele seq=
                             Node(2, Leaf("q"), Leaf("r"))))) 
                )];;
 
+
+exception INDEX_OUT_OF_BOUNDS;;
+
 let index (index : int) (sequence : 'a sequence) : 'a option =
     let rec indexPerfectBinaryTree index l r =
         match (l, r) with 
@@ -64,7 +66,6 @@ let index (index : int) (sequence : 'a sequence) : 'a option =
         | (Leaf(lvalue), Leaf(rvalue)) when index = 1 -> rvalue
         | (Node(sizeL, ll, lr), Node(_,_,_)) when index < sizeL -> (indexPerfectBinaryTree index ll lr)
         | (Node(_,_,_), Node(sizeR, rl,rr))  -> (indexPerfectBinaryTree (index - sizeR) rl rr)
-        | _ -> string_of_int(index)
     in
     let rec indexPerfectBinaryList index sequence = 
         match sequence with 
@@ -74,9 +75,12 @@ let index (index : int) (sequence : 'a sequence) : 'a option =
             | Leaf (value)  -> if index = 0 then value 
                                else indexPerfectBinaryList (index - 1) tl
             | Node (size, l, r) -> if index < size then indexPerfectBinaryTree index l r
-                                   else indexPerfectBinaryList (index - size) tl)
+                                   else indexPerfectBinaryList (index - size) tl
+            )
+        | _ -> raise INDEX_OUT_OF_BOUNDS
     in
     if index < 0 || sequence = []
         then None 
     else
-         Some (indexPerfectBinaryList index sequence) ;;
+         try Some (indexPerfectBinaryList index sequence) with
+         | INDEX_OUT_OF_BOUNDS -> None
