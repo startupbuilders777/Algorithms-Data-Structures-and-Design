@@ -2,7 +2,7 @@ module type Queue = sig
   type 'a queue = 'a list * 'a list
  
   val empty : 'a queue
-  val isEmpty : 'a queue -> bool
+  val is_empty : 'a queue -> bool
  
   val snoc : 'a -> 'a queue -> 'a queue
   val first : 'a queue -> 'a option
