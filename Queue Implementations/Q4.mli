@@ -1,7 +1,3 @@
-(*
-The four fields in a queue tuple represent the length of the front segment, 
-the front segment, the length of the rear segment, and the rear segment, respectively.
-*)
 
 module type StreamType = sig
   type 'a stream_cell = Nil | Cons of 'a * 'a stream

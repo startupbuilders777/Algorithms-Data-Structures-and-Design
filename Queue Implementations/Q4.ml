@@ -18,10 +18,10 @@ module type StreamType = sig
   val rev : 'a stream -> 'a stream
 end
  
-let stream : char stream = lazy(Cons('a', (lazy(Cons('b', lazy(Nil))))));;
-
-
 module Stream : StreamType = struct
+    type 'a stream_cell = Nil | Cons of 'a * 'a stream
+    and 'a stream = 'a stream_cell Lazy.t
+    
     let rec (++) (stream1 : 'a stream) (stream2: 'a stream) : 'a stream =
         lazy (
         match Lazy.force stream1 with
@@ -36,34 +36,8 @@ module Stream : StreamType = struct
             | Cons(hd, tl) -> aux(tl)(lazy(Cons(hd, acc))) in
          aux(stream)(lazy(Nil));;
 end
- 
-module type Queue = sig
-  type 'a queue = int * 'a Stream.stream * int * 'a Stream.stream
- 
-  val empty : 'a queue
-  val is_empty : 'a queue -> bool
- 
-  val snoc : 'a -> 'a queue -> 'a queue
-  val first : 'a queue -> 'a option
-  val rest : 'a queue -> 'a queue option
-end
- 
-module TSQueue : Queue
-
-(*= struct
-    let (++) = 2;
-    let rev stream =
-        let aux stream acc =    
-            match stream with
-            | Nil ->  
-            |
-        in 
-        aux stream [] 
 
 
-
-end
- 
 module type Queue = sig
   type 'a queue = int * 'a Stream.stream * int * 'a Stream.stream
  
@@ -76,14 +50,21 @@ module type Queue = sig
 end
  
 module TSQueue : Queue = struct 
-    let empty = (0, Stream.stream [], 0, Stream.stream [])
-    let is_empty queue = 
+    type 'a queue = int * 'a Stream.stream * int * 'a Stream.stream
+    
+    let empty = (0, lazy(Stream.Nil), 0, lazy(Stream.Nil));;
+    
+    let is_empty (queue : 'a queue) : bool = 
         match queue with
         | (0,_,0,_) -> true
-        | _ -> false
+        | _ -> false;;
     
-    let snoc element queue
+    let snoc (element: 'a) (queue: 'a queue) : 'a queue = empty;;
+    let first (queue: 'a queue) : 'a option = None;;
+    let rest (queue: 'a queue) : 'a queue option = None;;
 
+    let streamA : char Stream.stream = lazy(Stream.Cons('a', (lazy(Stream.Cons('b', lazy(Stream.Nil))))));;
+    let streamB : char Stream.stream = lazy(Stream.Cons('c', (lazy(Stream.Cons('d', lazy(Stream.Nil))))));;
+
+    let queueAB : char queue = (2, streamA, 2, streamB) 
 end
-
-*)
