@@ -18,7 +18,24 @@ module type StreamType = sig
   val rev : 'a stream -> 'a stream
 end
  
-module Stream : StreamType
+let stream : char stream = lazy(Cons('a', (lazy(Cons('b', lazy(Nil))))));;
+
+
+module Stream : StreamType = struct
+    let rec (++) (stream1 : 'a stream) (stream2: 'a stream) : 'a stream =
+        lazy (
+        match Lazy.force stream1 with
+        | Nil -> Lazy.force stream2
+        | Cons(hd, tl) -> Cons(hd, tl ++ stream2)        
+        );;
+    
+    let rev (stream : 'a stream) : 'a stream =
+        let rec aux (stream: 'a stream) (acc : 'a stream) : 'a stream =
+            match Lazy.force stream with
+            | Nil -> acc
+            | Cons(hd, tl) -> aux(tl)(lazy(Cons(hd, acc))) in
+         aux(stream)(lazy(Nil));;
+end
  
 module type Queue = sig
   type 'a queue = int * 'a Stream.stream * int * 'a Stream.stream
@@ -32,3 +49,41 @@ module type Queue = sig
 end
  
 module TSQueue : Queue
+
+(*= struct
+    let (++) = 2;
+    let rev stream =
+        let aux stream acc =    
+            match stream with
+            | Nil ->  
+            |
+        in 
+        aux stream [] 
+
+
+
+end
+ 
+module type Queue = sig
+  type 'a queue = int * 'a Stream.stream * int * 'a Stream.stream
+ 
+  val empty : 'a queue
+  val is_empty : 'a queue -> bool
+ 
+  val snoc : 'a -> 'a queue -> 'a queue
+  val first : 'a queue -> 'a option
+  val rest : 'a queue -> 'a queue option
+end
+ 
+module TSQueue : Queue = struct 
+    let empty = (0, Stream.stream [], 0, Stream.stream [])
+    let is_empty queue = 
+        match queue with
+        | (0,_,0,_) -> true
+        | _ -> false
+    
+    let snoc element queue
+
+end
+
+*)
