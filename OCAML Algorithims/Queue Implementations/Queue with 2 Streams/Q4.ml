@@ -29,12 +29,12 @@ module Stream : StreamType = struct
         | Cons(hd, tl) -> Cons(hd, tl ++ stream2)        
         );;
     
-    let rev (stream : 'a stream) : 'a stream =
-        let rec aux (stream: 'a stream) (acc : 'a stream) : 'a stream =
+    let rec rev (stream : 'a stream) : 'a stream =
+        lazy(
             match Lazy.force stream with
             | Nil -> acc
-            | Cons(hd, tl) -> aux(tl)(lazy(Cons(hd, acc))) in
-         aux(stream)(lazy(Nil));;
+            | Cons(hd, tl) -> aux(tl)(lazy(Cons(hd, acc)))
+            ) 
 end
 
 
