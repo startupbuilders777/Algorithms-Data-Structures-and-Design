@@ -1,13 +1,6 @@
 (*
-
-Provide an OCaml implementation of the Queue ADT using two streams (and their sizes) 
-achieving persistence with all operations taking O(1) amortized time
-
-*)
-
-(*
-The four fields in a queue tuple represent the length of the front segment, 
-the front segment, the length of the rear segment, and the rear segment, respectively.
+Provide an OCaml implementation of the Queue ADT achieving persistence 
+with all operations taking O(1) worst-case time, as described in lecture. Here is the signature.
 *)
 
 module type StreamType = sig
@@ -39,7 +32,7 @@ end
 
 
 module type Queue = sig
-  type 'a queue = int * 'a Stream.stream * int * 'a Stream.stream
+  type 'a queue = 'a Stream.stream * 'a list * 'a Stream.stream
  
   val empty : 'a queue
   val is_empty : 'a queue -> bool
@@ -49,16 +42,33 @@ module type Queue = sig
   val rest : 'a queue -> 'a queue option
 end
  
-module TSQueue : Queue = struct 
-    type 'a queue = int * 'a Stream.stream * int * 'a Stream.stream
+module RTQueue : Queue = struct 
+    type 'a queue = 'a Stream.stream * 'a list * 'a Stream.stream
     
-    let empty = (0, lazy(Stream.Nil), 0, lazy(Stream.Nil));;
+    let empty = (lazy(Stream.Nil), [], lazy(Stream.Nil));;
     
     let is_empty (queue : 'a queue) : bool = 
         match queue with
-        | (0,_,0,_) -> true
+        | (lazy(Stream.Nil), [], lazy(Stream.Nil)) -> true
         | _ -> false;;
     
+    let rot (front: 'a Stream.stream) (back: 'a list): 'a Stream.stream = 
+        let rec aux (front: 'a Stream.stream) (back: 'a list) (acc : 'a Stream.stream) : 'a Stream.stream =
+        match (Lazy.force front) with
+        | Stream.Nil -> 
+            begin 
+            match back with
+            | [] -> acc
+            | rhd::rtl -> aux(lazy Nil)(rtl)(lazy(Stream.Cons(rhd, acc)))
+            end
+        | Stream.Cons(fhd, ftl) ->
+            begin 
+            match back with
+            | [] -> lazy(Stream.Cons(fhd, aux(ftl)([])(acc)))
+            | rhd::rtl -> lazy(Stream.Cons(fhd, aux(ftl)(rtl)(lazy(Stream.Cons(rhd, acc)))))
+            end
+        in aux(front)(back)(lazy(Nil)) ;;
+(*
     let snoc (element: 'a) (queue: 'a queue) : 'a queue = 
         match queue with 
         | (lenF, streamF, lenR, streamR) when lenR = lenF  -> 
@@ -114,5 +124,5 @@ module TSQueue : Queue = struct
     let get value =
         match value with 
         | Some x -> x;;
-
+*)
 end
