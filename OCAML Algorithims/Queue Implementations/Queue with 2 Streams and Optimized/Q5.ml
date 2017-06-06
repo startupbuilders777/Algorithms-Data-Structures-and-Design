@@ -52,29 +52,27 @@ module RTQueue : Queue = struct
         | (lazy(Stream.Nil), [], lazy(Stream.Nil)) -> true
         | _ -> false;;
     
-    let rot (front: 'a Stream.stream) (back: 'a list): 'a Stream.stream = 
-        let rec aux (front: 'a Stream.stream) (back: 'a list) (acc : 'a Stream.stream) : 'a Stream.stream =
+    let rec rot (front: 'a Stream.stream) (back: 'a list) (acc : 'a Stream.stream) : 'a Stream.stream =
         match (Lazy.force front) with
         | Stream.Nil -> 
             begin 
             match back with
             | [] -> acc
-            | rhd::rtl -> aux(lazy Nil)(rtl)(lazy(Stream.Cons(rhd, acc)))
+            | rhd::rtl -> rot(lazy Nil)(rtl)(lazy(Stream.Cons(rhd, acc)))
             end
         | Stream.Cons(fhd, ftl) ->
             begin 
             match back with
-            | [] -> lazy(Stream.Cons(fhd, aux(ftl)([])(acc)))
-            | rhd::rtl -> lazy(Stream.Cons(fhd, aux(ftl)(rtl)(lazy(Stream.Cons(rhd, acc)))))
-            end
-        in aux(front)(back)(lazy(Nil)) ;;
-(*
+            | [] -> lazy(Stream.Cons(fhd, rot(ftl)([])(acc)))
+            | rhd::rtl -> lazy(Stream.Cons(fhd, rot(ftl)(rtl)(lazy(Stream.Cons(rhd, acc)))))
+            end;;
+
     let snoc (element: 'a) (queue: 'a queue) : 'a queue = 
         match queue with 
-        | (lenF, streamF, lenR, streamR) when lenR = lenF  -> 
-            (lenF + lenR + 1, Stream.(++)(streamF)(Stream.rev(lazy(Stream.Cons(element, streamR)))), 0, lazy(Stream.Nil))
-        | (lenF, streamF, lenR, streamR) -> 
-            (lenF, streamF, lenR+1, lazy(Stream.Cons(element, streamR)));;
+        | (streamF, listR, streamR) ->
+            match (Lazy.force streamR) with
+            | Stream.Nil -> let rotation = rot(streamF)(element::listR)(lazy(Stream.Nil)) in (rotation, [], rotation)
+            | Cons(scheduleHd, scheduleTl) -> (streamF, element::listR, scheduleTl) 
 
     let first (queue: 'a queue) : 'a option = 
         let getHead stream = 
@@ -82,47 +80,28 @@ module RTQueue : Queue = struct
             | Stream.Cons(hd, tl) -> Some hd
             | Stream.Nil -> None in
         match queue with
-        | (lenF, streamF, _, _) when lenF > 0 -> getHead streamF
+        | (streamF, _, _) -> getHead streamF
         | _ -> None ;;
         
-        
-    let rest (queue: 'a queue) : 'a queue option =        
+    let rec rest (queue: 'a queue) : 'a queue option =        
         match queue with 
-        | (0, streamF, lenR, streamR) -> None
-        | (lenF, streamF, lenR, streamR) when lenF = lenR  ->
-            begin
-            match Lazy.force streamF with
-            | Cons(hd, tl) -> Some (lenF + lenR - 1, Stream.(++)(tl)(Stream.rev(streamR)), 0, lazy(Stream.Nil))
-            end
-        | (lenF, streamF, lenR, streamR) when lenF > 0 ->
-            begin 
-            match Lazy.force streamF with
-            | Cons (hd, tl) ->  Some (lenF - 1, tl, lenR, streamR)
-            end;;
+        | (streamF, listR, streamR) ->
+            match (Lazy.force streamF, Lazy.force streamR) with
+            | (Stream.Nil, Stream.Nil) when listR = [] -> None
+            | (_, Stream.Nil) -> let rotation = rot(streamF)(listR)(lazy(Stream.Nil)) in rest (rotation, [], rotation)
+            | (Cons(fhd, ftl), Cons(scheduleHd, scheduleTl)) -> Some (ftl, listR, scheduleTl) 
 
     let streamA : char Stream.stream = lazy(Stream.Cons('a', (lazy(Stream.Cons('b', lazy(Stream.Nil))))));;
     let streamB : char Stream.stream = lazy(Stream.Cons('c', (lazy(Stream.Cons('d', lazy(Stream.Nil))))));;
-
-    let queueAB : char queue = (2, streamA, 2, streamB) 
-
+    let listBackA = ['e'; 'f'; 'g'];;
+    let queueAB = (lazy(Stream.Nil), [], lazy(Stream.Nil));;
     
-    (*Helper Testing Methods*)
-    let rec printQueue (queue : 'a queue) : unit = 
-        match queue with
-        | (lenF, streamF, lenR, streamR) when lenF > 0 ->
-            begin
-            match Lazy.force streamF with
-            | Stream.Cons(hd, tl) -> Printf.printf "On Front: %c\n" hd ; printQueue (lenF - 1, tl, lenR, streamR) 
-            end
-        | (lenF, streamF, lenR, streamR) when lenR > 0 -> 
-            begin
-            match Lazy.force streamR with
-            | Stream.Cons(hd, tl) -> Printf.printf "On Back: %c\n" hd ; printQueue (lenF, streamF, lenR - 1, tl)
-            end
-        | _ -> Printf.printf "end" ;;
- 
+    let rec printStream (stream: char Stream.stream) = 
+        match Lazy.force stream with
+            | Stream.Cons(hd,tl) -> Printf.printf "On Front: %c\n" hd ; printStream tl
+            | Stream.Nil -> Printf.printf "End" ;;
+
     let get value =
         match value with 
-        | Some x -> x;;
-*)
+        | Some x -> x;;        
 end
