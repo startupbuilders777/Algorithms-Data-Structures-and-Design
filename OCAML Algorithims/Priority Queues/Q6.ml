@@ -56,35 +56,48 @@ struct
       | Node(v, left, right) -> Some v
       | Empty -> None;;
 
-  let getFirstElementFromPair pair =
-    match pair with
-    | (first, second) -> second;;
-  let getSecondElementFromPair pair = 
-    match pair with
-    | (first, second) -> second;;
+  let rec deleteOne (bhpq) = 
+    let getFirstElementFromPair pair =
+      match pair with
+      | (first, second) -> first in
+    let getSecondElementFromPair pair = 
+      match pair with
+      | (first, second) -> second in
+    match bhpq with
+    | Node(v, Empty, Empty) -> (v, Empty)
+    | Node(v, left, right) ->  let result = deleteOne(left) in
+                               let element = getFirstElementFromPair(result) in
+                               let tree = getSecondElementFromPair(result) in
+                               (element, (Node(v, right, tree))) ;;
 
- let deleteOne (bhpq: pq) = 
-    let rec aux (bhpq: pq) (newTree) = 
-      match bhpq with
-      | Node(v, Empty, Empty) -> (v, newTree)
-      | Node(v, left, right) ->  let result = aux(left)(newTree) in aux(left)(Node(v, right, getSecondElementFromPair(result))) in
+let rec meld element leftTree rightTree = 
+  match (leftTree, element, rightTree) with
+  | (Empty, element, Empty) -> Node(element, empty, empty)
+  | (Node(lval, ll, lr), element, Empty) -> if(element <= lval) then Node(element, lr, meld(lval)(Empty)(ll))
+                                            else Node(lval, lr, meld(element)(Empty)(ll))
+
+  | (Empty, element, Node(rval, rl, rr)) -> if(element <= rval) then Node(element, meld(rval)(rr)(Empty), rl)
+                                            else Node(rval, meld(element)(rr)(Empty), rl)
+  | (Node(lval, ll, lr), element, Node(rval, rl, rr)) -> 
+    begin
+      if (element <= rval && element <= lval) then Node(element, leftTree, rightTree)
+      else if (rval <= element && rval <= lval) then Node(rval, leftTree, meld(element)(rr)(rl))
+      else Node(lval, meld(element)(ll)(lr), rightTree)
+  end;;
+
+let deleteMin (bhpq: pq) : pq option =
   match bhpq with
   | Empty -> None
-  | _ -> Some(aux bhpq Empty)
-
-let meld rightTree leftTree element = 
-  match (rightTree, element, leftTree) with
-  | (Empty, element, Empty) -> Node(element, empty, empty)
-  | (Node(rval, rr, rl), element, (Node(lval, ll, lr))) -> 
+  | _ -> 
     begin
-      if (element <= rval && element <= lval) then -> Node(element, leftTree, rightTree)
-      else if (rval <= element && rval <= lval) then -> Node(rval, leftTree, meld(element, rr, rl))
-      else -> Node(lval, rightTree, meld(element, ll, lr))
-
-
+    match deleteOne(bhpq) with
+      | (v, Empty) -> Some Empty
+      | (displacedElement, Node(min, left, right)) -> Some(meld(displacedElement)(left)(right))
+    end;;
+    
 end
 
-let deleteMin (bhpq: pq) : pq option = Some bhpq ;;
+
 
 (*
 How do you use functor?

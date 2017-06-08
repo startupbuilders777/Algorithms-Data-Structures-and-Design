@@ -26,24 +26,39 @@ type 'a brt =
 
   let getFirstElementFromPair pair =
     match pair with
-    | (first, second) -> second;;
+    | (first, second) -> first;;
   let getSecondElementFromPair pair = 
     match pair with
     | (first, second) -> second;;
 
-let deleteOne (bhpq: pq) = 
-    let rec aux (bhpq: pq) (newTree) = 
-      match bhpq with
-      | Node(v, Empty, Empty) -> (v, Empty)
-      | Node(v, left, right) ->  let result = aux(left)(newTree) in aux(left)(Node(v, right, getSecondElementFromPair(result))) in
-  match bhpq with
-  | Empty -> None
-  | _ -> Some(aux bhpq Empty)
-
+  let rec deleteOne (bhpq) = 
+    match bhpq with
+    | Node(v, Empty, Empty) -> (v, Empty)
+    | Node(v, left, right) ->  let result = deleteOne(left) in
+                               let element = getFirstElementFromPair(result) in
+                               let tree = getSecondElementFromPair(result) in
+                               (element, (Node(v, right, tree))) ;;
 
 let braunHeapPQ = insert(0)(insert(-3)(insert(99)(insert(5)(insert(12)(insert(7)(insert(0)(insert(3)(insert(2)(Empty)))))))));;
-let simpleBraun
+let simpleBraun = (insert(5)(insert(12)(insert(7)(insert(0)(insert(3)(insert(2)(Empty)))))));;
 (*
+
+val simpleBraun = 
+
+ Node (0, 
+    Node (3, 
+        Node (5, 
+            Empty, 
+            Empty), 
+    Node (7, 
+        Empty, 
+        Empty)), 
+    
+    Node (2, 
+        Node (12, 
+            Empty, 
+            Empty), 
+    Empty))  
 
 val braunHeapPQ : pq =  
 Node (-3, 
