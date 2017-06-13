@@ -4,7 +4,7 @@ module type OrderedType = sig
   val compare : t -> t -> int
 end
 
-module OrderedInt: OrderedType = 
+module OrderedInt : (OrderedType with type t = int) =
   struct 
     type t = int
     let compare x y = if(x < y) then -1 else if (x = y) then 0 else 1
@@ -73,15 +73,15 @@ struct
 let rec meld element leftTree rightTree = 
   match (leftTree, element, rightTree) with
   | (Empty, element, Empty) -> Node(element, empty, empty)
-  | (Node(lval, ll, lr), element, Empty) -> if(element <= lval) then Node(element, lr, meld(lval)(Empty)(ll))
-                                            else Node(lval, lr, meld(element)(Empty)(ll))
+  | (Node(lval, ll, lr), element, Empty) -> if(element <= lval) then Node(element, meld(lval)(ll)(Empty), lr)
+                                            else Node(lval, meld(element)(ll)(Empty), lr)
 
-  | (Empty, element, Node(rval, rl, rr)) -> if(element <= rval) then Node(element, meld(rval)(rr)(Empty), rl)
-                                            else Node(rval, meld(element)(rr)(Empty), rl)
+  | (Empty, element, Node(rval, rl, rr)) -> if(element <= rval) then Node(element, rl, meld(rval)(Empty)(rr))
+                                            else Node(rval, rl, meld(element)(rr)(Empty))
   | (Node(lval, ll, lr), element, Node(rval, rl, rr)) -> 
     begin
       if (element <= rval && element <= lval) then Node(element, leftTree, rightTree)
-      else if (rval <= element && rval <= lval) then Node(rval, leftTree, meld(element)(rr)(rl))
+      else if (rval <= element && rval <= lval) then Node(rval, leftTree, meld(element)(rl)(rr))
       else Node(lval, meld(element)(ll)(lr), rightTree)
   end;;
 
@@ -97,15 +97,19 @@ let deleteMin (bhpq: pq) : pq option =
     
 end
 
+module IPQ = BHeapPQ(OrderedInt)
 
+let p1 = IPQ.Node(1, Empty, Empty);;
+let p2 = IPQ.Node(1, IPQ.Node(2, IPQ.Empty, IPQ.Empty), IPQ.Node(3, IPQ.Empty, IPQ.Empty));;
+let p3 = IPQ.Node(2, IPQ.Node(3, IPQ.Empty, IPQ.Empty), Empty);;
 
-(*
-How do you use functor?
+let p4 = IPQ.Node(1, IPQ.Node(2, IPQ.Node(6, IPQ.Empty, IPQ.Empty), IPQ.Node(7, IPQ.Empty, IPQ.Empty)), 
+                     IPQ.Node(3, IPQ.Node(8, IPQ.Empty, IPQ.Empty), IPQ.Node(9, IPQ.Empty, IPQ.Empty)));;
 
+let p5 =  (IPQ.Node (2, IPQ.Node (3, IPQ.Node (8, IPQ.Empty, IPQ.Empty), IPQ.Node (9, IPQ.Empty, IPQ.Empty)),                                
+                        IPQ.Node (6, IPQ.Node (7, IPQ.Empty, IPQ.Empty), IPQ.Empty)))  
 
-module IntPQ = BHeapPQ(OrderedInt);;
-
-let i : OrderedInt.t = 2;;
-
- (*let braunHeapPQ = IntPQ.insert(2)(IntPQ.Empty) ;;*)
- *)
+let () = 
+  assert(IPQ.deleteMin(p2) = Some p3)
+let () =
+  assert(IPQ.deleteMin(p4) = Some p5)

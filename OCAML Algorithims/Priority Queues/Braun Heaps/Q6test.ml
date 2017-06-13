@@ -39,7 +39,7 @@ type 'a brt =
                                let tree = getSecondElementFromPair(result) in
                                (element, (Node(v, right, tree))) ;;
 
-let braunHeapPQ = insert(0)(insert(-3)(insert(99)(insert(5)(insert(12)(insert(7)(insert(0)(insert(3)(insert(2)(Empty)))))))));;
+let braunHeapPQ = insert(12)(insert(0)(insert(-3)(insert(99)(Empty))));;
 let simpleBraun = (insert(5)(insert(12)(insert(7)(insert(0)(insert(3)(insert(2)(Empty)))))));;
 (*
 
