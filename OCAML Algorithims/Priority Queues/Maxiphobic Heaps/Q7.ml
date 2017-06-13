@@ -87,21 +87,3 @@ let deleteMin (mhpq: mpq) : mpq option =
   | Node(_, v, left, right) -> Some(merge(left)(right)) ;;
 
 end
-
-module IPQ = MaxiHeapmPQ(OrderedInt)
-(*
-let p1 = IPQ.Node(1, 1, Empty, Empty);;
-let p2 = IPQ.Node(3, 1, IPQ.Node(1, 2, IPQ.Empty, IPQ.Empty), IPQ.Node(1, 3, IPQ.Empty, IPQ.Empty));;
-let p3 = IPQ.Node(2, 2, IPQ.Node(1, 3, IPQ.Empty, IPQ.Empty), Empty);;
-
-let p4 = IPQ.Node(1, IPQ.Node(2, IPQ.Node(6, IPQ.Empty, IPQ.Empty), IPQ.Node(7, IPQ.Empty, IPQ.Empty)), 
-                     IPQ.Node(3, IPQ.Node(8, IPQ.Empty, IPQ.Empty), IPQ.Node(9, IPQ.Empty, IPQ.Empty)));;
-
-let p5 =  (IPQ.Node (2, IPQ.Node (3, IPQ.Node (8, IPQ.Empty, IPQ.Empty), IPQ.Node (9, IPQ.Empty, IPQ.Empty)),                                
-                        IPQ.Node (6, IPQ.Node (7, IPQ.Empty, IPQ.Empty), IPQ.Empty)))  
-
-let () = 
-  assert(IPQ.deleteMin(p2) = Some p3)
-let () =
-  assert(IPQ.deleteMin(p4) = Some p5)
-  *)
