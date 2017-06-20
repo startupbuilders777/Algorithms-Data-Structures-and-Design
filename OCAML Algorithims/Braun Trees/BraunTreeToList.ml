@@ -13,15 +13,19 @@ Convert To -> (1, )
 *)
 
 let rec braunTreeToList braunTree =
-  let aux mergeNumbers treeLeft treeRight =
-    match (treeLeft, treeRight)
-    | (Node(rootL, ll, lr), Node(rootR, rl, rr)) -> rootL :: rootR  
+  let rec createList root left right direction =
+    match(left, right) with
+    | (Empty, Empty) -> []
+    | (Node(lRoot, ll, lr), Node(rRoot, rl, rr) ) when direction = "n" -> root :: createList root left right "l"
+    | (Node(lRoot, ll, lr), Node(rRoot, rl, rr) ) when direction = "l" -> lRoot :: createList root left right "r"
+    | (Node(lRoot, ll, lr), Node(rRoot, rl, rr) ) when direction = "r" -> rRoot :: createList root left right "x"
+    |
   match braunTree with
   | Empty -> Empty
-  | Node(root, treeLeft, treeRight) -> root :: 
+  | Node(root, treeLeft, treeRight) -> createList root treeLeft treeRight;;
   
 
-
+(*
 
     [root] @ braunTreeToList(treeLeft) @ braunTreeToList(treeLeft) 
 
@@ -29,3 +33,5 @@ let rec listToBraunTree =
   match list with
   | hd::back -> Node(hd, listToBraunTree(), listToBraunTree())
   | [] -> Empty
+
+  *)

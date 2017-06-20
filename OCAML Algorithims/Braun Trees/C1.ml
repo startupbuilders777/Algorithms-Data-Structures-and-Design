@@ -25,4 +25,4 @@ let rec extend e = function
 
 let rec list2tree = function
   | [] -> Empty
-  | hd :: tl -> extend e (list2tree tl)
+  | hd :: tl -> extend hd (list2tree tl)

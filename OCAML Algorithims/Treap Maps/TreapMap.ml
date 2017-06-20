@@ -242,7 +242,11 @@ let rec diff treapA treapB =
   let bRoot = getRootOfTreap(treapB) in
   let (lprime, b, rprime) = split(bRoot)(treapA) in union(diff(lprime)(left))(diff(rprime)(right))  ;;
 
+let memberOf  element treap =
+  let (left, b, right) = split(element)(treap) in b;;
 
+let subsetOf treap1 treap2 = 
+  Empty = diff treap2 treap1 ;;
 
 Random.self_init();;
 let e1 = (Random.int 90000, 1);;
