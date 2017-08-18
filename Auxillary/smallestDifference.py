@@ -6,12 +6,19 @@ with the smallest(non-negative) difference. Return the difference
 arr1 = [1,3,15,11,2]
 arr2 = [23,127,235,19,8]
 
+arr3 = [11,1,5,6,1,3,4,7,9,5,2]
+arr4 = [6,3,7,3,8,9,12,4,67,5]
+
 '''
 The smallest diff is between adjacent numbers in the merged list of the 2 arrays
 [1,2,3,8,11,15,19,23,127,235]
 [A,A,A,B,A,A,B,B,B,B]
 
 Algo performance O(nlogn)
+
+The simpler algo which was not implemented here was moving up the 
+ptr for the array with the smaller array value by 1. Therefore
+getting closer to minimizing the difference.
 '''
 
 def smallestDif(arr1, arr2):
@@ -49,6 +56,7 @@ def smallestDif(arr1, arr2):
 
 
 
-val = smallestDif(arr1, arr2)
-
+#val = smallestDif(arr1, arr2)
+#print(val)
+val = smallestDif(arr3, arr4)
 print(val)
