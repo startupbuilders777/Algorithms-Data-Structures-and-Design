@@ -14,6 +14,16 @@ Do the heavypill challenge
 
 Do dominoes
 
+Do sortedMerge <- Really easy and quicks
+
+remove datastructure implementations in files for algos not related directly to those datastructures:
+-RouteBetweenNodes stack
+
+figure out benefits of 2 stack implementation of queue
+FIX THE QUEUE DATASTRUCTURE SO IT WORKS THANKS
+
+
+
 COOL STUFF #######################################
 
 Research BFS VS DFS VS BiDirectional Search

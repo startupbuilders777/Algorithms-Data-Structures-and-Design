@@ -14,8 +14,10 @@ class StackNode():
 class Stack():
     def __init__(self):
         self.topNode = None
+        self.count = 0
 
     def push(self, data):
+        self.count += 1
         newNode = StackNode(data)
         if(self.topNode is None):
             self.topNode = newNode
@@ -30,34 +32,45 @@ class Stack():
         else:
             return self.topNode.data
 
+    def size(self):
+        return self.count
+
     def pop(self):
         if self.topNode is None:
             return ReferenceError
         else:
+            self.count -= 1
             prev = self.topNode.prev
             self.topNode = prev
 
     def empty(self):
         return self.topNode is None
-
+'''
 
 aStack = Stack()
-'''
+
 aStack.push(2)
 print(aStack.top())
+print(aStack.size())
 aStack.push(3)
 print(aStack.top())
+print(aStack.size())
 aStack.push(6)
 print(aStack.top())
+print(aStack.size())
 aStack.pop()
 print(aStack.top())
+print(aStack.size())
 aStack.push(69)
 print(aStack.top())
+print(aStack.size())
 aStack.pop()
 print(aStack.top())
-'''
+print(aStack.size())
+
 
 print("")
+'''
 
 def fibIterative(n):
     stack = Stack()
@@ -81,4 +94,4 @@ def fibIterative(n):
 
     return sum          #Solution after iteration
 
-print(fibIterative(12))
+#print(fibIterative(12))
