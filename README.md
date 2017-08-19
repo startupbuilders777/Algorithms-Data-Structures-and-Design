@@ -19,8 +19,11 @@ Do sortedMerge <- Really easy and quicks
 remove datastructure implementations in files for algos not related directly to those datastructures:
 -RouteBetweenNodes stack
 
+-isUnique <- Pls implement a set class first thanks
+
+
 figure out benefits of 2 stack implementation of queue
-FIX THE QUEUE DATASTRUCTURE SO IT WORKS THANKS
+FIX THE QUEUE DATASTRUCTURE SO IT WORKS THANKS -> once done finish routeBetweenNodes
 
 
 
