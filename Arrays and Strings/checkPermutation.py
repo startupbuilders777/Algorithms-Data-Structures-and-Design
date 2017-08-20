@@ -1,5 +1,9 @@
 '''Given 2 strings, write a method to decide if one is a permutation of the other'''
 
+'''
+Optimize with a MAP REMEMBER THAT NOW
+
+'''
 def checkPermutation(str1, str2):
     count1 = {}
     count2 = {}

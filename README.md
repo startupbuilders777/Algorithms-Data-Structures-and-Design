@@ -21,6 +21,7 @@ remove datastructure implementations in files for algos not related directly to 
 
 -isUnique <- Pls implement a set class first thanks
 
+Fix in place merge sort
 
 figure out benefits of 2 stack implementation of queue
 FIX THE QUEUE DATASTRUCTURE SO IT WORKS THANKS -> once done finish routeBetweenNodes
