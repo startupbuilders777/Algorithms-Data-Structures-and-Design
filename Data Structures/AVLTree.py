@@ -16,4 +16,5 @@ class Node():
         self.right = None
 
 class avlTree():
-    def
+    def __init__(self):
+        self.root = None
