@@ -30,6 +30,9 @@ Complete Interval Coloring
 
 
 change quicksort to inplace quicksort
+fix quickselect and learn how to do inplace partitioning
+
+
 
 DONE ############################################
 
