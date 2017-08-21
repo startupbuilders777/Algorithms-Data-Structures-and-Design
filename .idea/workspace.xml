@@ -2,92 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="238f8dd5-d9b6-487a-882a-dc64246ac00b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Arrays and Strings/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Arrays and Strings/checkPermutation.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Arrays and Strings/isUnique.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Auxillary/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Auxillary/intersection/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Auxillary/intersection/intersection.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Auxillary/intersection/line.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Auxillary/intersection/point.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Auxillary/numberSwapper.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Auxillary/primeNumbers.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Auxillary/shortestSuperSequence.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Auxillary/smallestDifference.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Auxillary/wordFrequencies.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Greedy Algorithms/IntervalColoring.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Greedy Algorithms/IntervalScheduling.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Greedy Algorithms/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Greedy Algorithms/how do they work.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Math and Logic Puzzles/Basketball.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Math and Logic Puzzles/Domioes.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Math and Logic Puzzles/Nine balls.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Math and Logic Puzzles/Rope.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Math and Logic Puzzles/TheHeavyPill.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Math and Logic Puzzles/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Recursion and Dynamic Programming/FibonacciNumbers.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Recursion and Dynamic Programming/RobotInAGrid.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Recursion and Dynamic Programming/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Recursion and Dynamic Programming/magicIndex.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Recursion and Dynamic Programming/powerSet.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Recursion and Dynamic Programming/tripleStep.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Sorting and Searching/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Sorting and Searching/binarysearch.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Sorting and Searching/mergeSort.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Sorting and Searching/quickSort.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Sorting and Searching/radixSort.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Sorting and Searching/sortedMerge.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Trees and Graphs/BidirectionalSearch.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Trees and Graphs/DirectedGraphs/RouteBetweenNodes.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Trees and Graphs/DirectedGraphs/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Trees and Graphs/UndirectedGraphs/BFSTree.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Trees and Graphs/UndirectedGraphs/DFSTree.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Trees and Graphs/UndirectedGraphs/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Trees and Graphs/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Datastructures/LinkedList.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Datastructures/MinHeap.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Math/Solving Recurrence Relation.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Python Tricks" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Arrays and Strings/checkPermutation.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Arrays and Strings/isUnique.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Auxillary/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Auxillary/intersection/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Auxillary/intersection/intersection.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Auxillary/intersection/line.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Auxillary/intersection/point.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Auxillary/numberSwapper.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Auxillary/primeNumbers.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Auxillary/shortestSuperSequence.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Auxillary/smallestDifference.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Auxillary/wordFrequencies.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Math and Logic Puzzles/Basketball.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Math and Logic Puzzles/Domioes.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Math and Logic Puzzles/Nine balls.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Math and Logic Puzzles/Rope.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Math and Logic Puzzles/TheHeavyPill.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Recursion and Dynamic Programming/FibonacciNumbers.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Recursion and Dynamic Programming/RobotInAGrid.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Recursion and Dynamic Programming/magicIndex.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Recursion and Dynamic Programming/powerSet.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Recursion and Dynamic Programming/tripleStep.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Sorting and Searching/binarysearch.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Sorting and Searching/mergeSort.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Sorting and Searching/quickSort.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Sorting and Searching/radixSort.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Sorting and Searching/sortedMerge.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Trees and Graphs/BidirectionalSearch.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Trees and Graphs/DirectedGraphs/RouteBetweenNodes.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Trees and Graphs/DirectedGraphs/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Trees and Graphs/UndirectedGraphs/BFSTree.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Trees and Graphs/UndirectedGraphs/DFSTree.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Trees and Graphs/UndirectedGraphs/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Trees and Graphs/__init__.py" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Datastructures/Heaps/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Datastructures/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/hi.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/MinHeap.py" afterPath="$PROJECT_DIR$/Datastructures/Heaps/MinHeap.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Datastructures/PriorityQueue.py" afterPath="$PROJECT_DIR$/Datastructures/PriorityQueue.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Datastructures/Queue.py" afterPath="$PROJECT_DIR$/Datastructures/Queue.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Datastructures/Stack.py" afterPath="$PROJECT_DIR$/Datastructures/Stack.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -168,31 +87,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MinHeap.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Datastructures/MinHeap.py">
+      <file leaf-file-name="MinHeap.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Datastructures/Heaps/MinHeap.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="355">
+              <caret line="27" column="38" lean-forward="false" selection-start-line="27" selection-start-column="38" selection-end-line="27" selection-end-column="38" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="hi.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/hi.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="102">
+              <caret line="6" column="2" lean-forward="false" selection-start-line="6" selection-start-column="2" selection-end-line="6" selection-end-column="2" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HeapWithArray.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Datastructures/Heaps/HeapWithArray.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="how do they work.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/Greedy Algorithms/how do they work.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Python Tricks" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Python Tricks">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -275,6 +194,8 @@
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/Datastructures/Queue.py" />
         <option value="$PROJECT_DIR$/Datastructures/PriorityQueue.py" />
+        <option value="$PROJECT_DIR$/Datastructures/Heaps/MinHeap.py" />
+        <option value="$PROJECT_DIR$/hi.py" />
       </list>
     </option>
   </component>
@@ -309,22 +230,6 @@
               <item name="Algorithms, Datastructures, and Design" type="b2602c69:ProjectViewProjectNode" />
               <item name="Algorithms, Datastructures, and Design" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="Algorithms, Datastructures, and Design" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Algorithms, Datastructures, and Design" type="462c0819:PsiDirectoryNode" />
-              <item name="Algorithms" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Algorithms, Datastructures, and Design" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Algorithms, Datastructures, and Design" type="462c0819:PsiDirectoryNode" />
-              <item name="Algorithms" type="462c0819:PsiDirectoryNode" />
-              <item name="Greedy Algorithms" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Algorithms, Datastructures, and Design" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Algorithms, Datastructures, and Design" type="462c0819:PsiDirectoryNode" />
-              <item name="Datastructures" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -336,6 +241,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Harman\PycharmProjects\Algorithms, Datastructures, and Design\Datastructures\Heaps" />
       <recent name="C:\Users\Harman\PycharmProjects\Algorithms\Trees and Graphs\DirectedGraphs" />
       <recent name="C:\Users\Harman\PycharmProjects\Algorithms\Trees and Graphs\UndirectedGraphs" />
       <recent name="C:\Users\Harman\PycharmProjects\Algorithms\Auxillary\intersection" />
@@ -353,7 +259,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Queue">
+  <component name="RunManager" selected="Python.hi">
     <configuration name="IntervalScheduling" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -388,19 +294,19 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <configuration name="checkPermutation" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="hi" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Arrays and Strings" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="Algorithms" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Arrays and Strings/checkPermutation.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/hi.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -441,18 +347,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.Queue" />
-      <item index="1" class="java.lang.String" itemvalue="Python.checkPermutation" />
-      <item index="2" class="java.lang.String" itemvalue="Python.isUnique" />
-      <item index="3" class="java.lang.String" itemvalue="Python.mergeSort" />
-      <item index="4" class="java.lang.String" itemvalue="Python.IntervalScheduling" />
+      <item index="1" class="java.lang.String" itemvalue="Python.isUnique" />
+      <item index="2" class="java.lang.String" itemvalue="Python.mergeSort" />
+      <item index="3" class="java.lang.String" itemvalue="Python.IntervalScheduling" />
+      <item index="4" class="java.lang.String" itemvalue="Python.hi" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.Queue" />
-        <item index="1" class="java.lang.String" itemvalue="Python.IntervalScheduling" />
-        <item index="2" class="java.lang.String" itemvalue="Python.mergeSort" />
-        <item index="3" class="java.lang.String" itemvalue="Python.isUnique" />
-        <item index="4" class="java.lang.String" itemvalue="Python.checkPermutation" />
+        <item index="0" class="java.lang.String" itemvalue="Python.hi" />
+        <item index="1" class="java.lang.String" itemvalue="Python.Queue" />
+        <item index="2" class="java.lang.String" itemvalue="Python.IntervalScheduling" />
+        <item index="3" class="java.lang.String" itemvalue="Python.mergeSort" />
+        <item index="4" class="java.lang.String" itemvalue="Python.isUnique" />
       </list>
     </recent_temporary>
   </component>
@@ -512,7 +418,14 @@
       <option name="project" value="LOCAL" />
       <updated>1503270068169</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Organized Into Directories">
+      <created>1503280818375</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1503280818375</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -521,7 +434,7 @@
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25189108" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12274959" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4304419" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -547,7 +460,8 @@
     <MESSAGE value="Implemented Queue" />
     <MESSAGE value="Implemented checkPermutation" />
     <MESSAGE value="completed isUnique" />
-    <option name="LAST_COMMIT_MESSAGE" value="completed isUnique" />
+    <MESSAGE value="Organized Into Directories" />
+    <option name="LAST_COMMIT_MESSAGE" value="Organized Into Directories" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -570,14 +484,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Auxillary/intersection/intersection.py" />
-    <entry file="file://$PROJECT_DIR$/Datastructures/StringBuilder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Datastructures/HashTable.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -731,10 +637,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Datastructures/MinHeap.py">
+    <entry file="file://$PROJECT_DIR$/Datastructures/Heaps/HeapWithArray.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Datastructures/Heaps/MinHeap.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="355">
+          <caret line="27" column="38" lean-forward="false" selection-start-line="27" selection-start-column="38" selection-end-line="27" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="2" lean-forward="false" selection-start-line="6" selection-start-column="2" selection-end-line="6" selection-end-column="2" />
           <folding />
         </state>
       </provider>
