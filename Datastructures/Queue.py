@@ -1,6 +1,12 @@
 from Stack import Stack
 
-''' Implement a queue with 2 stacks '''
+''' 
+Implementation similar to stack with linked lists
+Can do dequeue -> Remove from the front
+insert -> at the end
+Implement a queue with 2 stacks 
+
+'''
 
 class Queue():
     '''
@@ -19,12 +25,8 @@ class Queue():
         if (self.front.empty()):
             self.transfer()
 
-    def front(self):
-        if(self.empty()):
-            return None
-        else:
-            print("fook")
-    #        return self.front.top()
+    def top(self):
+        return self.front.top()
 
     def empty(self):
         return self.front.empty()
@@ -44,20 +46,23 @@ class Queue():
 aQueue = Queue()
 print(aQueue)
 aQueue.add(2)
-print(aQueue.front())
+print("Top" + str(aQueue.top()))
 print(aQueue.size())
 aQueue.add(3)
-print(aQueue.front())
+print("Top" + str(aQueue.top()))
 print(aQueue.size())
 aQueue.add(6)
-print(aQueue.front())
+print("Top" + str(aQueue.top()))
 print(aQueue.size())
 aQueue.remove()
-print(aQueue.front())
+print("Top" + str(aQueue.top()))
 print(aQueue.size())
 aQueue.add(69)
-print(aQueue.front())
+print("Top" + str(aQueue.top()))
 print(aQueue.size())
 aQueue.remove()
-print(aQueue.front())
+print("Top" + str(aQueue.top()))
+print(aQueue.size())
+aQueue.remove()
+aQueue.remove()
 print(aQueue.size())

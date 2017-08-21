@@ -1,0 +1,8 @@
+
+Solve T(n) = 2T(n/2) + n
+
+Assume you know and its O(n) = nlogn
+
+How to prove?
+
+Use induction

@@ -1,6 +1,6 @@
 
 
-STUFF TO DOO ##################################
+WIP ##################################
 Cover vertical line case in intersection
 Complete powerSet
 Do second part of magicIndex
@@ -26,9 +26,39 @@ Fix in place merge sort
 figure out benefits of 2 stack implementation of queue
 FIX THE QUEUE DATASTRUCTURE SO IT WORKS THANKS -> once done finish routeBetweenNodes
 
+Complete Interval Coloring
 
+DONE ############################################
+
+NOT GOING TO DO ###############################
 
 COOL STUFF #######################################
 
 Research BFS VS DFS VS BiDirectional Search
 RouteBetweenNodes goes over all graph search algo implementations => FIX DFS ALGO SO IT MATCHES THE TIMINGS IN THE ALGO NOTES FOR START AND FINISH
+
+FURTHER Things TO INCLUDE in this Set ################################
+
+
+Hash Table Collision Resolution:
+    Chaining with linked lists
+    Chaining with Binary Search Trees
+    Open Addressing with Linear Probing
+    Quadratic Probing and Double Hashing
+Robin Karp Substring Search
+AVL Trees
+Red Black Trees
+All the different types of Heaps
+
+All the Design Patterns with examples and explanations
+
+Bellman Ford Algorithm
+Floyd Warshall Algorithm
+Minimum Spanning Trees
+B-Trees
+A*
+Interval Trees
+Graph Coloring
+
+
+Something on Combinatronics, Probability, and Regular Expressions?

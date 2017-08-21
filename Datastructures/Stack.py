@@ -3,6 +3,9 @@
 Very useful for recursive applications to push temporary data on a stack as you recurse, but then remove them as you backtrack
 
 Stack can also be used to implement a recursive algo iteratively!!!
+
+Stacks can be implemented with a linked list or an array =>
+    You may need to resize array but at least you dont have to worry about ptrs
 '''
 
 class StackNode():
