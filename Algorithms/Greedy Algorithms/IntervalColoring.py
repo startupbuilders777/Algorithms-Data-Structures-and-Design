@@ -27,13 +27,23 @@ def colorIntervals(intervals):
     intervals = sort intervals by starting time
     color first interval <- 1
 
-    map[] <- Takes a starting time when you get something and returns number of intervals intersecting at that time, k,
-             then color your interval k+1
-    after that
-    map[(start, end)] <- add a range, and it increments corresponding intervals by 1 depending
+    activeInterval1 = [firstIntervalStart, firstIntervalEnd]
+    map -> {activeInterval1 -> val}
 
-    for(1 to end):
-        if()
+    for(i in 1 to end):
+        (startI, endI) = intervals[i]
+        checkStartIsInAnActiveInterval(startI, endI, map)
+
+def checkStartIsInActiveInterval:
+    result = binaryRangeSearch(elementsInMap, startI) <- O(log n)
+    if(it is in active interval)
+        colorings = map[activeInterval]
+        NewActiveInterval1 -> [startI, min{activeIntervalEnd, endI}]
+        NewActiveInterval2 -> [min{activeIntervalEnd, endI}, all the other ends it rea]
+
+def binaryRangeSearch():
+    iterate thru keys
+    return the range-element In The Map that is most clost to the start time (the active range start time is most close to the startElement)
 
 
 THIS ALGO MAY NEED RANGE TREES

@@ -1,6 +1,10 @@
 import random
 
-'''Randomized Pivot finding Quicksort'''
+'''
+
+Randomized Pivot finding Quicksort
+SHOULD BE INPLACE
+'''
 
 def append(*args):
     arr = []

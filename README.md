@@ -28,6 +28,9 @@ FIX THE QUEUE DATASTRUCTURE SO IT WORKS THANKS -> once done finish routeBetweenN
 
 Complete Interval Coloring
 
+
+change quicksort to inplace quicksort
+
 DONE ############################################
 
 NOT GOING TO DO ###############################

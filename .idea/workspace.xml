@@ -2,11 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="238f8dd5-d9b6-487a-882a-dc64246ac00b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Datastructures/Heaps/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Datastructures/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/hi.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/MinHeap.py" afterPath="$PROJECT_DIR$/Datastructures/Heaps/MinHeap.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Data Structures/LinkedList.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Data Structures/Set.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Data Structures/StringBuilder.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Data Structures/__init__.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/ArrayList.py" afterPath="$PROJECT_DIR$/Algorithms/Sorting and Searching/HeapSort.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/Dequeue.py" afterPath="$PROJECT_DIR$/Algorithms/Sorting and Searching/PQSort.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/Graph.py" afterPath="$PROJECT_DIR$/Data Structures/Graph.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/HashTable.py" afterPath="$PROJECT_DIR$/Algorithms/Sorting and Searching/quickSelect.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/Heaps/MinHeap.py" afterPath="$PROJECT_DIR$/Data Structures/Heaps/MinHeap.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/Heaps/__init__.py" afterPath="$PROJECT_DIR$/Data Structures/ArrayList.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/LinkedList.py" afterPath="$PROJECT_DIR$/Data Structures/Dequeue.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/PriorityQueue.py" afterPath="$PROJECT_DIR$/Data Structures/PriorityQueue.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/Queue.py" afterPath="$PROJECT_DIR$/Data Structures/Queue.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/Set.py" afterPath="$PROJECT_DIR$/Data Structures/HashTable.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/Stack.py" afterPath="$PROJECT_DIR$/Data Structures/Stack.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/StringBuilder.py" afterPath="$PROJECT_DIR$/Data Structures/Heaps/BraunHeap.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Datastructures/__init__.py" afterPath="$PROJECT_DIR$/Data Structures/Heaps/__init__.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Algorithms/Greedy Algorithms/IntervalColoring.py" afterPath="$PROJECT_DIR$/Algorithms/Greedy Algorithms/IntervalColoring.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Algorithms/Sorting and Searching/quickSort.py" afterPath="$PROJECT_DIR$/Algorithms/Sorting and Searching/quickSort.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,17 +37,7 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="255">
-              <caret line="32" column="47" lean-forward="false" selection-start-line="32" selection-start-column="47" selection-end-line="32" selection-end-column="47" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IntervalScheduling.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/Greedy Algorithms/IntervalScheduling.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="15" selection-end-column="1" />
+              <caret line="32" column="0" lean-forward="true" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -40,75 +46,85 @@
       <file leaf-file-name="IntervalColoring.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Algorithms/Greedy Algorithms/IntervalColoring.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="38" column="30" lean-forward="false" selection-start-line="38" selection-start-column="30" selection-end-line="38" selection-end-column="30" />
+            <state relative-caret-position="313">
+              <caret line="41" column="86" lean-forward="false" selection-start-line="41" selection-start-column="86" selection-end-line="41" selection-end-column="86" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Solving Recurrence Relation.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Math/Solving Recurrence Relation.txt">
+      <file leaf-file-name="PQSort.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Algorithms/Sorting and Searching/PQSort.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Stack.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Datastructures/Stack.py">
+      <file leaf-file-name="HeapSort.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Algorithms/Sorting and Searching/HeapSort.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="4" lean-forward="false" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Queue.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Datastructures/Queue.py">
+      <file leaf-file-name="quickSelect.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Algorithms/Sorting and Searching/quickSelect.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="68">
-              <caret line="4" column="39" lean-forward="true" selection-start-line="4" selection-start-column="39" selection-end-line="4" selection-end-column="39" />
+              <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="PriorityQueue.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Datastructures/PriorityQueue.py">
+        <entry file="file://$PROJECT_DIR$/Data Structures/PriorityQueue.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+            <state relative-caret-position="211">
+              <caret line="23" column="18" lean-forward="true" selection-start-line="23" selection-start-column="18" selection-end-line="23" selection-end-column="18" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="quickSort.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Algorithms/Sorting and Searching/quickSort.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="MinHeap.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Datastructures/Heaps/MinHeap.py">
+        <entry file="file://$PROJECT_DIR$/Data Structures/Heaps/MinHeap.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="355">
-              <caret line="27" column="38" lean-forward="false" selection-start-line="27" selection-start-column="38" selection-end-line="27" selection-end-column="38" />
+            <state relative-caret-position="-1756">
+              <caret line="9" column="36" lean-forward="true" selection-start-line="9" selection-start-column="36" selection-end-line="9" selection-end-column="36" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="hi.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/hi.py">
+      <file leaf-file-name="BraunHeap.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Data Structures/Heaps/BraunHeap.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="2" lean-forward="false" selection-start-line="6" selection-start-column="2" selection-end-line="6" selection-end-column="2" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="HeapWithArray.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Datastructures/Heaps/HeapWithArray.py">
+        <entry file="file://$PROJECT_DIR$/Data Structures/Heaps/HeapWithArray.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -190,12 +206,16 @@
         <option value="$PROJECT_DIR$/Algorithms/Greedy Algorithms/IntervalScheduling.py" />
         <option value="$PROJECT_DIR$/Math/Solving Recurrence Relation.txt" />
         <option value="$PROJECT_DIR$/Datastructures/Stack.py" />
-        <option value="$PROJECT_DIR$/Algorithms/Greedy Algorithms/IntervalColoring.py" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/Datastructures/Queue.py" />
         <option value="$PROJECT_DIR$/Datastructures/PriorityQueue.py" />
         <option value="$PROJECT_DIR$/Datastructures/Heaps/MinHeap.py" />
         <option value="$PROJECT_DIR$/hi.py" />
+        <option value="$PROJECT_DIR$/Data Structures/Heaps/MinHeap.py" />
+        <option value="$PROJECT_DIR$/Algorithms/Greedy Algorithms/IntervalColoring.py" />
+        <option value="$PROJECT_DIR$/Data Structures/PriorityQueue.py" />
+        <option value="$PROJECT_DIR$/Algorithms/Sorting and Searching/quickSort.py" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/Algorithms/Sorting and Searching/quickSelect.py" />
       </list>
     </option>
   </component>
@@ -230,6 +250,34 @@
               <item name="Algorithms, Datastructures, and Design" type="b2602c69:ProjectViewProjectNode" />
               <item name="Algorithms, Datastructures, and Design" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="Algorithms, Datastructures, and Design" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Algorithms, Datastructures, and Design" type="462c0819:PsiDirectoryNode" />
+              <item name="Algorithms" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Algorithms, Datastructures, and Design" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Algorithms, Datastructures, and Design" type="462c0819:PsiDirectoryNode" />
+              <item name="Algorithms" type="462c0819:PsiDirectoryNode" />
+              <item name="Greedy Algorithms" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Algorithms, Datastructures, and Design" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Algorithms, Datastructures, and Design" type="462c0819:PsiDirectoryNode" />
+              <item name="Algorithms" type="462c0819:PsiDirectoryNode" />
+              <item name="Sorting and Searching" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Algorithms, Datastructures, and Design" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Algorithms, Datastructures, and Design" type="462c0819:PsiDirectoryNode" />
+              <item name="Data Structures" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Algorithms, Datastructures, and Design" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Algorithms, Datastructures, and Design" type="462c0819:PsiDirectoryNode" />
+              <item name="Data Structures" type="462c0819:PsiDirectoryNode" />
+              <item name="Heaps" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -259,7 +307,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.hi">
+  <component name="RunManager" selected="Python.MinHeap">
     <configuration name="IntervalScheduling" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -273,6 +321,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="Algorithms" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Algorithms/Greedy Algorithms/IntervalScheduling.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="MinHeap" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Data Structures/Heaps" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Algorithms" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Data Structures/Heaps/MinHeap.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -311,23 +376,6 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <configuration name="isUnique" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Arrays and Strings" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="Algorithms" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Arrays and Strings/isUnique.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-    </configuration>
     <configuration name="mergeSort" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -347,18 +395,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.Queue" />
-      <item index="1" class="java.lang.String" itemvalue="Python.isUnique" />
-      <item index="2" class="java.lang.String" itemvalue="Python.mergeSort" />
-      <item index="3" class="java.lang.String" itemvalue="Python.IntervalScheduling" />
-      <item index="4" class="java.lang.String" itemvalue="Python.hi" />
+      <item index="1" class="java.lang.String" itemvalue="Python.mergeSort" />
+      <item index="2" class="java.lang.String" itemvalue="Python.IntervalScheduling" />
+      <item index="3" class="java.lang.String" itemvalue="Python.hi" />
+      <item index="4" class="java.lang.String" itemvalue="Python.MinHeap" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.hi" />
-        <item index="1" class="java.lang.String" itemvalue="Python.Queue" />
-        <item index="2" class="java.lang.String" itemvalue="Python.IntervalScheduling" />
-        <item index="3" class="java.lang.String" itemvalue="Python.mergeSort" />
-        <item index="4" class="java.lang.String" itemvalue="Python.isUnique" />
+        <item index="0" class="java.lang.String" itemvalue="Python.MinHeap" />
+        <item index="1" class="java.lang.String" itemvalue="Python.hi" />
+        <item index="2" class="java.lang.String" itemvalue="Python.Queue" />
+        <item index="3" class="java.lang.String" itemvalue="Python.IntervalScheduling" />
+        <item index="4" class="java.lang.String" itemvalue="Python.mergeSort" />
       </list>
     </recent_temporary>
   </component>
@@ -425,7 +473,14 @@
       <option name="project" value="LOCAL" />
       <updated>1503280818375</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Add hi">
+      <created>1503282077557</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1503282077557</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -434,7 +489,7 @@
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25189108" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4304419" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3207856" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -461,7 +516,8 @@
     <MESSAGE value="Implemented checkPermutation" />
     <MESSAGE value="completed isUnique" />
     <MESSAGE value="Organized Into Directories" />
-    <option name="LAST_COMMIT_MESSAGE" value="Organized Into Directories" />
+    <MESSAGE value="Add hi" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add hi" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -479,37 +535,14 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="2" />
+      <option name="time" value="4" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Datastructures/HashTable.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Datastructures/ArrayList.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Datastructures/Graph.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1122">
-          <caret line="66" column="0" lean-forward="false" selection-start-line="66" selection-start-column="0" selection-end-line="66" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Auxillary/intersection/point.py" />
-    <entry file="file://$PROJECT_DIR$/Auxillary/intersection/line.py" />
     <entry file="file://$PROJECT_DIR$/Auxillary/__init__.py" />
     <entry file="file://$PROJECT_DIR$/Recursion and Dynamic Programming/magicIndex.py" />
-    <entry file="file://$PROJECT_DIR$/Datastructures/Dequeue.py">
+    <entry file="file://$PROJECT_DIR$/Data Structures/Dequeue.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -529,7 +562,7 @@
     <entry file="file://$PROJECT_DIR$/Trees and Graphs/BidirectionalSearch.py" />
     <entry file="file://$PROJECT_DIR$/Trees and Graphs/UndirectedGraphs/DFSTree.py" />
     <entry file="file://$PROJECT_DIR$/Trees and Graphs/UndirectedGraphs/BFSTree.py" />
-    <entry file="file://$PROJECT_DIR$/Datastructures/LinkedList.py">
+    <entry file="file://$PROJECT_DIR$/Data Structures/LinkedList.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -542,7 +575,7 @@
     <entry file="file://$PROJECT_DIR$/Auxillary/intersection/__init__.py" />
     <entry file="file://$PROJECT_DIR$/Auxillary/intersection/intersection.py" />
     <entry file="file://$PROJECT_DIR$/Auxillary/numberSwapper.py" />
-    <entry file="file://$PROJECT_DIR$/Datastructures/Set.py">
+    <entry file="file://$PROJECT_DIR$/Data Structures/Set.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -597,7 +630,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Datastructures/Stack.py">
+    <entry file="file://$PROJECT_DIR$/Data Structures/Stack.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="4" lean-forward="false" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
@@ -605,23 +638,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Algorithms/Greedy Algorithms/IntervalColoring.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="38" column="30" lean-forward="false" selection-start-line="38" selection-start-column="30" selection-end-line="38" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="32" column="47" lean-forward="false" selection-start-line="32" selection-start-column="47" selection-end-line="32" selection-end-column="47" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Datastructures/Queue.py">
+    <entry file="file://$PROJECT_DIR$/Data Structures/Queue.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
           <caret line="4" column="39" lean-forward="true" selection-start-line="4" selection-start-column="39" selection-end-line="4" selection-end-column="39" />
@@ -629,15 +646,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Datastructures/PriorityQueue.py">
+    <entry file="file://$PROJECT_DIR$/hi.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+        <state relative-caret-position="85">
+          <caret line="5" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Datastructures/Heaps/HeapWithArray.py">
+    <entry file="file://$PROJECT_DIR$/Data Structures/Heaps/BraunHeap.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -645,18 +662,74 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Datastructures/Heaps/MinHeap.py">
+    <entry file="file://$PROJECT_DIR$/Algorithms/Greedy Algorithms/IntervalColoring.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="355">
-          <caret line="27" column="38" lean-forward="false" selection-start-line="27" selection-start-column="38" selection-end-line="27" selection-end-column="38" />
+        <state relative-caret-position="313">
+          <caret line="41" column="86" lean-forward="false" selection-start-line="41" selection-start-column="86" selection-end-line="41" selection-end-column="86" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hi.py">
+    <entry file="file://$PROJECT_DIR$/Algorithms/Sorting and Searching/HeapSort.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="2" lean-forward="false" selection-start-line="6" selection-start-column="2" selection-end-line="6" selection-end-column="2" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/Sorting and Searching/PQSort.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Data Structures/Heaps/MinHeap.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1756">
+          <caret line="9" column="36" lean-forward="true" selection-start-line="9" selection-start-column="36" selection-end-line="9" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Data Structures/Heaps/HeapWithArray.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Data Structures/PriorityQueue.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="23" column="18" lean-forward="true" selection-start-line="23" selection-start-column="18" selection-end-line="23" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="32" column="0" lean-forward="true" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/Sorting and Searching/quickSort.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/Sorting and Searching/quickSelect.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
           <folding />
         </state>
       </provider>
