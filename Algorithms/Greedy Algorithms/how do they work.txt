@@ -1,0 +1,18 @@
+Greedy algos work by using simple and/or local rules to make decisions and
+commit on them (anology -> making profit in short term)
+
+Multiple natural greedy strategies for the interval scheduling such as:
+Make decisions based on
+Earliest Starting Time
+Earliest Finishing Time
+Shortest Interval
+Minimum Conflicts
+
+Pick the best strategy(using intuition and algorithmic sense), which in this case is Earliest Finishing Time
+You could argue that the other three strategies are bad.
+
+Now that you know what that best strategy is, you have to argue its the best
+
+You have to argue that any optimal solution will do no worse by
+using the interval with earliest finishing time
+
