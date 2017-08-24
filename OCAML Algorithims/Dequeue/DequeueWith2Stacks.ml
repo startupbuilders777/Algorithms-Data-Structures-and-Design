@@ -82,6 +82,7 @@ module MyDequeue : Dequeue = struct
   (*Left queue is inbox, other queue is outbox*)
 let empty = (0, MyStack.Empty, 0, MyStack.Empty);;
 
+(*You cant doooo thisssss!!!!!!!!!!!!!!!!!!!!!!!!! have to do full front or back push/pops*)
 let reverseHalf dequeue =
   let aux from putinto count =
     if(count = 0) then (from, putinto)
