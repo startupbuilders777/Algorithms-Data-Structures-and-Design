@@ -69,21 +69,55 @@ class Node():
         self.height = 0
         self.left = None
         self.right = None
+        self.parent = None
 
-class avlTree():
+class AVLTree():
     def __init__(self):
         self.root = None
 
-    def balance(self):
-        if(self.right is not None and self.left is not None):
-            return self.right.height - self.left.height
-        elif self.right is not None:
-            return self.right.height
-        elif self.left is not None:
-            return self.left.height
+    @staticmethod
+    def balance(node):
+        if(node.right is not None and node.left is not None):
+            return node.right.height - node.left.height
+        elif node.right is not None:
+            return node.right.height
+        elif node.left is not None:
+            return node.left.height
         else:
             return 0
 
+    def rebalanceType(self, node):
+        print("BALANCE VALUE IS: " + str(self.balance(node)))
+        if (-1 <= self.balance(node) and self.balance(node) <= 1):
+            return "NONE"
+        elif (self.balance(node) <= -2):  # LEFT HEAVY
+            return "RIGHT ROTATION"
+        elif (self.balance(node) >= 2):  # RIGHT HEAVY
+            return "LEFT ROTATION"
+        else:
+            print("EXCEPTION IN REBALANCE TYPE")
+
+    '''
+    Efficiency : T(n) = 2T(n/2) + O(1) = O(n)
+    '''
+    def checkIfAVLTreeIsBalanced(self):
+        def checkIfAVLTreeIsBalancedRecursive(node):
+            if node is None:
+                return True
+            else:
+                left = node.left
+                right = node.right
+                balanceType = self.rebalanceType(node)
+
+                if balanceType is "NONE":
+                    leftBalanced = checkIfAVLTreeIsBalancedRecursive(left)
+                    rightBalanced = checkIfAVLTreeIsBalancedRecursive(right)
+                    if leftBalanced == True and rightBalanced == True:
+                        return True
+                    else:
+                        return False
+
+        return checkIfAVLTreeIsBalancedRecursive(self.root)
 
     '''
     other BST OPERATIONS
@@ -95,66 +129,123 @@ class avlTree():
     Going to hold off defining double right and double left rotation until i figure out
     why we cant just use single rotations all the time recursively.
     '''
+    @staticmethod
+    def printNode(node):
+        print("VALUE OF NODE: " + str(node))
+        print("HEIGHT IS: " + str(node.height))
+        if(node.left is not None):
+            print("VALUE OF NODE: " + str(node.left.value))
+        elif(node.right is not None):
+            print("VALUE OF NODE: " + str(node.right.value))
 
-    def rebalance(self):
-        def rebalanceType(node):
-            if (-1 < self.balance() and self.balance() < 1):
-                return "NONE"
-            elif (self.balance() <= -2):  # LEFT HEAVY
-                return "RIGHT ROTATION"
-            elif (self.balance() >= 2):  # RIGHT HEAVY
-                return "LEFT ROTATION"
 
+    def rebalance(self, node):
         def rightRotation(node):
             '''The left side is heavy'''
+            print("RIGHT ROTATION STARTED")
+            self.printNode(node)
             newParent = node.left
             newRightSubtreeOfParent = node
             oldRightSubtreeOfNewParent = node.left.right
             node.left = oldRightSubtreeOfNewParent
             newParent.right = newRightSubtreeOfParent
+            self.printNode(newParent)
+            # Put the rearranged nodes back into the tree
+            if(node.parent is not None):
+                if(node.parent.right == node):
+                    node.parent.right = newParent
+                elif(node.parent.left == node):
+                    node.parent.left = newParent
+            else:
+                newParent.parent = None
+                self.root = newParent
 
         def leftRotation(node):
             '''The right side is heavy'''
+            print("LEFT ROTATION STARTED")
+            self.printNode(node)
             newParent = node.right
-            newLeftSubtreeOfParent = node
-            oldLeftSubtreeOfParent = node.right.left
-            node.right = oldLeftSubtreeOfParent
-            newParent.left = newLeftSubtreeOfParent
-            
-        def rebalanceRecursive(node, height):
-            if(node.right is None and node.left is None):
-                node.height = 1
-                return 1
+            node.right.left.parent = node
+            node.right = node.right.left
+            newParent.left = node
+            self.printNode(newParent)
 
-            node.left.height = rebalanceRecursive(node.left, height + 1)
-            node.right.height = rebalanceRecursive(node.right, height + 1)
+            # Put the rearranged nodes back into the tree
+            if (node.parent is not None):
+                if (node.parent.right == node):
+                    node.parent.right = newParent
+                elif (node.parent.left == node):
+                    node.parent.left = newParent
+            else:
+                newParent.parent = None
+                self.root = newParent
 
-            type = rebalanceType(node)
-            if(type == "RIGHT ROTATION"):
-                rightRotation(no)
+            node.parent = newParent
+        if(self.rebalanceType(node) == "NONE"):
+            return
+        elif(self.rebalanceType(node) == "LEFT ROTATION"):
+            leftRotation(node)
+        elif(self.rebalanceType(node) == "RIGHT ROTATION"):
+            rightRotation(node)
+        else:
+            print("MESSED UP THE ROTATION")
 
-        heights = 0
-        if(rebalanceType(self.root))
+    '''
 
-
+    Following is the implementation for AVL Tree Insertion. 
+    The following implementation uses the recursive BST insert to insert a new node. 
+    In the recursive BST insert, after insertion, we get pointers to all ancestors 
+    one by one in bottom up manner. So we don’t need parent pointer to travel up. 
+    The recursive code itself travels up and visits all the ancestors of the newly inserted node.
+    1) Perform the normal BST insertion.
+    2) The current node must be one of the ancestors of the newly inserted node. Update the height of the current node.
+    3) Get the balance factor (left subtree height – right subtree height) of the current node.
+    4) If balance factor is greater than 1, then the current node is unbalanced and we are either in 
+        Left Left case or left Right case. To check whether it is left left case or not, 
+        compare the newly inserted key with the key in left subtree root.
+    5) If balance factor is less than -1, then the current node is unbalanced and we are either in Right Right 
+        case or Right Left case. To check whether it is Right Right case or not, compare the newly inserted key with the key in right subtree root.
+    '''
     def insert(self, value):
         def insertRecursive(node, value, height):
-              if(node.value <= value): #left side contains values equal to the node value
+            if(value < node.value):
+                h = 0
                 if(node.left is not None):
-                    insertRecursive(node.left, value, height + 1)
+                    h = insertRecursive(node.left, value, height + 1)
                 else:
                     node.left = Node(value)
-                    node.right.height = height
-              elif(node.value > value):
+                    node.left.height = 1
+                    node.left.parent = node
+                    h = height + 2
+            elif(value >= node.value):
                 if(node.right is not None):
-                    insertRecursive(node.right, value, height + 1)
+                    h = insertRecursive(node.right, value, height + 1)
                 else:
                     node.right = Node(value)
-                    node.right.height = height
+                    node.right.height = 1
+                    node.right.parent = node
+                    h = height + 2
+            node.height = h - height
+
+            '''Rebalance Ancestor Node after insertion'''
+            self.rebalance(node=node)
+            return h
         if self.root is None:
             self.root = Node(value)
         else:
             insertRecursive(self.root, value, 0)
 
 
-
+tree = AVLTree()
+tree.insert(2)
+tree.insert(30)
+tree.insert(4)
+'''
+tree.insert(12)
+tree.insert(1)
+tree.insert(2)
+tree.insert(3)
+tree.insert(4)
+tree.insert(5)
+'''
+print(tree.checkIfAVLTreeIsBalanced())

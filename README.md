@@ -32,7 +32,48 @@ Complete Interval Coloring
 change quicksort to inplace quicksort
 fix quickselect and learn how to do inplace partitioning
 
+GROVERS Algorithm:
+http://homepages.cwi.nl/~rdewolf/warsaw2short.pdf
 
+FIX YOUR AVL TREE THANKS
+
+Implement the following:
+Red Black Trees
+2-3 Trees
+2-4 Trees
+AA Trees
+
+Heap Variants:
+Variants[edit]
+2–3 heap
+B-heap
+Beap
+Binary heap
+Binomial heap
+Brodal queue
+d-ary heap
+Fibonacci heap
+Leaf heap
+Leftist heap
+Pairing heap
+Radix heap
+Randomized meldable heap
+Skew heap
+Soft heap
+Ternary heap
+Treap
+Weak heap
+
+Cover the following Greedy Algorithms
+
+Travelling Salesman Problem
+Prim's Minimal Spanning Tree Algorithm
+Kruskal's Minimal Spanning Tree Algorithm
+Dijkstra's Minimal Spanning Tree Algorithm
+Graph - Map Coloring
+Graph - Vertex Cover
+Knapsack Problem
+Job Scheduling Problem
 
 DONE ############################################
 
