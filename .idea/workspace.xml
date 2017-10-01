@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="238f8dd5-d9b6-487a-882a-dc64246ac00b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/617. Merge Two Binary Trees.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Hard/65. Valid Number.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/66. Plus One.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Hard/57. Insert Interval.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/Add to List 309. Best Time to Buy and Sell Stock with Cooldown.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme" />
     </list>
@@ -24,17 +25,47 @@
         <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="108">
-              <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+              <caret line="6" column="44" lean-forward="false" selection-start-line="6" selection-start-column="44" selection-end-line="6" selection-end-column="44" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="617. Merge Two Binary Trees.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Add to List 309. Best Time to Buy and Sell Stock with Cooldown.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/Add to List 309. Best Time to Buy and Sell Stock with Cooldown.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="270">
+              <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="66. Plus One.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/66. Plus One.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="162">
+              <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="617. Merge Two Binary Trees.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/617. Merge Two Binary Trees.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="531">
-              <caret line="52" column="0" lean-forward="true" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+            <state relative-caret-position="135">
+              <caret line="30" column="22" lean-forward="true" selection-start-line="30" selection-start-column="22" selection-end-line="30" selection-end-column="22" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="57. Insert Interval.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Hard/57. Insert Interval.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="270">
+              <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -80,41 +111,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="175. Combine Two Tables" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Databases/175. Combine Two Tables">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="176.  Second Highest Salary" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Databases/176.  Second Highest Salary">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="432">
               <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Readme" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Databases/Readme">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="24" column="19" lean-forward="false" selection-start-line="24" selection-start-column="19" selection-end-line="24" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="85. Maximal Rectangle.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Hard/85. Maximal Rectangle.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="864">
-              <caret line="48" column="0" lean-forward="false" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -155,9 +156,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Auxillary/numberSwapper.py" />
-        <option value="$PROJECT_DIR$/Auxillary/wordFrequencies.py" />
-        <option value="$PROJECT_DIR$/Randomness in Python" />
         <option value="$PROJECT_DIR$/Sorting and Searching/quickSort.py" />
         <option value="$PROJECT_DIR$/Auxillary/smallestDifference.py" />
         <option value="$PROJECT_DIR$/Auxillary/shortestSuperSequence.py" />
@@ -204,15 +202,18 @@
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/461. Hamming Distance.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/657. Judge Route Circle.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Hard/65. Valid Number.py" />
-        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/617. Merge Two Binary Trees.py" />
+        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Hard/57. Insert Interval.py" />
+        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme" />
+        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/Add to List 309. Best Time to Buy and Sell Stock with Cooldown.py" />
+        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/66. Plus One.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="235" />
+    <option name="x" value="65" />
     <option name="y" value="24" />
-    <option name="width" value="1685" />
+    <option name="width" value="1351" />
     <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -288,6 +289,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="LeetCode Questions" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms, Data Structures, and Design" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms, Data Structures, and Design" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="LeetCode Questions" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Medium" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -645,10 +668,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="235" y="24" width="1685" height="1056" extended-state="4" />
+    <frame x="65" y="24" width="1351" height="1056" extended-state="4" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2580842" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.148659" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -715,9 +738,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Sorting and Searching/radixSort.py" />
-    <entry file="file://$PROJECT_DIR$/Sorting and Searching/binarysearch.py" />
-    <entry file="file://$PROJECT_DIR$/Recursion and Dynamic Programming/tripleStep.py" />
     <entry file="file://$PROJECT_DIR$/Math and Logic Puzzles/Basketball.py" />
     <entry file="file://$PROJECT_DIR$/Math and Logic Puzzles/Nine balls.py" />
     <entry file="file://$PROJECT_DIR$/Math and Logic Puzzles/Rope.py" />
@@ -987,18 +1007,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme">
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/617. Merge Two Binary Trees.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+        <state relative-caret-position="135">
+          <caret line="30" column="22" lean-forward="true" selection-start-line="30" selection-start-column="22" selection-end-line="30" selection-end-column="22" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/617. Merge Two Binary Trees.py">
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Hard/57. Insert Interval.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="531">
-          <caret line="52" column="0" lean-forward="true" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+        <state relative-caret-position="270">
+          <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="44" lean-forward="false" selection-start-line="6" selection-start-column="44" selection-end-line="6" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/Add to List 309. Best Time to Buy and Sell Stock with Cooldown.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/66. Plus One.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
           <folding />
         </state>
       </provider>
