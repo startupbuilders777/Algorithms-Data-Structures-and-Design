@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="238f8dd5-d9b6-487a-882a-dc64246ac00b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/29. Divide Two Integers .py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Databases/181. Employees Earning More Than Their Managers" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/476. Number Complement.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Databases/182. Duplicate Emails" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Databases/183. Customers Who Never Order" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Databases/184. Department Highest Salary" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Databases/Readme" afterPath="$PROJECT_DIR$/Databases/Readme" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -24,37 +26,7 @@
         <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="180">
-              <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Add to List 309. Best Time to Buy and Sell Stock with Cooldown.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/Add to List 309. Best Time to Buy and Sell Stock with Cooldown.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="66. Plus One.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/66. Plus One.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="531">
-              <caret line="32" column="0" lean-forward="false" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ArrayPartitionI.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/ArrayPartitionI.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="39" column="24" lean-forward="false" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="24" />
+              <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -70,21 +42,51 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="617. Merge Two Binary Trees.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/617. Merge Two Binary Trees.py">
+      <file leaf-file-name="175. Combine Two Tables" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Databases/175. Combine Two Tables">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="30" column="22" lean-forward="false" selection-start-line="30" selection-start-column="22" selection-end-line="30" selection-end-column="22" />
+            <state relative-caret-position="262">
+              <caret line="16" column="25" lean-forward="false" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="57. Insert Interval.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Hard/57. Insert Interval.py">
+      <file leaf-file-name="182. Duplicate Emails" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Databases/182. Duplicate Emails">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+            <state relative-caret-position="450">
+              <caret line="25" column="20" lean-forward="false" selection-start-line="25" selection-start-column="20" selection-end-line="25" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="183. Customers Who Never Order" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Databases/183. Customers Who Never Order">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="514">
+              <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="184. Department Highest Salary" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Databases/184. Department Highest Salary">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="586">
+              <caret line="38" column="0" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="476. Number Complement.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/476. Number Complement.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="594">
+              <caret line="33" column="10" lean-forward="true" selection-start-line="33" selection-start-column="10" selection-end-line="33" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -103,18 +105,18 @@
       <file leaf-file-name="Readme" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Databases/Readme">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="414">
-              <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+            <state relative-caret-position="396">
+              <caret line="22" column="10" lean-forward="false" selection-start-line="22" selection-start-column="10" selection-end-line="22" selection-end-column="10" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="181. Employees Earning More Than Their Managers" pinned="false" current-in-tab="true">
+      <file leaf-file-name="181. Employees Earning More Than Their Managers" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Databases/181. Employees Earning More Than Their Managers">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="504">
-              <caret line="28" column="0" lean-forward="true" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+            <state relative-caret-position="450">
+              <caret line="25" column="34" lean-forward="false" selection-start-line="25" selection-start-column="34" selection-end-line="25" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -155,11 +157,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Math and Logic Puzzles/Rope.py" />
-        <option value="$PROJECT_DIR$/Math and Logic Puzzles/Nine balls.py" />
-        <option value="$PROJECT_DIR$/Math and Logic Puzzles/TheHeavyPill.py" />
-        <option value="$PROJECT_DIR$/Math and Logic Puzzles/Basketball.py" />
-        <option value="$PROJECT_DIR$/Math and Logic Puzzles/Domioes.py" />
         <option value="$PROJECT_DIR$/Trees and Graphs/BFSTree.py" />
         <option value="$PROJECT_DIR$/Trees and Graphs/RouteBetweenNodes.py" />
         <option value="$PROJECT_DIR$/Trees and Graphs/DFSTree.py" />
@@ -192,7 +189,6 @@
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/85. Maximal Rectangle.py" />
         <option value="$PROJECT_DIR$/Databases/175. Combine Two Tables" />
         <option value="$PROJECT_DIR$/Databases/176.  Second Highest Salary" />
-        <option value="$PROJECT_DIR$/Databases/Readme" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Python and Bits" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/461. Hamming Distance.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/657. Judge Route Circle.py" />
@@ -206,13 +202,19 @@
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme" />
         <option value="$PROJECT_DIR$/Databases/181. Employees Earning More Than Their Managers.py" />
         <option value="$PROJECT_DIR$/Databases/181. Employees Earning More Than Their Managers" />
+        <option value="$PROJECT_DIR$/Databases/182. Duplicate Emails" />
+        <option value="$PROJECT_DIR$/Databases/183. Customers Who Never Order" />
+        <option value="$PROJECT_DIR$/Databases/184. Department Highest Salary" />
+        <option value="$PROJECT_DIR$/Databases/Readme" />
+        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/476. Number Complement" />
+        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/476. Number Complement.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="189" />
+    <option name="x" value="499" />
     <option name="y" value="24" />
-    <option name="width" value="1731" />
+    <option name="width" value="1421" />
     <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -404,25 +406,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.316. Remove Duplicate Letters">
-    <configuration default="false" name="MinHeap" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Data Structures/Heaps" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="Algorithms" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Data Structures/Heaps/MinHeap.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="Python.476. Number Complement">
     <configuration default="false" name="quickSelect" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -495,6 +479,24 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <method />
     </configuration>
+    <configuration default="false" name="476. Number Complement" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Algorithms" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/476. Number Complement.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <method />
+    </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -560,19 +562,19 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.MinHeap" />
-      <item index="1" class="java.lang.String" itemvalue="Python.quickSelect" />
-      <item index="2" class="java.lang.String" itemvalue="Python.AVLTree" />
-      <item index="3" class="java.lang.String" itemvalue="Python.addOneRowToATree" />
-      <item index="4" class="java.lang.String" itemvalue="Python.316. Remove Duplicate Letters" />
+      <item index="0" class="java.lang.String" itemvalue="Python.quickSelect" />
+      <item index="1" class="java.lang.String" itemvalue="Python.AVLTree" />
+      <item index="2" class="java.lang.String" itemvalue="Python.addOneRowToATree" />
+      <item index="3" class="java.lang.String" itemvalue="Python.316. Remove Duplicate Letters" />
+      <item index="4" class="java.lang.String" itemvalue="Python.476. Number Complement" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.316. Remove Duplicate Letters" />
-        <item index="1" class="java.lang.String" itemvalue="Python.addOneRowToATree" />
-        <item index="2" class="java.lang.String" itemvalue="Python.AVLTree" />
-        <item index="3" class="java.lang.String" itemvalue="Python.quickSelect" />
-        <item index="4" class="java.lang.String" itemvalue="Python.MinHeap" />
+        <item index="0" class="java.lang.String" itemvalue="Python.476. Number Complement" />
+        <item index="1" class="java.lang.String" itemvalue="Python.316. Remove Duplicate Letters" />
+        <item index="2" class="java.lang.String" itemvalue="Python.addOneRowToATree" />
+        <item index="3" class="java.lang.String" itemvalue="Python.AVLTree" />
+        <item index="4" class="java.lang.String" itemvalue="Python.quickSelect" />
       </list>
     </recent_temporary>
   </component>
@@ -685,17 +687,17 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="189" y="24" width="1731" height="1056" extended-state="4" />
+    <frame x="499" y="24" width="1421" height="1056" extended-state="4" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2735905" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24145454" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23068893" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2376344" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31941545" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4074074" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -755,16 +757,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Recursion and Dynamic Programming/RobotInAGrid.py" />
-    <entry file="file://$PROJECT_DIR$/Sorting and Searching/sortedMerge.py" />
-    <entry file="file://$PROJECT_DIR$/Sorting and Searching/quickSort.py" />
-    <entry file="file://$PROJECT_DIR$/Python Tricks">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Arrays and Strings/checkPermutation.py" />
     <entry file="file://$PROJECT_DIR$/Sorting and Searching/mergeSort.py" />
     <entry file="file://$PROJECT_DIR$/Arrays and Strings/isUnique.py" />
@@ -965,14 +957,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Databases/175. Combine Two Tables">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Python and Bits">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
@@ -1056,7 +1040,15 @@
     <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
-          <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Databases/175. Combine Two Tables">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="262">
+          <caret line="16" column="25" lean-forward="false" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
           <folding />
         </state>
       </provider>
@@ -1069,18 +1061,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Databases/Readme">
+    <entry file="file://$PROJECT_DIR$/Databases/181. Employees Earning More Than Their Managers">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+        <state relative-caret-position="450">
+          <caret line="25" column="34" lean-forward="false" selection-start-line="25" selection-start-column="34" selection-end-line="25" selection-end-column="34" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Databases/181. Employees Earning More Than Their Managers">
+    <entry file="file://$PROJECT_DIR$/Databases/182. Duplicate Emails">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="28" column="0" lean-forward="true" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+        <state relative-caret-position="450">
+          <caret line="25" column="20" lean-forward="false" selection-start-line="25" selection-start-column="20" selection-end-line="25" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Databases/183. Customers Who Never Order">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="514">
+          <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Databases/Readme">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="22" column="10" lean-forward="false" selection-start-line="22" selection-start-column="10" selection-end-line="22" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Databases/184. Department Highest Salary">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="586">
+          <caret line="38" column="0" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/476. Number Complement.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="594">
+          <caret line="33" column="10" lean-forward="true" selection-start-line="33" selection-start-column="10" selection-end-line="33" selection-end-column="10" />
           <folding />
         </state>
       </provider>
