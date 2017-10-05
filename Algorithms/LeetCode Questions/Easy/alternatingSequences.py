@@ -9,4 +9,4 @@ def alternatingSequences:
     str = []
     lst = ""
     for i in str:
-
+        print("Fook")
