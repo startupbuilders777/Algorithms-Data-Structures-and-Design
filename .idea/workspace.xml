@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="238f8dd5-d9b6-487a-882a-dc64246ac00b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Linked List/237. Delete Node in a Linked List.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Linked List/83. Remove Duplicates from Sorted List.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,16 +18,6 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="303. Range Sum Query - Immutable.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Dynamic Programming/Easy/303. Range Sum Query - Immutable.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-225">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Readme" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme">
           <provider selected="true" editor-type-id="text-editor">
@@ -98,11 +88,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="237. Delete Node in a Linked List.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="237. Delete Node in a Linked List.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Linked List/237. Delete Node in a Linked List.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="445">
               <caret line="81" column="34" lean-forward="false" selection-start-line="81" selection-start-column="34" selection-end-line="81" selection-end-column="34" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="83. Remove Duplicates from Sorted List.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Linked List/83. Remove Duplicates from Sorted List.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="162">
+              <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -153,7 +153,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Databases/183. Customers Who Never Order" />
         <option value="$PROJECT_DIR$/Databases/184. Department Highest Salary" />
         <option value="$PROJECT_DIR$/Databases/Readme" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/476. Number Complement" />
@@ -204,6 +203,7 @@
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/226. Invert Binary Tree.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/637. Average of Levels in Binary Tree.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Linked List/237. Delete Node in a Linked List.py" />
+        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Linked List/83. Remove Duplicates from Sorted List.py" />
       </list>
     </option>
   </component>
@@ -349,6 +349,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="LeetCode Questions" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms, Data Structures, and Design" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms, Data Structures, and Design" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="LeetCode Questions" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Linked List" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -743,14 +765,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/171. Excel Sheet Column Number.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="702">
-          <caret line="39" column="20" lean-forward="false" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/349. Intersection of 2 Arrays.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
@@ -1140,6 +1154,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="445">
           <caret line="81" column="34" lean-forward="false" selection-start-line="81" selection-start-column="34" selection-end-line="81" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Linked List/83. Remove Duplicates from Sorted List.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
           <folding />
         </state>
       </provider>
