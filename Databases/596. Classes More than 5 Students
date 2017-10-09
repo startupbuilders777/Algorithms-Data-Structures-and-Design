@@ -1,0 +1,65 @@
+There is a table courses with columns: student and class
+
+Please list out all classes which have more than or equal to 5 students.
+
+For example, the table:
+
++---------+------------+
+| student | class      |
++---------+------------+
+| A       | Math       |
+| B       | English    |
+| C       | Math       |
+| D       | Biology    |
+| E       | Math       |
+| F       | Computer   |
+| G       | Math       |
+| H       | Math       |
+| I       | Math       |
++---------+------------+
+Should output:
+
++---------+
+| class   |
++---------+
+| Math    |
++---------+
+Note:
+The students should not be counted duplicate in each course.
+
+
+my solution///////////
+SELECT class from (SELECT DISTINCT student, class from courses) as result
+GROUP BY result.class
+HAVING COUNT(class) >= 5
+/////////////////////////
+FASTER:
+SELECT
+    class
+FROM
+    (SELECT
+        class, COUNT(DISTINCT student) AS num
+    FROM
+        courses
+    GROUP BY class) AS temp_table
+WHERE
+    num >= 5
+;
+/////////////////////////
+EVEN FASTER:
+
+Approach: Using GROUP BY and HAVING condition [Accepted]
+
+Algorithm
+
+Using sub-query is one way to add some condition to a GROUP BY clause, however, using HAVING is another simpler and natural approach. So we can rewrite the above solution as below.
+
+MySQL
+
+SELECT
+    class
+FROM
+    courses
+GROUP BY class
+HAVING COUNT(DISTINCT student) >= 5
+;

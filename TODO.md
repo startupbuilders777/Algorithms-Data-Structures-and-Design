@@ -8,6 +8,9 @@ Do the bit version of numberSwapper
 
 complete shortest super sequence
 
+COmplete getAllPermutationsOfString and its binary remove function in the recursion folder
+
+
 Sieve of Eratoshenes Algo -> Write this algo out for prime number generation4
 
 Do the heavypill challenge
