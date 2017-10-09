@@ -5,25 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="238f8dd5-d9b6-487a-882a-dc64246ac00b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/217.  Contains Duplicate.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Leetcode BFS/102. Binary Tree Level Order Traversal.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Leetcode BFS/103. Binary Tree Zigzag Level Order Traversal.PY" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Leetcode BFS/107. Binary Tree Order Traversal II.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Leetcode BFS/111. Minimum Depth of Binary Tree.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Recursion and Dynamic Programming/getAllPermutationsOfAString.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/Trees and Graphs/DFS AND BFS.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Data Structures/Datastructure Notes/DEQUEUE VS LIST" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Databases/197. Rising Temperature" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Databases/595. Big Countries" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Databases/596. Classes More than 5 Students" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Databases/620. Not Boring Movies" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Databases/627. Swap salary" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/ArrayPartitionI.py" afterPath="$PROJECT_DIR$/Algorithms/Auxillary/ArrayPartitionI.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/HouseRobberIII.py" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/337. HouseRobberIII.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/DFS/112. Path Sum.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/500. Keyboard Row.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/104. Maximum Depth of Binary Tree.py" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/104. Maximum Depth of Binary Tree.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme" afterPath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TODO.md" afterPath="$PROJECT_DIR$/TODO.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -35,46 +20,6 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="102. Binary Tree Level Order Traversal.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Leetcode BFS/102. Binary Tree Level Order Traversal.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="711">
-              <caret line="217" column="0" lean-forward="false" selection-start-line="217" selection-start-column="0" selection-end-line="217" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="103. Binary Tree Zigzag Level Order Traversal.PY" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Leetcode BFS/103. Binary Tree Zigzag Level Order Traversal.PY">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="711">
-              <caret line="141" column="18" lean-forward="false" selection-start-line="141" selection-start-column="18" selection-end-line="141" selection-end-column="18" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="107. Binary Tree Order Traversal II.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Leetcode BFS/107. Binary Tree Order Traversal II.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="184. Department Highest Salary" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Databases/184. Department Highest Salary">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-32">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="595. Big Countries" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Databases/595. Big Countries">
           <provider selected="true" editor-type-id="text-editor">
@@ -115,21 +60,61 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="620. Not Boring Movies" pinned="false" current-in-tab="true">
+      <file leaf-file-name="620. Not Boring Movies" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Databases/620. Not Boring Movies">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="72">
-              <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+            <state relative-caret-position="504">
+              <caret line="28" column="11" lean-forward="false" selection-start-line="28" selection-start-column="11" selection-end-line="28" selection-end-column="11" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Stack.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Data Structures/Stack.py">
+      <file leaf-file-name="112. Path Sum.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/DFS/112. Path Sum.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-162">
-              <caret line="24" column="11" lean-forward="false" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
+            <state relative-caret-position="36">
+              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="500. Keyboard Row.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/500. Keyboard Row.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="837">
+              <caret line="91" column="12" lean-forward="false" selection-start-line="91" selection-start-column="12" selection-end-line="91" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="303. Range Sum Query - Immutable.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Dynamic Programming/Easy/303. Range Sum Query - Immutable.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-225">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Readme" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="576">
+              <caret line="32" column="0" lean-forward="true" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Python and Bits" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Python and Bits">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-824">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -170,8 +155,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/617. Merge Two Binary Trees.py" />
-        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Hard/57. Insert Interval.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/Add to List 309. Best Time to Buy and Sell Stock with Cooldown.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/66. Plus One.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/ArrayPartitionI.py" />
@@ -209,7 +192,6 @@
         <option value="$PROJECT_DIR$/Algorithms/Recursion and Dynamic Programming/getAllPermutationsOfAString.py" />
         <option value="$PROJECT_DIR$/TODO.md" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/217.  Contains Duplicate.py" />
-        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme" />
         <option value="$PROJECT_DIR$/Algorithms/Trees and Graphs/DFS AND BFS.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Leetcode BFS/111. Minimum Depth of Binary Tree.py" />
         <option value="$PROJECT_DIR$/Data Structures/Datastructure Notes/DEQUEUE VS LIST" />
@@ -221,6 +203,9 @@
         <option value="$PROJECT_DIR$/Databases/197. Rising Temperature" />
         <option value="$PROJECT_DIR$/Databases/596. Classes More than 5 Students" />
         <option value="$PROJECT_DIR$/Databases/620. Not Boring Movies" />
+        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/DFS/112. Path Sum.py" />
+        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/500. Keyboard Row.py" />
+        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme" />
       </list>
     </option>
   </component>
@@ -387,7 +372,99 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Leetcode BFS" />
+              <option name="myItemId" value="Hard" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms, Data Structures, and Design" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms, Data Structures, and Design" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="LeetCode Questions" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Easy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms, Data Structures, and Design" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms, Data Structures, and Design" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="LeetCode Questions" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Dynamic Programming" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms, Data Structures, and Design" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms, Data Structures, and Design" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="LeetCode Questions" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Dynamic Programming" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Easy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms, Data Structures, and Design" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms, Data Structures, and Design" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Algorithms" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="LeetCode Questions" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DFS" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -708,11 +785,11 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37293145" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13548388" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13548388" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.08455115" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4074074" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -777,34 +854,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Algorithms/Recursion and Dynamic Programming/powerSet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Algorithms/Recursion and Dynamic Programming/magicIndex.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="15" column="20" lean-forward="true" selection-start-line="15" selection-start-column="20" selection-end-line="15" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/222. Count Complete Tree Nodes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1206">
-          <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/TaskScheduler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="864">
-          <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/Add to List 309. Best Time to Buy and Sell Stock with Cooldown.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -967,14 +1016,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
           <caret line="1" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="30" column="0" lean-forward="true" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1157,8 +1198,48 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Databases/620. Not Boring Movies">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+        <state relative-caret-position="504">
+          <caret line="28" column="11" lean-forward="false" selection-start-line="28" selection-start-column="11" selection-end-line="28" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/DFS/112. Path Sum.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/500. Keyboard Row.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="837">
+          <caret line="91" column="12" lean-forward="false" selection-start-line="91" selection-start-column="12" selection-end-line="91" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Dynamic Programming/Easy/303. Range Sum Query - Immutable.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-225">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Python and Bits">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-824">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="576">
+          <caret line="32" column="0" lean-forward="true" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
           <folding />
         </state>
       </provider>
