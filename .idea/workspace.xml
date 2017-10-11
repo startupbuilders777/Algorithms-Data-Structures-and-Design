@@ -5,13 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="238f8dd5-d9b6-487a-882a-dc64246ac00b" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Algorithms/Articles/(1) What is the fastest algorithm to find the largest number in an unsorted array_ - Quora.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Algorithms/Articles/Algorithms, upper_lower bounds, and best_worst case - Stack Overflow.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Algorithms/Articles/class - Is it OK to use classes as dictionary keys in python_ - Stack Overflow.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Algorithms/Articles/dictionary - How can I perform set operations on Python dictionaries_ - Stack Overflow.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Algorithms/C++ Coding Exercise - Maximum Subarray (Dynamic Programming and Greedy Algorithm) _ Computing &amp; Technology.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Algorithms/Dynamic Programming – From Novice to Advanced – topcoder.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/67. Add Binary.py" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,16 +17,6 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="292. Nim Game.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Brain Teaser/292. Nim Game.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Readme" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme">
           <provider selected="true" editor-type-id="text-editor">
@@ -114,11 +97,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="492. Construct the Rectangle.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="492. Construct the Rectangle.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/492. Construct the Rectangle.py">
           <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="193">
+              <caret line="40" column="0" lean-forward="true" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="541. Reverse String II.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/String/541. Reverse String II.py">
+          <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="531">
-              <caret line="54" column="0" lean-forward="true" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+              <caret line="88" column="17" lean-forward="false" selection-start-line="88" selection-start-column="17" selection-end-line="88" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -159,7 +152,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Dynamic Programming/Easy/303. Range Sum Query - Immutable.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Dynamic Programming/Readme" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/TaskScheduler.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/171. Excel Sheet Column Number.py" />
@@ -210,6 +202,7 @@
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Bit Manipulation/389. Find the Difference.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/String/520. Detect Capital.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/492. Construct the Rectangle.py" />
+        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/String/541. Reverse String II.py" />
       </list>
     </option>
   </component>
@@ -775,13 +768,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Algorithms/Auxillary/ArrayPartitionI.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="531">
-          <caret line="39" column="24" lean-forward="false" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Algorithms/Auxillary/smallestDifference.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-333">
@@ -1152,8 +1138,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/492. Construct the Rectangle.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="40" column="0" lean-forward="true" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/String/541. Reverse String II.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="531">
-          <caret line="54" column="0" lean-forward="true" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+          <caret line="88" column="17" lean-forward="false" selection-start-line="88" selection-start-column="17" selection-end-line="88" selection-end-column="17" />
           <folding />
         </state>
       </provider>
