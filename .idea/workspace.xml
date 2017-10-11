@@ -17,16 +17,6 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Readme" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Readme">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="558">
-              <caret line="35" column="56" lean-forward="true" selection-start-line="35" selection-start-column="56" selection-end-line="35" selection-end-column="56" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="606. Construct String from BST.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Binary Search Trees/606. Construct String from BST.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -77,6 +67,16 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="345. Reverse Vowels of String.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/String/345. Reverse Vowels of String.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="531">
+              <caret line="56" column="25" lean-forward="false" selection-start-line="56" selection-start-column="25" selection-end-line="56" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="389. Find the Difference.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Bit Manipulation/389. Find the Difference.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -107,11 +107,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="541. Reverse String II.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="541. Reverse String II.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/String/541. Reverse String II.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="531">
-              <caret line="88" column="17" lean-forward="false" selection-start-line="88" selection-start-column="17" selection-end-line="88" selection-end-column="17" />
+            <state relative-caret-position="481">
+              <caret line="75" column="11" lean-forward="false" selection-start-line="75" selection-start-column="10" selection-end-line="75" selection-end-column="11" />
               <folding />
             </state>
           </provider>
@@ -152,7 +152,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Dynamic Programming/Readme" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Medium/TaskScheduler.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/171. Excel Sheet Column Number.py" />
         <option value="$PROJECT_DIR$/Algorithms/Math and Logic Puzzles/looniePoker.py" />
@@ -203,6 +202,7 @@
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/String/520. Detect Capital.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/Easy/492. Construct the Rectangle.py" />
         <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/String/541. Reverse String II.py" />
+        <option value="$PROJECT_DIR$/Algorithms/LeetCode Questions/String/345. Reverse Vowels of String.py" />
       </list>
     </option>
   </component>
@@ -768,13 +768,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Algorithms/Auxillary/smallestDifference.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-333">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Algorithms/Auxillary/wordFrequencies.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1112,14 +1105,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Bit Manipulation/693. Binary Number with Alternating Bits.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="86" column="0" lean-forward="true" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Bit Manipulation/389. Find the Difference.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
@@ -1146,8 +1131,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/String/541. Reverse String II.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="481">
+          <caret line="75" column="11" lean-forward="false" selection-start-line="75" selection-start-column="10" selection-end-line="75" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/Bit Manipulation/693. Binary Number with Alternating Bits.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="86" column="0" lean-forward="true" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Algorithms/LeetCode Questions/String/345. Reverse Vowels of String.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="531">
-          <caret line="88" column="17" lean-forward="false" selection-start-line="88" selection-start-column="17" selection-end-line="88" selection-end-column="17" />
+          <caret line="56" column="25" lean-forward="false" selection-start-line="56" selection-start-column="25" selection-end-line="56" selection-end-column="25" />
           <folding />
         </state>
       </provider>
