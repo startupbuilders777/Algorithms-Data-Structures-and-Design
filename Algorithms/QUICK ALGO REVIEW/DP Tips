@@ -1,0 +1,61 @@
+My advice would be to not worry too much about categorizing algorithms. Kadane's algorithm is widely considered to be a DP algorithm. I personally don't consider it to be, but either way, labeling it one way or another is not particularly illuminating.
+
+Focus on understanding how it works. That's all you really need to know. No need to attach labels.
+
+If you wanted to give a recursive formula, you could:
+
+maxSumSubarr(i) = max(maxSumSubarr(i-1) + arr[i], 0)
+
+That is, if you want to find the maximum sum subarray ending at index i, you could either take no elements for a sum of 0,
+or you could take arr[i] and then the best subarray you can get ending at index i-1 (which could possibly have 0 elements).
+
+Then, the overall answer is the max over all possible i for maxSumSubarr(i).
+
+I don't believe this should be considered DP, because even when you use naive recursion, the function is only evaluated
+once for each distinct argument. So, no caching or tabulation of previously-solved subproblems is necessary. Dynamic
+programming, properly speaking, is when there are overlapping subproblems, and we need to cache previously-solved
+subproblems in order to avoid evaluating them over and over again.
+
+In writing a recursive or loop-based program to solve a problem, at each recursive call or loop iteration we are concerned
+with how to get to the solution to our current problem from the solution(s) to one or more sub-problems.
+
+#######################################################################################################################
+
+DYNAMIC PROGRAMMING
+#####################
+
+Now, in DP, one way or another you are reducing your problem's input to something you can use as an array index.
+The question is whether you can adequately represent the problem's input as a single array index, or need more than one index.
+(Yes, you could play around and find ways to encode multiple indices in one number, but we don't want to go through odd
+contortions like that if we could just use two indices instead.)
+
+I always find it easier to briefly forget about DP and just formulate the solution first as a recursive function (probably
+in pseudo code) whose meaning I can describe in one sentence. (BTW, this is also a good way to tell if DP is necessary
+in the first place; the fundamental characteristic of a DP problem is that you may wind up making recursive calls on the
+ same inputs more than once.) If I can write a one-argument function, then I have good reason to believe I can use one
+ index, hence a 1-D array. If I can't do it with one, I may need two arguments, meaning I need a 2-D array. If I need
+ three, then I need a 3-D array. And so on.
+
+For an example of requiring two indices: in the edit distance problem we are looking at two strings s1 and s2, and at any
+given call (if working recursively) or loop iteration, we need to be aware of some position in s1 and some position in s2.
+Therefore, it makes sense to use two indices.
+
+An addendum, provoked by discussion in the comments: there's no substitute for solving the problem by hand, on paper or a
+board, for simple example inputs. This will tell you pretty quickly whether you can get away with one input or need two
+(or three).
+
+class Solution:
+    # @param A, a list of integers
+    # @return an integer
+    # 6:57
+    def maxSubArray(self, A):
+        if not A:
+            return 0
+
+        curSum = maxSum = A[0]
+        for num in A[1:]:
+            curSum = max(num, curSum + num)
+            maxSum = max(maxSum, curSum)
+
+        return maxSum
+

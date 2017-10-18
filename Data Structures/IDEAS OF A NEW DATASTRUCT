@@ -1,0 +1,21 @@
+Basically thsi new datastruct.
+Inserts (k, v) pairs into a map
+
+The map is implemented like a treap and an array of linked lists.
+
+The k is hashed and turned into something usable.
+
+
+Maybe its an array of skip lists.
+Or a skip list of lists
+
+and ...
+
+Randomization is used to build the skip list based on the keys USED AS A SEED INTO A RANDOM NUMBER GENERATOR THAT
+GENERATES A SPECIFIC TYPE OF SEQUENCE FOR EACH HASHED KEY...
+
+THINK ABOUT THIS MORE BUT IT SEEMS REALELY COOL EVEN IF IT DOESNT WORK OUT.
+
+Call it Skip Maps, Treap Map, or Something like that.
+
+REALLYY COOLL STUFF HARMAN HOLY
