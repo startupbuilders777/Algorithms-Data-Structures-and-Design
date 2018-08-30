@@ -2,6 +2,7 @@
 
 #SHould sort string so you can removeCharacter in log n
 #ONly works with strings with unique characters for now
+
 def getAllPerms(str):
 
     str.sort()  #O(nlogn)

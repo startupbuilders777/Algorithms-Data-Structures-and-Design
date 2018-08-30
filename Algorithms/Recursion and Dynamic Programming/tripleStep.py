@@ -1,3 +1,5 @@
+# PROBLEM DONE
+
 '''unoptimized'''
 def tripleStep(n):
     if(n == 0):

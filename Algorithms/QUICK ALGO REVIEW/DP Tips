@@ -1,4 +1,5 @@
-My advice would be to not worry too much about categorizing algorithms. Kadane's algorithm is widely considered to be a DP algorithm. I personally don't consider it to be, but either way, labeling it one way or another is not particularly illuminating.
+My advice would be to not worry too much about categorizing algorithms. Kadane's algorithm is widely 
+considered to be a DP algorithm. I personally don't consider it to be, but either way, labeling it one way or another is not particularly illuminating.
 
 Focus on understanding how it works. That's all you really need to know. No need to attach labels.
 

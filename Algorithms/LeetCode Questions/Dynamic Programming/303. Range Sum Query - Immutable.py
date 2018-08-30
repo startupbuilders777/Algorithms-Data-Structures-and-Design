@@ -12,6 +12,11 @@ You may assume that the array does not change.
 There are many calls to sumRange function.
 
 Would you need a 2D map
+
+
+NNOOOOO ITS EASY JUST ST]
+OE [APT]
+IONAL SUMS. 
 '''
 
 
