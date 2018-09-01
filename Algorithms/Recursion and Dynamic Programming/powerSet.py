@@ -8,21 +8,23 @@ A = {"a", "b", "c"}
 # 000, 001, 010, 011, 100, 101, 110, 111
 # -> choose those elements to keep or not keep like that.
 
-def all_subsets(setS):
-    size = len(setS)
-    #Turn the set into a map that maps an index to a element
 
+class Solution:
+    def subsets(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
 
-def chooseRecur(setS, amtLeft, newSet):
-    allChoices = {}
-    if(amtLeft == 0):
-        return newSet
-    for i in setS:
-        setA = {}
-        setA.add(i)
-        setS.remove(i)
-        sets = buildSet(setA, amtLeft-1, setElements=setS)
-        allChoices = allChoices.union(sets)
+        numberOfSubsets = len(nums)
+        subsets = []
+        for i in range(0, 2 ** numberOfSubsets):
+            bits = bin(i)
+            subset = []
+            for j in range(0, numberOfSubsets):
+                if i >> j & 1:  # Check if the first bit is on, then check if second bit is on, then check third bit is on, and keep going
+                    subset.append(nums[j])
 
-def buildSet(setA, amt, setElements):
+            subsets.append(subset)
 
+        return subsets

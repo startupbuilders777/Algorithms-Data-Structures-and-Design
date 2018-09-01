@@ -1,0 +1,51 @@
+Hard Problems :
+
+Palindrome Partitioning
+Word Wrap Problem
+Mobile Numeric Keypad Problem
+The painter’s partition problem
+Boolean Parenthesization Problem
+Program for Bridge and Torch problem
+A Space Optimized DP solution for 0-1 Knapsack Problem
+Matrix Chain Multiplication
+Printing brackets in Matrix Chain Multiplication Problem
+Number of palindromic paths in a matrix
+Largest rectangular sub-matrix whose sum is 0
+Largest rectangular sub-matrix having sum divisible by k
+Largest area rectangular sub-matrix with equal number of 1’s and 0’s
+Maximum sum bitonic subarray
+Maximum sum rectangle in a 2D matrix
+Maximum Subarray Sum Excluding Certain Elements
+Maximum weight transformation of a given string
+Collect maximum points in a grid using two traversals
+K maximum sums of overlapping contiguous sub-arrays
+How to print maximum number of A’s using given four keys
+Maximize arr[j] – arr[i] + arr[l] – arr[k], such that i < j < k < l
+Maximum profit by buying and selling a share at most k times
+Maximum points from top left of matrix to bottom right and return back
+Check whether row or column swaps produce maximum size binary sub-matrix with all 1s
+Minimum Cost Polygon Triangulation
+Minimum cost to sort strings using reversal operations of different costs
+Find minimum possible size of array with given rules for removing elements
+Minimum number of elements which are not part of Increasing or decreasing subsequence in array
+Count ways to increase LCS length of two strings by one
+Count of AP (Arithmetic Progression) Subsequences in an array
+Count of arrays in which all adjacent elements are such that one of them divide the another
+Number of NGEs to the right
+Longest Arithmetic Progression
+Longest Geometric Progression
+Dynamic Programming on Trees | Set-1
+Dynamic Programming on Trees | Set-2
+All ways to add parenthesis for evaluation
+Shortest possible combination of two strings
+Check if all people can vote on two machines
+Find if a string is interleaved of two other strings
+Longest repeating and non-overlapping substring
+Probability of Knight to remain in the chessboard
+Number of subsequences of the form a^i b^j c^k
+Number of subsequences in a string divisible by n
+Printing Shortest Common Supersequence
+Smallest length string with repeated replacement of two distinct adjacent
+Number of ways to insert a character to increase the LCS by one
+Traversal of tree with k jumps allowed between nodes of same height
+Find all combinations of k-bit numbers with n bits set where 1 <= n <= k in sorted order

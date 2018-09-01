@@ -21,7 +21,7 @@ WIP ##################################
 Cover vertical line case in intersection
 
 
-Complete powerSet
+DO STACK_OF_BOXES
 
 
 Do second part of magicIndex
