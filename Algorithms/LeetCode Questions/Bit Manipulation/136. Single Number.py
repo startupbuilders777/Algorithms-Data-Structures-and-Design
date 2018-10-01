@@ -6,7 +6,6 @@ Your algorithm should have a linear runtime complexity. Could you implement it w
 
 '''
 
-
 class Solution(object):
     def singleNumber(self, nums):
         """
@@ -70,7 +69,7 @@ Approach #2 Hash Table [Accepted]
 
 Algorithm
 
-We use hash table to avoid the O(n)O(n) time required for searching the elements.
+We use hash table to avoid the O(n) time required for searching the elements.
 
 Iterate through all elements in \text{nums}nums
 Try if hash\_tablehash_table has the key for pop
@@ -142,7 +141,7 @@ class Solution(object):
         return a
 Complexity Analysis
 
-Time complexity : O(n)O(n). We only iterate through \text{nums}nums, so the time complexity is the number of elements in \text{nums}nums.
+Time complexity : O(n). We only iterate through \text{nums}nums, so the time complexity is the number of elements in \text{nums}nums.
 
 Space complexity : O(1).
 

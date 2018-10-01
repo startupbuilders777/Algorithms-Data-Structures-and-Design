@@ -1,0 +1,112 @@
+Bitwise Algorithms
+Recent Articles on Bit Magic !
+
+Topic :
+
+Basic
+Intermediate
+Hard
+Misc
+Quick Links
+
+
+Basic :
+
+Find the element that appears once
+Detect if two integers have opposite signs
+Add 1 to a given number
+Multiply a given Integer with 3.5
+Turn off the rightmost set bit
+Find whether a given number is a power of 4 or not
+Compute modulus division by a power-of-2-number
+Rotate bits of a number
+Find the Number Occurring Odd Number of Times
+Check for Integer Overflow
+Count set bits in an integer
+Count number of bits to be flipped to convert A to B
+Efficient way to multiply with 7
+Program to find whether a no is power of two
+Position of rightmost set bit
+Binary representation of a given number
+Find position of the only set bit
+How to swap two numbers without using a temporary variable?
+Swap two nibbles in a byte
+How to turn off a particular bit in a number?
+Russian Peasant (Multiply two numbers using bitwise operators)
+Add two bit strings
+Write your own strcmp that ignores cases
+Check if two numbers are equal without using arithmetic and comparison operators
+Find XOR of two number without using XOR operator
+More >>
+
+Intermediate :
+
+Swap bits in a given number
+Little and Big Endian Mystery
+Smallest of three integers without comparison operators
+A Boolean Array Puzzle
+Compute the integer absolute value (abs) without branching
+Compute the minimum or maximum of two integers without branching
+Find the two non-repeating elements in an array of repeating elements
+Write an Efficient C Program to Reverse Bits of a Number
+Smallest power of 2 greater than or equal to n
+Write a C program to find the parity of an unsigned integer
+Swap all odd and even bits
+Check if binary representation of a number is palindrome
+Generate n-bit Gray Codes
+Check if a given number is sparse or not
+Euclid’s Algorithm when % and / operations are costly
+Find nth Magic Number
+How to swap two bits in a given integer?
+Calculate square of a number without using *, / and pow()
+Generate 0 and 1 with 25% and 75% probability
+Find even occurring elements in an array of limited range
+Cyclic Redundancy Check and Modulo-2 Division
+Copy set bits in a range
+Check if a number is Bleak
+Count strings with consecutive 1’s
+Gray to Binary and Binary to Gray conversion
+More >>
+
+Hard :
+
+Count total set bits in all numbers from 1 to n
+Program to count number of set bits in an (big) array
+Next higher number with same number of set bits
+Karatsuba algorithm for fast multiplication
+Find the maximum subarray XOR in a given array
+Inserting m into n such that m starts at bit j and ends at bit i
+Find Duplicates of array using bit array
+Find longest sequence of 1’s in binary representation with one flip
+Closest (or Next) smaller and greater numbers with same number of set bits
+Bitmasking and Dynamic Programming | Set-2 (TSP)
+Compute the parity of a number using XOR and table look-up
+XOR Encryption by Shifting Plaintext
+Count pairs in an array which have at least one digit common
+Python program to convert floating to binary
+Levelwise Alternating OR and XOR operations in Segment Tree
+Booth’s Multiplication Algorithm
+Leftover element after performing alternate Bitwise OR and Bitwise XOR operations on adjacent pairs
+Number of pairs with Pandigital Concatenation
+Find the n-th number whose binary representation is a palindrome
+Misc :
+
+Interesting Facts about Bitwise Operators in C
+Optimization Techniques | Set 1 (Modulus)
+What are the differences between bitwise and logical AND operators in C/C++?
+Bit Fields in C
+C++ bitset and its application
+C++ bitset interesting facts
+Builtin functions of GCC compiler
+Bits manipulation (Important tactics)
+Bit Tricks for Competitive Programming
+Quick Links :
+
+‘Practice Problems’ on Bit Magic
+‘Quiz’ on Bit Magic
+‘Videos’ on Bit Magic
+
+If you like GeeksforGeeks and would like to contribute, you can also write an article using contribute.
+geeksforgeeks.org or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.
+
+Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.
