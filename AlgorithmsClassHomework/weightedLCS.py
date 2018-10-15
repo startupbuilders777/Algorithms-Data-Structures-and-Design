@@ -103,27 +103,38 @@ def weightedLCSBP(str1, str2, wfn):
         we have to work backwards from the end of the two strings to the start and use the following:
         For strings x and y, let X and Y represent the length of the strings.
         
-        a(i, j) represents the max weighted LCS for characters from x[0..i] and y[0..j] where 0 <= i <= X           
-                                                                                              0 <= j <= Y
+        a(i, j) represents the max weighted LCS for characters from x[0..i] and y[0..j] where 0 <= i <= X-1   
+                                                                                              0 <= j <= Y-1
         We want to return the solution:  a(X,Y)
 
         Therefore:
 
                       / 0 if i = 0, or j = 0       
-          a(i,j) =   | a(i-1, j-1) + w(fn) if x[i-1] = y[j-1]
+          a(i,j) =   | a(i-1, j-1) + w(fn) if x[i] = y[j]
                       \ max(a(i-1, j), a(i, j-1))
     '''
     
     # add base cases
-    A = [[] for i in range(len(str1)) ];
+    A = [[] for i in range(len(str1)) ]
 
     for i in range(len(str1)):
         # print(A[i])
         for j in range(len(str2)):
             A[i].append(0)
             
-    print(A)
-        
+    # print(A)
+    
+    for i in range(1, len(str1) ):
+        for j in range(1, len(str2) ):
+            if(str1[i] == str2[j]):
+                A[i][j] = A[i-1][j-1] + wfn(str1[i])
+            else:
+                A[i][j] = max(A[i-1][j], A[i][j-1])
+
+    return A[len(str1) - 1][ len(str2) - 1]
+
+
+            
 
 print(weightedLCSBP(a, b, wfn))
 
