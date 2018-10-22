@@ -1,3 +1,72 @@
+#COMPLETED: HERE ARE THE TWO APPROACHES:
+
+
+
+#APPROACH 1 RECURSIVE:
+
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution(object):
+    def reverseList(self, head):
+        def reverseListRecursive(node):
+            if(node is None):
+                return (None, None)
+            if(node.next is None): # Found new head.
+                print(node.val)
+                return (node, node) #Second element in tuple is used to build reversed list 
+            
+            print(node.val)
+            
+            # otherwise, need to reverse.
+            restOfList = node.next
+            (newHead, rest) = reverseListRecursive(restOfList)
+            
+            rest.next = node
+            
+            if(node == head):
+                node.next = None
+                
+            # rest = rest.next
+            # print(rest.next)
+            
+            return (newHead, rest.next)
+        result = reverseListRecursive(head)
+        return result[0]
+      
+
+# APPROACH 2 ITERATIVE:
+
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution(object):
+    def reverseList(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        prev = None
+        curr = head
+        
+        while curr:
+            succ = curr.next
+            curr.next = prev
+            prev = curr
+            curr = succ
+        
+        return prev
+        
+
+
+
+
 '''
 Approach #1 (Iterative) [Accepted]
 
@@ -20,7 +89,7 @@ public ListNode reverseList(ListNode head) {
 }
 Complexity analysis
 
-Time complexity : O(n)O(n). Assume that nn is the list's length, the time complexity is O(n)O(n).
+Time complexity : O(n)
 
 Space complexity : O(1)O(1).
 

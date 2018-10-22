@@ -2,8 +2,12 @@
 
 a = "CS34Alg A35orit m41Jeff BinMath junklin e2makei tsquare"
 traversalListExample = [ list(i) for i in a.split()]
+
 path = "CS341"
-path2= "sadas"
+path2= "CSadas"
+
+b = ""
+
 print(traversalListExample)
 
 # traverse from upper left corner to bottom right:
@@ -13,7 +17,7 @@ def traverse(maze, path):
     m = {
         
     } 
-
+    
     # the location in the board is a good key for the DP
     # 2D DP can be done
     # Some of the base cases are on the edges of the map
@@ -34,7 +38,6 @@ def traverse(maze, path):
         if(theNode != maze[currY][currX]):
             m[key] = (False, [])     
             return (False, [])
-
 
         if(currX + 1 < leftToRightDistance):
             result1, path1 = move(currX + 1, currY, path, pathIndex+1, m, moveSequence + [(currY+1, currX+1)])
@@ -57,7 +60,7 @@ def traverse(maze, path):
     return result
 
 # BOTTOM UP
-print(traverse(traversalListExample, path))
+# print(traverse(traversalListExample, path))
 
 
 
@@ -65,6 +68,7 @@ print(traverse(traversalListExample, path))
 
 # BOTTOM UP IMPLEMENTATION
 
+# YOU DONT NEED K AS PART OF THE KEY BECAUSE! K ALWAYS STAYS THE SAME FOR ALL POSITIONS IN THE MAP FOR ALL STRINGS.
 def traverseBU(maze, path):
     '''
         Let maze be M and length of maze be L, and Height of maze M be H
@@ -80,32 +84,65 @@ def traverseBU(maze, path):
                      False if (A(i-1, j, k-1) || A(i, j-1, k-1)) and path[k] != M[i][j] 
                      True if path[pathLen-1] ==   
                      False if 
-
-
-
     '''
-
     
     leftToRightDistance = len(maze[0])
     topDownDistance = len(maze)
 
-    A = [([] for i in range(leftToRightDistance)) for j in range(topDownDistance)]
-    print(A)
-
     #for k in range(0, len(pathLen)):
     k = 0
 
-    for i in range(0, len(leftToRightDistance))
-        for j in range(0, len(topDownDistance)):
-            kVal = None
-            if(i == -1 and j == -1):
-                kVal = 0
-            else if(i == -1):
-                kVal = 
-            else if(j == -1)
-            if(path[kVal+1] == maze[i][j]):
-                A[i][j] = kVal + 1
-            else:
-                A[i][j] = -1 # -1 indicates path doesnt exist from this node
+    # add base cases
+    A = [[] for i in range(leftToRightDistance) ]
+
+    for i in range(leftToRightDistance):
+        # print(A[i])
+        for j in range(topDownDistance):
+            A[i].append(0)
+    
+    print("A BEFORE")
+    print(A)
+
+    for i in range(0, leftToRightDistance):
+        for j in range(0, topDownDistance):
+            if(i == 0 and j == 0 and maze[i][j] == path[0]): # Base Case
+                A[0][0] = 0
+                continue
+            elif(i == 0 and j == 0):
+                print(path[0])
+                print(maze[i][j])
+                print("instant false")
+                return False
+
+            kValFromLeft = 0
+            kValFromTop = 0
+            if(i - 1 >= 0 and A[i-1][j] != -1):
+                kValFromLeft = A[i-1][j]
+                # Try from left
+                print("kvalfromleft", kValFromLeft)
+                if(maze[i][j] == path[kValFromLeft+1]):
+                    A[i][j] = kValFromLeft + 1
+                    if(A[i][j] + 1 == len(path)):
+                        return True
+                    continue
+            if(j-1 >= 0 and A[i][j-1] != -1 ):
+                kValFromTop = A[i][j-1];
+                print("kvalfromtop", kValFromTop)
+                if(maze[i][j] == path[kValFromTop+1]) :
+                    A[i][j] = kValFromTop + 1
+                    if(A[i][j] + 1  == len(path)):
+                        return True
+                    continue
+
+            A[i][j] = -1
+    print("A after")
+    print(A)
+
+    return False
+
+print(traverseBU(traversalListExample, path))
 
 
+# QUESTION 4 WHICH IS BONUS
+
+# If you fail, and you are the start of a character, you can try again
