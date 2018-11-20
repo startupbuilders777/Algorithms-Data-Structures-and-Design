@@ -61,15 +61,18 @@ form will you store the graph? Is it directed or undirected? Do you expect the g
 sparse or dense for a real word list, such as an English dictionary? Do you expect it to be
 connected? And, most importantly, how can you efficiently create the graph from a given
 word list?
+
 Hint: if you are careful and think about the problem, you can probably create the graph
 from a word list rather efficiently. Probably the obvious idea of comparing each pair of words
 in the word list, in order to determine the weight of the edge connecting them, is not the best
 approach. It should be possible to create the graph in o(n^2) steps (so faster than O(N^2) ), where n is the number of
 words, but you might have to make some assumptions about what the word list looks like.
+
 For this part, you are welcome to use techniques like tries, hashing, dictionaries, and so
 forth. Make any reasonable assumptions about the running time of anything you use, and
 state them. For example, it's reasonable to assume that hashing a string of t letters costs
 O(t) time.
+
 We are looking for high-level description here. There is no need to produce pages and
 pages of pseudocode.
 '''
@@ -84,28 +87,90 @@ The weight of the edge will be the cost of the transformation (if the transforma
 multiple ways, take the lowest cost of the 4 transformations). In other words the edges are
 weighted by the cost of the transformation. The graph will be undirected because the 4 rules 
 that can be followed to transform one word into another have inverses. 
+
 The deletion rule has the addition rule as the inverse and vice versa.
 The reverse rule has the reverse rules as its inverse transformation. 
 The twiddle rule can be inversed by repeating the twiddle on the same 2 letters.
 In other words, if a vertex is connected to another vertex, then they can transform into each other 
 using a rule or the inverse rule (all 4 have inverse rules), so the edges will be undirected in the graph.
 
-//CHECK OVER THIS PART:
-
 For a real word list such as the english dictionary, the graph will be very dense for small words 
 such as "cat", because there are lots of 3 letter words that can be derived out of cat. For much longer words, 
 the graph will be sparse because they will be difficult to transform into other words since longer words have more 
 characters that increase the probability of difference between it and another word.  
 
-The graph will be connected because it is undirected.
+The graph will not be connected since the english language has words that are very long and peculiar 
+such as pneumonoultramicroscopicsilicovolcanoconiosis which does not connect to other words using
+the 4 possible transformations. 
+
+
 
 
 To efficiently create the graph from a word list, 
-
-
 we need to find all the words that can be transformed to another word using the 4 rules. 
-Comparing 2 strings can be done in O(1). This can be done by doing a 
 
+We will use a map of lists. 
+The list contains neighbours, and the key for the map is the vertex to those neighbours.
+Every word is a key in the map of lists. This representation is similar to 
+the adjacency list representation of graphsself.
+
+edge_weights will be represented as a map of a map of values. 
+The first key is the start vertex, the second key is the end vertex, and the 
+value is the edge weight between the start and end vertexs.
+
+In this way, you can check if an edge exists in a graph in O(1) average time
+by indexing into the first map, with the start vertex, indexing into the returned map
+with the end vertex, and checking if the value is an integer, or does not exist.
+If it does not exist, the edge is not in the graph.
+
+
+
+To build the graph, start by taking every word in the dictionary, 
+hashing it, and storing it as a key for the map of lists. The value will be 
+an empty list. 
+
+We can use the graph to check if a word in the dictionary exists 
+by looking up the word in the map of lists, and checking if it exists in that map.
+This is a hash operation and can be done in O(t) time where t is the number of characters
+in the word.   
+
+
+Then go through every word in the dictionary,
+and manipulate it and check if its in the set. 
+If it is, add the undirected edge to the graph. (So add two directed edges)
+
+
+>> To check that a string is in the set, hash the string and checking if the hash 
+value matches a hash value in the set. With a good hash function, on average, this will be O(t)
+where t is the length of the string. We will consider this as the runtime when checking strings in the set. 
+However the performance can be 
+
+
+There are 4 transformations to consider and their runtimes (and if the transformation is valid, add the edge): 
+1) The addition rule does not need to be checked when looking at words. 
+   You can use the deletion rule on every word. If a deletion of a character in a word matches a word in the 
+   set, then add the edge for deletion. Additionally, add the edge in the reverse direction for the insertion rule. 
+
+2) To check for reversals, you can reverse the string and check if it is in the set. If it is, you can add  
+   an undirected edge. (So 2 edges to the graph). 
+
+3) For twiddle, you can look at all possible twiddles for a word, then check if the twiddled word is in the 
+   set of dictionary words. If it is, add the undirected edge (So 2 edges)
+
+For transformation 2 and 3, check if the reversed word, or the twiddled word 
+does not transform into itself. If it does, then dont add the edge. 
+
+Additionally, twiddling and reversing can cause the case where two words satisfy 
+the same criteria for transformation. Such as tort, and trot. In our algo, we check for this 
+by looking up the edge in the edge_weights graph in O(1) time and checking if the edge exists.
+If the edge exists, assign the weight in the edge_weights graph as 
+the smaller of the current weight and the weight we are considering. 
+
+FINALLY:
+
+This is faster than comparing all words to all other words, because the above 3 transformations 
+are bounded by the number of letters in a word instead of the total number of words. If we assume
+the words are english words, they wont get too long, and t < N.
 
 
 '''
@@ -135,10 +200,6 @@ shortest paths between all vertices but we do not need to do that for this quest
 question we only need to find the shortest path from one vertex to another. If the path had 
 negative weights, we would have to use the less performant Bellman Ford single source shortest 
 path algorithm but since the edges between words are all positive, we can use Dijkstra's algorithm.
-
-
-
-
 '''
 
 '''
@@ -154,6 +215,11 @@ We will be generous in marking this problem.
 
 
 Runtime of creating the graph is: 
+
+Building the graph => 
+>> Hashing a string of t letters has cost t, so creating this graph will in O(Tn)
+    where T is the number of words, and n is the length of longest word in the dictionary. 
+
 
 
 
@@ -247,22 +313,15 @@ end.
 # read in word list from dict.txt
 
 
-def shortestPathWordList():
-    from collections import defaultdict
-    import heapq
-    from sys import stdin
-    
-    '''
-    Add words to adjacency list using a python map
-    that maps a key, which is a graph vertex, to an array of values that represent the neighbours
-    '''
-    graph = defaultdict(list)
+from collections import defaultdict
+import heapq
+from sys import stdin
 
+def build_graph1(graph):
     file = open("dict.txt", "r")
     
     # Sort words by their length.
     word_by_lengths = defaultdict(list)
-
 
     for line in file:
         word = line.strip()
@@ -288,13 +347,13 @@ def shortestPathWordList():
     longerWordSet = set()
 
     while i != num_of_word_lens:
-        long_word_len = ordered_word_lengths[i]
+        the_word_len = ordered_word_lengths[i]
 
-        longerWords = word_by_lengths.get(long_word_len)
+        longerWords = word_by_lengths.get(the_word_len)
 
         # check if words of length - 1 exist. If it doesnt, 
         # returns empty array:
-        shorterWords = word_by_lengths.get(long_word_len-1)
+        shorterWords = word_by_lengths.get(the_word_len-1)
 
         # TODO OPTIMIZE THIS, REUSE PREVIOUS LONGWORDSET
         if(shorterWords is None):
@@ -311,8 +370,8 @@ def shortestPathWordList():
         for word in longerWords:
             longerWordSet.add(word) 
             #do every possible deletion, check if it is in the set.
-            for position in range(long_word_len):
-                possibleShortWord = word[0:position] + word[position + 1: long_word_len]    
+            for position in range(the_word_len):
+                possibleShortWord = word[0:position] + word[position + 1: the_word_len]    
                 #print("word", word)
                 #print("possible word", possibleShortWord)
                 
@@ -329,12 +388,12 @@ def shortestPathWordList():
             if(reverseRelationshipChecked.get(word) is None):
                 reversed_word = word[::-1]
                 if(reversed_word != word and reversed_word in longerWordSet):
-                    graph[word].append((reversed_word, long_word_len))
-                    graph[reversed_word].append((word, long_word_len))
+                    graph[word].append((reversed_word, the_word_len))
+                    graph[reversed_word].append((word, the_word_len))
                 reverseRelationshipChecked[reversed_word] = True
             
             
-            for position in range(long_word_len - 1):
+            for position in range(the_word_len - 1):
                 twiddleWord = word[:position] + word[position+1] + word[position] + word[position+2:]
                 #temp = twiddleWord[position+1]  
                 #twiddleWord[position+1] = twiddleWord[position]
@@ -353,6 +412,66 @@ def shortestPathWordList():
         #shorterWordsSet = longerWordSet #Todo: optimizatioon
         shorterWordSet.clear()
         longerWordSet.clear()
+
+def build_graph2(graph):
+    file = open("dict.txt", "r")
+    
+    for line in file:
+        word = line.strip()
+        graph[word] = []
+
+        #word_by_lengths[len(word)].append(word)
+    
+    reverseRelationshipChecked = {} 
+    twiddleRelationshipChecked = {}
+    
+    for word in graph.keys():
+            the_word_len = len(word)
+
+            # longerWordSet.add(word) 
+            # do every possible deletion, check if it is in the set.
+            for position in range(the_word_len):
+                possibleShortWord = word[0:position] + word[position + 1: the_word_len]    
+                #print("word", word)
+                #print("possible word", possibleShortWord)
+                
+
+                if(possibleShortWord in graph):
+                    # THERE IS AN UNDIRECTED EDGE BETWEEN THESE TWO WORDS!
+                    graph[word].append( (possibleShortWord, 3) ) # deletions cost 3. you can actually have a second key which is 
+                    graph[possibleShortWord].append( (word, 1)) # insertion costs 1
+            
+            # check for twiddles and reversals
+            # dont add relationships twice. Check first.
+            
+            if(reverseRelationshipChecked.get(word) is None):
+                reversed_word = word[::-1]
+                if(reversed_word != word and reversed_word in graph):
+                    graph[word].append((reversed_word, the_word_len))
+                    graph[reversed_word].append((word, the_word_len))
+                reverseRelationshipChecked[reversed_word] = True
+            
+            
+            for position in range(the_word_len - 1):
+                twiddleWord = word[:position] + word[position+1] + word[position] + word[position+2:]
+
+                if(twiddleRelationshipChecked.get(twiddleWord) is None):
+                    if(twiddleWord != word and twiddleWord in graph):
+                        graph[word].append((twiddleWord, 2)) #twiddle costs 2
+                        graph[twiddleWord].append((word, 2))
+                    twiddleRelationshipChecked[twiddleWord] = True
+            
+
+
+
+def shortestPathWordList():    
+    '''
+    Add words to adjacency list using a python map
+    that maps a key, which is a graph vertex, to an array of values that represent the neighbours
+    '''
+    graph = defaultdict(list)
+
+    build_graph2(graph)
     
     def djikistra(graph, wordA, wordB):
         found = False
@@ -412,13 +531,21 @@ def shortestPathWordList():
 
     #print(djikistra(graph, "stone", "atone"))
     
-
+    '''
     while(True):
         line = raw_input()
-        #print(line)
+
         theIn = line.strip()
         words = theIn.split()
         djikistra(graph, words[0], words[1])
      
+    '''
+    for id, line in enumerate(stdin):
+        try:
+            theIn = line.strip()
+            words = theIn.split()
+            djikistra(graph, words[0], words[1])
+        except:
+            break
 
 shortestPathWordList()
