@@ -64,7 +64,7 @@ word list?
 
 Hint: if you are careful and think about the problem, you can probably create the graph
 from a word list rather efficiently. Probably the obvious idea of comparing each pair of words
-in the word list, in order to determine the weight of the edge connecting them, is not the best
+in the word list, in order to determine the weight of the edge connecting them, is not the bestmaqq
 approach. It should be possible to create the graph in o(n^2) steps (so faster than O(N^2) ), where n is the number of
 words, but you might have to make some assumptions about what the word list looks like.
 
@@ -88,74 +88,65 @@ multiple ways, take the lowest cost of the 4 transformations). In other words th
 weighted by the cost of the transformation. The graph will be undirected because the 4 rules 
 that can be followed to transform one word into another have inverses. 
 
-The deletion rule has the addition rule as the inverse and vice versa.
-The reverse rule has the reverse rules as its inverse transformation. 
-The twiddle rule can be inversed by repeating the twiddle on the same 2 letters.
+PROOF: 
+    The deletion rule has the addition rule as the inverse and vice versa.
+    The reverse rule has the reverse rules as its inverse transformation. 
+    The twiddle rule can be inversed by repeating the twiddle on the same 2 letters.
+
 In other words, if a vertex is connected to another vertex, then they can transform into each other 
 using a rule or the inverse rule (all 4 have inverse rules), so the edges will be undirected in the graph.
 
 For a real word list such as the english dictionary, the graph will be very dense for small words 
 such as "cat", because there are lots of 3 letter words that can be derived out of cat. For much longer words, 
 the graph will be sparse because they will be difficult to transform into other words since longer words have more 
-characters that increase the probability of difference between it and another word.  
+permutations of characters that reduces the likelihood of 1 particular permutation (english word)
+transforming into another one.
 
 The graph will not be connected since the english language has words that are very long and peculiar 
 such as pneumonoultramicroscopicsilicovolcanoconiosis which does not connect to other words using
 the 4 possible transformations. 
 
-
-
-
 To efficiently create the graph from a word list, 
 we need to find all the words that can be transformed to another word using the 4 rules. 
 
 We will use a map of lists. 
+Every word is a key in the map of lists.
 The list contains neighbours, and the key for the map is the vertex to those neighbours.
-Every word is a key in the map of lists. This representation is similar to 
-the adjacency list representation of graphsself.
+This representation is similar to  the adjacency list representation of graphsself.
 
 edge_weights will be represented as a map of a map of values. 
 The first key is the start vertex, the second key is the end vertex, and the 
-value is the edge weight between the start and end vertexs.
+value is the edge weight between the start and end vertices.
 
 In this way, you can check if an edge exists in a graph in O(1) average time
 by indexing into the first map, with the start vertex, indexing into the returned map
 with the end vertex, and checking if the value is an integer, or does not exist.
 If it does not exist, the edge is not in the graph.
 
-
+We can use the graph to check if a word in the dictionary exists 
+by looking up the word in the map of lists, and checking if it exists in that map.
+This is a hash operation and can be done in O(t) time where t is the number of characters
+in the word and O(1) average case search.   
 
 To build the graph, start by taking every word in the dictionary, 
 hashing it, and storing it as a key for the map of lists. The value will be 
 an empty list. 
 
-We can use the graph to check if a word in the dictionary exists 
-by looking up the word in the map of lists, and checking if it exists in that map.
-This is a hash operation and can be done in O(t) time where t is the number of characters
-in the word.   
-
-
-Then go through every word in the dictionary,
-and manipulate it and check if its in the set. 
+At a high level, go through every word in the dictionary,
+and manipulate it (using all 4 transformations, or 3 as discussed below) 
+and check if its in the graph. 
 If it is, add the undirected edge to the graph. (So add two directed edges)
-
-
->> To check that a string is in the set, hash the string and checking if the hash 
-value matches a hash value in the set. With a good hash function, on average, this will be O(t)
-where t is the length of the string. We will consider this as the runtime when checking strings in the set. 
-However the performance can be 
-
 
 There are 4 transformations to consider and their runtimes (and if the transformation is valid, add the edge): 
 1) The addition rule does not need to be checked when looking at words. 
    You can use the deletion rule on every word. If a deletion of a character in a word matches a word in the 
-   set, then add the edge for deletion. Additionally, add the edge in the reverse direction for the insertion rule. 
+   graph, then add the edge for deletion. Additionally, add the edge in the reverse direction for the insertion rule. 
 
 2) To check for reversals, you can reverse the string and check if it is in the set. If it is, you can add  
    an undirected edge. (So 2 edges to the graph). 
 
 3) For twiddle, you can look at all possible twiddles for a word, then check if the twiddled word is in the 
-   set of dictionary words. If it is, add the undirected edge (So 2 edges)
+   graph. If it is, add the undirected edge (So 2 edges)
 
 For transformation 2 and 3, check if the reversed word, or the twiddled word 
 does not transform into itself. If it does, then dont add the edge. 
@@ -170,8 +161,7 @@ FINALLY:
 
 This is faster than comparing all words to all other words, because the above 3 transformations 
 are bounded by the number of letters in a word instead of the total number of words. If we assume
-the words are english words, they wont get too long, and t < N.
-
+the words are english words, they wont get too long. Further runtime analysis done below.
 
 '''
 
@@ -190,7 +180,7 @@ There's no need to provide pseudocode (unless you want to). Explain your ideas i
 English. Provide examples (if they are useful). Be sure to give as much detail as necessary
 to convince a skeptical TA.
 
-ANSWER:
+PART B ANSWER########################################################################:
 
 Djikstra's algorithm is most suited and most performant for the problem. Djikstra's finds 
 the shortest path from one vertex to all others, in O(|E| + |V|log|V|) time. BFS would not
@@ -216,47 +206,45 @@ We will be generous in marking this problem.
 
 Runtime of creating the graph is: 
 
-Building the graph => 
->> Hashing a string of t letters has cost t, so creating this graph will in O(Tn)
-    where T is the number of words, and n is the length of longest word in the dictionary. 
+Building the graph :
 
+Hashing a string of t letters has cost t, so creating the graph will in O(Tn)
+where T is the number of words, and n is the length of longest word in the dictionary. 
 
+To check that a string is in the set, hash the string and check if the hash 
+value matches a hash value in the set. With a good hash function, on average, this will be O(t)
+where t is the length of the string. We will consider this 
+as the runtime when checking strings in the set. 
 
+All 3 transformations we do to check if an vertex is connected to another 
+vertex is bounded by the number of characters in the word.
+
+We go through all the words and do the following:
+check if the reversed word is in the graph.
+Reversing is O(T) and checking if its in the graph is O(T) so worst case O(T).
+
+We delete every character in the string, and check if that string is in the graph. 
+Deleting the character and forming a string is O(T) and checking it is in the graph
+is O(T). 
+Since we delete every possible version of the string. This check becomes
+O(T^2). 
+
+We twiddle every adjacent pair of characters in the string. This is similar to 
+the above deletion runtime. Twiddling and forming a string is O(T). Checking in graph is O(T).
+Since we do this for all adjacent pairs and there are T-1 adjacent pairs,
+then runtime for this is O(T^2). 
+
+Therefor graph creation is O(T^2) * Number of Words which is O(N*T^2)
 
 Runtime of of finding the lowest-cost chain connecting 2 words is:
-O(|E| + |v|log|V|) which is the worst case bound for Djikstra's algorithm using a min fibonnaci heap.
+O(|E| + |V|log|V|) which is the worst case bound for Djikstra's algorithm 
+using a min fibonnaci heap.
 
+For our problem this runtime becomes O(|E| + |N|log|N|).
 
+Therefore the total runtime of algorithm is O(|E| + |N|log|N| + N*T^2).
 
-UNPLAGARISE THIS:
-
-The complexity of Dijkstra's shortest path algorithm is:
-
-    O(|E| |decrease-key(Q)| + |V| |extract-min(Q)|)
-where Q is the min-priority queue ordering vertices by their current distance estimate.
-
-For both a Fibonacci heap and a binary heap, the complexity of the extract-min operation on this queue is O(log |V|). 
-This explains the common |V| log |V| part in the sum. For a queue implemented with an unsorted array, the extract-min 
-operation would have a complexity of O(|V|) (the whole queue has to be traversed) and this part of the sum would be O(|V|^2).
-
-In the remaining part of the sum (the one with the edge factor |E|), the O(1) v.s. O(log |V|) difference comes precisely 
-from using respectively a Fibonacci heap as opposed to a binary heap. The decrease key operation which may happen 
-for every edge has exactly this complexity. So the remaining part of the sum eventually has complexity O(|E|) 
-for a Fibonacci heap and O(|E| log |V|) for a binary heap. For a queue implemented with an unsorted array, the
-decrease-key operation would have a constant-time complexity (the queue directly stores the keys indexed by the vertices) 
-and this part of the sum would thus be O(|E|), which is also O(|V|^2).
-
-To summarize:
-
-Fibonacci heap: O(|E| + |V| log |V|)
-binary heap: O((|E| + |V|) log |V|)
-unsorted array: O(|V|^2)
-Since, in the general case |E| = O(|V|^2), these can't be simplified further without making further assumptions on the kind of graphs dealt with.
-(https://stackoverflow.com/questions/21065855/the-big-o-on-the-dijkstra-fibonacci-heap-solution)
 '''
-
-
-
 
 
 '''

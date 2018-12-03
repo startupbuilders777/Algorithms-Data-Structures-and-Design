@@ -2,7 +2,7 @@ import heapq
 from sys import stdin
 
 def build_graph(graph, edge_weight):
-    file = open("flipdict.txt", "r")
+    file = open("dict.txt", "r")
     
     for line in file:
         word = line.strip()
@@ -42,14 +42,14 @@ def build_graph(graph, edge_weight):
                     #If we have never found this twiddle word before, add it
                     if(edge_weight[word].get(reversed_word) is None): 
                         graph[word].append(reversed_word)
-                        edge_weight[word][reversed_word] = the_word_len
                         graph[reversed_word].append(word)
+                        edge_weight[word][reversed_word] = the_word_len
                         edge_weight[reversed_word][word] = the_word_len
                     else:
                         #Otherwise, this is the rare case where we added the reversed word.
                         #Change the weight to the lower of the two
-                        edge_weight[word][twiddleWord] = min(edge_weight[word][reversed_word], 2)
-                        edge_weight[twiddleWord][word] = min(edge_weight[reversed_word][word], 2)
+                        edge_weight[word][reversed_word] = min(edge_weight[word][reversed_word], the_word_len)
+                        edge_weight[reversed_word][word] = min(edge_weight[reversed_word][word], the_word_len)
                 
                 reverseRelationshipChecked[reversed_word] = True
             
@@ -69,7 +69,7 @@ def build_graph(graph, edge_weight):
                             #Otherwise, this is the rare case where we added the reversed word.
                             #Change the weight to the lower of the two
                             edge_weight[word][twiddleWord] = min(edge_weight[word][twiddleWord], 2)
-                            edge_weight[twiddleWord][word] = min(edge_weight[word][twiddleWord], 2)
+                            edge_weight[twiddleWord][word] = min(edge_weight[twiddleWord][word], 2)
 
                     twiddleRelationshipChecked[twiddleWord] = True
 
@@ -83,7 +83,7 @@ def shortestPathWordList():
 
     build_graph(graph, edge_weight)
     
-    def djikistra(graph, wordA, wordB):
+    def djikistra(wordA, wordB):
         found = False
         visited = set()
         dist = {}
@@ -122,7 +122,7 @@ def shortestPathWordList():
             while(node != wordA):
                 lst.append(prev[node])
                 node = prev[node]
-            
+
             for i in reversed(lst) :
                 printer += " " + i
             
@@ -134,7 +134,7 @@ def shortestPathWordList():
         try:
             theIn = line.strip()
             words = theIn.split()
-            djikistra(graph, words[0], words[1])
+            djikistra(words[0], words[1])
         except:
             break
 
