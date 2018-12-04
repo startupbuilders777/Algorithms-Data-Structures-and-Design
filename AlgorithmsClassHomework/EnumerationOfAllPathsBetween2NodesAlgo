@@ -1,0 +1,67 @@
+Is there an algorithm to find all the shortest paths between two nodes?
+
+Building a shared struture to make explicit enumeration optional, but easy.
+
+I think there are several ways to interpret your question, like other questions about algorithms 
+giving all solutions to some problem. This may be the case here as you ask for all solutions, but 
+not specifically for an enumeration of these solutions, which you can easily get however from the approach given below.
+
+To take a well known example, when parsing Context-Free languages, you may be interested in getting 
+just one parse tree, or in getting all parses. The number of parse trees can actually be infinite, 
+or exponential when you exclude derivation loops (non-terminals deriving on themselves). 
+You might even want to know only that there is such a parse-tree, i.e. be interested only in recognition, but let us ignore that.
+
+Now, one possibility is to enumerate all parse trees, which may be infinite or exponential, 
+even with the best enumeration cost amortization techniques.
+
+Another possibility is to produce a structure (called a shared parse-forest in the case of parsing) 
+that can generate any parse-tree, with a cost linear in the size of the parse-tree being produced. 
+This is actually what is done by most general CF parsers. In the case of Context-Free languages, 
+this structure can be produced with cubic time and space complexity, even when the number of parses is infinite.
+
+Hence, while enumerating all solutions to a problem may have a very high cost, it may be possible to 
+produce at relatively low cost a structure that can easily enumerate all solutions. Such a structure 
+may be a convenient representation if you actually intend further processing to select the most 
+appropriate solutions according to further criteria.
+
+
+Another possibility is to analyze the structure to see whether enumeration is tractable or not, before attempting to do it.
+
+In the question asked, Raphael's answer tells you that the number of minimal paths may be exponential. 
+So finding all minimal paths may be a good candidate for such a shared structure solution approach. 
+Actually, I believe it is generally applicable to dynamic programming algorithms (possibly with some restrictions), 
+so it should apply to Dijkstra's algorithm. Let c(N,N′)c(N,N′) denote the length of the shortest path from NN to N′N′.
+
+Basically, the idea is that, if a node NN is on a minimal path from source SS to target TT, then any 
+other path from SS to NN placing NN at the same distance from SS can be used to build a minimal 
+path from source SS to target TT. The same is true for NN and TT.
+
+A way to proceed is to compute the minimal distance from SS to all other nodes. Then you 
+initialise a set UU of useful nodes with the node TT, a set EE 
+of useful edges as empty, and a set VV of visited nodes as empty.
+
+Now for each node NN in UU, you consider each node N′N′ connected to NN 
+that is at a shorter distance from SS. If c(S,N′)+c(N′,N)=c(S,N)c(S,N′)+c(N′,N)=c(S,N) 
+then you add N′N′ to UU (unless it is already in U∪VU∪V) and you add a directed edge (N′,N)(N′,N) to EE. 
+Otherwise you do nothing. When all adjacent nodes N′N′ have been considered, the node NN is 
+tranferred from the useful set UU to the visited set VV, and you loop, looking at another node from UU.
+
+You stop when UU is empty, which eventually occurs, since no node is added to UU a second time.
+
+The shared structure is a graph composed of all nodes in VV and all directed edges in EE. 
+It necessarily contains SS and TT. The set of minimal solution is precisely 
+the set of directed paths from SS to TT in that graph. They are easily followed 
+since they are directed. Whether you enumerate those paths, or do anything else 
+with them, is another story. Note that, up to the fact that its edges are directed, 
+this graph is smaller than (or at worse equal to) the initial
+graph being analyzed, so that it is tractable.
+
+Let vv and ee be respectively the number of nodes and edges. Each 
+edge of the original graph is considered at most twice, and when it 
+is processed the node N′N′ at the upstream end may have to be searched 
+in U∪VU∪V at a cost O(logv)O(log⁡v). This gives a total extra cost of O(elogv)O(elog⁡v), 
+in addition to the initial computation of distances with Dijkstra's algorithm.
+
+There are probably better ways of doing this, but that is the solution that came 
+to me. Hopefully there are no bugs. I do think there is a more general way to 
+describe such techniques, but my memory is what it is.
