@@ -5,19 +5,6 @@ decide whether there exist at least two directed SIMPLE paths from s to t of
 different lengths. Is the problem solvable in polynomial time, or is it NP-complete?
 
 
-
-#############################################################################
-OTHER REMARKS:
-
-
-SIDE NOTE ABOUT DAG GRAPH AND HOW IT MAKES OUR ALGORITHM MUCH FASTER THAN A PERMUTE-EVERY-PATH ALGORITHM FOR THIS PROBLEM: 
-    Since DAGGraph contains all the shortest paths from s to t, 
-    when a shortest path, called X, of equal size is added, 
-    we actually end up adding all permutations of shortest paths 
-    that use the edges of X, as well to the DAG. In this way, by checking just 
-    one shortest path X, we end up checking all permutations of 
-    shortest paths involving the edges of X as well. 
-
 ##########################################################################################################################################################
 
 The problem is solvable in polynomial time. 
@@ -26,61 +13,66 @@ The following is the algorithm :
 
 We will make a reversed version of the graph G and call this G' 
 
-The algorithm makes use of a subgraph of G we call DAGGraph. 
-DAGGraph is a DAG which contains all the shortest paths of equal length from S to T in G.
+The algorithm makes use of a subgraph of G we call shortestPathsDAG. 
+shortestPathsDAG is a DAG which contains all the shortest paths of equal length from S to T in G.
 
 The number of shortest paths between two nodes in a graph is super exponential.
 We can build a structure that holds these paths cheaply, 
 avoiding the super exponential runtime. 
-DAGGraph will be this structure and we will use it to 
+shortestPathsDAG will be this structure and we will use it to 
 generate any shortest path we desire in linear time.
-DAGGraph will start with S, its root, and have multiple paths come out of S, which all end at T. 
-Utilizing DAGGraph effectively will allow us to solve the algorithmic challenge 
-in polynomial time. Finally, our subgraph called DAGGraph can be built in linear time.
-The linear time algorithm is covered below; a quick rundown of the algorithm to build DAGGraph would be the following:
+shortestPathsDAG will start with S, its root, and have multiple paths come out of S, which all end at T. 
+Utilizing shortestPathsDAG effectively will allow us to solve the algorithmic challenge 
+in polynomial time. Finally, our subgraph called shortestPathsDAG can be built in linear time.
+The linear time algorithm is covered below; a quick rundown of the algorithm to build shortestPathsDAG would be the following:
 Run BFS on S to get the shortest path from S to every vertex. Run BFS on the reversed graph from T, to get the shortest
 path from every vertex to T. Then enumerate all the vertices X in the graph besides S and T, and check if  [S->X->T] is 
 the same length as the shortest length path between S and T and if it is, add all of [S->X->T]'s vertices, and edges 
-to the DAGGraph. Once all the vertices have been enumerated, DAGGraph contains all the shortest paths between S and T.  
+to the shortestPathsDAG. Once all the vertices have been enumerated, shortestPathsDAG contains all the shortest paths between S and T.  
 
-DAGGraph will be used to construct a longer path. DAGGraph enumerates only shortest paths i.e., DAGGraph does not contain longer paths. 
-
-
-There are 2 ways to create longer paths using DAGGraph:
-1) One way is to check every vertex in DAGGraph to see if there is an edge, E, between that vertex and another vertex in DAGGraph 
-   that hasn't been added to DAGGraph. (In other words E is not in the set of edges of DAGGraph)
-   This edge was not added because it was not in any of the shortest paths we found in the algorithm above to construct DAGGraph. 
+There are 2 ways to create longer paths using shortestPathsDAG:
+1) First way is called Lost Edge Method.
+   One way is to check every vertex in shortestPathsDAG to see if there is an edge, E, 
+   between that vertex and another vertex in shortestPathsDAG 
+   that hasn't been added to shortestPathsDAG. (In other words E is not 
+   in the set of edges of shortestPathsDAG)
+   This edge was not added because it was not in any of the shortest paths 
+   we found in the algorithm above to construct shortestPathsDAG. 
    Finding such an edge, we call them LOST_EDGES_IN_THE_DAG or LOST_EDGES, will trivally make a longer path:
-   Assume the 2 vertices with the LOST_EDGE is X and Y in the DAGGraph.
+   Assume the 2 vertices with the LOST_EDGE is X and Y in the shortestPathsDAG, and the LOST_EDGE goes from X to Y.
    Then the longer path is [S->X, LOST_EDGE, Y->T]. 
-   LOST_EDGE was not included in the DAG because it does not help a path get closer from S to T (so cant be a forward edge in DAGGraph).
+   LOST_EDGE was not included in the DAG because it does not help a path 
+   get closer from S to T (so cannot be a forward edge in shortestPathsDAG).
    Therefore, LOST_EDGE can only make the path longer, because it is either a cross edge 
-   or a backward edge in the DAGGraph. Therefore [S->X, LOST_EDGE, Y->T] is a longer path.
-   (The exact algorithm to find a lost edge and use it is discussed in PseudoCode below, and that algorithm is linear time)
+   or a backward edge in the shortestPathsDAG. Therefore [S->X, LOST_EDGE, Y->T] is a longer path.
+   (The exact algorithm to find a lost edge and use it is 
+   discussed in PseudoCode below, and that algorithm is linear time)
 
-2) A longer path requires vertices to be used outside of DAGGraph.
-To create the longer path we have one very strong condition: 
-It must leave a vertex of the DAGGraph, go through some edges not in the DAGGraph (these edges will be called the CRAZY SEGMENT), 
-and then come back to a vertex in the DAGGraph. The path from S to the ExitPoint (called X), 
-X to the Rentry point back into the DAGGraph (called Y), and Y to T will be a possible long path to consider. 
-There is only 1 Exit Point (we will call this X from now on), 
-and 1 Reentry point(we will case this Y from now on) when we create a longer path 
-(So every long path we consider will have only 1 crazy segment).
-
-The CRAZY SEGMENT is formed only from edges outside of DAGGraph but 
-in G (So edges in {G edges} - {DAGGraph edges}). 
-CRAZY SEGMENT is used to elongate the path. 
-We can only find paths of longer length with this approach
-because DAGGraph already contains all the shortest paths between S and T.
+2)  Second way is called Outer Vertex Method. 
+    A longer path requires vertices to be used outside of shortestPathsDAG.
+    To create the longer path we have one very strong condition: 
+    It must leave a vertex of the shortestPathsDAG, go through some edges not in the 
+    shortestPathsDAG (these edges will be called the CRAZY SEGMENT), 
+    and then come back to a vertex in the shortestPathsDAG. The path from S to the ExitPoint (called X), 
+    X to the Rentry point back into the shortestPathsDAG (called Y), and Y to T will be a possible long path to consider. 
+    There is only 1 Exit Point (we will call this X from now on), 
+    and 1 Reentry point(we will case this Y from now on) when we create a longer path 
+    (So every long path we consider will have only 1 crazy segment).
+    In the proof of correctness we explain why you only need 1 X and 1 Y (and not 2, 3, etc).
+    
+    We can only find paths of longer length with this approach
+    because shortestPathsDAG already contains all the shortest paths between S and T.
 
 How do we discover crazy segments and make longer paths?
-All we need to do is find X and Y on the DAGGraph (X and Y are vertices
-in the DAGGraph. X and Y are also the intersection points between DAGGraph and the CRAZY SEGMENT).
-To do this, we test all the vertices in {G vertices}-{DAGGraph vertices} 
-and on each vertex Z, run BFS starting on Z, on the graph(G) to find Y (call this CrazyBFS, and as soon as we find Y stop the BFS), 
-and run BFS starting on Z, on the reverse of the graph(G') to find X (call this ReverseCrazyBFS, and as soon as we find X stop the BFS). 
+All we need to do is find X and Y on the shortestPathsDAG (X and Y are vertices
+in the shortestPathsDAG. X and Y are also the intersection points between shortestPathsDAG and the CRAZY SEGMENT).
+To do this, we test all the vertices in {G vertices}-{shortestPathsDAG vertices} 
+and on each vertex Z, run BFS starting on Z, on the graph(G) to find Y 
+(call this CrazyBFS. Store all the Y's you find in an array called possibleYFromZ), 
+and run BFS starting on Z, on the reverse of the graph(G') to find X 
+(call this ReverseCrazyBFS. Store all the X's you find in an array called possibleXToZ). 
 
-The crazy segment is the path running from X to Z to Y. 
+The crazy segment is a path running from one of the X's to Z to one of the Y's. 
 We do BFS on the reverse graph to get X, 
 because this is the EXIT POINT out of the 
 DAG from S to reach Z (The EXIT POINT can also be S in which case S == X). 
@@ -88,16 +80,22 @@ We do normal BFS on the graph to get Y, because this will
 find an entry point into the DAG from Z to finally reach T
 (The RENTRY POINT can also be T in which case Y == T). 
 
-So the CRAZY SEGMENT is [X -> Z -> Y], and the longer path we can create will be [S-X->Z->Y->T]
+So the CRAZY SEGMENT is [X -> Z -> Y], and the longer path we can create will be [S->X->Z->Y->T]
 The Z we use is called the COORDINATION POINT, because it is where X and Y sprout from in the algorithm. 
 
-(We will later see we wont have to run CrazyBFS and ReverseCrazyBFS on every vertex in {G vertices}-{DAGGraph vertices}, 
-but actually just a very few number. We will also later see what happens when X == Y or Y topologically comes before X in the DAG)
+(We will later see we wont have to run CrazyBFS and ReverseCrazyBFS 
+on every vertex in {G vertices}-{shortestPathsDAG vertices}, 
+but actually just a very few number. We will also later 
+see what happens when Y topologically comes before X in the DAG)
 
-Lets discuss what the {G vertices}-{DAGGraph vertices} looks like, call this set subtraction verticesToTest.
-verticesToTest are vertices that are in the graph that weren't used to construct a path from s to t. We have to use these
-vertices, and the edges between them to get a longer path. These edges form a forest of components sprawled around the 
-DAGGraph. We have to test these components, and throw them out if they don't identify a path of longer length.
+Lets discuss what the {G vertices}-{shortestPathsDAG vertices} 
+looks like, call this set subtraction verticesToTest.
+verticesToTest are vertices that are in the graph that 
+weren't used to construct a path from s to t. We have to use these
+vertices, and the edges between them to get a longer path. 
+These edges form a forest of components sprawled around the 
+shortestPathsDAG. We have to test these components, 
+and throw them out if they don't identify a path of longer length.
 
 The core idea of pseudocode below: 
 
@@ -123,7 +121,7 @@ Steps:
 
 4) If we found both X and Y:
 
-       The BFSTree touches the DAGGraph in two places, called X and Y in the DAGGraph. 
+       The BFSTree touches the shortestPathsDAG in two places, called X and Y in the shortestPathsDAG. 
        We can CREATE a new path (PLEASE LOOK AT ALGO BELOW TO SEE LONGER PATH CREATION ALGORITHM). 
        The NEW path is [S-X, X->Z->Y, Y->T], called Q. We get its path length and compare it with the shortestPathLength. 3 CASES: 
        
@@ -156,8 +154,8 @@ There are a few cases to consider when creating the path:
         -> If Y comes topologically before X, there may be a problem because CRAZY SEGMENT will be backward edges from X to Y 
            so the path from Y->T may intersect with the path from S->X (we cannot have this happen because it must be a SIMPLE Path)
         -> The create path algorithm will assume the Y before X scenerio because it works on the X before Y scenerio:
-            1) DFS from S->X on DAGGraph and get a path, and store visited vertices in visitedX. if S->X DFS see's vertex Y, ignore it.  
-            2) Then DFS from Y->T on DAGGraph without visiting of the vertices from from visitedX  or X. 
+            1) DFS from S->X on shortestPathsDAG and get a path, and store visited vertices in visitedX. if S->X DFS see's vertex Y, ignore it.  
+            2) Then DFS from Y->T on shortestPathsDAG without visiting of the vertices from from visitedX  or X. 
                 2a) If T is reached done. 
                 2b) Otherwise T was not reached.
                     3) Lift restriction that Y->T path can't use visitedX, and try to use visitedX vertices to get to T (DFS still cant visit X). 
@@ -179,7 +177,8 @@ There are a few cases to consider when creating the path:
 ##################################################################################################
 WHAT DO WE DO WITH FAILED PATHS?
 
-The problem with failed paths is that they are not truly failed paths until the DAG has all its shortest paths. Becaues the DAG currently does not
+The problem with failed paths is that they are not truly failed paths until the DAG 
+has all its shortest paths. Becaues the DAG currently does not
 
 
 is save that path somewhere, keep running the algo to find other shortest paths. 
@@ -188,23 +187,35 @@ then finish, and at the end of the algo test all these failed paths one more tim
 
 Okay here is an algo to get all the shortest paths from s to t to build the shortest path DAG.
 
-    -> Run BFS and get shortest paths from s to every vertex in G. Store parentsS[], and distS[].
-    -> Reverse the graph and run BFS to get the shortest path from every vertex to T. Store parentsT[], and distT[].
-    -> Ok store length of shortest path from S to T, call it shortestLength.
 
-    -> Go through all the vertices in the graph: 
-       -> Call these verticesTestedToBeInShortestDAG
-       For each vertex X in verticesTestedToBeInShortestDAG: 
-            Find distance from vertex X to S (stored in DistS). 
-            Find distance from vertex X to T(stored in DistT). 
-            Add them to find the distance of path [S->X->T] called length
-                if length == shortestLength, 
-                    ->add the path to the DAG. 
-                    ->remove all the vertices we added in the path from verticesTestedToBeInShortestDAG
-                if not
-                    continue
 
     In the end we have created a structure that contains all enumerations of shortest paths from S to T in linear time.  
+
+
+
+#############################################################################
+PROGRAM CORRECTNESS:
+
+shortestPathsDAG enumerates only shortest paths i.e., shortestPathsDAG does not contain longer paths. 
+
+
+
+To create a longer path only requires using 2 vertices in DAGraph 
+(and using more vertices for something like 2 crazy paths is not something we need to search for):
+
+
+
+shortestPathsDAG will be used to construct a longer path. 
+
+
+
+Lost Edges are cross edges or backward edges and finding a lost 
+edge means we found a longer path.
+
+
+Lost Edges Method and Outer Vertex Method each find a set of longer paths, and these 
+2 sets are mutually exclusive and the set addition is all the possible longer paths in the graph
+between S and T.
 
 
 
@@ -228,8 +239,60 @@ The average case runtime is therefore: O(V+E).
 
 PSEUDO_CODE:
 
-//THIS IS HELPER FUNCTION 1. WE USE THIS TO DO CRAZYBFS AND REVERSECRAZYBFS
-def crazyBFS(Graph, vertex, DAGGraph):  // HELPER FUNCTION DEFINED HERE.
+// THIS IS HELPER FUNCTION 1
+// RUNTIME: 2 BFS calls. 
+// 
+def buildShortPathsDAG(G, S, T):
+    -> Run BFS and get shortest paths from s to every vertex in G. 
+        ->Store parentsS[], and distS[] for this BFS.
+    -> Reverse the graph and run BFS to get the shortest path from every vertex to T. 
+        ->Store parentsT[], and distT[] for this BFS.
+    -> Ok store length of shortest path from S to T, call it shortestLength 
+        ->(get from one of the BFS's).
+
+       verticesTestedToBeInShortestDAG := All the vertices in the graph except S and T:  
+       
+       shortestPathsDAG = {} //Adjacency List using Map
+
+       For each vertex X in verticesTestedToBeInShortestDAG: 
+            Find distance from vertex X to S (using  DistS[X]). 
+            Find distance from vertex X to T (using DistT[X]). 
+            Add them to find the distance of path [S->X->T] called length
+                if length == shortestLength, 
+                    -> construct path [S->X->T] using parentsS and parentsT
+                    -> add the path [S->X->T] to the shortestPathsDAG  
+                    -> remove all the vertices we added in the path from verticesTestedToBeInShortestDAG
+
+
+
+// THIS IS HELPER FUNCTION 2
+// A LOST EDGE is an edge between 2 vertices in the shortestPathDAG that wasn't added to shortestPathDAG
+// RUNTIME: Go through every vertex, and check every neighbour worst case.
+// So worst case runtime is O(sum of the degree of every vertex in G)  -> O(|E||V|)
+def createLongerPathUsingLostEdges(G, shortestPathsDAG):
+    
+    setOfVerticesInDAG = shortestPathDAG vertices
+    // Set look up is fast.
+
+    for each vertex v in setOfVerticesInDAG:
+        all_neighbours = G[v]
+        dag_neighbours = shortestPathsDAG[v]
+
+        other_neighbours = all_neighbours - dag_neighbours
+
+        for each k in other_neighbours:
+            if(k is in setOfVerticesInDAG):
+                return True // We found a lost edge. REPORT THAT 2 PATHS OF DIFFERENT SIZE EXIST.
+                            // Lost edge creates [S->V, V->K, K->T] which is longer than shortest path 
+                            // (check correctness proof for this)
+    
+    return False //Could not find any lost edges.
+
+
+
+
+//THIS IS HELPER FUNCTION 3. WE USE THIS TO DO CRAZYBFS AND REVERSECRAZYBFS
+def crazyBFS(Graph, vertex, shortestPathsDAG):  // HELPER FUNCTION DEFINED HERE.
     dist[s] := 0;
     Q := empty queue;
     visited = set()
@@ -246,7 +309,7 @@ def crazyBFS(Graph, vertex, DAGGraph):  // HELPER FUNCTION DEFINED HERE.
             continue
         else: 
             visited.add(u)
-        if(u in DAGGraph vertices): //This is map look up O(1)
+        if(u in shortestPathsDAG vertices): //This is map look up O(1)
             intersectionVertex = u
             break
         for all edges (u,v) in Graph do //Out neighbours traversed (Directed BFS)
@@ -260,18 +323,18 @@ def crazyBFS(Graph, vertex, DAGGraph):  // HELPER FUNCTION DEFINED HERE.
              "intersectionVertex": intersectionVertex
              })
 
-// THIS IS HELPER FUNCTION 2. WE USE THIS TO CREATE THE LONGER PATH AFTER FINDING X AND Y.
+// THIS IS HELPER FUNCTION 4. WE USE THIS TO CREATE THE LONGER PATH AFTER FINDING X AND Y.
 // X is the exit point of the DAG
-//Y is the re-entry point into the DAG
-//LowestCommonAncestor is the lowest common ancestor of X and Y in their BFS 
-//s is the root of the DAG 
-//t is the end of the DAG.
-def createLongerPath(s, t, X, Y, CRAZYSEGMENT, DAGGraph):
+// Y is the re-entry point into the DAG
+// Z is the coordination point (the point we run crazy bfs and reverse crazy bfs on)
+// s is the root of the DAG 
+// t is the end of the DAG.
+def createLongerPath(s, t, X, Y, CRAZYSEGMENT, shortestPathsDAG):
     
     <create path and check its length. The path is [S->X, X->COMMONPARENT, COMMONPARENT->Y, Y->T]>
                         STEPS TO GET NEW PATH: 
                         to get edges from (S->X), go backward from X to S in the DAG by traversing any parent vertices, 
-                            they will all lead to the root of the DAGGraph which is S. 
+                            they will all lead to the root of the shortestPathsDAG which is S. 
                         //(can maintain a DAG in the reverse direction so we just move forward to S from X)
                         Create (X->Y) easily by just doing  [ X->COMMONPARENT, COMMONPARENT->Y]
                         Y to T is trivial, just move forward in DAGraph to get edges. 
@@ -281,7 +344,7 @@ def createLongerPath(s, t, X, Y, CRAZYSEGMENT, DAGGraph):
 
 //THIS IS THE MAIN FUNCTION THAT SOLVES THE ALGORITHMIC CHALLENGE:
 def two_paths(G, s, t):
-    DAGGraph = map()
+    shortestPathsDAG = map()
     ReverseG := Reverse the graph G
 
     for all u in V do
@@ -294,11 +357,11 @@ def two_paths(G, s, t):
     
     enqueue(Q, s);
 
-    Do BFS, get shortest st path, add st path to DAGGraph.
+    Do BFS, get shortest st path, add st path to shortestPathsDAG.
 
     shortestPathLength = length(st-path);
 
-    verticesToTest = set() = G vertices - DAGGraph vertices
+    verticesToTest = set() = G vertices - shortestPathsDAG vertices
 
     //START FINDING CRAZY SEGMENTS.
 
@@ -312,8 +375,8 @@ def two_paths(G, s, t):
               vertex = verticesToTest.pop();  
               testNewVertex = FALSE
 
-        XResult = crazyBFS(ReverseG, vertex, DAGGraph) //We have to BFS on reverse graph to find exit point out of DAG
-        YResult = crazyBFS(G, vertex, DAGGraph) //We BFS on normal graph to find entry point into DAG
+        XResult = crazyBFS(ReverseG, vertex, shortestPathsDAG) //We have to BFS on reverse graph to find exit point out of DAG
+        YResult = crazyBFS(G, vertex, shortestPathsDAG) //We BFS on normal graph to find entry point into DAG
         
 
         if(XResult.intersection is not None and YResult.intersection is not None): // THIS IS CASE 3. We have found a crazy segment a possible longer path!!!
@@ -324,10 +387,10 @@ def two_paths(G, s, t):
                              -> Create using ancestors of Y stored in YResult.pi to Z.
                              -> Combine 2 and that is CrazySegment.
 
-            NEWPATH = createLongerPath(s, t, X, Y, CRAZYSEGMENT, DAGGraph)
+            NEWPATH = createLongerPath(s, t, X, Y, CRAZYSEGMENT, shortestPathsDAG)
 
             if NEWPATH length is same as shortestPathLength:
-                NEWPATH added to DAGGraph
+                NEWPATH added to shortestPathsDAG
                 verticesToTest -= vertices of NEWPATH // REMOVE VERTICES IN NEW PATH WE FOUND.
             else:
                 RETURN TRUE (2 PATHS ARE NEWPATH AND shortest STPATH)
