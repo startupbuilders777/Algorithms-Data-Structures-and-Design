@@ -85,8 +85,7 @@ The Z we use is called the COORDINATION POINT, because it is where X and Y sprou
 
 (We will later see we wont have to run CrazyBFS and ReverseCrazyBFS 
 on every vertex in {G vertices}-{shortestPathsDAG vertices}, 
-but actually just a very few number. We will also later 
-see what happens when Y topologically comes before X in the DAG)
+but actually just a very few number) 
 
 Lets discuss what the {G vertices}-{shortestPathsDAG vertices} 
 looks like, call this set subtraction verticesToTest.
@@ -97,6 +96,9 @@ These edges form a forest of components sprawled around the
 shortestPathsDAG. We have to test these components, 
 and throw them out if they don't identify a path of longer length.
 
+(We will also later see what happens when Y topologically comes before X in the shortestPathsDAG)
+Finally 
+
 The core idea of pseudocode below: 
 
 To find CrazySegment, we go through verticesToTest, 
@@ -104,36 +106,46 @@ and do crazy BFS, and reverse crazy BFS.
 
 Steps: 
 
-1) Run reverse crazy BFS to find X with vertex Z on the graph.
-2) Run crazy BFS to find Y with vertex Z on the graph. 
-   If Crazy BFS sees X, ignore and continue, because Y cant be X since it's simple path.
+1) Run reverse crazy BFS to find possibleXToZ with vertex Z on the graph.
+2) Run crazy BFS to find possibleYFromZ with vertex Z on the graph. 
 
-3) If we dont find X, dont find Y, or dont find either, then we can reduce verticesToTest getting us closer to algorithm termination: 
-   If we dont find an X, then there are no exit points that lead out from the DAG to Z.  
+
+
+3) If we dont find any X, dont find any Y, or dont find either, then we can reduce verticesToTest getting us closer to algorithm termination: 
+   If we dont find any X, then there are no exit points that lead out from the DAG to Z.  
    This also means there are no exit points that lead out from the DAG to the vertices visited by the reverse crazy BFS on Z. 
    (Otherwise, we would have found an X that reaches Z).
     We can remove all the vertices we traversed in the reverse crazy BFS from verticesToTest.  
 
-    Similarly, if we dont find a Y, then there are no re-entry points that lead from Z back into the DAG.
+    Similarly, if we dont find any Y, then there are no re-entry points that lead from Z back into the DAG.
     This also means there are no re-entry points that lead into the DAG using Z's visited vertices.  
     (Otherwise, we would have found a Z that reaches Y).
     We can remove all the vertices we traversed in the crazy BFS from verticesToTest. 
 
-4) If we found both X and Y:
 
-       The BFSTree touches the shortestPathsDAG in two places, called X and Y in the shortestPathsDAG. 
-       We can CREATE a new path (PLEASE LOOK AT ALGO BELOW TO SEE LONGER PATH CREATION ALGORITHM). 
-       The NEW path is [S-X, X->Z->Y, Y->T], called Q. We get its path length and compare it with the shortestPathLength. 3 CASES: 
-       
-       A) Q's length is longer than the shortest length. We are done. 
-          We found 2 simple paths of different length, the shortest one, and [S->X, X->Z->Y, Y->T].
-       
-       
-       B) PATH [S-X, X->Z->Y, Y->T] could not be created. (For reasons why a path can't be created look at below algorithm).
-          We memoize the results of why the path could not be created, so next time, we know not to pick those memoized X and Y (and some 
-          of the points between X and Y in the DAG), as entry and exit points. We memoize the results in a map of sets called invalidXY.
-          invalidXY states all invalid Y vertices for every vertex X.    
-          We also rerun the above CrazyBFS and ReverseCrazyBFS on the same Z, and try to find a different Y for the X. 
+
+4) If we found one or more X and one or more Y(So len(possibleXToZ) > 0 and len(possibleYFromZ) > 0):
+
+    For each X in possbleXToZ:
+        For each Y in possibleYFromZ:
+            if( X != Y): 
+                The BFSTree touches the shortestPathsDAG in two places, called X and Y in the shortestPathsDAG. 
+                We can CREATE a new path (PLEASE LOOK AT ALGO BELOW TO SEE LONGER PATH CREATION ALGORITHM). 
+                path = createLongerPath(S, T, X, Y, CRAZYSEGMENT, shortestPathsDAG)
+                
+                The NEW path is [S->X, X->Z->Y, Y->T], called Q.
+
+
+                A) Q's length is longer than the shortest length. We are done. 
+                    We found 2 simple paths of different length, the shortest one, and [S->X, X->Z->Y, Y->T].
+
+
+                B) PATH [S-X, X->Z->Y, Y->T] could not be created. (For reasons why a path can't be created look at below algorithm).
+                    We memoize the results of why the path could not be created, so next time, we know not to pick those memoized X and Y (and some 
+                    of the points between X and Y in the DAG), as entry and exit points. We memoize the results in a map of sets called invalidXY.
+                    invalidXY states all invalid Y vertices for every vertex X.    
+                    We also rerun the above CrazyBFS and ReverseCrazyBFS on the same Z, and try to find a different Y for the X. 
+
 
 
 If we run out of verticesToTest, we have exhausted all possible longer paths that could have existed, and return False.
