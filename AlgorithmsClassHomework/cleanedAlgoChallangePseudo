@@ -174,27 +174,44 @@ while verticesToTest is not Empty:
     If we run out of verticesToTest, we have exhausted all possible longer paths that could have existed, and return False.
 
 
-########################################################################################################################################################3
-Running Time.
+######################################################################
+Running Time. (Assuming set look up, map lookup, set add is all O(1))
 
-The algorithm does BFS at the beginning. O(V+E).
+The algorithm does buildShortestPathsDAG at the beginning 
+which is 2 BFS calls. and a for loop through every vertex in G in the worst case.
+The algorithm also builds shortest paths and puts them in the DAG.
+It doesn't iterate through vertices it puts in the DAG. So O( V+E ) runtime. 
 
+The algorithm then checks for lost edges which is O(E*V) time because worst 
+case it goes through every vertex and checks every neighbour.
 
-
-In the very worst case, the algorithm does BFS on every vertex, and only manages to reduce by 2 vertices and two edges.
-This happens when the shortest path is length 2 (cant be 1 because that would cause case 1 of CRAZY SEGMENT BFS), 
-and we keep getting length 2 shortest paths to add to the DAG.
-This would cause a worst case of |V| * O(V+E)
-
-
-AVERAGE CASE:
-Otherwise it does BFS for a few components. If there are k components, and each component has P vertices, and Q edges, k*O(P+Q).
-However, the sum of all the P's is bounded by V, and the sum of all the Q's is bounded by E. So this can be seen as one big BFS, and becomes O(V+E) 
-The average case runtime is therefore: O(V+E). 
+Reverse G which is O(V+E) time. 
 
 
+In the very worst case, the algorithm does CRAZY BFS AND REVERSE CRAZY BFS 
+on every vertex. Each run, verticesToTest goes down by 1.
 
-##############################################################################################################################################################
+We go through every pair (X, Y) we find in our 2 BFS's. 
+We run the path creation algorithm which is 4 DFS's back to back in the worst case.
+So going through each pair in the worst case costs O(V + E).
+
+If we dont consider the heavy optimizations that come from memoization,
+then for every vertex, we run through V^2 pairs. 
+(if the number of X's we found is V, and number of Y's we found is V)
+That means that O( (V+E) * V^3) is the worst case to do outer vertex method. 
+
+I think, with some work, it could be proved that worst case for 
+outer vertex method is O(V+E) if we
+considered the reduction of verticesToTest 
+and memoization of BADXY more thoroughly.  
+
+
+So worst case for this algorithm is O( (V+E) * V^3). 
+
+And this run time is polynomial.
+
+
+###################################################################################
 
 PSEUDO_CODE:
 
