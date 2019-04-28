@@ -148,7 +148,8 @@ def cap_counting_with_dp(arr):
     def cap_counting(arr, curr_level, state_map):
         
         # dict has to have keys sorted before they are entered or retrieved.
-        # better way is to store this in the dict instead of the array as the state, but currLevel and capToBeChosen at that level.  
+        # better way is to store this in the dict instead of the array 
+        # as the state, but currLevel and capToBeChosen at that level.  
 
         if(len(arr) == 0):
 
@@ -157,7 +158,8 @@ def cap_counting_with_dp(arr):
         
         
         if(len(arr[0]) == 0):
-            # if array has nothing it can choose from, return 0, removed an element that disabled rest of people to be able to choose a cap
+            # if array has nothing it can choose from, return 0, removed 
+            # an element that disabled rest of people to be able to choose a cap
             return 0
 
         tot = 0
@@ -195,9 +197,7 @@ print("all paths found", all_paths_found)
 
 
 # DP WITH MASKING SOLUTION
-
-
-#Python program to find number of ways to wear hats
+# Python program to find number of ways to wear hats
 from collections import defaultdict
  
 class AssignCap:
