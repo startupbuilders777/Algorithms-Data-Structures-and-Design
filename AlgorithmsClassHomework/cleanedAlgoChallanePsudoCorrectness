@@ -1,0 +1,73 @@
+################################################################################################################################
+
+
+PROGRAM CORRECTNESS:
+
+shortestPathsDAG enumerates only shortest paths i.e., shortestPathsDAG does not contain longer paths. 
+
+
+
+To create a longer path only requires using 2 vertices in DAGraph 
+(and using more vertices for something like 2 crazy paths is not something we need to search for):
+
+
+
+shortestPathsDAG will be used to construct a longer path. 
+
+
+
+Lost Edges are cross edges or backward edges and finding a lost 
+edge means we found a longer path.
+
+
+Lost Edges Method and Outer Vertex Method each find a set of longer paths, and these 
+2 sets are mutually exclusive and the set addition is all the possible longer paths in the graph
+between S and T.
+
+
+'''
+CORRECTNESS PROOF (work in progress):
+
+
+The shortest ST-Path was found using BFS. 
+
+We save these vertices in DAGVertices. 
+The DAGVertices are the vertices for the graph. 
+Let DAGVertices be shortest paths that go from S to T.
+
+
+All the vertices not in DAGVertices are edges that can be used to elongate the path from S to T.
+All the vertices not in DAGVertices is a forest of subgraphs. 
+
+
+Lets look at all the possibilities for these subgraphs that can be used to generate a longer path: 
+
+
+    If the subgraph is not connected to the shortestPATHDAG at all (it was a seperate component), 
+    then the twostep BFS will identify it and remove it from the verticesToTest
+    
+    If the subgraph is connected to the shortestPATHDAG, 
+    We run TWOSTEP BFS on a vertex U in verticesToTest:
+
+        Case 1: No vertex in the shortestPATHDAG is found:    
+            This case is impossible because the graph is connected.
+
+        Case 2: 1 vertex in the shortestDAG Graph is found: 
+            One intersection vertex cannot be used to elongate a path, because 2 nodes
+            are needed to go into a CRAZY SEGMENT and leave CRAZY SEGMENT to go to T
+           
+            All vertices that were discovered in the BFS of U will be 
+            removed from verticesToTest because they will all lead to this case 
+            (1 vertex in the shortestDAG Graph case).
+
+        Case 3: 2 vertices in the shortestDAG Graph is found:
+            A new path can be formed by doing [S->X, X->COMMON_PARENT, COMMON_PARENT->Y, Y->T]
+            If the new path is the same size as the shortest path, 
+                add the path to DAGVertices, and to the DAG Graph
+                remove the vertices of newPath from verticesToTest 
+
+            If the new path is longer, return True
+
+'''
+
+##########################################################################################################################################################
