@@ -27,10 +27,10 @@
 Graphs =>
     Try BFS/DFS/A star search
     Use dist/parent/visited maps to get values
-    -> Cycle detection
+    -> Cycle detection -> use visited map
     -> shortest path = BFS
-    -> 
-
+    -> Do parent stuff with parents map (such as common ancestors).
+    -> Cool graph techniques is coloring nodes, or flagging nodes if you are trying to get multiple paths in graph and looking for path intersections. 
 
 
 LRU Cache learnings and techniques=>
@@ -52,9 +52,22 @@ They will keep these values ordered for pairing purposes.
 6) If you need to do range searches, you need a range tree. if you dont have time to get a range tree, 
     use binary searching as the substitute!
 
-7) if the problem is unsorted, try sorting and 
+7) if the problem is unsorted, try sorting and if you need to keeping track of indexes (reverse index map) to do computations. 
+
+7.5) If the problem is already sorted, try binary search. 
 
 8) Do preprocessing work before you start solving problem to improve efficiency. This follows the abuse 
    dictionaries guide.
 
 9) Use Counter in python to create a multiset. 
+
+10) Use dynamic programming for optimal substructure, subsequence questions
+    -> Top down is easier to reason because you just memoize solutions youve seen before. 
+
+11) Know how to write BFS with a deque, and DFS explicitely with a list. Keep tracking of function arguments in tuple for list. 
+
+12) If you need a priority queue, use heapq. Need it for djikistras. Djikstras is general BFS for graphs with different sized edges. 
+
+
+13) Skip lists are nice
+
