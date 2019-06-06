@@ -1,0 +1,60 @@
+
+1) Exploit problem structure
+
+    a) This means using a sliding window
+    b) This means keeping track of running values, and updating permanent values such as 
+        keeping tracking of curr_max_from_left to update overall_max when you are running through an array
+        -> running variables, running maps, running sets
+    c) Use 2 pointer solutions. Two pointers can be nodes or indexes in an array.
+
+1.5) LOOK AT PROBLEM IN ALL POSSIBLE DIRECTIONS to apply your techniques, whether its 2 pointer, 
+    sliding window, or Dynamic programm
+    a) think about left to right
+    b) right to left
+    c) 2 pointer on either side and you close into the middle
+    d) 2 pointers, one that traverses even indexes, and the other that traverses odd indexes
+    e) Be creating in how you see the DIRECTIONALITY of the solution for a given problem. 
+
+
+
+2) Back tracking
+    => For permutations, need some intense recursion 
+        (recurse on all kids, get all their arrays, and append our chosen element to everyones array, return) 
+        and trying all posibilities
+    => For combinations, use a binary tree. Make the following choice either: CHOOSE ELEMENT. DONT CHOOSE ELEMENT. Recurse on both cases to get all subsets
+    => To get all subsets, count from 0 to 2^n, and use bits to choose elements.
+
+Graphs =>
+    Try BFS/DFS/A star search
+    Use dist/parent/visited maps to get values
+    -> Cycle detection
+    -> shortest path = BFS
+    -> 
+
+
+
+LRU Cache learnings and techniques=>
+    Circular Doubly linked lists are better than doubly linked lists if you set up dummy nodes
+    so you dont have to deal with edge cases regarding changing front and back pointers
+    -> With doubly linked lists and maps, You can remove any node in O(1) time as well as append to front and back in O(1) time 
+       which enables alot of efficiency
+
+    -> You can also use just an ordered map for this question to solve it fast!! (pop items and put them back in to bring them to the front technique to do LRU)
+
+4) To do things inplace, such as inplace quick sort, or even binary search, 
+    it is best to operate on index values in your recursion instead of slicing and joining arrays.
+    Always operate on the pointers for efficiency purposes.
+
+5) If you need to keep track of a list of values instead of just 1 values such as a list of maxes, instead of 1 max, 
+and pair off them off, use an ordered dictionary! 
+They will keep these values ordered for pairing purposes. 
+
+6) If you need to do range searches, you need a range tree. if you dont have time to get a range tree, 
+    use binary searching as the substitute!
+
+7) if the problem is unsorted, try sorting and 
+
+8) Do preprocessing work before you start solving problem to improve efficiency. This follows the abuse 
+   dictionaries guide.
+
+9) Use Counter in python to create a multiset. 
