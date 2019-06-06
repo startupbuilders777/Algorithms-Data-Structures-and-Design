@@ -1,0 +1,132 @@
+# Problem: 
+# Given a set of numbers (in an integer array), 
+# this problem is to find subsets whose 
+# elements add up to a specific target number. 
+# For example, there are two subsets of the set {1, 3, 4, 5} whose elements add up to 5.
+
+# array = {1, 3, 4, 5},  target = 5
+
+
+# {1, 4} = 5
+# {5} = 5
+# By contrast, there is no subset of {1, 3, 4, 5} whose elements add up to 11.
+
+# 2
+
+# int findNumOfSubset(int[] array, int target);
+
+def target_sum(numbers, target):
+
+    nums = len(numbers)
+    totalSubsets = 0
+
+    for x in range(2^^nums): 
+        
+        string = bin(x) // 001, 010, 011, 
+
+        numbers = []
+                                           {1,2,3,4,5,6}
+        for i, idx in enumerate(string): # 000 101
+            if(i == "1"):
+                numbers.append(numbers[idx])
+
+        if(sum(numbers) == target): 
+            totalSubsets += 1
+
+    
+    return totalSubsets 
+
+
+# {1, 3, 4, 5, -1} = 8
+ 
+def recursive_target(array, index=0, target):
+    
+
+    if(index == len(array)):
+        return 0
+    
+    else: 
+        addOne = 0
+        if(target == 0):
+            addOne = 1
+
+        val = array[index]
+        
+        # pick element, 
+        amountOfSubsets1 = recursive_target(array, index+1, target-val)
+        
+        amountOfSubsets2 = recursive_target(array, index+1, target)
+
+        return addOne + amountOfSubsets1 + amountOfSubsets2
+
+# Partial problem is => this subset yields this difference
+# 
+# A[{1, 9, 3}] =  
+# {1, 9, 3, 4, 5} , 11.
+
+# A[{1, 3}] = 7 # The difference.
+# We've done A[{1, 3}] and A[{ 4, 2}]
+
+
+# A[{1, 3 , 4}] = A[{1, 3, 4, 5}] - A[{5}]
+                #  7 + 10
+                #  A[{1}] = 11-1 = 10
+# 
+# init 
+# num(11) = num(10) 
+
+index,  target, 
+  0       11 
+  
+  1       10 
+  1       11
+  
+  2       7
+  2       10
+  2       8 
+  2       11
+
+  3       3
+  3       7
+  3       6
+  3       10
+  3       4 
+  3       8
+  3       7
+  3       11
+
+  4       -2
+  4        3
+  4        2
+  4        7
+  4        1
+  4        6
+  4        5
+  4        0
+  4        -1
+  4        4
+  4        3 
+  4        8
+  4        2
+  4        7
+  4        6
+  4        11
+  
+
+
+
+
+
+
+
+# O(2^len(array) * len(array))
+# O(2^len(array))
+
+
+
+
+
+
+
+
+print('Hello world - Python!')
