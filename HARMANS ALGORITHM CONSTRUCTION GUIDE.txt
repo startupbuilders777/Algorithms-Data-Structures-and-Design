@@ -103,6 +103,23 @@ They will keep these values ordered for pairing purposes.
 
 10) Use dynamic programming for optimal substructure, subsequence questions
     -> Top down is easier to reason because you just memoize solutions youve seen before. 
+    -> Check for optimal substructure ( A given problems has Optimal Substructure Property 
+                                       if optimal solution of the given problem can be obtained 
+                                       by using optimal solutions of its subproblems.)
+    -> Check of overlapping solutions. Make problems overlap by processing it in a certian way!!! Look at directionality!!! 
+        (DP cant help binary search because no overlapping)
+
+    -> TO DO IT: Define Subproblems. Dynamic programming algorithms usually involve a recurrence involving
+            some quantity OPT(k₁, …, kₙ) over one or more variables (usually, these variables
+            represent the size of the problem along some dimension). Define what this quantity represents
+            and what the parameters mean. This might take the form “OPT(k) is the maximum
+            number of people that can be covered by the first k cell towers” or “OPT(u, v, i) is the
+            length of the shortest path from u to v of length at most i.”
+            • Write a Recurrence. Now that you've defined your subproblems, you will need to write
+            out a recurrence relation that defines OPT(k₁, …, kₙ) in terms of some number of subproblems.
+            Make sure that when you do this you include your base cases.
+
+    -> LOOK BELOW FOR DYNAMIC PROGRAMMING RECURRENCE EXAMPLES!!!
 
 11) Know how to write BFS with a deque, and DFS explicitely with a list. Keep tracking of function arguments in tuple for list. 
 
@@ -125,7 +142,7 @@ They will keep these values ordered for pairing purposes.
 
 
 
-18) Bit magic -> 
+18) Bit magic -> Entire section below
 
 
 
@@ -301,9 +318,42 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         K Pairs with Largest Sums (Hard)
 
 
+29) Questions you can solve with XOR can also probably be done with other operators such as +, -, *, /. Make
+    sure you check for integer overflow. thats why xor method is always better.
+
+30) Use loop invarients when doing 2 pointer solutions, greedy solutions, etc. to think about, and help
+    interviewer realize that your solution works!!!
+
+31) Derieive mathematical relationships between numbers in array, and solve for a solution. Since
+    there was a mathematical relationship, xor can prolly be used for speedup. 
+    For instance: Find the element that appears once
+
+        Given an array where every element occurs three times, except one element which occurs only once. 
+
+        Soln: Add each number once and multiply the sum by 3, we will get thrice the sum of each 
+        element of the array. Store it as thrice_sum. Subtract the sum of the whole array 
+        from the thrice_sum and divide the result by 2. The number we get is the required 
+        number (which appears once in the array).
+
+
+
+#####################################################################################################################
+
+COOL NOTES PART 1: DYNAMIC PROGRAMMING RECURRENCES EXAMPLES:
+
+
+
+
+
+
+
+
+
+
+
 #################################################################################################################
 
-COOL Notes PART 1: Bit Magic
+COOL Notes PART 2: Bit Magic
 
 1) The left shift and right shift operators should not be used for negative numbers 
 If any of the operands is a negative number, it results in undefined behaviour. 
@@ -331,7 +381,71 @@ variable (assuming that the negative numbers are stored in 2’s complement
 form where leftmost bit is the sign bit)
 
 
-COOL NOTES PART 2: USING XOR TO SOLVE PROBLEMS EXAMPLES: ##################################################################################3
+-> X ^ 0s = x
+-> X ^ 1s = ~x
+x ^ x = 0
+
+7) Compute XOR from 1 to n (direct method) :
+
+        // Direct XOR of all numbers from 1 to n 
+        int computeXOR(int n) 
+        { 
+        	if (n % 4 == 0) 
+        		return n; 
+        	if (n % 4 == 1) 
+        		return 1; 
+        	if (n % 4 == 2) 
+        		return n + 1; 
+        	else
+        		return 0; 
+        } 
+
+8) We can quickly calculate the total number of combinations with numbers smaller than or
+   equal to with a number whose sum and XOR are equal. Instead of using looping 
+   (Brute force method), we can directly find it by a mathematical trick i.e.
+
+    // Refer Equal Sum and XOR for details.
+    Answer = pow(2, count of zero bits)
+
+9) How to know if a number is a power of 2?
+        // Function to check if x is power of 2 
+        bool isPowerOfTwo(int x) 
+        { 
+        	// First x in the below expression is 
+        	// for the case when x is 0 
+        	return x && (!(x & (x - 1))); 
+        } 
+
+10) Find XOR of all subsets of a set. We can do it in O(1) time. 
+    The answer is always 0 if given set has more than one elements. 
+    For set with single element, the answer is value of single element. 
+
+11) We can quickly find number of leading, trailing zeroes and number of 1’s 
+    in a binary code of an integer in C++ using GCC. 
+    It can be done by using inbuilt function i.e.
+  
+    Number of leading zeroes: builtin_clz(x)
+    Number of trailing zeroes : builtin_ctz(x)
+    Number of 1-bits: __builtin_popcount(x) 
+    Refer GCC inbuilt functions for details.
+
+12) Convert binary code directly into an integer in C++.
+        // Conversion into Binary code// 
+        #include <iostream> 
+        using namespace std; 
+        
+        int main() 
+        { 
+            auto number = 0b011; 
+            cout << number; 
+            return 0; 
+        } 
+        Output: 3
+
+
+
+
+COOL NOTES PART 3: USING XOR TO SOLVE PROBLEMS EXAMPLES: ##################################################################################3
 
 1) You are given a list of n-1 integers and these integers are in the range of 1 to n. 
 There are no duplicates in list. One of 
