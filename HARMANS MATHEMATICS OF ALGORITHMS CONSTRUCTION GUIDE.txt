@@ -1,0 +1,101 @@
+
+SCRAPE AND WRITE NOTES FOR FOLLOWING: https://www.geeksforgeeks.org/number-theory-competitive-programming/#basics
+
+1) Greatest Common Divisor and Least Common Multiple
+
+        The GCD (Greatest Common Divisor) of two numbers is defined as the largest integers 
+        that divides both the numbers. For example, 2 is the GCD of 4 and 6. From this concept, 
+        follows something called co-primes. Two numbers are said to be co-primes if their GCD is 1. 
+        For example, 3 and 5 are co-primes because their GCD is 1.
+
+        Coming to LCM (Least Common Multiple), it is defined as the 
+        smallest integer that is divisible by both the numbers. 
+        For example, 10 is the LCM of 2 and 5.
+
+        Given any two numbers a and b,
+        gcd(a, b) = a*b / lcm(a, b)
+
+2) Euclids algo to get GCD and LCM
+    A simple implementation of Euclid's GCD algorithm in C++ would be,
+
+        int gcd(int a,int b)
+        {
+            return b==0?a:gcd(b,a%b);
+        }
+        Once we calculate the GCD of two numbers, we can calculate the LCM very easily.
+
+        int lcm(int a,int b)
+        {
+            return (a*b)/gcd(a,b);
+        }
+
+        If a is smaller than b, the first step of the algorithm swaps the numbers. 
+        For example, if a < b, the initial quotient is zero and the remainder is a. 
+        Thus, rk is smaller than it's predecessor rk-1.
+        Since the remainders decrease with every iteration, a remainder rN must eventually equal 0, 
+        at which point this algorithm stops. The final non-zero remainder rN-1 
+        is the greatest common divisor for a and b.
+
+        g = gcd(a, b) = gcd(b, r0) = gcd(r0, r1) = … = gcd(rN−2, rN−1) = rN−1.
+
+
+3) Prime Number Detection:
+        we can reduce the loop even further to check until sqrt(n) for any possible divisors. The implementation would be,
+
+        bool isPrime(int x)
+        {
+            for(int i=0;i*i<=x;i++)
+            {
+                if(x%i == 0)
+                    return false;
+            }
+            return true;
+        }
+
+        Notice that in this implementation, we hit only half the number of proper divisors.
+        There are many more algorithms for primality test like 
+        Fermat's little theorem, Miller-Rabin test, Solovay-Strassen 
+
+4) Sieve of Eratosthenes
+
+        In mathematics, the Sieve of Eratosthenes is a very 
+        simple algorithm of finding all prime numbers upto a given limit.
+
+        In this algorithm, we start from the number 2 and keep marking the 
+        composites which are the multiples of a prime. For example, if we were trying 
+        to find the primes below 11. Let the flag array be initialized to zero. The 
+        flag array signifies the compositeness of each number. 
+        It is set to 1 if it is a composite number, otherwise zero.
+
+        As you can notice that after iteration 1, all numbers which are the multiples of 2 
+        have been set to 1, implying that they are composite numbers. When we move to iteration 2, 
+        all multiples of 3 have been marked composite. Notice that we do not change the mark of 2 
+        and 3, since they weren't multiples of any smaller number, thus implying that they are primes. 
+        Once all the numbers have been visited once, we loop through the flag array and filter 
+        out the numbers with flag value set to 0. This gives us all the primes in the range.
+
+        //Finding all primes within the range [1,n)
+        void sieve(int n)
+        {
+            vector<int> flag(n,0);
+            flag[0] = flag[1] = 1;              //Setting 0 and 1 as composites.
+            //Finding the primes.
+            for(int i=2;i<n;i++)                //Running a loop from 2 to n-1.
+            {
+                if(flag[i]==0)                  //Found a prime.
+                {
+                    for(int j=2*i;j<n;j+=i)     //looping through the multiples of the prime.
+                        flag[j] = 1;            //Setting flag to composite.
+                }
+            }
+            //Printing the primes.
+            for(int i=0;i<n;i++)
+            {
+                if(flag[i]==0)
+                    cout << i << " ";
+            }
+            cout << endl;
+        }
+
+
+5)

@@ -118,6 +118,22 @@ They will keep these values ordered for pairing purposes.
             • Write a Recurrence. Now that you've defined your subproblems, you will need to write
             out a recurrence relation that defines OPT(k₁, …, kₙ) in terms of some number of subproblems.
             Make sure that when you do this you include your base cases.
+    -> The other key property is that there
+            should be only a polynomial number of different subproblems. These two properties together allow
+            us to build the optimal solution to the final problem from optimal solutions to subproblems.
+            In the top-down view of dynamic programming, the first property above corresponds to being
+            able to write down a recursive procedure for the problem we want to solve. The second property
+            corresponds to making sure that this recursive procedure makes only a polynomial number of
+            different recursive calls. In particular, one can often notice this second property by examining
+            the arguments to the recursive procedure: e.g., if there are only two integer arguments that range
+            between 1 and n, then there can be at most n^2 different recursive calls.
+            Sometimes you need to do a little work on the problem to get the optimal-subproblem-solution
+            property. For instance, suppose we are trying to find paths between locations in a city, and some
+            intersections have no-left-turn rules (this is particulatly bad in San Francisco). Then, just because
+            the fastest way from A to B goes through intersection C, it doesn’t necessarily use the fastest way
+            to C because you might need to be coming into C in the correct direction. In fact, the right way
+            to model that problem as a graph is not to have one node per intersection, but rather to have one
+            node per <Intersection, direction> pair. That way you recover the property you need.
 
     -> LOOK BELOW FOR DYNAMIC PROGRAMMING RECURRENCE EXAMPLES!!!
 
