@@ -1,4 +1,4 @@
-
+TODO: Research fenwick trees.
 
 THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
 
@@ -371,18 +371,485 @@ COOL NOTES PART 1: DYNAMIC PROGRAMMING RECURRENCES EXAMPLES:
 
 COOL Notes PART 2: Bit Magic
 
-1) The left shift and right shift operators should not be used for negative numbers 
+0.1) How to set a bit in a number:
+        void set(int & num,int pos) 
+    { 
+         // First step is shift '1', second 
+         // step is bitwise OR 
+         num |= (1 << pos); 
+    }     
+
+0.2) How to unset/clear a bit at nth position in the number:
+        // First step is to get a number that  has all 1's except the given position. 
+        void unset(int &num,int pos) 
+        { 
+            //Second step is to bitwise and this  number with given number 
+            num &= (~(1 << pos)); 
+        } 
+
+0.3) Toggle bit an nth position (use xor for toggling)
+        // First step is to shift 1,Second step is to XOR with given number 
+        void toggle(int &num,int pos) 
+        { 
+            num ^= (1 << pos); 
+        } 
+
+
+0.4) Checking if bit at nth position is set or unset: It is quite easily doable using ‘AND’ operator. 
+        Left shift ‘1’ to given position and then ‘AND'(‘&’).
+
+        bool at_position(int num,int pos) 
+        { 
+            bool bit = num & (1<<pos); 
+            return bit; 
+        } 
+
+0.5) Inverting every bit of a number/1’s complement (this is how to get 1s complement):
+        If we want to invert every bit of a number i.e change bit ‘0’ to ‘1’ and bit ‘1’ to ‘0’.
+        We can do this with the help of ‘~’ operator. For example : if number is num=00101100 (binary representation) 
+        so ‘~num’ will be ‘11010011’.
+
+0.6) Get twos complement: complement of a number is 1’s complement + 1.
+    So formally we can have 2’s complement by finding 1s complement and adding 1 
+    to the result i.e (~num+1) or what else we can do is using ‘-‘ operator.
+        int main() 
+        { 
+            int num = 4; 
+            int twos_complement = -num; 
+            cout << "This is two's complement " << twos_complement << endl; 
+            cout << "This is also two's complement " << (~num+1) << endl; 
+            return 0; 
+        } 
+
+0.7) Stripping off the lowest set bit: 
+
+        In many situations we want to strip off the lowest set bit for example in 
+        Binary Indexed tree data structure, counting number of set bit in a number.
+
+        We do something like this:
+
+        X = X & (X-1)
+
+        Let us see this by taking an example, let X = 1100.
+
+        (X-1)  inverts all the bits till it encounter lowest set ‘1’ 
+        and it also invert that lowest set ‘1’.
+
+        X-1 becomes 1011. After ‘ANDing’ X with X-1 we get lowest set bit stripped.
+
+0.8) Getting lowest set bit of a number:
+        This is done by using expression ‘X &(-X)’
+        Let us see this by taking an example:Let X = 00101100. 
+        So ~X(1’s complement) will be ‘11010011’ and 2’s complement will 
+        be (~X+1 or -X) i.e  ‘11010100’.
+        So if we ‘AND’ original number ‘X’ with its 
+        two’s complement which is ‘-X’, we get lowest set bit.
+        
+        int lowest_set_bit(int num) 
+        { 
+            int ret = num & (-num); 
+            return ret; 
+        } 
+
+0.9) We have considered below facts in this article –
+
+        0 based indexing of bits from left to right.
+        Setting i-th bit means, turning i-th bit to 1
+        Clearing i-th bit means, turning i-th bit to 0
+
+1.0) Clear all bits from LSB to ith bit
+        mask = ~((1 << i+1 ) - 1);
+        x &= mask;
+
+        Logic: To clear all bits from LSB to i-th bit, we have to AND x with mask having LSB to i-th bit 0. 
+                To obtain such mask, first left shift 1 i times. Now if we minus 1 from that, 
+                all the bits from 0 to i-1 become 1 and remaining bits become 0. Now we can 
+                simply take complement of mask to get all first i bits to 0 and remaining to 1.
+                
+                x = 29 (00011101) and we want to clear LSB to 3rd bit, total 4 bits
+                mask -> 1 << 4 -> 16(00010000)
+                mask -> 16 – 1 -> 15(00001111)
+                mask -> ~mask -> 11110000
+                x & mask -> 16 (00010000)
+
+1.1) Clearing all bits from MSB to i-th bit
+
+        mask = (1 << i) - 1;
+        x &= mask;
+       
+        x = 215 (11010111) and we want to clear MSB to 4th bit, total 4 bits
+        mask -> 1 << 4 -> 16(00010000)
+        mask -> 16 – 1 -> 15(00001111)
+        x & mask -> 7(00000111)
+1.2) Divide by 2
+     x >>= 1;
+    Multiply by 2
+    x <<= 1;
+
+1.3) Upper case English alphabet to lower case
+
+        ch |= ' ';
+
+1.4) Lower case English alphabet to upper case
+    
+        ch &= '_’ ;
+
+1.5) 7) Count set bits in integer
+
+        int countSetBits(int x) 
+        { 
+            int count = 0; 
+            while (x) 
+            { 
+                x &= (x-1); 
+                count++; 
+            } 
+            return count; 
+        } 
+
+1.6) Find log base 2 of 32 bit integer
+
+        int log2(int x) 
+        { 
+            int res = 0; 
+            while (x >>= 1) 
+                res++; 
+            return res; 
+        } 
+
+1.7) Checking if given 32 bit integer is power of 2
+
+        int isPowerof2(int x) 
+        { 
+            return (x && !(x & x-1)); 
+        } 
+        Logic: All the power of 2 have only single bit set e.g. 16 (00010000). 
+        If we minus 1 from this, all the bits from LSB to set bit get toggled, 
+        i.e., 16-1 = 15 (00001111). Now if we AND x with (x-1) and the result 
+        is 0 then we can say that x is power of 2 otherwise not. 
+        We have to take extra care when x = 0.
+
+        Example
+        x = 16(000100000)
+        x – 1 = 15(00001111)
+        x & (x-1) = 0
+        so 16 is power of 2
+
+
+
+1.9) The left shift and right shift operators should not be used for negative numbers 
 If any of the operands is a negative number, it results in undefined behaviour. 
 For example results of both -1 << 1 and 1 << -1 is undefined. Also, if the number 
 is shifted more than the size of integer, the behaviour is undefined. For example, 
 1 << 33 is undefined if integers are stored using 32 bits. See this for more details.
 
-2) The bitwise XOR operator is the most useful operator from technical interview perspective. 
-It is used in many problems. A simple example could be “Given a set of numbers where all 
-elements occur even number of times except one number, find the odd occurring number” 
-This problem can be efficiently solved by just doing XOR of all numbers.
 
-3) The bitwise operators should not be used in place of logical operators.
+
+2) [Leetcode A-summary:-how-to-use-bit-manipulation-to-solve-problems-easily-and-efficiently ]
+    Set union A | B
+    Set intersection A & B
+    Set subtraction A & ~B
+    Set negation ALL_BITS ^ A or ~A
+    Set bit A |= 1 << bit
+    Clear bit A &= ~(1 << bit)
+    Test bit (A & 1 << bit) != 0
+    Extract last bit A&-A or A&~(A-1) or x^(x&(x-1))
+    Remove last bit A&(A-1)
+    Get all 1-bits ~0
+
+2.1) Is power of 4:
+
+        bool isPowerOfFour(int n) {
+            return !(n&(n-1)) && (n&0x55555555);
+            //check the 1-bit location;
+        }
+
+2.2) ^ tricks
+Use ^ to remove even exactly same numbers and save the odd, 
+or save the distinct bits and remove the same.
+
+2.3) Sum of Two Integers
+        Use ^ and & to add two integers
+
+        int getSum(int a, int b) {
+            return b==0? a:getSum(a^b, (a&b)<<1); //be careful about the terminating condition;
+        }
+
+2.4) | tricks
+        Keep as many 1-bits as possible
+
+        Find the largest power of 2 (most significant bit in binary form), 
+        which is less than or equal to the given number N.
+
+        long largest_power(long N) {
+            //changing all right side bits to 1.
+            N = N | (N>>1);
+            N = N | (N>>2);
+            N = N | (N>>4);
+            N = N | (N>>8);
+            N = N | (N>>16);
+            return (N+1)>>1;
+        }
+
+2.5) Reverse bits of a given 32 bits unsigned integer.
+
+        uint32_t reverseBits(uint32_t n) {
+            unsigned int mask = 1<<31, res = 0;
+            for(int i = 0; i < 32; ++i) {
+                if(n & 1) res |= mask;
+                mask >>= 1;
+                n >>= 1;
+            }
+            return res;
+        }
+
+        uint32_t reverseBits(uint32_t n) {
+            uint32_t mask = 1, ret = 0;
+            for(int i = 0; i < 32; ++i){
+                ret <<= 1;
+                if(mask & n) ret |= 1;
+                mask <<= 1;
+            }
+            return ret;
+        }
+
+2.6) & tricks. Just selecting certain bits
+
+        Reversing the bits in integer
+
+        x = ((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1);
+        x = ((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2);
+        x = ((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4);
+        x = ((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8);
+        x = ((x & 0xffff0000) >> 16) | ((x & 0x0000ffff) << 16);
+
+
+2.7) Bitwise AND of Numbers Range
+Given a range [m, n] where 0 <= m <= n <= 2147483647, return the bitwise AND of all numbers in this range, inclusive. For example, given the range [5, 7], you should return 4.
+
+        int rangeBitwiseAnd(int m, int n) {
+            int a = 0;
+            while(m != n) {
+                m >>= 1;
+                n >>= 1;
+                a++;
+            }
+            return m<<a; 
+        }
+
+2.8) Number of 1 Bits Write a function that takes an unsigned integer 
+    and returns the number of ’1' bits it has (also known as the Hamming weight).
+
+        int hammingWeight(uint32_t n) {
+            int count = 0;
+            while(n) {
+                n = n&(n-1);
+                count++;
+            }
+            return count;
+        }
+
+        int hammingWeight(uint32_t n) {
+            ulong mask = 1;
+            int count = 0;
+            for(int i = 0; i < 32; ++i){ //31 will not do, delicate;
+                if(mask & n) count++;
+                mask <<= 1;
+            }
+            return count;
+        }
+
+2.9) Application
+Repeated DNA Sequences
+All DNA is composed of a series of nucleotides abbreviated as 
+A, C, G, and T, for example: "ACGAATTCCG". When studying DNA, 
+it is sometimes useful to identify repeated sequences within the DNA. 
+Write a function to find all the 10-letter-long sequences (substrings) 
+that occur more than once in a DNA molecule.
+For example,
+
+        Given s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT",
+        Return: ["AAAAACCCCC", "CCCCCAAAAA"].
+
+
+        class Solution {
+        public:
+            vector<string> findRepeatedDnaSequences(string s) {
+                int sLen = s.length();
+                vector<string> v;
+                if(sLen < 11) return v;
+                char keyMap[1<<21]{0};
+                int hashKey = 0;
+                for(int i = 0; i < 9; ++i) hashKey = (hashKey<<2) | (s[i]-'A'+1)%5;
+                for(int i = 9; i < sLen; ++i) {
+                    if(keyMap[hashKey = ((hashKey<<2)|(s[i]-'A'+1)%5)&0xfffff]++ == 1)
+                        v.push_back(s.substr(i-9, 10));
+                }
+                return v;
+            }
+        };
+
+        But the above solution can be invalid when repeated sequence appears too many times, 
+        in which case we should use unordered_map<int, int> 
+        keyMap to replace char keyMap[1<<21]{0}here.
+
+3.0) Majority Element
+        Given an array of size n, find the majority element. 
+        The majority element is the element that appears more than ⌊ n/2 ⌋ times. 
+        (bit-counting as a usual way, but here we actually 
+        also can adopt sorting and Moore Voting Algorithm)
+
+        Solution
+        int majorityElement(vector<int>& nums) {
+            int len = sizeof(int)*8, size = nums.size();
+            int count = 0, mask = 1, ret = 0;
+            for(int i = 0; i < len; ++i) {
+                count = 0;
+                for(int j = 0; j < size; ++j)
+                    if(mask & nums[j]) count++;
+                if(count > size/2) ret |= mask;
+                mask <<= 1;
+            }
+            return ret;
+        }
+
+
+3.1) Single Number III
+        Given an array of integers, every element appears three 
+        times except for one. Find that single one. (Still this type 
+        can be solved by bit-counting easily.)
+        But we are going to solve it by digital logic design
+
+        Solution
+        //inspired by logical circuit design and boolean algebra;
+        //counter - unit of 3;
+        //current   incoming  next
+        //a b            c    a b
+        //0 0            0    0 0
+        //0 1            0    0 1
+        //1 0            0    1 0
+        //0 0            1    0 1
+        //0 1            1    1 0
+        //1 0            1    0 0
+        //a = a&~b&~c + ~a&b&c;
+        //b = ~a&b&~c + ~a&~b&c;
+        //return a|b since the single number can appear once or twice;
+        int singleNumber(vector<int>& nums) {
+            int t = 0, a = 0, b = 0;
+            for(int i = 0; i < nums.size(); ++i) {
+                t = (a&~b&~nums[i]) | (~a&b&nums[i]);
+                b = (~a&b&~nums[i]) | (~a&~b&nums[i]);
+                a = t;
+            }
+            return a | b;
+        };
+
+
+
+3.2) Maximum Product of Word Lengths
+        Given a string array words, find the maximum value of length(word[i]) * length(word[j]) 
+        where the two words do not share common letters. 
+        You may assume that each word will contain only lower case letters. 
+        If no such two words exist, return 0.
+
+        Example 1:
+        Given ["abcw", "baz", "foo", "bar", "xtfn", "abcdef"]
+        Return 16
+        The two words can be "abcw", "xtfn".
+
+        Example 2:
+        Given ["a", "ab", "abc", "d", "cd", "bcd", "abcd"]
+        Return 4
+        The two words can be "ab", "cd".
+
+        Example 3:
+        Given ["a", "aa", "aaa", "aaaa"]
+        Return 0
+        No such pair of words.
+
+        Solution
+        Since we are going to use the length of the word very frequently and we are to compare the letters of two words checking whether they have some letters in common:
+
+        using an array of int to pre-store the length of each word reducing the frequently measuring process;
+        since int has 4 bytes, a 32-bit type, and there are only 26 different letters, so we can just use one bit to indicate the existence of the letter in a word.
+
+        int maxProduct(vector<string>& words) {
+            vector<int> mask(words.size());
+            vector<int> lens(words.size());
+            for(int i = 0; i < words.size(); ++i) lens[i] = words[i].length();
+            int result = 0;
+            for (int i=0; i<words.size(); ++i) {
+                for (char c : words[i])
+                    mask[i] |= 1 << (c - 'a');
+                for (int j=0; j<i; ++j)
+                    if (!(mask[i] & mask[j]))
+                        result = max(result, lens[i]*lens[j]);
+            }
+            return result;
+        }
+
+        Attention
+        result after shifting left(or right) too much is undefined
+        right shifting operations on negative values are undefined
+        right operand in shifting should be non-negative, otherwise the result is undefined
+        The & and | operators have lower precedence than comparison operators
+        Sets
+
+3.3) All the subsets
+
+        A big advantage of bit manipulation is that it is trivial 
+        to iterate over all the subsets of an N-elemen
+        set: every N-bit value represents some subset. 
+        Even better, if A is a subset of B then the number
+        representing A is less than that representing B, which 
+        is convenient for some dynamic programming solutions.
+
+        It is also possible to iterate over all the subsets of a 
+        particular subset (represented by a bit pattern), provided 
+        that you don’t mind visiting them in reverse order 
+        (if this is problematic, put them in a list as they’re 
+        generated, then walk the list backwards). The trick 
+        is similar to that for finding the lowest bit in a number. 
+        If we subtract 1 from a subset, then the lowest set element 
+        is cleared, and every lower element is set. However, we only 
+        want to set those lower elements that are in the superset. 
+        So the iteration step is just i = (i - 1) & superset.
+
+        vector<vector<int>> subsets(vector<int>& nums) {
+            vector<vector<int>> vv;
+            int size = nums.size(); 
+            if(size == 0) return vv;
+            int num = 1 << size;
+            vv.resize(num);
+            for(int i = 0; i < num; ++i) {
+                for(int j = 0; j < size; ++j)
+                    if((1<<j) & i) vv[i].push_back(nums[j]);   
+            }
+            return vv;
+        }
+        Actually there are two more methods to handle this using recursion and iteration respectively.
+
+        Bitset
+        A bitset stores bits (elements with only two possible values: 0 or 1, true or false, ...).
+        The class emulates an array of bool elements, but optimized for space allocation: 
+        generally, each element occupies only one bit (which, on most systems, 
+        is eight times less than the smallest elemental type: char).
+
+        // bitset::count
+        #include <iostream>       // std::cout
+        #include <string>         // std::string
+        #include <bitset>         // std::bitset
+
+        int main () {
+            std::bitset<8> foo (std::string("10110011"));
+            std::cout << foo << " has ";
+            std::cout << foo.count() << " ones and ";
+            std::cout << (foo.size()-foo.count()) << " zeros.\n";
+            return 0;
+        }
+
+
+3.9) The bitwise operators should not be used in place of logical operators.
 
 4) The left-shift and right-shift operators are equivalent to multiplication and division by 2 respectively.
 As mentioned in point 1, it works only if numbers are positive.
@@ -405,7 +872,7 @@ x ^ x = 0
 
         // Direct XOR of all numbers from 1 to n 
         int computeXOR(int n) 
-        { 
+        {
         	if (n % 4 == 0) 
         		return n; 
         	if (n % 4 == 1) 
@@ -459,7 +926,12 @@ x ^ x = 0
         Output: 3
 
 
+13) Simple approach to flip the bits of a number: It can be done by a simple way, 
+    just simply subtract the number from the value obtained when all the bits are equal to 1 .
 
+
+14) We can quickly check if bits in a number are in alternate pattern (like 101010). 
+    We compute n ^ (n >> 1). If n has an alternate pattern, then n ^ (n >> 1) operation will produce a number having set bits only. ‘^’ is a bitwise XOR operation. 
 
 COOL NOTES PART 3: USING XOR TO SOLVE PROBLEMS EXAMPLES: ##################################################################################3
 

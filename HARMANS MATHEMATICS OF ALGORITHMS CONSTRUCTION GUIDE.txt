@@ -1,5 +1,6 @@
 
 SCRAPE AND WRITE NOTES FOR FOLLOWING: https://www.geeksforgeeks.org/number-theory-competitive-programming/#basics
+SCRAPE AND WRITE NOTES FOR FOLLOWING: https://medium.com/algorithms-and-leetcode/math-related-problems-on-leetcode-9537df481fbe
 
 1) Greatest Common Divisor and Least Common Multiple
 
@@ -98,4 +99,4 @@ SCRAPE AND WRITE NOTES FOR FOLLOWING: https://www.geeksforgeeks.org/number-theor
         }
 
 
-5)
+5) Know module arithmetic
