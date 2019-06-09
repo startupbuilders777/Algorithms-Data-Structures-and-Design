@@ -351,19 +351,106 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         from the thrice_sum and divide the result by 2. The number we get is the required 
         number (which appears once in the array).
 
+32) DP is like traversing a DAG. it can have a parents array, dist, and visited set. SOmetimes you need to backtrack
+    to retrieve parents so remember how to do that!!!!. 
+
+33) Do bidirectional BFS search if you know S and T and you are finding the path! 
+    (i think its good for early termination in case there is no path)
+
+34)
 
 
 #####################################################################################################################
 
-COOL NOTES PART 1: DYNAMIC PROGRAMMING RECURRENCES EXAMPLES:
+COOL NOTES PART 1: DYNAMIC PROGRAMMING RECURRENCES EXAMPLES: 
+(For dp, define subproblem, then recurrence, then base cases, then implement)
+
+1) Given n, find number of diff ways to write n as sum of 1, 3, 4
+    Let Dn be the number of ways to write n as the sum of 1, 3, 4
+    Recurrence: well n = x1 + x2 + ... + xm. If xm = 1, other terms sum to n-1
+    Sums that end with xm=1 is Dn-1
+
+    Recurrence => Dn = Dn-1 + Dn-3 + Dn-4
+    Solve base cases D0 = 1, Dn = 0 for all negative n. 
+    Code:    
+    D[0] = D[1] = D[2] = 1; D[3] = 2;
+    for(i = 4; i <= n; i++)
+        D[i] = D[i-1] + D[i-3] + D[i-4]
 
 
+2) Given 2 strings x and y. Find Longest common subsequence. 
+    Let Dij be the length of LCS of x1...i, y1...j
+    D[i,j] = D[i-1,j-1] + 1 if xi = yj
+    D[i,j] = max{D[i-1, j], D[i, j-1]}  otherwise
 
+    Find and solve base cases(In top down, this is the base case for the recursion): 
+    D[i, 0] = D[0, j] = 0
+    D[0, all the js] = 0
+    D[all the is, 0] = 0
+    When implementing remember to look at your base cases and 
+    understand you have to start with those and build up!
+    Helps you figure out directionality!
+    
+    for i in range(1, n):
+        for j in range(1, n):
+            if(x[i] == y[j])
+                D[i, j] = D[i-1, j-1] + 1
+            else:
+                D[i, j] = max(D[i-1, j], D[i, j-1])
+    
+3) Interval DP
+    Given a string x = x1..n, find the min number of chars that need to be inserted to make it a palindrome. 
+    Let D[i, j] be the min number of char that need to be inserted to make xi..j into a palindrome
 
+    Consider shortest palindrome y1..k containing xi..j. Either y1 = xi or yk = xj.
+    y[2..k-1] is then an optimal solution for x[i+1..j] or x[i..j-1] or x[i+1..j-1]
+    Recurrence:
 
+    Dij = 1 + min(D[i+1, j], D[i, j-1]) if xi != xj
+    Dij  = D[i+1,j-1] if xi=xj  otherwise   
+    
+    Base Case: 
+    D[i,i] = D[i, i-1] = 0 for all i
+    
+    Solution subproblem is D[1, n] => i = 1, j = n
 
+    Directionality is hard here:
+    //fill in base cases here
+    for(t = 2, t<= n; t++):
+        for(i = 1, j =t, j <= n; ++i, ++j):
+            //fill in D[i][j] here
 
+    => We used t to fill in table correctly! This is interval DP! 
+    => This is the correct directionality. DIRECTIONALITY IS BASED ON YOUR BASE CASESE!!!
+    => A good way to figure out how to fill up table is just to write out example D[i][j] and figure
+        out how you are filling them up with your base cases.
 
+    Solution 2:
+    Reverse x to get x-reversed.
+    The answer is n - L where L is the length of the LCS of x and x-reversed
+    
+4) Subset DP => requires bitmasking!
+    Given a weighted graph with n nodes, find the shortest path that visits every node exactly once (TSP)
+    
+    D[S, v] the length of optimal path that visits every node in the set S exactly once and ends at v. 
+    there are n2^n subproblems
+    Answer is min{v in V such that D[V, v]} where V is the given set of nodes. 
+
+    Base Case: 
+    For each node v, D[{v}, v] = 0
+    Recurrence:
+    consider TSP path. Right before arivign at v, the path comes from some u in S - {v}, and that subpath
+    has to be the optimal one that covers S- {v} ending at u.
+    Just try all possible candidates for u
+
+    D[S, v] = min[u in S - {v}] (D[S-{v}][u] + cost(u, v) )
+
+    Use integer to represet set. 19 = 010011 represents set {0, 1, 4}
+    Union of two sets x and y: x | y
+    Set intersection: x & y
+    Symmetic difference: x ^ y
+    singleton set {i}: 1 << i
+    Membership test: x & (1 << i) != 0
 
 
 
