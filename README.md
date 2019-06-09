@@ -201,7 +201,7 @@ They will keep these values ordered for pairing purposes.
         Find the Smallest Missing Positive Number (medium)
 
 
-22) Know in-place reverse linked list
+22) Know in-place reverse linked list (MEMORIZE)
         # Function to reverse the linked list 
             def reverse(self): 
                 prev = None
@@ -357,7 +357,65 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
 33) Do bidirectional BFS search if you know S and T and you are finding the path! 
     (i think its good for early termination in case there is no path)
 
-34)
+34) For linked list questions, draw it out. Dont think about it. Then figur eout how you are rearranging the ptrs.
+    and how many new variables you need.
+
+
+35) Linear Algorithms:
+    Bracket Matching => Use stack
+    Postfix Calculator and Conversion
+        Prefix calculator => 2 + 6 * 3 => this needs binary tree to do i think! with extra mem
+        Prefix: + 2 * 6 3, * + 2 6 3
+        Postfix: 2 6 3 * +, 2 6 + 3 *
+        We can evaluate postfix in O(n). Push elements in stack. when you see operator, 
+        pop 2 elements right, do compute, put back into stack.
+
+    (Static) selection problem
+        Given unchanged array of n elements. can we find kth smallest element of A in O(n). yeah prlly
+        A = {2, 8, 7, 1, 5, 4, 6, 3} 
+        4th smallest is 4. 
+        4 solutions: 
+        sort and get k-1 element O(nlogn)
+        Do heap-select USING MIN HEAP. create min heap of given n element and call extractMin() k times.
+            O(n + kLogn) => because heapify is O(n)
+
+
+
+
+    Sorting in linear time
+    SLiding window
+
+36) Heapify is cool. Python heapify implementation that is O(N) implemented below: 
+    UNDERSTAND IT.
+
+        def heapify(A):
+            for root in xrange(len(A)//2-1, -1, -1):
+                rootVal = A[root]
+                child = 2*root+1
+                while child < len(A):
+                    if child+1 < len(A) and A[child] > A[child+1]:
+                        child += 1
+                    if rootVal <= A[child]:
+                        break
+                    A[child], A[(child-1)//2] = A[(child-1)//2], A[child]
+                    child = child *2 + 1
+
+
+37) Counting sort is following
+
+
+38) Radix sort is following: 
+
+
+
+
+############################################
+
+###############################################
+COOL NOTES PART 0: String matching algorithms
+
+-> Rabin Karp
+-> Code regex
 
 
 #####################################################################################################################

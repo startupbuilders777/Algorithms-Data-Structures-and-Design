@@ -100,3 +100,11 @@ SCRAPE AND WRITE NOTES FOR FOLLOWING: https://medium.com/algorithms-and-leetcode
 
 
 5) Know module arithmetic
+
+
+6) Add computational geometry notes from hackerearth here
+
+7) Go to notes folder and add number theory notes here
+
+8) Read uni lecture slides for math add here
+
