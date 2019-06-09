@@ -387,6 +387,9 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
 
 36) Heapify is cool. Python heapify implementation that is O(N) implemented below: 
     UNDERSTAND IT.
+        # Single slash is simple division in python. 2 slashes is floor division in python
+        # only the root of the heap actually has depth log2(len(a)). Down at the nodes one above a leaf - 
+        # where half the nodes live - a leaf is hit on the first inner-loop iteration.
 
         def heapify(A):
             for root in xrange(len(A)//2-1, -1, -1):
@@ -401,15 +404,140 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
                     child = child *2 + 1
 
 
-37) Counting sort is following
 
+37) Understand counting sort, radix sort.
+        Counting sort is a linear time sorting algorithm that sort in O(n+k) 
+        time when elements are in range from 1 to k.        
+        What if the elements are in range from 1 to n2? 
+        We can’t use counting sort because counting sort will take O(n2) which is worse 
+        than comparison based sorting algorithms. Can we sort such an array in linear time?
+        Radix Sort is the answer. The idea of Radix Sort is to do digit by digit 
+        sort starting from least significant digit to most significant digit. 
+        Radix sort uses counting sort as a subroutine to sort.
 
-38) Radix sort is following: 
-
+        The Radix Sort Algorithm
+        1) Do following for each digit i where i varies from least significant digit to the most significant digit.
+        ………….a) Sort input array using counting sort (or any stable sort) according to the i’th digit.
 
 
 
 ############################################
+COOL NOTES PART -1: SORTING, SEARCHING
+
+37) Counting sort is following:
+        def counting_sort(array, maxval):
+            """in-place counting sort"""
+            n = len(array)
+            m = maxval + 1
+            count = [0] * m               # init with zeros
+            for a in array:
+                count[a] += 1             # count occurences
+            i = 0
+            for a in range(m):            # emit
+                for c in range(count[a]): # - emit 'count[a]' copies of 'a'
+                    array[i] = a
+                    i += 1
+            return array
+
+        print(counting_sort( [1, 4, 7, 2, 1, 3, 2, 1, 4, 2, 3, 2, 1], 7 ))
+
+        Another version:
+
+        def countSort(arr): 
+        
+            # The output character array that will have sorted arr 
+            output = [0 for i in range(256)] 
+        
+            # Create a count array to store count of inidividul 
+            # characters and initialize count array as 0 
+            count = [0 for i in range(256)] 
+        
+            # For storing the resulting answer since the  
+            # string is immutable 
+            ans = ["" for _ in arr] 
+        
+            # Store count of each character 
+            for i in arr: 
+                count[ord(i)] += 1
+        
+            # Change count[i] so that count[i] now contains actual 
+            # position of this character in output array 
+            for i in range(256): 
+                count[i] += count[i-1] 
+        
+            # Build the output character array 
+            for i in range(len(arr)): 
+                output[count[ord(arr[i])]-1] = arr[i] 
+                count[ord(arr[i])] -= 1
+        
+            # Copy the output array to arr, so that arr now 
+            # contains sorted characters 
+            for i in range(len(arr)): 
+                ans[i] = output[i] 
+            return ans  
+        
+        # Driver program to test above function 
+        arr = "geeksforgeeks"
+        ans = countSort(arr) 
+        print "Sorted character array is %s"  %("".join(ans)) 
+
+
+38) Radix sort is following: 
+        def countingSort(arr, exp1): 
+        
+            n = len(arr) 
+        
+            # The output array elements that will have sorted arr 
+            output = [0] * (n) 
+        
+            # initialize count array as 0 
+            count = [0] * (10) 
+        
+            # Store count of occurrences in count[] 
+            for i in range(0, n): 
+                index = (arr[i]/exp1) 
+                count[ (index)%10 ] += 1
+        
+            # Change count[i] so that count[i] now contains actual 
+            #  position of this digit in output array 
+            for i in range(1,10): 
+                count[i] += count[i-1] 
+        
+            # Build the output array 
+            i = n-1
+            while i>=0: 
+                index = (arr[i]/exp1) 
+                output[ count[ (index)%10 ] - 1] = arr[i] 
+                count[ (index)%10 ] -= 1
+                i -= 1
+        
+            # Copying the output array to arr[], 
+            # so that arr now contains sorted numbers 
+            i = 0
+            for i in range(0,len(arr)): 
+                arr[i] = output[i] 
+        
+        # Method to do Radix Sort 
+        def radixSort(arr): 
+        
+            # Find the maximum number to know number of digits 
+            max1 = max(arr) 
+        
+            # Do counting sort for every digit. Note that instead 
+            # of passing digit number, exp is passed. exp is 10^i 
+            # where i is current digit number 
+            exp = 1
+            while max1/exp > 0: 
+                countingSort(arr,exp) 
+                exp *= 10
+        
+        # Driver code to test above 
+        arr = [ 170, 45, 75, 90, 802, 24, 2, 66] 
+        radixSort(arr) 
+        
+        for i in range(len(arr)): 
+            print(arr[i]), 
+
 
 ###############################################
 COOL NOTES PART 0: String matching algorithms

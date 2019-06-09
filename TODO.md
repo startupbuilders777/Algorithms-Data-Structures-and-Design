@@ -1,3 +1,10 @@
+
+SCRAPE THE FOLLOWING FOR COOL NOTES:
+
+https://www.hackerearth.com/practice/notes/trending/
+
+#####################################################################
+
 HERE ARE SOME PLACES TO DO QUESTIONS:
 
 LEETCODE
