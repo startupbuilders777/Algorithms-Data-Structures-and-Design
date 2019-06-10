@@ -378,12 +378,40 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         sort and get k-1 element O(nlogn)
         Do heap-select USING MIN HEAP. create min heap of given n element and call extractMin() k times.
             O(n + kLogn) => because heapify is O(n)
+        Method 3 (Using Max-Heap)
+            We can also use Max Heap for finding the k’th smallest element. Following is algorithm.
+            1) Build a Max-Heap MH of the first k elements (arr[0] to arr[k-1]) of the given array. O(k)
 
+            2) For each element, after the k’th element (arr[k] to arr[n-1]), compare it with root of MH.
+            ……a) If the element is less than the root then make it root and call heapify for MH
+            ……b) Else ignore it.
+            // The step 2 is O((n-k)*logk)
 
+            3) Finally, root of the MH is the kth smallest element.
+
+            Time complexity of this solution is O(k + (n-k)*Logk)
+        METHOD 4(BEST METHOD QUICK SELECT): -> DO MEDIAN OF MEDIANS TO GET O(N) worst time!!!
+
+           The idea is, not to do complete quicksort, but stop at the point where pivot itself is k’th         
+            smallest element. Also, not to recur for both left and right sides of pivot, 
+            but recur for one of them according to the position of pivot. The worst case time          
+            complexity of this method is O(n^2), but it works in O(n) on average.
 
 
     Sorting in linear time
+        Given array, each int between [0, 100] can we sort in O(n). yeah counting sort.
+        What if given arry has range of 32 bit unsigned ints [0, 2^32 -1] => radix sort
+
     SLiding window
+        -> Given an array of n elements, can we find a smallest sub-array size so that the sum of the sub-array is greater 
+        than or equal to a constant S in O(n)
+        2 pointers both start at index 0. move end pointer 
+        to right until you have S. then keep that as current_min_running_length_of_subarray.
+        move start pointer to right to remove elements, then fix by extending end pointer if sum falls below S. 
+        get new subarrays and update current_min_running_length_of_subarray. 
+
+
+
 
 36) Heapify is cool. Python heapify implementation that is O(N) implemented below: 
     UNDERSTAND IT.
@@ -421,10 +449,57 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
 
 
 
-############################################
-COOL NOTES PART -1: SORTING, SEARCHING
+38) To do post order traversal or inorder traversal 
+    on a binary tree iteratively (or doing any dfs, where you want to vist root node last). 
+    you need to USE A FLAG!! (LOOK at morris traversal for cool funs!)
 
-37) Counting sort is following:
+    def postorderTraversal(self, root):
+        traversal, stack = [], [(root, False)]
+        while stack:
+            node, visited = stack.pop()
+            if node:
+                if visited:
+                    # add to result if visited
+                    traversal.append(node.val)
+                else:
+                    # post-order
+                    stack.append((node, True))
+                    stack.append((node.right, False))
+                    stack.append((node.left, False))
+
+        return traversal
+
+    def inorderTraversal(self, root):
+        result, stack = [], [(root, False)]
+
+        while stack:
+            cur, visited = stack.pop()
+            if cur:
+                if visited:
+                    result.append(cur.val)
+                else:
+                    stack.append((cur.right, False))
+                    stack.append((cur, True))
+                    stack.append((cur.left, False))
+
+        return result
+    
+    def preorderTraversal(self, root):
+        ret = []
+        stack = [root]
+        while stack:
+            node = stack.pop()
+            if node:
+                ret.append(node.val)
+                stack.append(node.right)
+                stack.append(node.left)
+        return ret
+
+
+############################################
+COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
+
+     Counting sort is following:
         def counting_sort(array, maxval):
             """in-place counting sort"""
             n = len(array)
@@ -482,7 +557,7 @@ COOL NOTES PART -1: SORTING, SEARCHING
         print "Sorted character array is %s"  %("".join(ans)) 
 
 
-38) Radix sort is following: 
+     Radix sort is following: 
         def countingSort(arr, exp1): 
         
             n = len(arr) 
@@ -538,12 +613,85 @@ COOL NOTES PART -1: SORTING, SEARCHING
         for i in range(len(arr)): 
             print(arr[i]), 
 
+QUICK SELECT MEDIAN OF MEDIANS:  
+
 
 ###############################################
 COOL NOTES PART 0: String matching algorithms
 
 -> Rabin Karp
 -> Code regex
+
+###################################################33
+
+Cool Notes Part 0.5: Sliding Window with a deque
+
+        -> Sliding Window Maximum (Maximum of all subarrays of size k)
+           Given an array and an integer k, find the maximum for each 
+           and every contiguous subarray of size k. O(N) algorithm
+
+           We create a Deque, Qi of capacity k, that stores only useful elements 
+           of current window of k elements. An element is useful if it is in current window 
+           and is greater than all other elements on left side of it in current window. 
+           We process all array elements one by one and maintain Qi to contain 
+           useful elements of current window and these useful elements are 
+           maintained in sorted order. The element at front of the Qi is 
+           the largest and element at rear of Qi is the smallest of current window. 
+        
+            def printMax(arr, n, k): 
+                
+                """ Create a Double Ended Queue, Qi that  
+                will store indexes of array elements.  
+                The queue will store indexes of useful  
+                elements in every window and it will 
+                maintain decreasing order of values from 
+                front to rear in Qi, i.e., arr[Qi.front[]] 
+                to arr[Qi.rear()] are sorted in decreasing 
+                order"""
+                Qi = deque() 
+                
+                # Process first k (or first window)  
+                # elements of array 
+                for i in range(k): 
+                    
+                    # For every element, the previous  
+                    # smaller elements are useless 
+                    # so remove them from Qi 
+                    while Qi and arr[i] >= arr[Qi[-1]] : 
+                        Qi.pop() 
+                    
+                    # Add new element at rear of queue 
+                    Qi.append(i); 
+                    
+                # Process rest of the elements, i.e.  
+                # from arr[k] to arr[n-1] 
+                for i in range(k, n): 
+                    
+                    # The element at the front of the 
+                    # queue is the largest element of 
+                    # previous window, so print it 
+                    print(str(arr[Qi[0]]) + " ", end = "") 
+                    
+                    # Remove the elements which are  
+                    # out of this window 
+                    while Qi and Qi[0] <= i-k: 
+                        
+                        # remove from front of deque 
+                        Qi.popleft()  
+                    
+                    # Remove all elements smaller than 
+                    # the currently being added element  
+                    # (Remove useless elements) 
+                    while Qi and arr[i] >= arr[Qi[-1]] : 
+                        Qi.pop() 
+                    
+                    # Add current element at the rear of Qi 
+                    Qi.append(i) 
+                
+                # Print the maximum element of last window 
+                print(str(arr[Qi[0]])) 
+
+
 
 
 #####################################################################################################################
