@@ -1,4 +1,3 @@
-TODO: Research fenwick trees.
 
 THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
 
@@ -637,7 +636,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     cost cost(e). You have to pay cost(e) amount of money per unit 
     flow per unit flow flowing through e
     -> Problem: Find the max flow that has the minimum total cost.
-    -> Simple algo (Slow): 
+    -> Simple algo (Slow):
         Repeat following:
             Take the residual graph
             Find a negative cost cycle using Bellman Ford
@@ -645,6 +644,341 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
             Circulate flow through the cycle to decrease the total cost,
             until one of the edges is saturated.
                 -> Total amount of flow doesnt change .
+
+45) Can create queue with 2 stacks
+
+
+46) Heap
+    -> Given a node k, easy to compute indices for
+        parent and children
+        - Parent Node: floor(k/2)
+        - Children: 2k, 2k+1
+    You must refer to the definition of a Binary Heap:
+
+        A Binary heap is by definition a complete binary tree ,that is, all levels of the       tree, except possibly the last one (deepest) are fully filled, and, if the last     level of the tree is not complete, the nodes of that level are filled from left to        right.
+        
+        It is by definition that it is never unbalanced. The maximum difference in balance      of the two subtrees is 1, when the last level is partially filled with nodes only       in the left subtree.
+
+    -> To insert node: (running time O(lgn)) (SIFT UP)
+    1) make a new node at last level as far left as possible. 
+    2) if node breaks heap property, swap with its parent node. 
+    3) new node moves up tree. repeat 1) to 3) until all conflicts resolved.
+
+    -> Deleting root node: (SIFT DOWN)
+    1) Remove the root, and bring the last node (rightmost node 
+    in the last leve) to the root. 
+    2) If the root breaks the heap property, look at its children
+    and swap it with the larger one. 
+    3) Repeat 2 until all conflicts resolved
+
+
+
+47) Union Find Structure
+    -> Used to store disjoint sets
+    -> Can support 2 types of operations efficienty:
+    - Find(x) returns the "representative" of the set that x belongs. 
+    - Union(x, y): merges 2 sets that contain x and y
+
+    Both operations can be done in (essentially) constant time
+    Main idea: represent each set by a rooted tree
+        -> Every node maintains a link to its parent
+        -> A root node is "representative" of the corresponding set.
+    
+    Find(x) => follow the links from x until a node points itself. 
+        -> This is O(N). DO PATH COMPRESSION.
+        -> Makes tree shallower every time Find() is called. 
+        -> After Find(x) returns the root, backtrack to x and reroute
+            all the links to the root. 
+
+    Union(x, y) => run Find(x) and Find(y) to find the 
+            corresponding root nodes and direct one to the other
+
+    Union By rank:  
+        always attaches the shorter tree to the root of the 
+        taller tree. Thus, the resulting tree 
+        is no taller than the originals unless they were of equal height, 
+        in which case the resulting tree is taller by one node.
+
+        To implement union by rank, each element is associated with a rank. 
+        Initially a set has one element and a rank of zero. If two sets are 
+        unioned and have the same rank, the resulting set's rank is one larger; 
+        otherwise, if two sets are unioned and have different ranks, the resulting
+        set's rank is the larger of the two. Ranks are used instead of height or 
+        depth because path compression will change the trees' heights over time.
+
+    PSEUDOCODE:
+    function MakeSet(x)
+        if x is not already present:
+            add x to the disjoint-set tree
+            x.parent := x
+            x.rank   := 0
+            x.size   := 1
+
+    function Find(x)
+        if x.parent != x
+            x.parent := Find(x.parent)
+        return x.parent
+
+    function Union(x, y)
+        xRoot := Find(x)
+        yRoot := Find(y)
+    
+        // x and y are already in the same set
+        if xRoot == yRoot            
+            return
+    
+        // x and y are not in same set, so we merge them
+        if xRoot.rank < yRoot.rank
+            xRoot, yRoot := yRoot, xRoot // swap xRoot and yRoot
+    
+        // merge yRoot into xRoot
+        yRoot.parent := xRoot
+        if xRoot.rank == yRoot.rank:
+            xRoot.rank := xRoot.rank + 1
+    
+
+
+48) Applications of Union Find:
+    keep track of the connected components of an undirected graph. 
+    This model can then be used to determine whether 
+    two vertices belong to the same component, 
+    or whether adding an edge between them would result in a cycle. 
+    DETECH CYCLE IN UNDIRECTED GRAPH:
+
+    # The main function to check whether a given graph 
+    # contains cycle or not 
+    def isCyclic(self): 
+          
+        # Allocate memory for creating V subsets and 
+        # Initialize all subsets as single element sets 
+        parent = [-1]*(self.V) 
+  
+        # Iterate through all edges of graph, find subset of both 
+        # vertices of every edge, if both subsets are same, then 
+        # there is cycle in graph. 
+        for i in self.graph: 
+            for j in self.graph[i]: 
+                x = self.find_parent(parent, i)  
+                y = self.find_parent(parent, j) 
+                if x == y: 
+                    return True
+                self.union(parent,x,y) 
+
+
+49) Detect negative cycles with Bellman Ford:
+
+    1) Initialize distances from source to all vertices as infinite and distance to source itself as 0. 
+    Create an array dist[] of size |V| with all values as infinite except dist[src] where src is source vertex.
+
+    2) This step calculates shortest distances. Do following |V|-1 times where |V| is the number of vertices in given graph.
+    …..a) Do following for each edge u-v
+    ………………If dist[v] > dist[u] + weight of edge uv, then update dist[v]
+    ………………….dist[v] = dist[u] + weight of edge uv
+
+    3) This step reports if there is a negative weight cycle in graph. Do following for each edge u-v
+    ……If dist[v] > dist[u] + weight of edge uv, then “Graph contains negative weight cycle”
+
+    The idea of step 3 is, step 2 guarantees shortest distances if graph doesn’t 
+    contain negative weight cycle. If we iterate through all edges one more 
+    time and get a shorter path for any vertex, then 
+    there is a negative weight cycle.
+
+50) Fenwick Tree Structure:
+    ->Full binary tree with at least n leaf nodes
+    ->kth leaf node stores the value of item k
+    
+    ->Each internal node(not leaf) stores the sum of value of its children
+    
+    Main idea: choose the minimal set of nodes whose sum gives the 
+    desired value
+    -> We will see that
+        - at most 1 node is chosen at each level so that 
+        the total number of nodes we look at is log(base 2)n
+        - and this can be done in O(lgn) time
+
+    Computing Prefix sums:
+        Say we want to compute Sum(k)
+        Maintain a pointer P which initially points at leaf k.
+        Climb the tree using the following procedure:
+            If P is pointing to a left child of some node: 
+                -> Add the value of P
+                -> Set P to the parent node of P's left neighbor
+                -> If P has no left neighbor terminate
+            Otherwise:
+                Set P to the parent node of P
+        
+        Use an array to implement!
+
+    Updating a value:
+    Say we want to do Set(k, x) (set value of leaf k as x)
+    -> Start at leaft k, change its val to x
+    -> Go to parent, recompute its val. Repeat until you get to root.
+
+    Extension: make the Sum() function work for any interval,
+    not just ones that start from item 1
+    Can support: Min(i, j), Max(i,j ) (Min/Max element among items i,..j)
+
+
+51) Lowest Common Ancestor:
+    Preprocess tree in O(nlgn) time in order to 
+    answer each LCA query in O(lgn) time
+    Compute Anc[x][k]  
+
+    Each node stores its depth, as well as the links to every 
+    2kth ancestor:
+    O(lgn) adiditional storage per node
+    - Anc[x][k] denotes the 2kth ancestor of node x
+    - Anc[x][0] = x's parent
+    - Anc[x][k] = Anc[Anc[x][k-1]][k-1]
+    
+    Answer query:
+    Given two node indices x and y
+        Without loss of generality, assume depth(x) ≤ depth(y)
+        
+        Maintain two pointers p and q, initially pointing at x and y
+        If depth(p) < depth(q), bring q to the same depth as p
+        – using Anc that we computed before
+        
+        Now we will assume that depth(p) = depth(q)
+
+        If p and q are the same, return p
+        Otherwise, initialize k as ⌈log 2 n⌉ and repeat:
+        – If k is 0, return p’s parent node
+        – If Anc[p][k] is undefined, or if Anc[p][k] and Anc[q][k]
+        point to the same node:
+            Decrease k by 1
+        – Otherwise:
+        
+            Set p = Anc[p][k] and q = Anc[q][k] to bring p and q up
+            by 2^k levels
+
+
+#######################################################
+COOL NOTES PART -4: Graph Algorithms
+
+Bellman Ford:
+
+#Class to represent a graph 
+class Graph: 
+  
+    def __init__(self,vertices): 
+        self.V= vertices #No. of vertices 
+        self.graph = [] # default dictionary to store graph 
+
+    # function to add an edge to graph 
+    def addEdge(self,u,v,w): 
+        self.graph.append([u, v, w]) 
+
+    # The main function that finds shortest distances from src to 
+    # all other vertices using Bellman-Ford algorithm.  The function 
+    # also detects negative weight cycle 
+    def BellmanFord(self, src): 
+  
+        # Step 1: Initialize distances from src to all other vertices 
+        # as INFINITE 
+        dist = [float("Inf")] * self.V 
+        dist[src] = 0 
+  
+  
+        # Step 2: Relax all edges |V| - 1 times. A simple shortest  
+        # path from src to any other vertex can have at-most |V| - 1  
+        # edges 
+        for i in range(self.V - 1): 
+            # Update dist value and parent index of the adjacent vertices of 
+            # the picked vertex. Consider only those vertices which are still in 
+            # queue 
+            for u, v, w in self.graph: 
+                if dist[u] != float("Inf") and dist[u] + w < dist[v]: 
+                        dist[v] = dist[u] + w 
+  
+        # Step 3: check for negative-weight cycles.  The above step  
+        # guarantees shortest distances if graph doesn't contain  
+        # negative weight cycle.  If we get a shorter path, then there 
+        # is a cycle. 
+  
+        for u, v, w in self.graph: 
+                if dist[u] != float("Inf") and dist[u] + w < dist[v]: 
+                        print "Graph contains negative weight cycle"
+                        return
+                          
+        # print all distance 
+        self.printArr(dist) 
+
+Floyd Warshall:
+    We initialize the solution matrix same as 
+    the input graph matrix as a first step. 
+    Then we update the solution matrix by considering all 
+    vertices as an intermediate vertex. 
+    The idea is to one by one pick all vertices and updates all shortest 
+    paths which include the picked vertex as an intermediate vertex in the 
+    shortest path. When we pick vertex number k as an intermediate vertex, 
+    we already have considered vertices {0, 1, 2, .. k-1} as intermediate vertices. 
+
+    For every pair (i, j) of the source and destination 
+    vertices respectively, there are two possible cases.
+
+    1)  k is not an intermediate vertex in shortest path from i to j. 
+        We keep the value of dist[i][j] as it is.
+
+    2)  k is an intermediate vertex in shortest path from i to j. We update 
+        the value of dist[i][j] as dist[i][k] + dist[k][j] if dist[i][j] > dist[i][k] + dist[k][j]
+
+
+    # Solves all pair shortest path via Floyd Warshall Algorithm 
+    def floydWarshall(graph): 
+    
+        """ dist[][] will be the output matrix that will finally 
+            have the shortest distances between every pair of vertices """
+        """ initializing the solution matrix same as input graph matrix 
+        OR we can say that the initial values of shortest distances 
+        are based on shortest paths considering no  
+        intermediate vertices """
+        dist = map(lambda i : map(lambda j : j , i) , graph) 
+        
+        """ Add all vertices one by one to the set of intermediate 
+        vertices. 
+        ---> Before start of an iteration, we have shortest distances 
+        between all pairs of vertices such that the shortest 
+        distances consider only the vertices in the set  
+        {0, 1, 2, .. k-1} as intermediate vertices. 
+        ----> After the end of a iteration, vertex no. k is 
+        added to the set of intermediate vertices and the  
+        set becomes {0, 1, 2, .. k} 
+        """
+
+        for k in range(V): 
+    
+            # pick all vertices as source one by one 
+            for i in range(V): 
+    
+                # Pick all vertices as destination for the 
+                # above picked source 
+                for j in range(V): 
+    
+                    # If vertex k is on the shortest path from  
+                    # i to j, then update the value of dist[i][j] 
+                    dist[i][j] = min(dist[i][j] , 
+                                    dist[i][k]+ dist[k][j] 
+                                    ) 
+        printSolution(dist)
+    
+    graph = [[0,5,INF,10], 
+             [INF,0,3,INF], 
+             [INF, INF, 0,   1], 
+             [INF, INF, INF, 0] 
+        ] 
+
+    # Print the solution 
+    floydWarshall(graph); 
+    Following matrix shows the shortest distances between every pair of vertices
+      0      5      8      9
+    INF      0      3      4
+    INF    INF      0      1
+    INF    INF    INF      0
+
+
+
+
 ##########################################
 COOL NOTES PART -3: NETWORK FLOW Tutorial: maxflow and mincut
 COMPUTING MAX FLOW:
@@ -1447,7 +1781,9 @@ or save the distinct bits and remove the same.
 
 
 2.7) Bitwise AND of Numbers Range
-Given a range [m, n] where 0 <= m <= n <= 2147483647, return the bitwise AND of all numbers in this range, inclusive. For example, given the range [5, 7], you should return 4.
+Given a range [m, n] where 0 <= m <= n <= 2147483647, return the bitwise AND 
+of all numbers in this range, inclusive. 
+For example, given the range [5, 7], you should return 4.
 
         int rangeBitwiseAnd(int m, int n) {
             int a = 0;
@@ -1556,6 +1892,7 @@ For example,
         //a = a&~b&~c + ~a&b&c;
         //b = ~a&b&~c + ~a&~b&c;
         //return a|b since the single number can appear once or twice;
+
         int singleNumber(vector<int>& nums) {
             int t = 0, a = 0, b = 0;
             for(int i = 0; i < nums.size(); ++i) {
@@ -1590,10 +1927,12 @@ For example,
         No such pair of words.
 
         Solution
-        Since we are going to use the length of the word very frequently and we are to compare the letters of two words checking whether they have some letters in common:
+        Since we are going to use the length of the word very frequently and we are to compare 
+        the letters of two words checking whether they have some letters in common:
 
         using an array of int to pre-store the length of each word reducing the frequently measuring process;
-        since int has 4 bytes, a 32-bit type, and there are only 26 different letters, so we can just use one bit to indicate the existence of the letter in a word.
+        since int has 4 bytes, a 32-bit type, and there are only 26 different letters, so we can just use 
+        one bit to indicate the existence of the letter in a word.
 
         int maxProduct(vector<string>& words) {
             vector<int> mask(words.size());
@@ -1753,9 +2092,10 @@ x ^ x = 0
 
 
 14) We can quickly check if bits in a number are in alternate pattern (like 101010). 
-    We compute n ^ (n >> 1). If n has an alternate pattern, then n ^ (n >> 1) operation will produce a number having set bits only. ‘^’ is a bitwise XOR operation. 
+    We compute n ^ (n >> 1). If n has an alternate pattern, then n ^ (n >> 1) operation 
+    will produce a number having set bits only. ‘^’ is a bitwise XOR operation. 
 
-COOL NOTES PART 3: USING XOR TO SOLVE PROBLEMS EXAMPLES: ##################################################################################3
+COOL NOTES PART 3: USING XOR TO SOLVE PROBLEMS EXAMPLES: ####################################
 
 1) You are given a list of n-1 integers and these integers are in the range of 1 to n. 
 There are no duplicates in list. One of 
@@ -2094,13 +2434,8 @@ Similarly we can traverse the list in backward direction.
         learn the 20% or let me know if you want my next article to be about it. )
 
 #########################################3#####
-COOL NOTES PART 5: DATA STRUCTURES TO USE:
 
--> Union Find Disjoint sets
--> Segment Tree
-
-
--> Fenwick Tree
+COOL NOTES PART 5: FENWICK TREES: (A VARIENT OF SEGMENT TREES)
         '''
         We have an array arr[0 . . . n-1]. We would like to
         1 Compute the sum of the first i-th elements.
@@ -2177,7 +2512,86 @@ COOL NOTES PART 5: DATA STRUCTURES TO USE:
                             " after update is " + str(getsum(BITTree,5))) 
     
 
+###################################################################################################################
 
+COOL NOTES PART 6: UNION FIND PYTHON RECIPEE
+
+        """
+        MakeSet(x) initializes disjoint set for object x
+        Find(x) returns representative object of the set containing x
+        Union(x,y) makes two sets containing x and y respectively into one set
+
+        Some Applications:
+        - Kruskal's algorithm for finding minimal spanning trees
+        - Finding connected components in graphs
+        - Finding connected components in images (binary)
+        """
+
+        def MakeSet(x):
+            x.parent = x
+            x.rank   = 0
+
+        def Union(x, y):
+            xRoot = Find(x)
+            yRoot = Find(y)
+            if xRoot.rank > yRoot.rank:
+                yRoot.parent = xRoot
+            elif xRoot.rank < yRoot.rank:
+                xRoot.parent = yRoot
+            elif xRoot != yRoot: # Unless x and y are already in same set, merge them
+                yRoot.parent = xRoot
+                xRoot.rank = xRoot.rank + 1
+
+        def Find(x):
+            if x.parent == x:
+                return x
+            else:
+                x.parent = Find(x.parent)
+                return x.parent
+
+        """"""""""""""""""""""""""""""""""""""""""
+        # sample code using Union-Find (not needed)
+
+        import itertools
+
+        class Node:
+            def __init__ (self, label):
+                self.label = label
+            def __str__(self):
+                return self.label
+            
+        l = [Node(ch) for ch in "abcdefg"]      #list of seven objects with distinct labels
+        print ""
+        print "objects labels:\t\t\t", [str(i) for i in l]
+
+        [MakeSet(node) for node in l]       #starting with every object in its own set
+
+        sets =  [str(Find(x)) for x in l]
+        print "set representatives:\t\t", sets
+        print "number of disjoint sets:\t", len([i for i in itertools.groupby(sets)])
+
+        assert( Find(l[0]) != Find(l[2]) )
+        Union(l[0],l[2])        #joining first and third
+        assert( Find(l[0]) == Find(l[2]) )
+
+        assert( Find(l[0]) != Find(l[1]) )
+        assert( Find(l[2]) != Find(l[1]) )
+        Union(l[0],l[1])        #joining first and second
+        assert( Find(l[0]) == Find(l[1]) )
+        assert( Find(l[2]) == Find(l[1]) )
+
+        Union(l[-2],l[-1])        #joining last two sets
+        Union(l[-3],l[-1])        #joining last two sets
+
+        sets = [str(Find(x)) for x in l]
+        print "set representatives:\t\t", sets
+        print "number of disjoint sets:\t", len([i for i in itertools.groupby(sets)])
+
+        for o in l:
+            del o.parent
+
+
+#######################################################################################################################
 
 -> Tries
 -> Fibonacci heaps
@@ -2185,3 +2599,4 @@ COOL NOTES PART 5: DATA STRUCTURES TO USE:
 
 -> Range Tree
 -> Balanced BSTs -> AVL/REDBLACK, Find a python one. 
+
