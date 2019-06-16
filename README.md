@@ -10,6 +10,14 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
         -> running variables, running maps, running sets
     c) Use 2 pointer solutions. Two pointers can be nodes or indexes in an array.
 
+1.25)   When the problem says sorted order, you can use
+        binary search or a very smart version of
+        2 pointer/2 index solutions. For instance,
+        2 SUM for ordered arrays can be 
+        solved in O(N) (OR even O(log N) if you implement 
+        binary searching 2 pointers)
+
+
 1.5) LOOK AT PROBLEM IN ALL POSSIBLE DIRECTIONS to apply your techniques, whether its 2 pointer, 
     sliding window, or Dynamic programm
     a) think about left to right
@@ -496,6 +504,331 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         return ret
 
 
+39) When you need to keep a set of running values such as mins, and prev mins, 
+    you can keep all the runnign mins in a datastructre and as your algorithm traverses the datastructure, 
+    update the datastructure for the running value as well in the same way to maintaing consistency!
+    For instance, min stack: 
+    Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+    push(x) -- Push element x onto stack.
+    pop() -- Removes the element on top of the stack.
+    top() -- Get the top element.
+    getMin() -- Retrieve the minimum element in the stack.
+
+    have 2 stacks, one for the actual stack, and another that simulates the same operations to 
+    maintain the running min.
+
+
+
+40) In some questions you can 
+    do DFS or BFS from a root node to a specific 
+    child node and you end up traversing a tree, 
+    either the DFS tree or BFS Tree. 
+    HOWEVER, AS AN O(1) space optimization, you might be able 
+    to go backward from the child node to the root node,
+    and only end up traversing a path rather than a tree!
+    FOR INSTANCE THE FOLLOWING PROBLEM:
+
+
+41) FORD FULKERSON ALGORITHM PYTHON:
+    class Graph: 
+    
+        def __init__(self,graph): 
+            self.graph = graph # residual graph 
+            self. ROW = len(graph)             
+    
+        '''Returns true if there is a path from source 's' to sink 't' in 
+        residual graph. Also fills parent[] to store the path '''
+        def BFS(self,s, t, parent): 
+    
+            # Mark all the vertices as not visited 
+            visited =[False]*(self.ROW) 
+            queue=[] 
+            queue.append(s) 
+            visited[s] = True
+
+            while queue: 
+    
+                #Dequeue a vertex from queue and print it 
+                u = queue.pop(0) 
+            
+                # Get all adjacent vertices of the dequeued vertex u 
+                # If a adjacent has not been visited, then mark it 
+                # visited and enqueue it 
+                for ind, val in enumerate(self.graph[u]): 
+                    if visited[ind] == False and val > 0 : 
+                        queue.append(ind) 
+                        visited[ind] = True
+                        parent[ind] = u 
+
+            return True if visited[t] else False
+                      
+        # Returns tne maximum flow from s to t in the given graph 
+        def FordFulkerson(self, source, sink): 
+    
+            # This array is filled by BFS and to store path 
+            parent = [-1]*(self.ROW) 
+    
+            max_flow = 0 # There is no flow initially 
+    
+            # Augment the flow while there is path from source to sink 
+            while self.BFS(source, sink, parent) : 
+    
+                # Find minimum residual capacity of the edges along the 
+                # path filled by BFS. Or we can say find the maximum flow 
+                # through the path found. 
+                path_flow = float("Inf") 
+                s = sink 
+                while(s !=  source): 
+                    path_flow = min (path_flow, self.graph[parent[s]][s]) 
+                    s = parent[s] 
+    
+                # Add path flow to overall flow 
+                max_flow +=  path_flow 
+    
+                # update residual capacities of the edges and reverse edges along the path 
+                v = sink 
+                while(v !=  source): 
+                    u = parent[v] 
+                    self.graph[u][v] -= path_flow 
+                    self.graph[v][u] += path_flow 
+                    v = parent[v] 
+    
+            return max_flow 
+
+    graph = [[0, 16, 13, 0, 0, 0], 
+            [0, 0, 10, 12, 0, 0], 
+            [0, 4, 0, 0, 14, 0], 
+            [0, 0, 9, 0, 0, 20], 
+            [0, 0, 0, 7, 0, 4], 
+            [0, 0, 0, 0, 0, 0]]    
+    g = Graph(graph) 
+    source = 0; sink = 5
+    print ("The maximum possible flow is %d " % g.FordFulkerson(source, sink)) 
+  
+    Output:
+    The maximum possible flow is 23
+
+42) Bipartite matching problem: (Max flow 1)
+    n students. d dorms. Each student wants to live in one of 
+    the dorms of his choice. 
+    Each dorm can accomodate at most one student. 
+
+    Problem: Find an assignment that maximizes the number of 
+    students who get a housing.
+    
+    Add source and sink. 
+    make edges between students and dorms. 
+    all edges weight are 1
+    S-> all students -> all dorms -> T
+
+    Find the max-flow. Then find the optimal assignment from the chosen
+    edges. 
+
+    If dorm j can accomodate cj students -> make edge with capacity
+    cj from dorm j to the sink.
+    
+43) Decomposing a DAG into nonintersecting paths:
+    -> Split each vertex v into vleft and vright
+    -> For each edge u->v in the DAG, make an edge from uleft to vright
+
+44) Min Cost Max Flow:
+    A varient of max-flow problem. Each edge has capacity c(e) and
+    cost cost(e). You have to pay cost(e) amount of money per unit 
+    flow per unit flow flowing through e
+    -> Problem: Find the max flow that has the minimum total cost.
+    -> Simple algo (Slow): 
+        Repeat following:
+            Take the residual graph
+            Find a negative cost cycle using Bellman Ford
+                -> If there is none, finish. 
+            Circulate flow through the cycle to decrease the total cost,
+            until one of the edges is saturated.
+                -> Total amount of flow doesnt change .
+##########################################
+COOL NOTES PART -3: NETWORK FLOW Tutorial: maxflow and mincut
+COMPUTING MAX FLOW:
+    Given directed graph, each edge e assocaited with 
+    its capacity c(e) > 0. Two special nodes source s and sink t. 
+
+    Problem: Maximize total amount of flow from s to t subject to 2 constraints:
+
+    1) Flow on edge e doesnt exceed c(e)
+    2) For every node other than s,t, incoming flow is equal to outgoing.
+
+    Alternate formulation: we want to remove some edges from
+    graph such that after removing the edges, there is no path from
+    s to t. 
+    The cost of removing e is equal to its capacity, c(e)
+    The min cut problem is to find a cut with minimum total cost.
+
+    THRM: MAXIMUM FLOW = MINIMUM CUT
+
+    Flow decomposition: any valid flow can be decomposed into flow 
+    paths and circulations.
+
+    Ford-Fulkerson Algorithm: Max flow algo. 
+    Main idea: find valid flow paths until there is none left, and 
+    add them up.
+
+        The intuition goes like this: as long as there is a path from the 
+        source to the sink that can take some flow the entire way, we send it. 
+        This path is called an augmenting path. We keep doing this until there 
+        are no more augmenting paths. In the image above, we could start by 
+        sending 2 cars along the topmost path (because only 2 cars can get 
+        through the last portion). Then we might send 3 cars along the bottom 
+        path for a total of 5 cars. Finally, we can send 2 more cars along the 
+        top path for two edges, send them down to bottom path and through to the 
+        sink. The total number of cars sent is now 7, and it is the maximum flow.
+
+        Simplest algo:
+
+        Set f total = 0
+        Repeat until there is no path from s to t:
+            Run DFS from s to find a flow path to t
+            Let f be the minimum capacity value on the path
+            Add f to f total
+            For each edge u → v on the path:
+                Decrease c(u → v) by f
+                Increase c(v → u) by f
+
+        SIMPLIFLIED ALGO:
+            initialize flow to 0
+            path = findAugmentingPath(G, s, t)
+            while path exists:
+                augment flow along path                 #This is purposefully ambiguous for now
+                G_f = createResidualGraph()
+                path = findAugmentingPath(G_f, s, t)
+            return flow
+        
+        More Explained version:
+            flow = 0
+            for each edge (u, v) in G:
+                flow(u, v) = 0
+            while there is a path, p, from s -> t in residual network G_f:
+                residual_capacity(p) = min(residual_capacity(u, v) : for (u, v) in p)
+                flow = flow + residual_capacity(p)
+                for each edge (u, v) in p:
+                    if (u, v) is a forward edge:
+                        flow(u, v) = flow(u, v) + residual_capacity(p)
+                    else:
+                        flow(u, v) = flow(u, v) - residual_capacity(p)
+            return flow
+
+    Residual graphs are an important middle step in calculating the maximum flow. 
+    As noted in the pseudo-code, they are calculated at every step 
+    so that augmenting paths can be found from the source to the sink.
+
+    When a residual graph, G_f is created, edges can be created 
+    that go in the opposite direction when compared to the original graph. 
+    An edge is a 'forward edge' if the edge existed in the original graph, G. 
+    If it is a reversal of an original edge, it is called a 'backwards edge.'
+
+    Residual capacity is defined as the new capacity after a given flow has been taken away. 
+    In other words, for a given edge (u, v), the residual capacity, c_f is defined as
+    1) c_f(u, v) = c(u,v) - f(u, v)
+
+    However, there must also be a residual capacity for the reverse edge as well. 
+    The max-flow min-cut theorem states that flow must be preserved 
+    in a network. So, the following equality always holds:
+    2) f(u, v) = -f(v, u)
+
+    residual capacities are used to make a residual network, G_f
+    1) and 2) allow you to operate on residual graph.
+
+    In the forward direction, the edges now have a residual capacity 
+    equal to c_f(u, v) = c(u, v) - f(u, v)
+    The flow is equal to 2, so the residual capacity of (S, A) and (A, B) is reduced to 2, 
+    while the edge (B, T) has a residual capacity of 0.
+
+    In the backward direction, the edges now have a residual capacity equal to 
+    c_f(v, u) = c(v, u) - f(v, u) 
+    Because of flow preservation, this can be written as c_f(v, u) = c(v, u) + f(u, v)
+
+    And since the capacity of those backward edges was initially 0, 
+    all of the backward edges (T, B), (B, A), and (A, S) 
+    now have a residual capacity of 2.
+
+    When a new residual graph is constructed with these new edges, 
+    any edges with a residual capacity of 0—like (B, T)—are not included. 
+    Add all the backward edges to the residual graph! update all the forward edges!
+    keep adding augmenting paths until. There are not more paths from the 
+    source to the sink, so there can be no more augmenting paths. 
+
+COMPUTING MIN CUT:
+
+    1) Run Ford-Fulkerson algorithm and consider the final residual graph.
+
+    2) Find the set of vertices that are reachable 
+    from the source in the residual graph.
+
+    3) All edges which are from a reachable vertex 
+    to non-reachable vertex are minimum cut edges. Print all such edges.
+
+
+
+
+############################################
+
+#############################################
+COOL NOTES PART -2: HOW TO USE HEAP DICTIONARIES WITH DECREASE KEY USING HEAPQ!
+
+        -> Sort stability: how do you get two tasks with equal priorities 
+        to be returned in the order they were originally added?
+
+        -> In the future with Python 3, tuple comparison breaks for (priority, task) 
+        pairs if the priorities are equal and the tasks do not have a default comparison order.
+
+        -> If the priority of a task changes, how do you 
+        move it to a new position in the heap?
+
+        -> Or if a pending task needs to be deleted, 
+        how do you find it and remove it from the queue?
+
+        A solution to the first two challenges is to store entries as 3-element list 
+        including the priority, an entry count, and the task. The entry count serves 
+        as a tie-breaker so that two tasks with the same priority are returned 
+        in the order they were added. And since no two entry counts are the same, 
+        the tuple comparison will never attempt to directly compare two tasks.
+
+        The remaining challenges revolve around finding a pending task and 
+        making changes to its priority or removing it entirely. 
+        Finding a task can be done with a dictionary pointing to an entry in the queue.
+
+        Removing the entry or changing its priority is more difficult because 
+        it would break the heap structure invariants. So, a possible solution 
+        is to mark the existing entry as 
+        Removed and add a new entry with the revised priority:
+
+        pq = []                         # list of entries arranged in a heap
+        entry_finder = {}               # mapping of tasks to entries
+        REMOVED = '<removed-task>'      # placeholder for a removed task
+        counter = itertools.count()     # unique sequence count
+
+        def add_task(task, priority=0):
+            'Add a new task or update the priority of an existing task'
+            if task in entry_finder:
+                remove_task(task)
+            count = next(counter)
+            entry = [priority, count, task]
+            entry_finder[task] = entry
+            heappush(pq, entry)
+
+        def remove_task(task):
+            'Mark an existing task as REMOVED.  Raise KeyError if not found.'
+            entry = entry_finder.pop(task)
+            entry[-1] = REMOVED
+
+        def pop_task():
+            'Remove and return the lowest priority task. Raise KeyError if empty.'
+            while pq:
+                priority, count, task = heappop(pq)
+                if task is not REMOVED:
+                    del entry_finder[task]
+                    return task
+            raise KeyError('pop from an empty priority queue')
+
+
 ############################################
 COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
 
@@ -613,6 +946,67 @@ COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
         for i in range(len(arr)): 
             print(arr[i]), 
 
+
+
+BUCKET SORT:
+
+Bucket Sort
+
+        Bucket sort is mainly useful when input is uniformly distributed over a range. 
+        For example, consider the following problem. 
+        Sort a large set of floating point numbers which are in range from 0.0 to 1.0 
+        and are uniformly distributed across the range. 
+        How do we sort the numbers efficiently?
+
+        Counting sort can not be applied here as we use keys as index in counting sort. 
+        Here keys are floating point numbers. 
+        The idea is to use bucket sort. 
+        Following is bucket algorithm.
+
+        bucketSort(arr[], n)
+        1) Create n empty buckets (Or lists).
+        2) Do following for every array element arr[i].
+        .......a) Insert arr[i] into bucket[n*array[i]]
+        3) Sort individual buckets using insertion sort.
+        4) Concatenate all sorted buckets.
+
+        # Python3 program to sort an array  
+        # using bucket sort  
+        def insertionSort(b): 
+            for i in range(1, len(b)): 
+                up = b[i] 
+                j = i - 1
+                while j >=0 and b[j] > up:  
+                    b[j + 1] = b[j] 
+                    j -= 1
+                b[j + 1] = up     
+            return b      
+                    
+        def bucketSort(x): 
+            arr = [] 
+            slot_num = 10 # 10 means 10 slots, each 
+                        # slot's size is 0.1 
+            for i in range(slot_num): 
+                arr.append([]) 
+                
+            # Put array elements in different buckets  
+            for j in x: 
+                index_b = int(slot_num * j)  
+                arr[index_b].append(j) 
+            
+            # Sort individual buckets  
+            for i in range(slot_num): 
+                arr[i] = insertionSort(arr[i]) 
+                
+            # concatenate the result 
+            k = 0
+            for i in range(slot_num): 
+                for j in range(len(arr[i])): 
+                    x[k] = arr[i][j] 
+                    k += 1
+            return x 
+
+
 QUICK SELECT MEDIAN OF MEDIANS:  
 
 
@@ -621,6 +1015,8 @@ COOL NOTES PART 0: String matching algorithms
 
 -> Rabin Karp
 -> Code regex
+
+
 
 ###################################################33
 
@@ -637,7 +1033,11 @@ Cool Notes Part 0.5: Sliding Window with a deque
            useful elements of current window and these useful elements are 
            maintained in sorted order. The element at front of the Qi is 
            the largest and element at rear of Qi is the smallest of current window. 
-        
+           Time Complexity: O(n). It seems more than O(n) at first look. 
+           If we take a closer look, we can observe that every element of 
+           array is added and removed at most once. 
+           So there are total 2n operations.
+          
             def printMax(arr, n, k): 
                 
                 """ Create a Double Ended Queue, Qi that  
@@ -690,7 +1090,8 @@ Cool Notes Part 0.5: Sliding Window with a deque
                 
                 # Print the maximum element of last window 
                 print(str(arr[Qi[0]])) 
-
+        
+        -> YOU CAN ALSO ANSWER THIS QUESTION WITH A SEGMENT TREE. 
 
 
 
@@ -1691,3 +2092,96 @@ Similarly we can traverse the list in backward direction.
         You now already know 80% about a powerful data structure called 
         Fenwick Tree or Binary Indexed Tree. You can look up on it to 
         learn the 20% or let me know if you want my next article to be about it. )
+
+#########################################3#####
+COOL NOTES PART 5: DATA STRUCTURES TO USE:
+
+-> Union Find Disjoint sets
+-> Segment Tree
+
+
+-> Fenwick Tree
+        '''
+        We have an array arr[0 . . . n-1]. We would like to
+        1 Compute the sum of the first i-th elements.
+        2 Modify the value of a specified element of the array arr[i] = x where 0 <= i <= n-1.
+        Could we perform both the query and update operations in O(log n) time? 
+        One efficient solution is to use Segment Tree that performs both operations in O(Logn) time.
+
+        An alternative solution is Binary Indexed Tree, 
+        which also achieves O(Logn) time complexity for both operations. 
+        Compared with Segment Tree, Binary Indexed Tree 
+        requires less space and is easier to implement..
+        '''
+
+        # Python implementation of Binary Indexed Tree 
+    
+        # Returns sum of arr[0..index]. This function assumes 
+        # that the array is preprocessed and partial sums of 
+        # array elements are stored in BITree[]. 
+        def getsum(BITTree,i): 
+            s = 0 #initialize result 
+        
+            # index in BITree[] is 1 more than the index in arr[] 
+            i = i+1
+        
+            # Traverse ancestors of BITree[index] 
+            while i > 0: 
+        
+                # Add current element of BITree to sum 
+                s += BITTree[i] 
+        
+                # Move index to parent node in getSum View 
+                i -= i & (-i) 
+            return s 
+        
+        # Updates a node in Binary Index Tree (BITree) at given index 
+        # in BITree. The given value 'val' is added to BITree[i] and 
+        # all of its ancestors in tree. 
+        def updatebit(BITTree , n , i ,v): 
+        
+            # index in BITree[] is 1 more than the index in arr[] 
+            i += 1
+        
+            # Traverse all ancestors and add 'val' 
+            while i <= n: 
+        
+                # Add 'val' to current node of BI Tree 
+                BITTree[i] += v 
+        
+                # Update index to that of parent in update View 
+                i += i & (-i) 
+        
+        
+        # Constructs and returns a Binary Indexed Tree for given 
+        # array of size n. 
+        def construct(arr, n): 
+        
+            # Create and initialize BITree[] as 0 
+            BITTree = [0]*(n+1) 
+        
+            # Store the actual values in BITree[] using update() 
+            for i in range(n): 
+                updatebit(BITTree, n, i, arr[i]) 
+
+            return BITTree 
+        
+        
+        # Driver code to test above methods 
+        freq = [2, 1, 1, 3, 2, 3, 4, 5, 6, 7, 8, 9] 
+        BITTree = construct(freq,len(freq)) 
+        print("Sum of elements in arr[0..5] is " + str(getsum(BITTree,5))) 
+        freq[3] += 6
+        updatebit(BITTree, len(freq), 3, 6) 
+        print("Sum of elements in arr[0..5]"+
+                            " after update is " + str(getsum(BITTree,5))) 
+    
+
+
+
+-> Tries
+-> Fibonacci heaps
+-> Splay trees
+
+-> Range Tree
+-> Balanced BSTs -> AVL/REDBLACK, Find a python one. 
