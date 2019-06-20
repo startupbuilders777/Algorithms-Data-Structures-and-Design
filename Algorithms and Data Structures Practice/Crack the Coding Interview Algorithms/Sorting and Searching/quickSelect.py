@@ -52,6 +52,6 @@ def quickSelect(arr, k):
 
 arr = [1,2,9,10,12,3,4,6,14,15,7]
 print(arr)
-print(quickSelect(arr, 5))
+print("THE QUICK SELECTED ELEMENT, BIGGER THAN 5", quickSelect(arr, 5))
 arr.sort()
 print(arr)

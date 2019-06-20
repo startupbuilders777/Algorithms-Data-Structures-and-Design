@@ -1,0 +1,1397 @@
+########################################################################
+DYNAMIC PROGRAMMING PROBLEMS: 
+########################################################################
+########################################################################
+########################################################################
+
+Number of submatrices with all 1s >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+Given a N*N matrix containing only 0s and 1s, the task is to count the number of submatrices containing all 1s.
+
+Examples:
+
+Input : arr[][] = {{1, 1, 1},
+                   {1, 1, 1},
+                   {1, 1, 1}}
+Output : 36
+Explanation: All the possible submatrices will have only 1s.
+Since, there are 36 submatrices in total, ans = 36
+
+Input : {{1, 1, 1},
+                   {1, 0, 1},
+                   {1, 1, 1}}
+Output : 20
+
+
+
+Better Approach: To optimize the process, for every index of the matrix, we will try to find the 
+number of submatrices starting from that index having all 1s in it.
+
+Our first step towards solving this problem is creating a matrix ‘p_arr’.
+
+For each index (R, C), if arr[R][C] equals 1, then in p_arr[R][C], we will store the number of 
+1s to the right of the cell(R, C) along row ‘R’ before we encounter 
+first zero or end of the array plus 1.
+
+If arr[R][C] equals zero, the p_arr[R][C] also equals zero.
+
+For creating this matrix, we will use the following recurrence relation.
+
+IF arr[R][C] is not 0
+    p_arr[R][C] = p_arr[R][C+1] + 1
+ELSE 
+    p_arr[R][C] = 0
+
+arr[][] = {{1, 0, 1, 1},
+           {0, 1, 0, 1},
+           {1, 1, 1, 0},
+           {1, 0, 1, 1}}
+
+p_arr[][] for above will look like
+          {{1, 0, 2, 1},
+           {0, 1, 0, 1},
+           {3, 2, 1, 0},
+           {1, 0, 2, 1}}
+
+Once, we have the required matrix p_arr, we will proceed towards the next step. 
+Look at the matrix ‘p_arr’ column-wise. If we are processing jth column of the matrix p_arr, 
+then for each element ‘i’ of this column, we will try to find the number of 
+sub-matrices starting from cell (i, j) with all 1s.
+
+For this, we can use stack data structure.
+
+Algorithm:
+
+Initialize a stack ‘q’ to store the value of the elements getting pushed along with the count(Cij) 
+of the number of elements that were pushed in this stack with a value strictly greater than the value of the 
+current element. We will use a pair to tie up the two data together.
+
+Initialize a variable ‘to_sum’ with 0. At each step, this variable is updated to store the 
+number of submatrices with all 1s starting from the element being pushed at that step.
+Thus, using ‘to_sum’, we update the count of number of submatrices with all 1s at each step.
+
+For a column ‘j’, at any step ‘i’, we will prepare to push p_arr[i][j] in the stack.
+Let Qt represent the topmost element of the stack and Ct represent the number of elements 
+previously pushed in the stack with a value greater than the top-most element of the stack. 
+Before pushing an element ‘p_arr[i][j]’ in the stack, while the stack is not empty or 
+topmost element is greater than the number to be pushed, keep popping the topmost element 
+of the stack and at the same time update to_sum as to_sum += (Ct + 1) * (Qt – p_arr[i][j]). 
+Let Ci, jrepresent the number of elements greater than the current element that were pushed in 
+this stack previously. We also need to keep a track of Ci, j. Thus, before popping an element, 
+we update Ci, j as Ci, j += Ct along with to_sum.
+
+We update the answer as ans += to_sum.
+
+Finally, we push that element in the stack after pairing it with Ci, j.
+
+Create the prefix-array in O(n^2) and for each column, we push an element in the stack or
+pop it out only once. Thus, the time complexity of this algorithm is O(n^2).
+
+Below is the implementation of the above approach:
+
+        # Python3 program to count the number  
+        # of sub-matrices with all 1s  
+        
+        # Function to find required prefix-count  
+        # for each row from right to left  
+        def findPrefixCount(p_arr, arr):  
+        
+            for i in range(0, n):  
+                for j in range(n - 1, -1, -1):  
+        
+                    if not arr[i][j]:  
+                        continue
+        
+                    if j != n - 1:  
+                        p_arr[i][j] += p_arr[i][j + 1]  
+        
+                    p_arr[i][j] += arr[i][j]  
+                
+        # Function to count the number of  
+        # sub-matrices with all 1s  
+        def matrixAllOne(arr):  
+        
+            # Array to store required prefix count of  
+            # 1s from right to left for boolean array  
+            p_arr = [[0 for i in range(n)] for j in range(n)]  
+        
+            findPrefixCount(p_arr, arr)  
+        
+            # variable to store the final answer  
+            ans = 0
+        
+            # Loop to evaluate each column of  
+            # the prefix matrix uniquely.  
+            # For each index of a column we will try to  
+            # determine the number of sub-matrices  
+            # starting from that index and has all 1s 
+            for j in range(0, n):  
+        
+                i = n - 1
+        
+                # Stack to store elements and the count  
+                # of the numbers they popped  
+                    
+                # First part of pair will be the  
+                # value of inserted element.  
+                # Second part will be the count  
+                # of the number of elements pushed  
+                # before with a greater value */ 
+                q = []  
+        
+                # variable to store the number of  
+                # submatrices with all 1s  
+                to_sum = 0
+        
+                while i >= 0:  
+        
+                    c = 0
+                    while len(q) != 0 and q[-1][0] > p_arr[i][j]:  
+        
+                        to_sum -= (q[-1][1] + 1) * \ 
+                                    (q[-1][0] - p_arr[i][j])  
+        
+                        c += q[-1][1] + 1
+                        q.pop()  
+                    
+                    to_sum += p_arr[i][j]  
+                    ans += to_sum  
+        
+                    q.append((p_arr[i][j], c))  
+                    i -= 1
+                
+            return ans  
+        
+        # Driver Code  
+        if __name__ == "__main__": 
+        
+            arr = [[1, 1, 0], [1, 0, 1], [0, 1, 1]]  
+                        
+            n = 3
+            print(matrixAllOne(arr))  
+
+Minimum sum submatrix in a given 2D array >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Given a 2D array, find the minimum sum submatrix in it.
+
+Examples:
+
+Input : M[][] = {{1, 2, -1, -4, -20},
+                 {-8, -3, 4, 2, 1},
+                 {3, 8, 10, 1, 3},
+                 {-4, -1, 1, 7, -6}}
+Output : -26
+Submatrix starting from (Top, Left): (0, 0)
+and ending at (Bottom, Right): (1, 4) indexes.
+The elements are of the submtrix are:
+{ {1, 2, -1, -4, -20},
+  {-8, -3, 4, 2, 1}  } having sum = -26
+
+
+Method 2 (Efficient Approach): Kadane’s algorithm for 1D array can be used to reduce the time complexity to O(n^3). 
+The idea is to fix the left and right columns one by one and find the minimum sum contiguous rows for every left 
+and right column pair. We basically find top and bottom row numbers (which have minimum sum) for every fixed left 
+and right column pair. To find the top and bottom row numbers, calculate sun of elements in every row from left to 
+right and store these sums in an array say temp[]. So temp[i] indicates sum of elements from left to right in row i. 
+If we apply Kadane’s 1D algorithm on temp[], and get the minimum sum subarray of temp, this minimum sum would 
+be the minimum possible sum with left and right as boundary columns. To get the overall minimum sum, we 
+compare this sum with the minimum sum so far.
+
+
+
+
+ 
+
+Check if reversing a sub array make the array sorted >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Given an array of distinct n integers. The task is to check whether reversing one sub-array 
+make the array sorted or not. If the array is already sorted or by reversing a subarray once 
+make it sorted, print “Yes”, else print “No”.
+
+Examples:
+
+Input : arr [] = {1, 2, 5, 4, 3}
+Output : Yes
+By reversing the subarray {5, 4, 3}, 
+the array will be sorted.
+
+Input : arr [] = { 1, 2, 4, 5, 3 }
+Output : No
+
+ Method 2 (Sorting : O(nlogn)):
+The idea is to compare the given array with the sorted array. Make a copy of the given array and sort it. 
+Now, find the first index and last index which do not match with sorted array. 
+If no such indices are found, print “Yes”. Else check if the elements between the indices are in decreasing order.
+
+        # Python3 program to check whether  
+        # reversing a sub array make the 
+        # array sorted or not 
+        
+        # Return true, if reversing the  
+        # subarray will sort the array,  
+        # else return false.  
+        def checkReverse(arr, n): 
+        
+            # Copying the array 
+            temp = [0] * n 
+            for i in range(n): 
+                temp[i] = arr[i] 
+        
+            # Sort the copied array.  
+            temp.sort() 
+        
+            # Finding the first mismatch.  
+            for front in range(n): 
+                if temp[front] != arr[front]: 
+                    break
+        
+            # Finding the last mismatch.  
+            for back in range(n - 1, -1, -1): 
+                if temp[back] != arr[back]: 
+                    break
+        
+            #If whole array is sorted 
+            if front >= back: 
+                return True
+            while front != back: 
+                front += 1
+                if arr[front - 1] < arr[front]: 
+                    return False
+            return True
+        
+        # Driver code 
+        arr = [1, 2, 5, 4, 3] 
+        n = len(arr) 
+        if checkReverse(arr, n) == True: 
+            print("Yes") 
+        else: 
+            print("No") 
+
+
+Count unique subsequences of length K >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Given an array of N numbers and an integer K. The task is to print the number 
+of unique subsequences possible of length K.
+
+Examples:
+
+Input : a[] = {1, 2, 3, 4}, k = 3 
+Output : 4. 
+Unique Subsequences are: 
+{1, 2, 3}, {1, 2, 4}, {1, 3, 4}, {2, 3, 4}
+
+Input: a[] = {1, 1, 1, 2, 2, 2 }, k = 3
+Output : 4 
+Unique Subsequences are 
+{1, 1, 1}, {1, 1, 2}, {1, 2, 2}, {2, 2, 2} 
+
+
+Approach: There is a well-known formula how many subsequences of fixed length K can be chosen 
+from N unique objects. But the problem here has several differences. One among them is the order 
+in subsequences is important and must be preserved as in the original sequence. For such a problem 
+there can be no ready combinatorics formula because the results depend on the order of the original array.
+
+The main idea is to deal recurrently by the length of the subsequence. On each recurrent step, move 
+from the end to the beginning and count the unique combinations using the count of shorter unique 
+combinations from the previous step. More strictly on every step j we keep an array of length N 
+and every element in the place p means how many unique subsequences with length j we found to the 
+right of the element in place i, including i itself.
+
+Below is the implementation of the above approach.
+
+
+Number of ways to partition a string into two balanced subsequences >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Given a string ‘S’ consisting of open and closed brackets, the task is find the number of 
+ways in which each character of ‘S’ can be assigned to either a string ‘X’ or string ‘Y’ 
+(both initially empty) such that the strings formed by X and Y are balanced. 
+It can be assumed that ‘S’ is itself balanced.
+
+Examples:
+
+Input: S = "(())"
+Output: 6
+Valid assignments are :
+X = "(())" and Y = "" [All characters in X]
+X = "" and Y = "(())" [Nothing in X]
+X = "()" and Y = "()" [1st and 3rd characters in X]
+X = "()" and Y = "()" [2nd and 3rd characters in X]
+X = "()" and Y = "()" [2nd and 4th characters in X]
+X = "()" and Y = "()" [1st and 4th characters in X]
+
+Input: S = "()()"
+Output: 4
+X = "()()", Y = ""
+X = "()", Y = "()"  [1st and 2nd in X]
+X = "()", Y = ""  [1st and 4th in X]
+X = "", Y = "()()"
+
+
+
+
+A simple approach: We can generate every possible way of assigning the characters, 
+and check if the strings formed are balanced or not. There are 2n assignments, valid 
+or invalid, and it takes O(n) time to check if the strings formed are balanced or not. 
+Therefore the time complexity of this approach is O(n * 2n).
+
+An efficient approach (Dynamic programming): We can solve this problem in a more efficient 
+manner using Dynamic Programming. We can describe the current state of assignment using three variables: 
+the index i of the character to be assigned, and the strings formed by X and Y up to that state. 
+Passing the whole strings to function calls will result in high memory requirements, so we can 
+replace them with count variables cx and cy. We will increment the count variable for every opening 
+bracket and decrement it for every closing bracket. The time and space complexity of this approach is O(n^3).
+
+Optimized Dynamic Programming approach: We can create a prefix array to store the count variable ci 
+for the substring S[0 : i + 1]. We can observe that the sum of c_x and c_y will always be equal to the 
+count variable for the whole string. By exploiting this property, we can reduce our dynamic programming 
+approach to two states. A prefix array can be created in linear complexity, so the time and space 
+complexity of this approach is O(n^2).
+
+
+
+
+Find all distinct palindromic sub-strings of a given string >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ 
+Given a string of lowercase ASCII characters, find all distinct continuous palindromic sub-strings of it.
+
+Examples:
+
+Input: str = "abaaa"
+Output:  Below are 5 palindrome sub-strings
+a
+aa
+aaa
+aba
+b
+
+
+Input: str = "geek"
+Output:  Below are 4 palindrome sub-strings
+e
+ee
+g
+k
+
+
+Step 1: Finding all palindromes using modified Manacher’s algorithm:
+Considering each character as a pivot, expand on both sides to find the length of 
+both even and odd length palindromes centered at the pivot character 
+under consideration and store the length in the 2 arrays (odd & even).
+Time complexity for this step is O(n^2)
+
+Step 2: Inserting all the found palindromes in a HashMap:
+Insert all the palindromes found from the previous step into a HashMap. 
+Also insert all the individual characters from the string into the HashMap 
+(to generate distinct single letter palindromic sub-strings).
+Time complexity of this step is O(n^3) assuming that the hash insert search takes
+O(1) time. Note that there can be at most O(n^2) palindrome sub-strings of a string. 
+
+Step 3: Printing the distinct palindromes and number of such distinct palindromes:
+The last step is to print all values stored in the HashMap (only distinct elements 
+will be hashed due to the property of HashMap). The size of the map gives 
+the number of distinct palindromic continuous sub-strings.
+
+
+        Below is the implementation of the above idea.
+
+        # Python program Find all distinct palindromic sub-strings 
+        # of a given string 
+        
+        # Function to print all distinct palindrome sub-strings of s 
+        def palindromeSubStrs(s): 
+            m = dict() 
+            n = len(s) 
+        
+            # table for storing results (2 rows for odd- 
+            # and even-length palindromes 
+            R = [[0 for x in xrange(n+1)] for x in xrange(2)] 
+        
+            # Find all sub-string palindromes from the given input 
+            # string insert 'guards' to iterate easily over s 
+            s = "@" + s + "#"
+        
+            for j in xrange(2): 
+                rp = 0    # length of 'palindrome radius' 
+                R[j][0] = 0
+        
+                i = 1
+                while i <= n: 
+        
+                    # Attempt to expand palindrome centered at i 
+                    while s[i - rp - 1] == s[i + j + rp]: 
+                        rp += 1 # Incrementing the length of palindromic 
+                                # radius as and when we find valid palindrome 
+        
+                    # Assigning the found palindromic length to odd/even 
+                    # length array 
+                    R[j][i] = rp 
+                    k = 1
+                    while (R[j][i - k] != rp - k) and (k < rp): 
+                        R[j][i+k] = min(R[j][i-k], rp - k) 
+                        k += 1
+                    rp = max(rp - k, 0) 
+                    i += k 
+        
+            # remove guards 
+            s = s[1:len(s)-1] 
+        
+            # Put all obtained palindromes in a hash map to 
+            # find only distinct palindrome 
+            m[s[0]] = 1
+            for i in xrange(1,n): 
+                for j in xrange(2): 
+                    for rp in xrange(R[j][i],0,-1): 
+                        m[s[i - rp - 1 : i - rp - 1 + 2 * rp + j]] = 1
+                m[s[i]] = 1
+        
+            # printing all distinct palindromes from hash map 
+            print "Below are " + str(len(m)) + " pali sub-strings"
+            for i in m: 
+                print i 
+        
+        # Driver program 
+        palindromeSubStrs("abaaa") 
+
+
+
+
+
+Maximum sum in an array such that every element has exactly one adjacent element to it >>>>>>>>>>>>>>>>>>..
+
+Given an array arr[] of N integers, you can select some indexes such that every selected 
+index has exactly one other selected index adjacent to it and the sum of 
+elements at the chosen indexes should be maximum.
+
+In other words, the task is to select elements from an array such that a single element 
+alone is not selected and elements at three consecutive indices are not selected
+and the sum of selected elements should be maximum.
+
+The task is to print the maximized sum.
+
+
+Approach: Dynamic programming can be used to solve this problem. 
+This problem can be translated to selecting pairs of adjacent integers 
+such that no two pairs are adjacent or have an element in common
+
+i.e. if (arr[i], arr[i + 1]) is a pair we selected then neither (arr[i + 2], arr[i + 3]) 
+nor (arr[i + 1], arr[i + 2]) can be selected.
+
+Let’s decide the states of the dp according to above statement.
+For every index i, we will either select indexes i and i + 1 i.e. 
+make a pair or not make it. In case, we make a pair, we 
+won’t be able to select the index i + 2 as it will make 2 elements adjacent to i + 1. 
+
+So, we will have to solve for i + 3 next. If we don’t make a pair, 
+we will simply solve for i + 1.
+So the recurrence relation will be.
+
+dp[i] = max(arr[i] + arr[i + 1] + dp[i + 3], dp[i + 1])
+
+There are N states in total and each state takes O(1) time to solve. Thus, the time complexity will be O(N).
+
+        // C++ implementation of the approach 
+        #include <bits/stdc++.h> 
+        #define arrSize 51 
+        using namespace std; 
+        
+        // To store the states of dp 
+        int dp[arrSize]; 
+        bool v[arrSize]; 
+        
+        // Function to return the maximized sum 
+        int sumMax(int i, int arr[], int n) 
+        { 
+            // Base case 
+            if (i >= n - 1) 
+                return 0; 
+        
+            // Checks if a state is 
+            // already solved 
+            if (v[i]) 
+                return dp[i]; 
+            v[i] = true; 
+        
+            // Recurrence relation 
+            dp[i] = max(arr[i] + arr[i + 1] 
+                            + sumMax(i + 3, arr, n), 
+                        sumMax(i + 1, arr, n)); 
+        
+            // Return the result 
+            return dp[i]; 
+        } 
+        
+        // Driver code 
+        int main() 
+        { 
+            int arr[] = { 1, 1, 1, 1 }; 
+            int n = sizeof(arr) / sizeof(int); 
+        
+            cout << sumMax(0, arr, n); 
+        
+            return 0; 
+        } 
+ 
+
+FIND MINIMUM steps required to reach the end of a matrix: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Given a 2d-matrix consisting of positive integers, the task is to find the minimum number of 
+steps required to reach the end of the matrix. If we are at cell (i, j) then we can go to
+all the cells represented by (i + X, j + Y) such that X ≥ 0, Y ≥ 0 and X + Y = arr[i][j]. 
+If no path exists then print -1.
+
+Examples:
+
+Input: arr[][] = {
+{4, 1, 1},
+{1, 1, 1},
+{1, 1, 1}}
+Output: 1
+The path will be from {0, 0} -> {2, 2} as manhattan distance
+between two is 4.
+Thus, we are reaching there in 1 step.
+
+Input: arr[][] = {
+{1, 1, 2},
+{1, 1, 1},
+{2, 1, 1}}
+Output: 3
+
+
+
+
+A simple solution will be to explore all possible solutions which will take exponential time.
+
+An efficient solution is to use dynamic programming to solve this problem in polynomial time. 
+Lets decide the states of dp.
+Let’s say we are at cell (i, j). We will try to find the minimum number of steps required to 
+reach the cell (n – 1, n – 1) from this cell.
+We have arr[i][j] + 1 possible paths.
+
+The recurrence relation will be
+
+dp[i][j] = 1 + min(dp[i][j + arr[i][j]], dp[i + 1][j + arr[i][j] – 1], …., dp[i + arr[i][j]][j])
+To reduce the number of terms in recurrence relation, we can put an upper bound on the values of X and Y. How?
+We know that i + X < N. Thus, X < N – i otherwise they would go out of bounds.
+Similarly, Y < N – j
+
+0 ≤ Y < N – j …(1)
+X + Y = arr[i][j] …(2)
+Substituting value of Y from second into first, we get
+X ≥ arr[i][j] + j – N + 1
+From above we get another lower bound on constraint of X i.e. X ≥ arr[i][j] + j – N + 1.
+So, new lower bound on X becomes X ≥ max(0, arr[i][j] + j – N + 1).
+Also X ≤ min(arr[i][j], N – i – 1).
+
+Our recurrence relation optimises to
+
+dp[i][j] = 1 + min(dp[i + max(0, arr[i][j] + j – N + 1)][j + arr[i][j] – max(0, arr[i][j] + j – N + 1)], …., 
+                   dp[i + min(arr[i][j], N – i – 1)][j + arr[i][j] – min(arr[i][j], N – i – 1)])
+
+Below is the implementation of the above approach:
+
+        # Python3 implementation of the approach  
+        
+        import numpy as np  
+        n = 3
+        
+        # 2d array to store  
+        # states of dp  
+        dp = np.zeros((n,n)) 
+        
+        # Array to determine whether  
+        # a state has been solved before  
+        v = np.zeros((n,n));  
+        
+        # Function to return the minimum steps required  
+        def minSteps(i, j, arr) :  
+        
+            # Base cases  
+            if (i == n - 1 and j == n - 1) : 
+                return 0;  
+        
+            if (i > n - 1 or j > n - 1) : 
+                return 9999999;  
+        
+            # If a state has been solved before  
+            # it won't be evaluated again  
+            if (v[i][j]) : 
+                return dp[i][j];  
+        
+            v[i][j] = 1;  
+            dp[i][j] = 9999999;  
+        
+            # Recurrence relation  
+            for k in range(max(0, arr[i][j] + j - n + 1),min(n - i - 1, arr[i][j]) + 1) : 
+                dp[i][j] = min(dp[i][j], minSteps(i + k, j + arr[i][j] - k, arr));  
+            
+        
+            dp[i][j] += 1;  
+        
+            return dp[i][j];  
+        
+        
+        # Driver code  
+        if __name__ == "__main__" :  
+        
+            arr = [  
+                    [ 4, 1, 2 ],  
+                    [ 1, 1, 1 ],  
+                    [ 2, 1, 1 ]  
+                    ];  
+        
+            ans = minSteps(0, 0, arr);  
+            if (ans >= 9999999) : 
+                print(-1);  
+            else : 
+                print(ans);  
+
+
+
+Find if an array of strings can be chained to form a circle | Set 1  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Given an array of strings, find if the given strings can be chained to form a circle. 
+A string X can be put before another string Y in 
+circle if the last character of X is same as first character of Y.
+
+
+Examples:
+
+Input: arr[] = {"geek", "king"}
+Output: Yes, the given strings can be chained.
+Note that the last character of first string is same
+as first character of second string and vice versa is
+also true.
+
+Input: arr[] = {"for", "geek", "rig", "kaf"}
+Output: Yes, the given strings can be chained.
+The strings can be chained as "for", "rig", "geek" 
+and "kaf"
+
+Input: arr[] = {"aab", "bac", "aaa", "cda"}
+Output: Yes, the given strings can be chained.
+The strings can be chained as "aaa", "aab", "bac" 
+and "cda"
+
+Input: arr[] = {"aaa", "bbb", "baa", "aab"};
+Output: Yes, the given strings can be chained.
+The strings can be chained as "aaa", "aab", "bbb" 
+and "baa"
+
+Input: arr[] = {"aaa"};
+Output: Yes
+
+Input: arr[] = {"aaa", "bbb"};
+Output: No
+
+Input  : arr[] = ["abc", "efg", "cde", "ghi", "ija"]
+Output : Yes
+These strings can be reordered as, “abc”, “cde”, “efg”,
+“ghi”, “ija”
+
+Input : arr[] = [“ijk”, “kji”, “abc”, “cba”]
+Output : No
+
+
+The idea is to create a directed graph of all characters and 
+then find if their is an eulerian circuit in the graph or not.
+
+Graph representation of some string arrays are given in below diagram,
+
+
+
+If there is an eulerian circuit, then chain can be formed, otherwise not.
+Note that a directed graph has eulerian circuit only if in degree and out 
+degree of every vertex is same, and all non-zero degree vertices 
+form a single strongly connected component.
+
+
+
+Following are detailed steps of the algorithm.
+
+1) Create a directed graph g with number of vertices equal to the size of alphabet. 
+We have created a graph with 26 vertices in the below program.
+
+2) Do following for every string in the given array of strings.
+…..a) Add an edge from first character to last character of the given graph.
+
+3) If the created graph has eulerian circuit, then return true, else return false.
+
+# Python program to check if a given directed graph is Eulerian or not 
+CHARS = 26
+  
+# A class that represents an undirected graph 
+class Graph(object): 
+    def __init__(self, V): 
+        self.V = V      # No. of vertices 
+        self.adj = [[] for x in xrange(V)]  # a dynamic array 
+        self.inp = [0] * V 
+  
+    # function to add an edge to graph 
+    def addEdge(self, v, w): 
+        self.adj[v].append(w) 
+        self.inp[w]+=1
+  
+    # Method to check if this graph is Eulerian or not 
+    def isSC(self): 
+        # Mark all the vertices as not visited (For first DFS) 
+        visited = [False] * self.V 
+  
+        # Find the first vertex with non-zero degree 
+        n = 0
+        for n in xrange(self.V): 
+            if len(self.adj[n]) > 0: 
+                break
+  
+        # Do DFS traversal starting from first non zero degree vertex. 
+        self.DFSUtil(n, visited) 
+  
+        # If DFS traversal doesn't visit all vertices, then return false. 
+        for i in xrange(self.V): 
+            if len(self.adj[i]) > 0 and visited[i] == False: 
+                return False
+  
+        # Create a reversed graph 
+        gr = self.getTranspose() 
+  
+        # Mark all the vertices as not visited (For second DFS) 
+        for i in xrange(self.V): 
+            visited[i] = False
+  
+        # Do DFS for reversed graph starting from first vertex. 
+        # Staring Vertex must be same starting point of first DFS 
+        gr.DFSUtil(n, visited) 
+  
+        # If all vertices are not visited in second DFS, then 
+        # return false 
+        for i in xrange(self.V): 
+            if len(self.adj[i]) > 0 and visited[i] == False: 
+                return False
+  
+        return True
+  
+    # This function returns true if the directed graph has an eulerian 
+    # cycle, otherwise returns false 
+    def isEulerianCycle(self): 
+  
+        # Check if all non-zero degree vertices are connected 
+        if self.isSC() == False: 
+            return False
+  
+        # Check if in degree and out degree of every vertex is same 
+        for i in xrange(self.V): 
+            if len(self.adj[i]) != self.inp[i]: 
+                return False
+  
+        return True
+  
+    # A recursive function to do DFS starting from v 
+    def DFSUtil(self, v, visited): 
+  
+        # Mark the current node as visited and print it 
+        visited[v] = True
+  
+        # Recur for all the vertices adjacent to this vertex 
+        for i in xrange(len(self.adj[v])): 
+            if not visited[self.adj[v][i]]: 
+                self.DFSUtil(self.adj[v][i], visited) 
+  
+    # Function that returns reverse (or transpose) of this graph 
+    # This function is needed in isSC() 
+    def getTranspose(self): 
+        g = Graph(self.V) 
+        for v in xrange(self.V): 
+            # Recur for all the vertices adjacent to this vertex 
+            for i in xrange(len(self.adj[v])): 
+                g.adj[self.adj[v][i]].append(v) 
+                g.inp[v]+=1
+        return g 
+  
+# This function takes an of strings and returns true 
+# if the given array of strings can be chained to 
+# form cycle 
+def canBeChained(arr, n): 
+  
+    # Create a graph with 'aplha' edges 
+    g = Graph(CHARS) 
+  
+    # Create an edge from first character to last character 
+    # of every string 
+    for i in xrange(n): 
+        s = arr[i] 
+        g.addEdge(ord(s[0])-ord('a'), ord(s[len(s)-1])-ord('a')) 
+  
+    # The given array of strings can be chained if there 
+    # is an eulerian cycle in the created graph 
+    return g.isEulerianCycle() 
+  
+# Driver program 
+arr1 = ["for", "geek", "rig", "kaf"] 
+n1 = len(arr1) 
+if canBeChained(arr1, n1): 
+    print "Can be chained"
+else: 
+    print "Cant be chained"
+  
+arr2 = ["aab", "abb"] 
+n2 = len(arr2) 
+if canBeChained(arr2, n2): 
+    print "Can be chained"
+else: 
+    print "Can't be chained"
+
+
+Number of subsets with zero sum  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Given an array ‘arr’ consisting of integers, the task is to find the number 
+of subsets such that their sum is equal to zero.
+Empty subset should also be considered.
+
+Examples:
+
+Input : arr[] = {2, 2, -4}
+Output : 2
+All possible subsets:
+{} = 0
+{2} = 2
+{2} = 2
+{-4} = -4
+{2, 2} = 4
+{2, -4} = -2
+{2, -4} = -4
+{2, 2, -4} = 0
+
+Since, {} and {2, 2, -4} are only possible subsets
+with sum 0, ans will be 2.
+
+Input : arr[] = {1, 1, 1, 1}
+Output : 1
+{} is the only possible subset with
+sum 0, thus ans equals 1.
+
+
+One simple approach is to generate all possible subsets 
+recursively and count number of subsets 
+with sum equals 0. Time complexity of this approach will be O(2^n).
+
+A better approach will be using Dynamic programming.
+
+Let’s suppose sum of all the elements we have selected upto index ‘i-1’ 
+is ‘S’. So, starting from index ‘i’, we have to find 
+number of subsets of the sub-array{i, N-1} 
+with sum equals -S.
+
+Let’s define dp[i][S]. It means number of the subset 
+of the subarray{i, N-1} of ‘arr’ with sum equals ‘-S’
+.
+If we are at ith index, we have two choices, i.e. 
+to include it in the sum or leave it.
+Thus, the required recurrence relation becomes
+
+dp[i][s] = dp[i+1][s+arr[i]] + dp[i+1][s]
+
+        # Python3 implementation of above approach  
+        import numpy as np 
+        
+        maxSum = 100
+        arrSize = 51
+        
+        # variable to store  
+        # states of dp  
+        dp = np.zeros((arrSize, maxSum));  
+        visit = np.zeros((arrSize, maxSum));  
+        
+        # To find the number of subsets  
+        # with sum equal to 0. 
+        # Since S can be negative,  
+        # we will maxSum to it 
+        # to make it positive  
+        def SubsetCnt(i, s, arr, n) : 
+            
+            # Base cases  
+            if (i == n) : 
+                if (s == 0) : 
+                    return 1;  
+                else : 
+                    return 0;  
+            
+            # Returns the value  
+            # if a state is already solved  
+            if (visit[i][s + arrSize]) : 
+                return dp[i][s + arrSize];  
+        
+            # If the state is not visited,  
+            # then continue  
+            visit[i][s + arrSize] = 1;  
+        
+            # Recurrence relation  
+            dp[i][s + arrSize ] = (SubsetCnt(i + 1, s + arr[i], arr, n) + 
+                                SubsetCnt(i + 1, s, arr, n));  
+        
+            # Returning the value  
+            return dp[i][s + arrSize];  
+        
+        # Driver Code 
+        if __name__ == "__main__" :  
+        
+            arr = [ 2, 2, 2, -4, -4 ];  
+            n = len(arr);  
+        
+            print(SubsetCnt(0, 0, arr, n));  
+        
+
+
+Number of ways to divide an array into K equal sum sub-arrays >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Given an integer K and an array arr[] of N integers, 
+the task is to find the number of ways to split 
+the array into K equal sum sub-arrays of non-zero lengths.
+
+Examples:
+
+Input: arr[] = {0, 0, 0, 0}, K = 3
+Output: 3
+All possible ways are:
+{{0}, {0}, {0, 0}}
+{{0}, {0, 0}, {0}}
+{{0, 0}, {0}, {0}}
+
+Input: arr[] = {1, -1, 1, -1}, K = 2
+Output: 1
+
+
+Approach: 
+
+1. Find the sum of all the elements of the array and store it in a variable SUM.
+
+Before going to step 2, let’s try and understand the states of the DP.
+For that, visualize putting bars to divide array into K equal parts. 
+So, we have to put K – 1 bars in total.
+
+Thus, our states of dp will contain 2 terms.
+    i – index of the element we are currently upon.
+    ck – number of bars we have already inserted + 1.
+
+dp[i][ck] can be defined as number of ways to put the remaining 
+bars into the array such that it gets divided into K equal halves. 
+Now, lets proceed to step 2 of our algorithm.
+
+2. Call a recursive function with i = 0 and ck = 1 
+    and the recurrence relation will be:
+    
+    Case 1: sum upto index i equals ((SUM)/k)* ck
+        dp[i][ck] = dp[i+1][ck] + dp[i+1][ck+1]
+
+    Case 2: sum upto index not i equals ((SUM)/k)* ck
+        dp[i][ck] = dp[i+1][ck]
+
+        import numpy as np 
+        
+        max_size = 20 
+        max_k = 20 
+        
+        
+        # Array to store the states of DP  
+        dp = np.zeros((max_size,max_k));  
+        
+        # Array to check if a  
+        # state has been solved before  
+        v = np.zeros((max_size,max_k));  
+        
+        # To store the sum of  
+        # the array elements  
+        sum = 0;  
+        
+        # Function to find the sum of  
+        # all the array elements  
+        def findSum(arr, n) :  
+            global sum
+            for i in range(n) : 
+                sum += arr[i];  
+        
+        
+        # Function to return the number of ways  
+        def cntWays(arr, i, ck, k, n,  curr_sum) :  
+        
+            # If sum is not divisible by k  
+            # answer will be zero  
+            if (sum % k != 0) : 
+                return 0;  
+            if (i != n and ck == k + 1) : 
+                return 0;  
+        
+            # Base case  
+            if (i == n) : 
+                if (ck == k + 1) : 
+                    return 1;  
+                else : 
+                    return 0;  
+        
+            # To check if a state  
+            # has been solved before  
+            if (v[i][ck]) : 
+                return dp[i][ck];  
+        
+            # Sum of all the numbers from the beginning  
+            # of the array  
+            curr_sum += arr[i];  
+        
+            # Setting the current state as solved  
+            v[i][ck] = 1;  
+        
+            # Recurrence relation  
+            dp[i][ck] = cntWays(arr, i + 1, ck, k, n, curr_sum);  
+
+            if (curr_sum == (sum / k) * ck)  : 
+                dp[i][ck] += cntWays(arr, i + 1, ck + 1, k, n, curr_sum);  
+        
+            # Returning solved state  
+            return dp[i][ck];  
+        
+        
+        # Driver code  
+        if __name__ == "__main__" :  
+        
+            arr = [ 1, -1, 1, -1, 1, -1 ];  
+            n = len(arr);  
+            k = 2;  
+        
+            # Function call to find the  
+            # sum of the array elements  
+            findSum(arr, n);  
+        
+            # Print the number of ways  
+            print(cntWays(arr, 0, 1, k, n, 0));  
+
+
+
+
+Queries to check if string B exists as substring in string A <ROLLING HASH TECHNIQUE HERE!> >>>>>>>>>>>
+
+
+
+Given two strings A, B and some queries consisting of an integer i, the task is to 
+check whether the sub-string of A starting from index i and ending 
+at index i + length(B) – 1 equals B or not. If equal then print Yes 
+else print No. Note that i + length(B) will always be smaller than length(A).
+
+Examples:
+
+Input: A = “abababa”, B = “aba”, q[] = {0, 1, 2, 3}
+Output:
+Yes
+No
+Yes
+No
+a[0-2] = “aba” = b (both are equal)
+a[1-3] = “bab” != b
+a[2-4] = “aba” = b
+a[3-5] = “bab” !=b
+
+Input: A = “GeeksForGeeks”, B = “Geeks”, q[] = {0, 5, 8}
+Output:
+Yes
+No
+Yes
+
+
+Efficient approach: We will optimize the query processing using rolling hash algorithm.
+
+First, we will find hash value of string B. Then, using rolling hash technique, 
+we will do the pre-processing of string A.
+
+Let’s suppose we created an array hash_A. 
+Then ith element of this array will store.
+
+((a[0] – 97) + (a[1] – 97) * d + (a[2] – 97) * d^2 + ….. + (a[i] – 97) * d^i) % mod
+where d is the multiplier in rolling-hash.
+
+We will use this to find hash of the sub-string of A.
+Hash of sub-string of A starting from i can be found as 
+
+(hash_a[i + len_b – 1] – hash_a[i – 1]) / d^i or more specifically
+
+((hash_a[i + len_b – 1] – hash_a[i – 1] + 2 * mod) * mi(d^i)) % mod
+
+Thus, using this we can answer each query in O(1).
+
+
+        // C++ implementation of the approach 
+        #include <bits/stdc++.h> 
+        #define mod 3803 
+        #define d 26 
+        using namespace std; 
+        
+        int hash_b; 
+        int* hash_a; 
+        int* mul; 
+        
+        // Function to return the modular inverse 
+        // using Fermat's little theorem 
+        int mi(int x) 
+        { 
+            int p = mod - 2; 
+            int s = 1; 
+            while (p != 1) { 
+                if (p % 2 == 1) 
+                    s = (s * x) % mod; 
+                x = (x * x) % mod; 
+                p /= 2; 
+            } 
+        
+            return (s * x) % mod; 
+        } 
+        
+        // Function to generate hash 
+        void genHash(string& a, string& b) 
+        { 
+            // To store prefix-sum 
+            // of rolling hash 
+            hash_a = new int[a.size()]; 
+        
+            // Multiplier for different values of i 
+            mul = new int[a.size()]; 
+        
+            // Generating hash value for string b 
+            for (int i = b.size() - 1; i >= 0; i--) 
+                hash_b = (hash_b * d + (b[i] - 97)) % mod; 
+        
+            // Generating prefix-sum of hash of a 
+            mul[0] = 1; 
+            hash_a[0] = (a[0] - 97) % mod; 
+            for (int i = 1; i < a.size(); i++) { 
+                mul[i] = (mul[i - 1] * d) % mod; 
+                hash_a[i] = (hash_a[i - 1] + mul[i] * (a[i] - 97)) % mod; 
+            } 
+        } 
+        
+        // Function that returns true if the 
+        // required sub-string in a is equal to b 
+        bool checkEqual(int i, int len_a, int len_b) 
+        { 
+            // To store hash of required 
+            // sub-string of A 
+            int x; 
+        
+            // If i = 0 then 
+            // requires hash value 
+            if (i == 0) 
+                x = hash_a[len_b - 1]; 
+        
+            // Required hash if i != 0 
+            else { 
+                x = (hash_a[i + len_b - 1] - hash_a[i - 1] + 2 * mod) % mod; 
+                x = (x * mi(mul[i])) % mod; 
+            } 
+        
+            // Comparing hash with hash of B 
+            if (x == hash_b) 
+                return true; 
+        
+            return false; 
+        } 
+        
+        // Driver code 
+        int main() 
+        { 
+            string a = "abababababa"; 
+            string b = "aba"; 
+        
+            // Generating hash 
+            genHash(a, b); 
+        
+            // Queries 
+            int queries[] = { 0, 1, 2, 3 }; 
+            int q = sizeof(queries) / sizeof(queries[0]); 
+        
+            // Perform queries 
+            for (int i = 0; i < q; i++) { 
+                if (checkEqual(queries[i], a.size(), b.size())) 
+                    cout << "Yes\n"; 
+                else
+                    cout << "No\n"; 
+            } 
+        
+            return 0; 
+        } 
+
+
+Maximise array sum after taking non-overlapping sub-arrays of length K >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Given an integer array arr[] of length N and an integer K, the task is to select some 
+non-overlapping sub-arrays such that each sub-array is exactly of length K, no two 
+sub-arrays are adjacent and sum of all the elements of the selected sub-arrays is maximum.
+
+Examples:
+
+Input: arr[] = {1, 2, 3, 4, 5}, K = 2
+Output: 12
+Sub-arrays that maximizes sum will be {{1, 2}, {4, 5}}.
+Thus, the answer will be 12.
+
+Input: arr[] = {1, 1, 1, 1, 1}, K = 1
+Output: 3
+
+
+
+Approach: This problem can be solved using dynamic programming. 
+Let’s suppose we are at an index i. 
+Let dp[i] be defined as the maximum sum of elements of all possible subsets 
+of sub-array arr[i…n-1] satisfying above conditions.
+We will have two possible choices i.e. select the sub-array arr[i…i+k-1] and 
+solve for dp[i + k + 1] or reject it and solve for dp[i + 1].
+
+Thus, recurrence relation will be
+
+dp[i] = max(dp[i + 1], arr[i] + arr[i + 1] + arr[i + 2] + … + arr[i + k – 1] + dp[i + k + 1])
+
+Since, the values of K can be large, we will use prefix-sum array to find 
+the sum of all the elements of the sub-array arr[i…i + k – 1] in O(1).
+Overall, time complexity of the algorithm will be O(N).
+
+Below is the implementation of the above approach:
+
+        maxLen = 10
+        
+        # To store the states of dp  
+        dp = [0]*maxLen;  
+        
+        # To check if a given state  
+        # has been solved  
+        v = [0]*maxLen;  
+        
+        # To store the prefix-sum  
+        prefix_sum = [0]*maxLen;  
+        
+        # Function to fill the prefix_sum[] with  
+        # the prefix sum of the given array  
+        def findPrefixSum(arr, n) :  
+        
+            prefix_sum[0] = arr[0];  
+            for i in range(n) : 
+                prefix_sum[i] = arr[i] + prefix_sum[i - 1];  
+        
+        
+        # Function to find the maximum sum subsequence  
+        # such that no two elements are adjacent  
+        def maxSum(arr, i, n, k) :  
+        
+            # Base case  
+            if (i + k > n) : 
+                return 0;  
+        
+            # To check if a state has  
+            # been solved  
+            if (v[i]) : 
+                return dp[i];  
+                
+            v[i] = 1;  
+        
+            if (i == 0) : 
+                x = prefix_sum[k - 1];  
+            else : 
+                x = prefix_sum[i + k - 1] - prefix_sum[i - 1];  
+        
+            # Required recurrence relation  
+            dp[i] = max(maxSum(arr, i + 1, n, k),  
+                        x + maxSum(arr, i + k + 1, n, k));  
+        
+            # Returning the value  
+            return dp[i];  
+  
+
+
+
+Maximum items that can be filled in K Knapsacks of given Capacity >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Given an integer array W[] consisting of weights of items and ‘K’ knapsacks of capacity ‘C’, 
+find maximum weight we can put in the knapsacks if breaking of an item is not allowed.
+
+Examples:
+
+Input : w[] = {3, 9, 8}, k = 1, c = 11
+Output : 11
+The required subset will be {3, 8}
+where 3+8 = 11
+
+Input : w[] = {3, 9, 8}, k = 1, c = 10
+Output : 9
+
+
+
+Soln:
+
+We will use Dynamic programming to solve this problem.
+We will use two variables to represent the states of DP.
+
+‘i’ – The current index we are working on.
+‘R’ – It contains the remaining capacity of each and every knapsack.
+
+Now, how will a single variable store the remaining capacity of every knapsack?
+
+For that, we will initialise ‘R’ as R = C + C*(C+1) + C*(C+1)^2 + C*(C+1)^3 ..+ C*(C+1)^(k-1)
+This initialises all the ‘k’ knapsacks with capacity ‘C’.
+
+Now, we need to perform two queries:
+
+Reading remaining space of jth knapsack: (r/(c+1)^(j-1))%(c+1).
+Decreasing remaining space of jth knapsack by x: set r = r – x*(c+1)^(j-1).
+
+
+Now, at each step, we will have k+1 choices.
+
+Reject index ‘i’.
+Put item ‘i’ in knapsack 1.
+Put item ‘i’ in knapsack 2.
+Put item ‘i’ in knapsack 3.
+…
+k+1) Put item ‘i’ in knapsack k.
+
+We will choose the path that maximizes the result.
+
+#######################################################################################################
+######################################################################################################
+#######################################################################################################
+######################################################################################################
+
+SORTING PROBLEMS:
+
+Rearrange numbers in an array such that no two adjacent numbers are same >>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Given an array of integers. The task is to rearrange elements of the array 
+such that no two adjacent elements in the array are same.
+
+Examples:
+
+Input: arr[] = {1, 1, 1, 2, 2, 2}
+Output: {2, 1, 2, 1, 2, 1}
+
+Input: arr[] = {1, 1, 1, 1, 2, 2, 3, 3}
+Output: {1, 3, 1, 3, 2, 1, 2, 1}
+
+The idea is to put the highest frequency element first (a greedy approach). 
+We use a priority queue (Or Binary Max Heap) and put all elements and ordered
+by their frequencies (highest frequency element at the root). We then one by 
+one take the highest frequency element from the heap and add it to result. 
+After we add, we decrease the frequency of the element and temporarily move 
+this element out of priority queue so that it is not picked next time.
+
+We have to follow the step to solve this problem, they are:
+
+Build a Priority_queue or max_heap, pq that stores elements and their frequencies.
+…… Priority_queue or max_heap is built on the bases of the frequency of elements.
+
+Create a temporary Key that will be used as the previously visited element 
+(the previous element in the resultant array. Initialize it { num = -1, freq = -1 }
+
+While pq is not empty.
+    Pop an element and add it to the result.
+    Decrease frequency of the popped element by ‘1’.
+    Push the previous element back into the priority_queue if it’s frequency > ‘0’.
+    Make the current element as the previous element for the next iteration.
+
+If the length of resultant string and original are not equal, print “not possible”. Else print result.
+
+
