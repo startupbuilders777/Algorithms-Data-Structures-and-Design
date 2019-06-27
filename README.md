@@ -563,7 +563,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     FOR INSTANCE THE FOLLOWING PROBLEM:
 
 
-41) FORD FULKERSON ALGORITHM PYTHON:
+41) FORD FULKERSON ALGORITHM PYTHON (MAX FLOW MIN CUT):
     class Graph: 
     
         def __init__(self,graph): 
