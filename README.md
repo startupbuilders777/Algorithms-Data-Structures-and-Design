@@ -1,4 +1,11 @@
 
+For very quick refresher -> Understand the following. He goes through 300 leetcode problems: https://nishmathcs.wordpress.com/category/leetcode-questions/
+Scrape the following -> short and sweet: https://nishmathcs.wordpress.com/category/data-structures-algorithms/page/1/
+
+Post about all string algorithms and hashing types (KMP, Boyer Moore, etc, Rabin Karp)
+
+
+
 THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
 0) Branch and Bound algos vs backtracking algos:
 
@@ -698,9 +705,15 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         - Children: 2k, 2k+1
     You must refer to the definition of a Binary Heap:
 
-        A Binary heap is by definition a complete binary tree ,that is, all levels of the       tree, except possibly the last one (deepest) are fully filled, and, if the last     level of the tree is not complete, the nodes of that level are filled from left to        right.
+        A Binary heap is by definition a complete binary tree ,that is, all levels of the       
+        tree, 
+        except possibly the last one (deepest) are fully filled, and, if the last     
+        level of the tree is not complete, the nodes of that level are filled from left to        
+        right.
         
-        It is by definition that it is never unbalanced. The maximum difference in balance      of the two subtrees is 1, when the last level is partially filled with nodes only       in the left subtree.
+        It is by definition that it is never unbalanced. The maximum difference in balance      
+        of the two subtrees is 1, when the last level is partially filled with nodes only       
+        in the left subtree.
 
     -> To insert node: (running time O(lgn)) (SIFT UP)
     1) make a new node at last level as far left as possible. 
@@ -787,6 +800,19 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     two vertices belong to the same component, 
     or whether adding an edge between them would result in a cycle. 
     DETECH CYCLE IN UNDIRECTED GRAPH:
+    
+    # A utility function to find the subset of an element i 
+    def find_parent(self, parent,i): 
+        if parent[i] == -1: 
+            return i 
+        if parent[i]!= -1: 
+             return self.find_parent(parent,parent[i]) 
+  
+    # A utility function to do union of two subsets 
+    def union(self,parent,x,y): 
+        x_set = self.find_parent(parent, x) 
+        y_set = self.find_parent(parent, y) 
+        parent[x_set] = y_set 
 
     # The main function to check whether a given graph 
     # contains cycle or not 
@@ -924,6 +950,264 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
             return dummy.next
 
 
+53) The art of segment trees and monoqueues:
+
+
+    Previously we saw segment trees.
+    That data structure was able to answer the question
+
+    reduce(lambda x,y: operator(x,y), arr[i:j], default)
+    and we were able to answer it in O(\log(j - i)) time. 
+    Moreover, construction of this data structure only took O(n) time. 
+    Moreover, it was very generic as operator and 
+    default could assume be any values.
+
+    This obviously had a lot of power, but we can use something a lot 
+    simpler if we want to easier problems. 
+    Suppose instead, we wanted to ask the question
+
+    reduce(lambda x,y: operator(x,y), arr[i:i + L])
+    with the caveat that operator(x,y) will return 
+    either x or y and that L remains fixed.
+
+    Some examples of this is to find the minimum of some 
+    fixed length range, or the maximum in some fixed length range.
+
+    Introducing, the Monotonic Queue, with the handy name Monoqueue.
+
+    The code for this guy is pretty self explanatory, but the basic idea 
+    is to maintain a sliding window that sweeps across. 
+    Moreover, the contents of the Monoqueue are sorted 
+    with respect to the comparator Operator, so to 
+    find the “best” in a range one only need look at the front.
+
+    from collections import deque
+    class Monoqueue:
+        def __init__(self, operator):
+            self.q = deque()
+            self.op = operator
+        def get_best(self):
+            if not self.q:
+                return None
+            return self.q[0][0]
+        def push(self, val):
+            count = 0
+            while self.q and self.op(val, self.q[-1][0]):
+                count += 1 + self.q[-1][1]
+                self.q.pop()
+            self.q.append([val, count])
+        def pop(self):
+            if not self.q:
+                return None
+            if self.q[0][1] > 0:
+                self.q[0][1] -= 1
+            else:
+                self.q.popleft()
+
+
+###################################################33
+
+Cool Notes Part 0.5: Sliding Window with a deque
+        -> In this question you learn about the difference between useless elements, 
+           and useful elements.
+           How to use a deque to maintain the useful elemenets as you run through the arry
+           Operating on the indexes of an array instead of the actual elements (pointers!)
+           Always try to realized how to discern useless and useful elements when sliding your window,
+           and how to keep track of them and maintain them
+           (In this case, every iteration we cull bad elements!)
+
+        -> Sliding Window Maximum (Maximum of all subarrays of size k)
+           Given an array and an integer k, find the maximum for each 
+           and every contiguous subarray of size k. O(N) algorithm
+
+           We create a Deque, Qi of capacity k, that stores only useful elements 
+           of current window of k elements. An element is useful if it is in current window 
+           and is greater than all other elements on left side of it in current window. 
+           We process all array elements one by one and maintain Qi to contain 
+           useful elements of current window and these useful elements are 
+           maintained in sorted order. The element at front of the Qi is 
+           the largest and element at rear of Qi is the smallest of current window. 
+           Time Complexity: O(n). It seems more than O(n) at first look. 
+           If we take a closer look, we can observe that every element of 
+           array is added and removed at most once. 
+           So there are total 2n operations.
+          
+            def printMax(arr, n, k): 
+                
+                """ Create a Double Ended Queue, Qi that  
+                will store indexes of array elements.  
+                The queue will store indexes of useful  
+                elements in every window and it will 
+                maintain decreasing order of values from 
+                front to rear in Qi, i.e., arr[Qi.front[]] 
+                to arr[Qi.rear()] are sorted in decreasing 
+                order"""
+                Qi = deque() 
+                
+                # Process first k (or first window)  
+                # elements of array 
+                for i in range(k): 
+                    
+                    # For every element, the previous  
+                    # smaller elements are useless 
+                    # so remove them from Qi 
+                    while Qi and arr[i] >= arr[Qi[-1]] : 
+                        Qi.pop() 
+                    
+                    # Add new element at rear of queue 
+                    Qi.append(i); 
+                    # We are storing the indexes for the biggest elements!
+                
+                # Qi contains the biggest elements in the first k so:
+                # k -> [1, 4, 6, 3, 5] (5 elements)
+                # Qi -> [2, 5] (useful elements -> 
+                #              the indexes for elements that can become a maximum)
+                # element at front of queue is maximum, in this case, it is 6 (index is 2)
+
+                # Process rest of the elements, i.e.  
+                # from arr[k] to arr[n-1] 
+                for i in range(k, n): 
+                    
+                    # The element at the front of the 
+                    # queue is the largest element of 
+                    # previous window, so print it 
+                    print(str(arr[Qi[0]]) + " ", end = "") 
+                    
+                    # Remove the elements which are  
+                    # out of this window 
+                    # out of window elements are in the front of the queue. 
+                    # indexes are increasing like above -> 2 -> 5
+                    while Qi and Qi[0] <= i-k: 
+                        
+                        # remove from front of deque 
+                        Qi.popleft()  
+                    
+                    # Remove all elements smaller than 
+                    # the currently being added element  
+                    # (Remove useless elements) 
+                    # we can do this because the element we are adding will always
+                    # be a candidate for the sliding window in the next iteration, 
+                    # and a better candidate, than the  "useless" elements in the sliding
+                    # window
+                    while Qi and arr[i] >= arr[Qi[-1]] : 
+                        Qi.pop() 
+                    
+                    # Add current element at the rear of Qi 
+                    Qi.append(i) 
+                
+                # Print the maximum element of last window 
+                print(str(arr[Qi[0]])) 
+        
+        -> YOU CAN ALSO ANSWER THIS QUESTION WITH A SEGMENT TREE. 
+
+        OTHER TAKEAWAYS:
+        This queue is a monoqueue
+        What does Monoqueue do here:
+
+        It has three basic options:
+        push: push an element into the queue; O (1) (amortized)
+        pop: pop an element out of the queue; O(1) (pop = remove, it can't report this element)
+        max: report the max element in queue;O(1)
+
+        It takes only O(n) time to process a N-size sliding window minimum/maximum problem.
+        Note: different from a priority queue (which takes O(nlogk) to solve this problem), 
+        it doesn't pop the max element: It pops the first element (in original order) in queue.
+
+
+#####################################################################################################################
+#####################################################################################################################
+
+COOL NOTES PART 1: DYNAMIC PROGRAMMING RECURRENCES EXAMPLES: 
+(For dp, define subproblem, then recurrence, then base cases, then implement)
+
+1) Given n, find number of diff ways to write n as sum of 1, 3, 4
+    Let Dn be the number of ways to write n as the sum of 1, 3, 4
+    Recurrence: well n = x1 + x2 + ... + xm. If xm = 1, other terms sum to n-1
+    Sums that end with xm=1 is Dn-1
+
+    Recurrence => Dn = Dn-1 + Dn-3 + Dn-4
+    Solve base cases D0 = 1, Dn = 0 for all negative n. 
+    Code:    
+    D[0] = D[1] = D[2] = 1; D[3] = 2;
+    for(i = 4; i <= n; i++)
+        D[i] = D[i-1] + D[i-3] + D[i-4]
+
+
+2) Given 2 strings x and y. Find Longest common subsequence. 
+    Let Dij be the length of LCS of x1...i, y1...j
+    D[i,j] = D[i-1,j-1] + 1 if xi = yj
+    D[i,j] = max{D[i-1, j], D[i, j-1]}  otherwise
+
+    Find and solve base cases(In top down, this is the base case for the recursion): 
+    D[i, 0] = D[0, j] = 0
+    D[0, all the js] = 0
+    D[all the is, 0] = 0
+    When implementing remember to look at your base cases and 
+    understand you have to start with those and build up!
+    Helps you figure out directionality!
+    
+    for i in range(1, n):
+        for j in range(1, n):
+            if(x[i] == y[j])
+                D[i, j] = D[i-1, j-1] + 1
+            else:
+                D[i, j] = max(D[i-1, j], D[i, j-1])
+    
+3) Interval DP
+    Given a string x = x1..n, find the min number of chars that need to be inserted to make it a palindrome. 
+    Let D[i, j] be the min number of char that need to be inserted to make xi..j into a palindrome
+
+    Consider shortest palindrome y1..k containing xi..j. Either y1 = xi or yk = xj.
+    y[2..k-1] is then an optimal solution for x[i+1..j] or x[i..j-1] or x[i+1..j-1]
+    Recurrence:
+
+    Dij = 1 + min(D[i+1, j], D[i, j-1]) if xi != xj
+    Dij  = D[i+1,j-1] if xi=xj  otherwise   
+    
+    Base Case: 
+    D[i,i] = D[i, i-1] = 0 for all i
+    
+    Solution subproblem is D[1, n] => i = 1, j = n
+
+    Directionality is hard here:
+    //fill in base cases here
+    for(t = 2, t<= n; t++):
+        for(i = 1, j =t, j <= n; ++i, ++j):
+            //fill in D[i][j] here
+
+    => We used t to fill in table correctly! This is interval DP! 
+    => This is the correct directionality. DIRECTIONALITY IS BASED ON YOUR BASE CASESE!!!
+    => A good way to figure out how to fill up table is just to write out example D[i][j] and figure
+        out how you are filling them up with your base cases.
+
+    Solution 2:
+    Reverse x to get x-reversed.
+    The answer is n - L where L is the length of the LCS of x and x-reversed
+    
+4) Subset DP => requires bitmasking!
+    Given a weighted graph with n nodes, find the shortest path that visits every node exactly once (TSP)
+    
+    D[S, v] the length of optimal path that visits every node in the set S exactly once and ends at v. 
+    there are n2^n subproblems
+    Answer is min{v in V such that D[V, v]} where V is the given set of nodes. 
+
+    Base Case: 
+    For each node v, D[{v}, v] = 0
+    Recurrence:
+    consider TSP path. Right before arivign at v, the path comes from some u in S - {v}, and that subpath
+    has to be the optimal one that covers S- {v} ending at u.
+    Just try all possible candidates for u
+
+    D[S, v] = min[u in S - {v}] (D[S-{v}][u] + cost(u, v) )
+
+    Use integer to represet set. 19 = 010011 represents set {0, 1, 4}
+    Union of two sets x and y: x | y
+    Set intersection: x & y
+    Symmetic difference: x ^ y
+    singleton set {i}: 1 << i
+    Membership test: x & (1 << i) != 0
+
+
 #######################################################
 COOL NOTES PART -4: Graph Algorithms
 
@@ -1050,131 +1334,6 @@ Floyd Warshall:
 
 
 
-##########################################
-COOL NOTES PART -3: NETWORK FLOW Tutorial: maxflow and mincut
-COMPUTING MAX FLOW:
-    Given directed graph, each edge e assocaited with 
-    its capacity c(e) > 0. Two special nodes source s and sink t. 
-
-    Problem: Maximize total amount of flow from s to t subject to 2 constraints:
-
-    1) Flow on edge e doesnt exceed c(e)
-    2) For every node other than s,t, incoming flow is equal to outgoing.
-
-    Alternate formulation: we want to remove some edges from
-    graph such that after removing the edges, there is no path from
-    s to t. 
-    The cost of removing e is equal to its capacity, c(e)
-    The min cut problem is to find a cut with minimum total cost.
-
-    THRM: MAXIMUM FLOW = MINIMUM CUT
-
-    Flow decomposition: any valid flow can be decomposed into flow 
-    paths and circulations.
-
-    Ford-Fulkerson Algorithm: Max flow algo. 
-    Main idea: find valid flow paths until there is none left, and 
-    add them up.
-
-        The intuition goes like this: as long as there is a path from the 
-        source to the sink that can take some flow the entire way, we send it. 
-        This path is called an augmenting path. We keep doing this until there 
-        are no more augmenting paths. In the image above, we could start by 
-        sending 2 cars along the topmost path (because only 2 cars can get 
-        through the last portion). Then we might send 3 cars along the bottom 
-        path for a total of 5 cars. Finally, we can send 2 more cars along the 
-        top path for two edges, send them down to bottom path and through to the 
-        sink. The total number of cars sent is now 7, and it is the maximum flow.
-
-        Simplest algo:
-
-        Set f total = 0
-        Repeat until there is no path from s to t:
-            Run DFS from s to find a flow path to t
-            Let f be the minimum capacity value on the path
-            Add f to f total
-            For each edge u → v on the path:
-                Decrease c(u → v) by f
-                Increase c(v → u) by f
-
-        SIMPLIFLIED ALGO:
-            initialize flow to 0
-            path = findAugmentingPath(G, s, t)
-            while path exists:
-                augment flow along path                 #This is purposefully ambiguous for now
-                G_f = createResidualGraph()
-                path = findAugmentingPath(G_f, s, t)
-            return flow
-        
-        More Explained version:
-            flow = 0
-            for each edge (u, v) in G:
-                flow(u, v) = 0
-            while there is a path, p, from s -> t in residual network G_f:
-                residual_capacity(p) = min(residual_capacity(u, v) : for (u, v) in p)
-                flow = flow + residual_capacity(p)
-                for each edge (u, v) in p:
-                    if (u, v) is a forward edge:
-                        flow(u, v) = flow(u, v) + residual_capacity(p)
-                    else:
-                        flow(u, v) = flow(u, v) - residual_capacity(p)
-            return flow
-
-    Residual graphs are an important middle step in calculating the maximum flow. 
-    As noted in the pseudo-code, they are calculated at every step 
-    so that augmenting paths can be found from the source to the sink.
-
-    When a residual graph, G_f is created, edges can be created 
-    that go in the opposite direction when compared to the original graph. 
-    An edge is a 'forward edge' if the edge existed in the original graph, G. 
-    If it is a reversal of an original edge, it is called a 'backwards edge.'
-
-    Residual capacity is defined as the new capacity after a given flow has been taken away. 
-    In other words, for a given edge (u, v), the residual capacity, c_f is defined as
-    1) c_f(u, v) = c(u,v) - f(u, v)
-
-    However, there must also be a residual capacity for the reverse edge as well. 
-    The max-flow min-cut theorem states that flow must be preserved 
-    in a network. So, the following equality always holds:
-    2) f(u, v) = -f(v, u)
-
-    residual capacities are used to make a residual network, G_f
-    1) and 2) allow you to operate on residual graph.
-
-    In the forward direction, the edges now have a residual capacity 
-    equal to c_f(u, v) = c(u, v) - f(u, v)
-    The flow is equal to 2, so the residual capacity of (S, A) and (A, B) is reduced to 2, 
-    while the edge (B, T) has a residual capacity of 0.
-
-    In the backward direction, the edges now have a residual capacity equal to 
-    c_f(v, u) = c(v, u) - f(v, u) 
-    Because of flow preservation, this can be written as c_f(v, u) = c(v, u) + f(u, v)
-
-    And since the capacity of those backward edges was initially 0, 
-    all of the backward edges (T, B), (B, A), and (A, S) 
-    now have a residual capacity of 2.
-
-    When a new residual graph is constructed with these new edges, 
-    any edges with a residual capacity of 0—like (B, T)—are not included. 
-    Add all the backward edges to the residual graph! update all the forward edges!
-    keep adding augmenting paths until. There are not more paths from the 
-    source to the sink, so there can be no more augmenting paths. 
-
-COMPUTING MIN CUT:
-
-    1) Run Ford-Fulkerson algorithm and consider the final residual graph.
-
-    2) Find the set of vertices that are reachable 
-    from the source in the residual graph.
-
-    3) All edges which are from a reachable vertex 
-    to non-reachable vertex are minimum cut edges. Print all such edges.
-
-
-
-
-############################################
-
 #############################################
 COOL NOTES PART -2: HOW TO USE HEAP DICTIONARIES WITH DECREASE KEY USING HEAPQ!
 
@@ -1234,7 +1393,8 @@ COOL NOTES PART -2: HOW TO USE HEAP DICTIONARIES WITH DECREASE KEY USING HEAPQ!
             raise KeyError('pop from an empty priority queue')
 
 
-############################################
+#######################################################################################
+#######################################################################################
 COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
 
      Counting sort is following:
@@ -1480,6 +1640,132 @@ MEDIAN OF MEDIANS(QUICKSELECT),  with constant space PARTITION FUNCTION.:
      else
          return select(list, pivotIndex + 1, right, k)
 
+##########################################
+COOL NOTES PART -3: NETWORK FLOW Tutorial: maxflow and mincut
+COMPUTING MAX FLOW:
+    Given directed graph, each edge e assocaited with 
+    its capacity c(e) > 0. Two special nodes source s and sink t. 
+
+    Problem: Maximize total amount of flow from s to t subject to 2 constraints:
+
+    1) Flow on edge e doesnt exceed c(e)
+    2) For every node other than s,t, incoming flow is equal to outgoing.
+
+    Alternate formulation: we want to remove some edges from
+    graph such that after removing the edges, there is no path from
+    s to t. 
+    The cost of removing e is equal to its capacity, c(e)
+    The min cut problem is to find a cut with minimum total cost.
+
+    THRM: MAXIMUM FLOW = MINIMUM CUT
+
+    Flow decomposition: any valid flow can be decomposed into flow 
+    paths and circulations.
+
+    Ford-Fulkerson Algorithm: Max flow algo. 
+    Main idea: find valid flow paths until there is none left, and 
+    add them up.
+
+        The intuition goes like this: as long as there is a path from the 
+        source to the sink that can take some flow the entire way, we send it. 
+        This path is called an augmenting path. We keep doing this until there 
+        are no more augmenting paths. In the image above, we could start by 
+        sending 2 cars along the topmost path (because only 2 cars can get 
+        through the last portion). Then we might send 3 cars along the bottom 
+        path for a total of 5 cars. Finally, we can send 2 more cars along the 
+        top path for two edges, send them down to bottom path and through to the 
+        sink. The total number of cars sent is now 7, and it is the maximum flow.
+
+        Simplest algo:
+
+        Set f total = 0
+        Repeat until there is no path from s to t:
+            Run DFS from s to find a flow path to t
+            Let f be the minimum capacity value on the path
+            Add f to f total
+            For each edge u → v on the path:
+                Decrease c(u → v) by f
+                Increase c(v → u) by f
+
+        SIMPLIFLIED ALGO:
+            initialize flow to 0
+            path = findAugmentingPath(G, s, t)
+            while path exists:
+                augment flow along path                 #This is purposefully ambiguous for now
+                G_f = createResidualGraph()
+                path = findAugmentingPath(G_f, s, t)
+            return flow
+        
+        More Explained version:
+            flow = 0
+            for each edge (u, v) in G:
+                flow(u, v) = 0
+            while there is a path, p, from s -> t in residual network G_f:
+                residual_capacity(p) = min(residual_capacity(u, v) : for (u, v) in p)
+                flow = flow + residual_capacity(p)
+                for each edge (u, v) in p:
+                    if (u, v) is a forward edge:
+                        flow(u, v) = flow(u, v) + residual_capacity(p)
+                    else:
+                        flow(u, v) = flow(u, v) - residual_capacity(p)
+            return flow
+
+    Residual graphs are an important middle step in calculating the maximum flow. 
+    As noted in the pseudo-code, they are calculated at every step 
+    so that augmenting paths can be found from the source to the sink.
+
+    When a residual graph, G_f is created, edges can be created 
+    that go in the opposite direction when compared to the original graph. 
+    An edge is a 'forward edge' if the edge existed in the original graph, G. 
+    If it is a reversal of an original edge, it is called a 'backwards edge.'
+
+    Residual capacity is defined as the new capacity after a given flow has been taken away. 
+    In other words, for a given edge (u, v), the residual capacity, c_f is defined as
+    1) c_f(u, v) = c(u,v) - f(u, v)
+
+    However, there must also be a residual capacity for the reverse edge as well. 
+    The max-flow min-cut theorem states that flow must be preserved 
+    in a network. So, the following equality always holds:
+    2) f(u, v) = -f(v, u)
+
+    residual capacities are used to make a residual network, G_f
+    1) and 2) allow you to operate on residual graph.
+
+    In the forward direction, the edges now have a residual capacity 
+    equal to c_f(u, v) = c(u, v) - f(u, v)
+    The flow is equal to 2, so the residual capacity of (S, A) and (A, B) is reduced to 2, 
+    while the edge (B, T) has a residual capacity of 0.
+
+    In the backward direction, the edges now have a residual capacity equal to 
+    c_f(v, u) = c(v, u) - f(v, u) 
+    Because of flow preservation, this can be written as c_f(v, u) = c(v, u) + f(u, v)
+
+    And since the capacity of those backward edges was initially 0, 
+    all of the backward edges (T, B), (B, A), and (A, S) 
+    now have a residual capacity of 2.
+
+    When a new residual graph is constructed with these new edges, 
+    any edges with a residual capacity of 0—like (B, T)—are not included. 
+    Add all the backward edges to the residual graph! update all the forward edges!
+    keep adding augmenting paths until. There are not more paths from the 
+    source to the sink, so there can be no more augmenting paths. 
+
+COMPUTING MIN CUT:
+
+    1) Run Ford-Fulkerson algorithm and consider the final residual graph.
+
+    2) Find the set of vertices that are reachable 
+    from the source in the residual graph.
+
+    3) All edges which are from a reachable vertex 
+    to non-reachable vertex are minimum cut edges. Print all such edges.
+
+
+
+
+############################################
+
+
 ###############################################
 COOL NOTES PART 0: String matching algorithms
 
@@ -1487,175 +1773,6 @@ COOL NOTES PART 0: String matching algorithms
 -> Code regex
 
 
-
-###################################################33
-
-Cool Notes Part 0.5: Sliding Window with a deque
-
-        -> Sliding Window Maximum (Maximum of all subarrays of size k)
-           Given an array and an integer k, find the maximum for each 
-           and every contiguous subarray of size k. O(N) algorithm
-
-           We create a Deque, Qi of capacity k, that stores only useful elements 
-           of current window of k elements. An element is useful if it is in current window 
-           and is greater than all other elements on left side of it in current window. 
-           We process all array elements one by one and maintain Qi to contain 
-           useful elements of current window and these useful elements are 
-           maintained in sorted order. The element at front of the Qi is 
-           the largest and element at rear of Qi is the smallest of current window. 
-           Time Complexity: O(n). It seems more than O(n) at first look. 
-           If we take a closer look, we can observe that every element of 
-           array is added and removed at most once. 
-           So there are total 2n operations.
-          
-            def printMax(arr, n, k): 
-                
-                """ Create a Double Ended Queue, Qi that  
-                will store indexes of array elements.  
-                The queue will store indexes of useful  
-                elements in every window and it will 
-                maintain decreasing order of values from 
-                front to rear in Qi, i.e., arr[Qi.front[]] 
-                to arr[Qi.rear()] are sorted in decreasing 
-                order"""
-                Qi = deque() 
-                
-                # Process first k (or first window)  
-                # elements of array 
-                for i in range(k): 
-                    
-                    # For every element, the previous  
-                    # smaller elements are useless 
-                    # so remove them from Qi 
-                    while Qi and arr[i] >= arr[Qi[-1]] : 
-                        Qi.pop() 
-                    
-                    # Add new element at rear of queue 
-                    Qi.append(i); 
-                    
-                # Process rest of the elements, i.e.  
-                # from arr[k] to arr[n-1] 
-                for i in range(k, n): 
-                    
-                    # The element at the front of the 
-                    # queue is the largest element of 
-                    # previous window, so print it 
-                    print(str(arr[Qi[0]]) + " ", end = "") 
-                    
-                    # Remove the elements which are  
-                    # out of this window 
-                    while Qi and Qi[0] <= i-k: 
-                        
-                        # remove from front of deque 
-                        Qi.popleft()  
-                    
-                    # Remove all elements smaller than 
-                    # the currently being added element  
-                    # (Remove useless elements) 
-                    while Qi and arr[i] >= arr[Qi[-1]] : 
-                        Qi.pop() 
-                    
-                    # Add current element at the rear of Qi 
-                    Qi.append(i) 
-                
-                # Print the maximum element of last window 
-                print(str(arr[Qi[0]])) 
-        
-        -> YOU CAN ALSO ANSWER THIS QUESTION WITH A SEGMENT TREE. 
-
-
-
-#####################################################################################################################
-
-COOL NOTES PART 1: DYNAMIC PROGRAMMING RECURRENCES EXAMPLES: 
-(For dp, define subproblem, then recurrence, then base cases, then implement)
-
-1) Given n, find number of diff ways to write n as sum of 1, 3, 4
-    Let Dn be the number of ways to write n as the sum of 1, 3, 4
-    Recurrence: well n = x1 + x2 + ... + xm. If xm = 1, other terms sum to n-1
-    Sums that end with xm=1 is Dn-1
-
-    Recurrence => Dn = Dn-1 + Dn-3 + Dn-4
-    Solve base cases D0 = 1, Dn = 0 for all negative n. 
-    Code:    
-    D[0] = D[1] = D[2] = 1; D[3] = 2;
-    for(i = 4; i <= n; i++)
-        D[i] = D[i-1] + D[i-3] + D[i-4]
-
-
-2) Given 2 strings x and y. Find Longest common subsequence. 
-    Let Dij be the length of LCS of x1...i, y1...j
-    D[i,j] = D[i-1,j-1] + 1 if xi = yj
-    D[i,j] = max{D[i-1, j], D[i, j-1]}  otherwise
-
-    Find and solve base cases(In top down, this is the base case for the recursion): 
-    D[i, 0] = D[0, j] = 0
-    D[0, all the js] = 0
-    D[all the is, 0] = 0
-    When implementing remember to look at your base cases and 
-    understand you have to start with those and build up!
-    Helps you figure out directionality!
-    
-    for i in range(1, n):
-        for j in range(1, n):
-            if(x[i] == y[j])
-                D[i, j] = D[i-1, j-1] + 1
-            else:
-                D[i, j] = max(D[i-1, j], D[i, j-1])
-    
-3) Interval DP
-    Given a string x = x1..n, find the min number of chars that need to be inserted to make it a palindrome. 
-    Let D[i, j] be the min number of char that need to be inserted to make xi..j into a palindrome
-
-    Consider shortest palindrome y1..k containing xi..j. Either y1 = xi or yk = xj.
-    y[2..k-1] is then an optimal solution for x[i+1..j] or x[i..j-1] or x[i+1..j-1]
-    Recurrence:
-
-    Dij = 1 + min(D[i+1, j], D[i, j-1]) if xi != xj
-    Dij  = D[i+1,j-1] if xi=xj  otherwise   
-    
-    Base Case: 
-    D[i,i] = D[i, i-1] = 0 for all i
-    
-    Solution subproblem is D[1, n] => i = 1, j = n
-
-    Directionality is hard here:
-    //fill in base cases here
-    for(t = 2, t<= n; t++):
-        for(i = 1, j =t, j <= n; ++i, ++j):
-            //fill in D[i][j] here
-
-    => We used t to fill in table correctly! This is interval DP! 
-    => This is the correct directionality. DIRECTIONALITY IS BASED ON YOUR BASE CASESE!!!
-    => A good way to figure out how to fill up table is just to write out example D[i][j] and figure
-        out how you are filling them up with your base cases.
-
-    Solution 2:
-    Reverse x to get x-reversed.
-    The answer is n - L where L is the length of the LCS of x and x-reversed
-    
-4) Subset DP => requires bitmasking!
-    Given a weighted graph with n nodes, find the shortest path that visits every node exactly once (TSP)
-    
-    D[S, v] the length of optimal path that visits every node in the set S exactly once and ends at v. 
-    there are n2^n subproblems
-    Answer is min{v in V such that D[V, v]} where V is the given set of nodes. 
-
-    Base Case: 
-    For each node v, D[{v}, v] = 0
-    Recurrence:
-    consider TSP path. Right before arivign at v, the path comes from some u in S - {v}, and that subpath
-    has to be the optimal one that covers S- {v} ending at u.
-    Just try all possible candidates for u
-
-    D[S, v] = min[u in S - {v}] (D[S-{v}][u] + cost(u, v) )
-
-    Use integer to represet set. 19 = 010011 represents set {0, 1, 4}
-    Union of two sets x and y: x | y
-    Set intersection: x & y
-    Symmetic difference: x ^ y
-    singleton set {i}: 1 << i
-    Membership test: x & (1 << i) != 0
 
 
 

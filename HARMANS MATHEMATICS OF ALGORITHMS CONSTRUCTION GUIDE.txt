@@ -2,6 +2,9 @@
 SCRAPE AND WRITE NOTES FOR FOLLOWING: https://www.geeksforgeeks.org/number-theory-competitive-programming/#basics
 SCRAPE AND WRITE NOTES FOR FOLLOWING: https://medium.com/algorithms-and-leetcode/math-related-problems-on-leetcode-9537df481fbe
 
+WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
+
+
 1) Greatest Common Divisor and Least Common Multiple
 
         The GCD (Greatest Common Divisor) of two numbers is defined 
@@ -184,7 +187,8 @@ SCRAPE AND WRITE NOTES FOR FOLLOWING: https://medium.com/algorithms-and-leetcode
     Have two lines:
     ax + by + c = 0 and dx + ey + f = 0
     Write in mat form:
-    [a b, d e] [x, y] = -[c, f]
+    [a b, 
+    d e] [x, y] = -[c, f]
     Left multiply by matrix inverse:
 
     => 1/(ae - bd) * [e -b, -d a] 
