@@ -237,9 +237,18 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
         How do I identify this pattern?
         They will be problems involving a sorted array with numbers in a given range
         If the problem asks you to find the missing/duplicate/smallest number in an sorted/rotated array
+    
+        
+        We one by one consider all cycles. We first consider the cycle that 
+        includes first element. We find correct position of first element, 
+        place it at its correct position, say j. We consider old value of arr[j] 
+        and find its correct position, we keep doing this till all elements of current 
+        cycle are placed at correct position, i.e., we don’t come back to cycle starting point.
+    
         Problems featuring cyclic sort pattern:
         Find the Missing Number (easy)
         Find the Smallest Missing Positive Number (medium)
+
 
 
 22) Know in-place reverse linked list (MEMORIZE)
