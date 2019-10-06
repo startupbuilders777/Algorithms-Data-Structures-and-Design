@@ -1,4 +1,169 @@
-213########################## DESIGN CIRCULAR BIDIRECTIONAL LINKED LIST ############################
+-> Tries
+-> Fibonacci heaps
+-> Splay trees
+
+-> Range Tree
+-> Balanced BSTs -> AVL/REDBLACK, Find a python one. 
+
+
+##################################################################################
+TRIE:
+
+Trie Implementation
+
+This data structure is pretty useful for storing large databases of words. 
+It provides linear time search and linear time insertion into the pool of words.
+
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.leaf = False
+        
+class Trie(object):
+ 
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = TrieNode()
+         
+ 
+    def insert(self, word):
+        """
+        Inserts a word into the trie.
+        :type word: str
+        :rtype: void
+        """
+        root = self.root
+        for c in word:
+            if c not in root.children:
+                root.children[c] = TrieNode()
+            root = root.children[c]
+        root.leaf = True
+         
+         
+ 
+    def search(self, word):
+        """
+        Returns if the word is in the trie.
+        :type word: str
+        :rtype: bool
+        """
+        root = self.root
+        for c in word:
+            if c not in root.children:
+                return False
+            root = root.children[c]
+        return root.leaf
+         
+ 
+    def startsWith(self, prefix):
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        :type prefix: str
+        :rtype: bool
+        """
+        root = self.root
+        for c in prefix:
+            if c not in root.children:
+                return False
+            root = root.children[c]
+        return True
+
+##########################################################################################
+
+MinHeap Implementation
+
+Maxheap can be implemented similarly, mainly just know the heapify algorithm and you should be fine.
+
+class MinHeap:
+    def __init__(self):
+        self.heap = []
+    def parent(self, i):
+        return (i - 1)/2
+    def left_child(self, i):
+        return (i * 2 + 1)
+    def right_child(self, i):
+        return (i * 2 + 2)
+    def insertKey(self, k):
+        self.heap.append(k)
+        i = len(self.heap) - 1
+        while i != 0 and self.heap[self.parent(i)] > self.heap[i]:
+            self.heap[i], self.heap[self.parent(i)] = self.heap[self.parent(i)], self.heap[i]
+            i = self.parent(i)
+    def decreaseKey(self, i, new_val):
+        self.heap[i] = new_val
+        while i != 0 and self.heap[self.parent(i)] > self.heap[i]:
+            self.heap[i], self.heap[self.parent(i)] = self.heap[self.parent(i)], self.heap[i]
+            i = self.parent(i)
+    def increaseKey(self, i, new_val):
+        heap[i] = new_val
+        minHeapify(i)
+    def getMin(self):
+        return self.heap[0]
+    def minHeapify(self, i):
+        left_child = self.left_child(i)
+        right_child = self.right_child(i)
+        smallest = i
+        if left_child < len(self.heap) and self.heap[left_child] < self.heap[smallest]:
+            smallest = left_child
+        if right_child < len(self.heap) and self.heap[right_child] < self.heap[smallest]:
+            smallest = right_child
+        if smallest != i:
+            self.heap[i], self.heap[smallest] = self.heap[smallest], self.heap[i]
+            self.minHeapify(smallest)
+    def extractMin(self):
+        tmp = self.heap[0]
+        self.heap[0] = self.heap[-1]
+        self.heap.pop()
+        self.minHeapify(0)
+        return tmp
+    def deleteKey(self, i):
+        self.decreaseKey(i, float('inf') * -1)
+        self.extractMin()
+
+###################################################################################################
+Segment trees are soooo cool. 
+Basically, if you have some list, and you want to calculate.
+
+reduce(operation, arr[i:j], default_value
+
+And you want to do this repeatedly. You can have O(n) for this operation 
+every time and O(1) for updating the array, or you can have O(log(n)) to 
+calculate this value and O(log(n)) to update using a Segment Tree.
+
+class SegmentTree:
+    def __init__(self, arr, operator, default):
+        self.n = len(arr)
+        self.default = default
+        self.arr = [0 for _ in range(2 * len(arr) - 1)]
+        self.operator = operator
+        for i in range(len(arr) - 1, len(self.arr)):
+            self.arr[i] = arr[i - len(arr) + 1]
+        for i in range(len(arr) - 2, -1, -1):
+            self.arr[i] = self.operator(self.arr[i * 2 + 1], self.arr[i * 2 + 2])
+    def update(self, idx, value):
+        idx = self.n - 1 + idx
+        self.arr[idx] = value
+        while idx > 0:
+            idx = (idx - 1)/2
+            self.arr[idx] = self.operator(self.arr[idx * 2 + 1], self.arr[idx * 2 + 2])
+    def get_segment_value(self, left, right):
+        left = self.n - 1 + left
+        right = self.n - 1 + right
+        ans = self.default
+        while left < right:
+            if left % 2 == 0:
+                ans = self.operator(ans, self.arr[left])
+                left += 1
+            if right % 2 == 0:
+                right -= 1
+                ans = self.operator(ans, self.arr[right])
+            left, right = (left - 1)/2, (right - 1)/2
+        return ans
+
+
+########################## DESIGN CIRCULAR BIDIRECTIONAL LINKED LIST ############################
 
 class Node:
     def __init__(self, v, p=None, n=None):

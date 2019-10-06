@@ -1,0 +1,48 @@
+Fisher Yates Proof
+
+Basically the question is, how do you shuffle an array? Basically, 
+you want all permutations to be equally probably.
+
+The code is quite simple.
+
+for i in xrange(len(arr) - 1, -1, -1):
+    j = random.choice(range(i + 1))
+    arr[i], arr[j] = arr[j], arr[i]
+
+We will now prove that this indeed does return a random permutation.
+Now, we have to prove that a number originally residing at index i will have 
+\frac{1}{n} probability of ending up at index j. We can see that this is the 
+probability that i is not selected in the first n - j trials and is selected 
+on the j^{th} trial. This probability just 
+becomes \frac{n- 1}{n} * \frac{n - 1}{n - 2} .... *\frac{j}{j + 1} * \frac{1}{j} = \frac{1}{n}. 
+Thus, our array is randomly shuffled and we are done.
+
+######################33
+Reservoir Sampling
+
+Basically, how do you choose k random 
+elements from a list of n elements
+where n is some large number.
+
+The answer is simple, but ingenious.
+
+A simple solution is to create an array reservoir[] of maximum size k. 
+One by one randomly select an item from stream[0..n-1]. If the selected 
+item is not previously selected, then put it in reservoir[]. To check 
+if an item is previously selected or not, we need to search the item in 
+reservoir[]. The time complexity of this algorithm will be O(k^2). This can 
+be costly if k is big. Also, this is not efficient if the input is in the 
+form of a stream.
+
+
+
+It can be solved in O(n) time. The solution also suits well for input in 
+the form of stream. The idea is similar to this post. Following are the steps.
+
+1) Create an array reservoir[0..k-1] and copy first k items of stream[] to it.
+2) Now one by one consider all items from (k+1)th item to nth item.
+    …a) Generate a random number from 0 to i where i is index of current item 
+        in stream[]. Let the generated random number is j.
+    …b) If j is in range 0 to k-1, replace reservoir[j] with arr[i]
+
+

@@ -1004,7 +1004,52 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
             else:
                 self.q.popleft()
 
+54) Boyer moore voting algortihm:
+    given an array of n elements, tell me if there is an 
+    element that appears more than n/2 times.
 
+    Obviously this has a huge amount of uses.
+
+    The trivial solution would be to sort the array in O(n * log(n)) time and then
+
+    Boyer Moore Algorithm
+    This will require two passes, the first to find a 
+    possible candidate, and the second to verify that 
+    it is a candidate. The second part is 
+    trivial so we will not focus on it. The first sweep
+    however is a little bit more tricky.
+
+    We initialize a count to 0. Then as we proceed in the list, 
+    if the count is 0, we make the current value being
+    looked at the candidate. If the value we’re looking at 
+    is the candidate, then we increment the count by 1, 
+    otherwise we decrement the count.
+
+    Distributed Boyer-Moore
+    Determine how many cores/processors you have, and call it t. 
+    Now, split your array into t positions and run Boyer-Moore 
+    on each of these sections. You will get a candidate 
+    and a count from each of these sections. Now, 
+    recursively run Boyer-Moore on the list of 
+    [candidate1 * count1] + [candidate2 * count2] … . Pretty cool right!
+
+    Generalization
+    The generalized problem is given a list, 
+    find all elements of the list that occur more 
+    than n/k times. We simply have to carry 
+    the proof from the last case over and it applies directly.
+
+    Have a set of possible candidates, and have an associated count with them.
+
+    Iterate through the list, and if the item is in 
+    the dictionary, increment the count. If not and 
+    the number of elements in the dictionary is less 
+    than k, then just add it to the dictionary with count 1. 
+    Otherwise, decrement all the counters by 1, and delete 
+    any candidates with a counter 1.
+
+
+#############################################################################
 ###################################################33
 
 Cool Notes Part 0.5: Sliding Window with a deque
@@ -1207,134 +1252,182 @@ COOL NOTES PART 1: DYNAMIC PROGRAMMING RECURRENCES EXAMPLES:
     singleton set {i}: 1 << i
     Membership test: x & (1 << i) != 0
 
-
+#############################################################################
 #######################################################
 COOL NOTES PART -4: Graph Algorithms
 
-Bellman Ford:
+    Bellman Ford:
 
-#Class to represent a graph 
-class Graph: 
-  
-    def __init__(self,vertices): 
-        self.V= vertices #No. of vertices 
-        self.graph = [] # default dictionary to store graph 
-
-    # function to add an edge to graph 
-    def addEdge(self,u,v,w): 
-        self.graph.append([u, v, w]) 
-
-    # The main function that finds shortest distances from src to 
-    # all other vertices using Bellman-Ford algorithm.  The function 
-    # also detects negative weight cycle 
-    def BellmanFord(self, src): 
-  
-        # Step 1: Initialize distances from src to all other vertices 
-        # as INFINITE 
-        dist = [float("Inf")] * self.V 
-        dist[src] = 0 
-  
-  
-        # Step 2: Relax all edges |V| - 1 times. A simple shortest  
-        # path from src to any other vertex can have at-most |V| - 1  
-        # edges 
-        for i in range(self.V - 1): 
-            # Update dist value and parent index of the adjacent vertices of 
-            # the picked vertex. Consider only those vertices which are still in 
-            # queue 
-            for u, v, w in self.graph: 
-                if dist[u] != float("Inf") and dist[u] + w < dist[v]: 
-                        dist[v] = dist[u] + w 
-  
-        # Step 3: check for negative-weight cycles.  The above step  
-        # guarantees shortest distances if graph doesn't contain  
-        # negative weight cycle.  If we get a shorter path, then there 
-        # is a cycle. 
-  
-        for u, v, w in self.graph: 
-                if dist[u] != float("Inf") and dist[u] + w < dist[v]: 
-                        print "Graph contains negative weight cycle"
-                        return
-                          
-        # print all distance 
-        self.printArr(dist) 
-
-Floyd Warshall:
-    We initialize the solution matrix same as 
-    the input graph matrix as a first step. 
-    Then we update the solution matrix by considering all 
-    vertices as an intermediate vertex. 
-    The idea is to one by one pick all vertices and updates all shortest 
-    paths which include the picked vertex as an intermediate vertex in the 
-    shortest path. When we pick vertex number k as an intermediate vertex, 
-    we already have considered vertices {0, 1, 2, .. k-1} as intermediate vertices. 
-
-    For every pair (i, j) of the source and destination 
-    vertices respectively, there are two possible cases.
-
-    1)  k is not an intermediate vertex in shortest path from i to j. 
-        We keep the value of dist[i][j] as it is.
-
-    2)  k is an intermediate vertex in shortest path from i to j. We update 
-        the value of dist[i][j] as dist[i][k] + dist[k][j] if dist[i][j] > dist[i][k] + dist[k][j]
-
-
-    # Solves all pair shortest path via Floyd Warshall Algorithm 
-    def floydWarshall(graph): 
-    
-        """ dist[][] will be the output matrix that will finally 
-            have the shortest distances between every pair of vertices """
-        """ initializing the solution matrix same as input graph matrix 
-        OR we can say that the initial values of shortest distances 
-        are based on shortest paths considering no  
-        intermediate vertices """
-        dist = map(lambda i : map(lambda j : j , i) , graph) 
+        #Class to represent a graph 
+        class Graph: 
         
-        """ Add all vertices one by one to the set of intermediate 
-        vertices. 
-        ---> Before start of an iteration, we have shortest distances 
-        between all pairs of vertices such that the shortest 
-        distances consider only the vertices in the set  
-        {0, 1, 2, .. k-1} as intermediate vertices. 
-        ----> After the end of a iteration, vertex no. k is 
-        added to the set of intermediate vertices and the  
-        set becomes {0, 1, 2, .. k} 
-        """
+            def __init__(self,vertices): 
+                self.V= vertices #No. of vertices 
+                self.graph = [] # default dictionary to store graph 
 
-        for k in range(V): 
-    
-            # pick all vertices as source one by one 
-            for i in range(V): 
-    
-                # Pick all vertices as destination for the 
-                # above picked source 
-                for j in range(V): 
-    
-                    # If vertex k is on the shortest path from  
-                    # i to j, then update the value of dist[i][j] 
-                    dist[i][j] = min(dist[i][j] , 
-                                    dist[i][k]+ dist[k][j] 
-                                    ) 
-        printSolution(dist)
-    
-    graph = [[0,5,INF,10], 
-             [INF,0,3,INF], 
-             [INF, INF, 0,   1], 
-             [INF, INF, INF, 0] 
-        ] 
+            # function to add an edge to graph 
+            def addEdge(self,u,v,w): 
+                self.graph.append([u, v, w]) 
 
-    # Print the solution 
-    floydWarshall(graph); 
-    Following matrix shows the shortest distances between every pair of vertices
-      0      5      8      9
-    INF      0      3      4
-    INF    INF      0      1
-    INF    INF    INF      0
+            # The main function that finds shortest distances from src to 
+            # all other vertices using Bellman-Ford algorithm.  The function 
+            # also detects negative weight cycle 
+            def BellmanFord(self, src): 
+        
+                # Step 1: Initialize distances from src to all other vertices 
+                # as INFINITE 
+                dist = [float("Inf")] * self.V 
+                dist[src] = 0 
+        
+        
+                # Step 2: Relax all edges |V| - 1 times. A simple shortest  
+                # path from src to any other vertex can have at-most |V| - 1  
+                # edges 
+                for i in range(self.V - 1): 
+                    # Update dist value and parent index of the adjacent vertices of 
+                    # the picked vertex. Consider only those vertices which are still in 
+                    # queue 
+                    for u, v, w in self.graph: 
+                        if dist[u] != float("Inf") and dist[u] + w < dist[v]: 
+                                dist[v] = dist[u] + w 
+        
+                # Step 3: check for negative-weight cycles.  The above step  
+                # guarantees shortest distances if graph doesn't contain  
+                # negative weight cycle.  If we get a shorter path, then there 
+                # is a cycle. 
+        
+                for u, v, w in self.graph: 
+                        if dist[u] != float("Inf") and dist[u] + w < dist[v]: 
+                                print "Graph contains negative weight cycle"
+                                return
+                                
+                # print all distance 
+                self.printArr(dist) 
+
+    Floyd Warshall:
+        We initialize the solution matrix same as 
+        the input graph matrix as a first step. 
+        Then we update the solution matrix by considering all 
+        vertices as an intermediate vertex. 
+        The idea is to one by one pick all vertices and updates all shortest 
+        paths which include the picked vertex as an intermediate vertex in the 
+        shortest path. When we pick vertex number k as an intermediate vertex, 
+        we already have considered vertices {0, 1, 2, .. k-1} as intermediate vertices. 
+
+        For every pair (i, j) of the source and destination 
+        vertices respectively, there are two possible cases.
+
+        1)  k is not an intermediate vertex in shortest path from i to j. 
+            We keep the value of dist[i][j] as it is.
+
+        2)  k is an intermediate vertex in shortest path from i to j. We update 
+            the value of dist[i][j] as dist[i][k] + dist[k][j] if dist[i][j] > dist[i][k] + dist[k][j]
 
 
+        # Solves all pair shortest path via Floyd Warshall Algorithm 
+        def floydWarshall(graph): 
+        
+            """ dist[][] will be the output matrix that will finally 
+                have the shortest distances between every pair of vertices """
+            """ initializing the solution matrix same as input graph matrix 
+            OR we can say that the initial values of shortest distances 
+            are based on shortest paths considering no  
+            intermediate vertices """
+            dist = map(lambda i : map(lambda j : j , i) , graph) 
+            
+            """ Add all vertices one by one to the set of intermediate 
+            vertices. 
+            ---> Before start of an iteration, we have shortest distances 
+            between all pairs of vertices such that the shortest 
+            distances consider only the vertices in the set  
+            {0, 1, 2, .. k-1} as intermediate vertices. 
+            ----> After the end of a iteration, vertex no. k is 
+            added to the set of intermediate vertices and the  
+            set becomes {0, 1, 2, .. k} 
+            """
 
+            for k in range(V): 
+        
+                # pick all vertices as source one by one 
+                for i in range(V): 
+        
+                    # Pick all vertices as destination for the 
+                    # above picked source 
+                    for j in range(V): 
+        
+                        # If vertex k is on the shortest path from  
+                        # i to j, then update the value of dist[i][j] 
+                        dist[i][j] = min(dist[i][j] , 
+                                        dist[i][k]+ dist[k][j] 
+                                        ) 
+            printSolution(dist)
+        
+        graph = [[0,5,INF,10], 
+                [INF,0,3,INF], 
+                [INF, INF, 0,   1], 
+                [INF, INF, INF, 0] 
+            ] 
 
-#############################################
+        # Print the solution 
+        floydWarshall(graph); 
+        Following matrix shows the shortest distances between every pair of vertices
+        0      5      8      9
+        INF      0      3      4
+        INF    INF      0      1
+        INF    INF    INF      0
+
+    DJIKSTRA:
+
+        from collections import defaultdict
+        from heapq import *
+
+        def dijkstra(edges, f, t):
+            g = defaultdict(list)
+            for l,r,c in edges:
+                g[l].append((c,r))
+
+            q, seen, mins = [(0,f,())], set(), {f: 0}
+            while q:
+                (cost,v1,path) = heappop(q)
+                if v1 not in seen:
+                    seen.add(v1)
+                    path = (v1, path)
+                    if v1 == t: return (cost, path)
+
+                    for c, v2 in g.get(v1, ()):
+                        if v2 in seen: continue
+                        prev = mins.get(v2, None)
+                        next = cost + c
+                        if prev is None or next < prev:
+                            mins[v2] = next
+                            heappush(q, (next, v2, path))
+
+            return float("inf")
+
+        if __name__ == "__main__":
+            edges = [
+                ("A", "B", 7),
+                ("A", "D", 5),
+                ("B", "C", 8),
+                ("B", "D", 9),
+                ("B", "E", 7),
+                ("C", "E", 5),
+                ("D", "E", 15),
+                ("D", "F", 6),
+                ("E", "F", 8),
+                ("E", "G", 9),
+                ("F", "G", 11)
+            ]
+
+            print "=== Dijkstra ==="
+            print edges
+            print "A -> E:"
+            print dijkstra(edges, "A", "E")
+            print "F -> G:"
+            print dijkstra(edges, "F", "G")
+
+#############################################################################
+#############################################################################
 COOL NOTES PART -2: HOW TO USE HEAP DICTIONARIES WITH DECREASE KEY USING HEAPQ!
 
         -> Sort stability: how do you get two tasks with equal priorities 
@@ -1455,7 +1548,7 @@ COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
         print "Sorted character array is %s"  %("".join(ans)) 
 
 
-     Radix sort is following: 
+    Radix sort is following: 
         def countingSort(arr, exp1): 
         
             n = len(arr) 
@@ -1512,10 +1605,165 @@ COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
             print(arr[i]), 
 
 
+    Another Radix Sort
 
-BUCKET SORT:
+        def counting_sort_for_radix(arr, exp):
+            d = {}
+            for num in range(0,10):
+                d[num] = 0
+            for num in arr:
+                d[(num / exp) % 10] += 1
+            for num in range(1, 10):
+                d[num] = d[num - 1] + d[num]
+            output = [0 for n in arr]
+            for i in range(len(arr) - 1, -1, -1):
+                num = arr[i]
+                output[d[(num / exp) % 10] - 1] = num
+                d[(num / exp) % 10] -= 1
+            for i in range(len(arr)):
+                arr[i] = output[i]
+        
+        def radix_sort(arr):
+            if not arr:
+                return []
+            max_num = max(arr)
+            exp = 1
+            while max_num/exp > 0:
+                counting_sort_for_radix(arr, exp)
+                exp *= 10
+            return arr
 
-Bucket Sort
+    INPLACE QUICKSORT:
+
+        def sub_partition(array, start, end, idx_pivot):
+
+            'returns the position where the pivot winds up'
+            if not (start <= idx_pivot <= end):
+                raise ValueError('idx pivot must be between start and end')
+
+            array[start], array[idx_pivot] = array[idx_pivot], array[start]
+            pivot = array[start]
+            i = start + 1
+            j = start + 1
+
+            while j <= end:
+                if array[j] <= pivot:
+                    array[j], array[i] = array[i], array[j]
+                    i += 1
+                j += 1
+
+            array[start], array[i - 1] = array[i - 1], array[start]
+            return i - 1
+
+        def quicksort(array, start=0, end=None):
+
+            if end is None:
+                end = len(array) - 1
+
+            if end - start < 1:
+                return
+
+            idx_pivot = random.randint(start, end)
+            i = sub_partition(array, start, end, idx_pivot)
+            #print array, i, idx_pivot
+            quicksort(array, start, i - 1)
+            quicksort(array, i + 1, end)
+
+    INPLACE MERGE SORT
+
+        def merge_sort(xs):
+            """Inplace merge sort of array without recursive. The basic idea
+            is to avoid the recursive call while using iterative solution. 
+            The algorithm first merge chunk of length of 2, then merge chunks
+            of length 4, then 8, 16, .... , until 2^k where 2^k is large than 
+            the length of the array
+            """
+            
+            unit = 1
+            while unit <= len(xs):
+                h = 0
+                for h in range(0, len(xs), unit * 2):
+                    l, r = h, min(len(xs), h + 2 * unit)
+                    mid = h + unit
+                    # merge xs[h:h + 2 * unit]
+                    p, q = l, mid
+                    while p < mid and q < r:
+                        # use <= for stable merge merge
+                        if xs[p] <= xs[q]: p += 1
+                        else:
+                            tmp = xs[q]
+                            xs[p + 1: q + 1] = xs[p:q]
+                            xs[p] = tmp
+                            p, mid, q = p + 1, mid + 1, q + 1
+
+                unit *= 2
+            
+            return xs
+    
+    INPLACE MERGE SORT 2:
+
+        // Merges two subarrays of arr[]. 
+        // First subarray is arr[l..m] 
+        // Second subarray is arr[m+1..r] 
+        // Inplace Implementation 
+        void merge(int arr[], int start, int mid, int end) 
+        { 
+            int start2 = mid + 1; 
+        
+            // If the direct merge is already sorted 
+            if (arr[mid] <= arr[start2]) { 
+                return; 
+            } 
+        
+            // Two pointers to maintain start 
+            // of both arrays to merge 
+            while (start <= mid && start2 <= end) { 
+        
+                // If element 1 is in right place 
+                if (arr[start] <= arr[start2]) { 
+                    start++; 
+                } 
+                else { 
+                    int value = arr[start2]; 
+                    int index = start2; 
+        
+                    // Shift all the elements between element 1 
+                    // element 2, right by 1. 
+                    while (index != start) { 
+                        arr[index] = arr[index - 1]; 
+                        index--; 
+                    } 
+                    arr[start] = value; 
+        
+                    // Update all the pointers 
+                    start++; 
+                    mid++; 
+                    start2++; 
+                } 
+            } 
+        } 
+        
+        /* l is for left index and r is right index of the  
+        sub-array of arr to be sorted */
+        void mergeSort(int arr[], int l, int r) 
+        { 
+            if (l < r) { 
+        
+                // Same as (l + r) / 2, but avoids overflow 
+                // for large l and r 
+                int m = l + (r - l) / 2; 
+        
+                // Sort first and second halves 
+                mergeSort(arr, l, m); 
+                mergeSort(arr, m + 1, r); 
+        
+                merge(arr, l, m, r); 
+            } 
+        } 
+
+
+
+    BUCKET SORT:
 
         Bucket sort is mainly useful when input is uniformly distributed over a range. 
         For example, consider the following problem. 
@@ -1545,7 +1793,7 @@ Bucket Sort
                     b[j + 1] = b[j] 
                     j -= 1
                 b[j + 1] = up     
-            return b      
+            return b       
                     
         def bucketSort(x): 
             arr = [] 
@@ -1572,7 +1820,7 @@ Bucket Sort
             return x 
 
 
-MEDIAN OF MEDIANS (THIS IS ALSO KNOWN AS QUICK SELECT, finds the ith smallest element in A):  
+    MEDIAN OF MEDIANS (THIS IS ALSO KNOWN AS QUICK SELECT, finds the ith smallest element in A):  
 
         The median-of-medians algorithm is a deterministic linear-time selection algorithm. 
         The algorithm works by dividing a list into sublists and then determines 
@@ -1609,36 +1857,624 @@ MEDIAN OF MEDIANS (THIS IS ALSO KNOWN AS QUICK SELECT, finds the ith smallest el
                 return pivot
 
 
-MEDIAN OF MEDIANS(QUICKSELECT),  with constant space PARTITION FUNCTION.:
+    MEDIAN OF MEDIANS(QUICKSELECT),  with constant space PARTITION FUNCTION.:
 
- function partition(list, left, right, pivotIndex)
-     pivotValue := list[pivotIndex]
-     swap list[pivotIndex] and list[right]  // Move pivot to end
-     storeIndex := left
-     for i from left to right-1
-         if list[i] < pivotValue
-             swap list[storeIndex] and list[i]
-             increment storeIndex
-     swap list[right] and list[storeIndex]  // Move pivot to its final place
-     return storeIndex
+        function partition(list, left, right, pivotIndex)
+            pivotValue := list[pivotIndex]
+            swap list[pivotIndex] and list[right]  // Move pivot to end
+            storeIndex := left
+            for i from left to right-1
+                if list[i] < pivotValue
+                    swap list[storeIndex] and list[i]
+                    increment storeIndex
+            swap list[right] and list[storeIndex]  // Move pivot to its final place
+            return storeIndex
 
-  // Returns the k-th smallest element of list within left..right inclusive
-  // (i.e. left <= k <= right).
-  // The search space within the array is changing for each round - but the list
-  // is still the same size. Thus, k does not need to be updated with each round.
-  function select(list, left, right, k)
-     if left = right        // If the list contains only one element,
-         return list[left]  // return that element
-     pivotIndex  := ...     // select a pivotIndex between left and right,
-                            // e.g., left + floor(rand() % (right - left + 1))
-     pivotIndex  := partition(list, left, right, pivotIndex)
-     // The pivot is in its final sorted position
-     if k = pivotIndex
-         return list[k]
-     else if k < pivotIndex
-         return select(list, left, pivotIndex - 1, k)
-     else
-         return select(list, pivotIndex + 1, right, k)
+        // Returns the k-th smallest element of list within left..right inclusive
+        // (i.e. left <= k <= right).
+        // The search space within the array is changing for each round - but the list
+        // is still the same size. Thus, k does not need to be updated with each round.
+        function select(list, left, right, k)
+            if left = right        // If the list contains only one element,
+                return list[left]  // return that element
+            pivotIndex  := ...     // select a pivotIndex between left and right,
+                                    // e.g., left + floor(rand() % (right - left + 1))
+            pivotIndex  := partition(list, left, right, pivotIndex)
+            // The pivot is in its final sorted position
+            if k = pivotIndex
+                return list[k]
+            else if k < pivotIndex
+                return select(list, left, pivotIndex - 1, k)
+            else
+                return select(list, pivotIndex + 1, right, k)
+        
+    MEDIAN OF MEDIANS 2 (FULL Implementation)
+
+        def median_of_medians(arr):
+            if len(arr) < 6:
+                arr = sorted(arr)
+                n = len(arr)
+                return arr[n/2]
+            else:
+                list_of_lists = []
+                for i in range(0,len(arr), 5):
+                    if i + 5 <= len(arr):
+                        list_of_lists.append(arr[i:i+5])
+                    else:
+                        list_of_lists.append(arr[i:])
+                medians = []
+                for l in list_of_lists:
+                    medians.append(sorted(l)[len(l)/2])
+                return select_k_smallest(medians, len(medians)/2)
+        
+        def median_partition(arr, left, right, num):
+            random_index = arr.index(num)
+            arr[left], arr[random_index] = arr[random_index], arr[left]
+            pivot = arr[left]
+            orig_left = left
+            left += 1
+            # Do the switching that is required.
+            while True:
+                while left <= right and arr[left] <= pivot:
+                    left += 1
+                while right >= left and arr[right] >= pivot:
+                    right -= 1
+                if right <= left:
+                    break
+                arr[left], arr[right] = arr[right], arr[left]
+            arr[orig_left], arr[right] = arr[right], arr[orig_left]
+            return right
+        
+        def select_k_smallest(arr, k):
+            if k > len(arr):
+                return None
+            mid = median_of_medians(arr)
+            index = median_partition(arr, 0, len(arr) - 1, mid)
+            if index == k - 1:
+                return mid
+            elif index > k - 1:
+                return select_k_smallest(arr[:index], k)
+            else:
+                return select_k_smallest(arr[index + 1:], k - (index + 1))
+        
+        def select_k_largest(arr, k):
+            if k > len(arr):
+                return None
+            mid = median_of_medians(arr)
+            index = median_partition(arr, 0, len(arr) - 1, mid)
+            if index == len(arr) - k:
+                return mid
+            elif index > len(arr) - k:
+                return select_k_largest(arr[:index], k - (len(arr) - index))
+            else:
+                return select_k_largest(arr[index + 1:], k)
+
+
+
+#################################################################################
+#################################################################################
+GRAPH TRAVERSAL ALL TYPES:
+
+
+    Morris Traversal
+        Have you ever wanted to do In-order traversal in O(1) space? 
+        So have I! Too bad it doesn’t exist…..
+
+        def find_predecessor(node):
+            tmp = node.left
+            while tmp.right and tmp.right != node:
+                tmp = tmp.right
+            return tmp
+        
+        def morris_traversal(root):
+            ans = []
+            curr = root
+            while curr:
+                if not curr.left:
+                    ans.append(curr)
+                    curr = curr.right
+                else:
+                    pred = find_predecessor(curr)
+                    if pred.right == None:
+                        pred.right = curr
+                        curr = curr.left
+                    else:
+                        pred.right = None
+                        ans.append(current)
+                        current = current.right
+            return ans
+
+        The find_predecessor function finds the inorder predecessor of a node. Then, 
+        in our traversal, we use the right pointers to store where we need 
+        to get back to at all times. This way, we don’t need a stack nor recursion.
+
+
+    Binary Tree Traversal
+    Morris Traversal:
+    Covered in another post, scroll to that post to see explanation and implementation.
+
+    Inorder Traversal Recursive:
+        def in_order_recursive(root):
+            if root == None:
+                return
+            post_order_recursive(root.left)
+            print root.data
+            post_order_recursive(root.right)
+
+    Inorder Traversal Iterative:
+        def inorder_traversal(root):
+            if root == None:
+                return []
+            current = root
+            done = False
+            ans = []
+            s = []
+            while not done:
+                if current:
+                    s.append(current)
+                    current = current.left
+                else:
+                    if len(stack) == 0:
+                        done = True
+                    else:
+                        current = stack.pop()
+                        ans.append(current.val)
+                        current = current.right
+            return ans
+
+    Postorder Traversal Recursive:
+        def post_order_recursive(root):
+            if root == None:
+                return
+            post_order_recursive(root.left)
+            post_order_recursive(root.right)
+            print root.data
+
+    Postorder Traversal Iterative:
+        from collections import deque
+        def post_order_traversal(root):
+            if root == None:
+                return []
+            s1 = []
+            ans = deque()
+            s1.append(root)
+            while len(s1) > 0:
+                current = s1.pop()
+                ans.appendleft(current.val)
+                if current.left:
+                    s1.append(current.left)
+                if current.right:
+                    s1.append(current.right)
+            return ans
+
+    Preorder Traversal Recursive:
+        def pre_order_recursive(root):
+            if root == None:
+                return
+            print root.data
+            pre_order_recursive(root.left)
+            pre_order_recursive(root.right)
+
+    Preorder Traversal Iterative:
+        def pre_order_traversal(root):
+            if root == None:
+                return []
+            s = []
+            ans = []
+            s.append(root)
+            while len(s) > 0:
+                current = s.pop()
+                ans.append(current.val)
+                if current.right:
+                    s.append(current.right)
+                if current.left:
+                    s.append(current.left)
+            return ans
+
+    Level Order Traversal Iterative:
+    def level_order_traversal(root):
+        if root == None:
+            return []
+        q = deque()
+        ans = []
+        level = []
+        curr_count = 1
+        next_count = 0
+        while len(q) > 0:
+            current = q.popleft()
+            level.append(current.val)
+            curr_count -= 1
+            if current.left:
+                    q.append(current.left)
+                    next_count += 1
+            if current.right:
+                    q.append(current.right)
+                    next_count += 1
+            if curr_count == 0:
+                ans.append(level)
+                level = []
+                curr_count = next_count
+                next_count = 0
+        return ans
+
+    Normal Graph Traversal
+    DFS Traversal
+        def DFS(node):
+            s = stack()
+            s.append(node)
+            visited = {}
+            while len(s) > 0:
+                current = s.pop()
+                if current not in visited:
+                    visited[current] = 1
+                    print current
+                    for neighbor in current.neighbors:
+                        if neighbor not in visited:
+                            s.append(neighbor)
+    BFS Traversal
+        def BFS(node):
+            q = deque()
+            q.append(node)
+            visited = {}
+            while len(q) > 0:
+                current = q.popleft()
+                visited[current] = 1
+                for neighbor in current.neighbors:
+                    if neighbor not in visited:
+                        q.append(neighbor)
+
+    BFS Traversal, Distance And Path Included
+        def BFS_distance_path_variation(node):
+            q = deque()
+            q.append(node)
+            visited = {}
+            distance = {}
+            parent = {}
+            distance[node] = 0
+            parent[node] = None
+            while len(q) > 0:
+                current = q.popleft()
+                if current not in visited:
+                    visited[current] = 1:
+                    for neighbor in current.neighbors:
+                        if neigbor not in visited:
+                            q.append(neighbor)
+                            if neighbor not in distance:
+                                distance[neighbor] = distance[current] + 1
+                                parent[neighbor] = current
+                            else:
+                                '''
+                                TWO TERNARYS BELOW
+                                '''
+                                parent[neighbor] = current \
+                                if distance[current] + 1 < distance[neighbor] else \
+                                parent[neighbor]
+                                distance[neighbor] = distance[current] + 1 if \
+                                distance[current] + 1 < distance[neighbor] else \
+                                distance[neighbor]
+
+    Topological Sort
+        In DFS, we start from a vertex, we first print it and then recursively 
+        call DFS for its adjacent vertices. In topological sorting, we use a 
+        temporary stack. We don’t print the vertex immediately, we first recursively 
+        call topological sorting for all its adjacent vertices, then push it to a stack.
+        Finally, print contents of stack. Note that a vertex is pushed to stack only 
+        when all of its adjacent vertices (and their adjacent vertices and so on) are already in stack.
+
+        def recursive_topological_sort(graph, node):
+            result = []
+            seen = set()
+
+            def recursive_helper(node):
+                for neighbor in graph[node]:
+                    if neighbor not in seen:
+                        seen.add(neighbor)
+                        recursive_helper(neighbor)
+                result.insert(0, node)              # this line replaces the result.append line
+
+            recursive_helper(node)
+            return result
+
+        def iterative_topological_sort(graph, start):
+            seen = set()
+            stack = []    # path variable is gone, stack and order are new
+            order = []    # order will be in reverse order at first
+            q = [start]
+            while q:
+                v = q.pop()
+                if v not in seen:
+                    seen.add(v) # no need to append to path any more
+                    q.extend(graph[v])
+
+                    while stack and v not in graph[stack[-1]]: # new stuff here!
+                        order.append(stack.pop())
+                    stack.append(v)
+
+            return stack + order[::-1]   # new return value!
+
+        That's it! One line gets removed and a similar one gets added at a different location. 
+        If you care about performance, you should probably do result.append in the second
+        helper function too, and do return result[::-1] in the top level 
+        recursive_topological_sort function. But using insert(0, ...) is a more minimal change.
+
+        Its also worth noting that if you want a topological order of the whole graph, 
+        you shouldn't need to specify a starting node. Indeed, there may not be a single
+        node that lets you traverse the entire graph, so you may need to do several 
+        traversals to get to everything. An easy way to make that happen in the 
+        iterative topological sort is to initialize q to list(graph) 
+        (a list of all the graph's keys) instead of a list with only a single starting node. 
+        For the recursive version, replace the call to recursive_helper(node) with a loop 
+        that calls the helper function on every node in the graph if it's not yet in seen.
+#################################################################################
+#################################################################################
+STRING ALGORITHMS:
+    PLEASE COVER:
+        Boyer moore good character heuristic/bad char heuristic
+        Aho-Corasick Algorithm for Pattern Searching
+        Suffix Tree/Suffix Array
+        Z algorithm (https://www.hackerearth.com/practice/algorithms/string-algorithm/z-algorithm/tutorial/)
+        Manachars algorithm (https://www.hackerearth.com/practice/algorithms/string-algorithm/manachars-algorithm/tutorial/)
+
+    Rabin Karp
+        So Rabin Karp algorithm needs to calculate 
+        hash values for following strings.
+        1) Pattern itself.
+        2) All the substrings of text of length m.
+
+        Since we need to efficiently calculate hash values for all the substrings 
+        of size m of text, we must have a hash function which has following property.
+        Hash at the next shift must be efficiently computable from the current hash 
+        value and next character in text or we can say hash(txt[s+1 .. s+m]) must 
+        be efficiently computable from hash(txt[s .. s+m-1]) and txt[s+m] i.e., 
+        hash(txt[s+1 .. s+m])= rehash(txt[s+m], hash(txt[s .. s+m-1])) and rehash must be O(1) operation.
+        
+        To do rehashing, we need to take off the most significant digit
+        and add the new least significant digit for in hash value. Rehashing is done using the following formula.
+
+        hash( txt[s+1 .. s+m] ) = ( d ( hash( txt[s .. s+m-1]) – txt[s]*h ) + txt[s + m] ) mod q
+
+        hash( txt[s .. s+m-1] ) : Hash value at shift s.
+        hash( txt[s+1 .. s+m] ) : Hash value at next shift (or shift s+1)
+        d: Number of characters in the alphabet
+        q: A prime number
+        h: d^(m-1)
+
+        How does above expression work?
+
+        This is simple mathematics, we compute decimal value of current window from previous window.
+        For example pattern length is 3 and string is “23456”
+        You compute the value of first window (which is “234”) as 234.
+        How how will you compute value of next window “345”? You will do (234 – 2*100)*10 + 5 and get 345.
+
+
+        # Rabin Karp Algorithm given in CLRS book 
+        # d is the number of characters in the input alphabet 
+        d = 256
+        
+        # pat  -> pattern 
+        # txt  -> text 
+        # q    -> A prime number 
+        
+        def search(pat, txt, q): 
+            M = len(pat) 
+            N = len(txt) 
+            i = 0
+            j = 0
+            p = 0    # hash value for pattern 
+            t = 0    # hash value for txt 
+            h = 1
+        
+            # The value of h would be "pow(d, M-1)%q" 
+            for i in xrange(M-1): 
+                h = (h*d)%q 
+        
+            # Calculate the hash value of pattern and first window 
+            # of text 
+            for i in xrange(M): 
+                p = (d*p + ord(pat[i]))%q 
+                t = (d*t + ord(txt[i]))%q 
+        
+            # Slide the pattern over text one by one 
+            for i in xrange(N-M+1): 
+                # Check the hash values of current window of text and 
+                # pattern if the hash values match then only check 
+                # for characters on by one 
+                if p==t: 
+                    # Check for characters one by one 
+                    for j in xrange(M): 
+                        if txt[i+j] != pat[j]: 
+                            break
+        
+                    j+=1
+                    # if p == t and pat[0...M-1] = txt[i, i+1, ...i+M-1] 
+                    if j==M: 
+                        print "Pattern found at index " + str(i) 
+        
+                # Calculate hash value for next window of text: Remove 
+                # leading digit, add trailing digit 
+                if i < N-M: 
+                    t = (d*(t-ord(txt[i])*h) + ord(txt[i+M]))%q 
+        
+                    # We might get negative values of t, converting it to 
+                    # positive 
+                    if t < 0: 
+                        t = t+q 
+        
+        # Driver program to test the above function 
+        txt = "GEEKS FOR GEEKS"
+        pat = "GEEK"
+        q = 101 # A prime number 
+        search(pat,txt,q) 
+        
+        # This code is contributed by Bhavya Jain 
+
+
+
+    -> Code regex
+
+    isSubstring(), KMP Algorithm
+        
+        A linear time (!) algorithm that solves the string matching
+        problem by preprocessing P in Θ(m) time
+        – Main idea is to skip some comparisons by using the previous
+        comparison result
+
+        Uses an auxiliary array π that is defined as the following:
+        – π[i] is the largest integer smaller than i such that P 1 . . . P π[i] is
+        a suffix of P 1 . . . P i
+
+        Examples:
+
+        Pattern: a a a a a
+        LSP    : 0 1 2 3 4
+
+        Pattern: a b a b a b
+        LSP    : 0 0 1 2 3 4
+
+        Pattern: a b a c a b a b
+        LSP    : 0 0 1 0 1 2 3 2
+
+        Pattern: a a a b a a a a a b
+        LSP    : 0 1 2 0 1 2 3 3 3 4
+
+        txt[] = "AAAAABAAABA" 
+        pat[] = "AAAA"
+        lps[] = {0, 1, 2, 3} 
+
+        i = 0, j = 0
+        txt[] = "AAAAABAAABA" 
+        pat[] = "AAAA"
+        txt[i] and pat[j] match, do i++, j++
+
+        i = 1, j = 1
+        txt[] = "AAAAABAAABA" 
+        pat[] = "AAAA"
+        txt[i] and pat[j] match, do i++, j++
+
+        i = 2, j = 2
+        txt[] = "AAAAABAAABA" 
+        pat[] = "AAAA"
+        pat[i] and pat[j] match, do i++, j++
+
+        i = 3, j = 3
+        txt[] = "AAAAABAAABA" 
+        pat[] = "AAAA"
+        txt[i] and pat[j] match, do i++, j++
+
+        i = 4, j = 4
+        Since j == M, print pattern found and reset j,
+        j = lps[j-1] = lps[3] = 3
+
+        Here unlike Naive algorithm, we do not match first three 
+        characters of this window. Value of lps[j-1] (in above 
+        step) gave us index of next character to match.
+        i = 4, j = 3
+        txt[] = "AAAAABAAABA" 
+        pat[] =  "AAAA"
+        txt[i] and pat[j] match, do i++, j++
+
+        i = 5, j = 4
+        Since j == M, print pattern found and reset j,
+        j = lps[j-1] = lps[3] = 3
+
+        Again unlike Naive algorithm, we do not match first three 
+        characters of this window. Value of lps[j-1] (in above 
+        step) gave us index of next character to match.
+        i = 5, j = 3
+        txt[] = "AAAAABAAABA" 
+        pat[] =   "AAAA"
+        txt[i] and pat[j] do NOT match and j > 0, change only j
+        j = lps[j-1] = lps[2] = 2
+
+        i = 5, j = 2
+        txt[] = "AAAAABAAABA" 
+        pat[] =    "AAAA"
+        txt[i] and pat[j] do NOT match and j > 0, change only j
+        j = lps[j-1] = lps[1] = 1 
+
+        i = 5, j = 1
+        txt[] = "AAAAABAAABA" 
+        pat[] =     "AAAA"
+        txt[i] and pat[j] do NOT match and j > 0, change only j
+        j = lps[j-1] = lps[0] = 0
+
+        i = 5, j = 0
+        txt[] = "AAAAABAAABA" 
+        pat[] =      "AAAA"
+        txt[i] and pat[j] do NOT match and j is 0, we do i++.
+
+        i = 6, j = 0
+        txt[] = "AAAAABAAABA" 
+        pat[] =       "AAAA"
+        txt[i] and pat[j] match, do i++ and j++
+
+        i = 7, j = 1
+        txt[] = "AAAAABAAABA" 
+        pat[] =       "AAAA"
+        txt[i] and pat[j] match, do i++ and j++
+
+        We continue this way...
+
+        def KMPSearch(pat, txt): 
+            M = len(pat) 
+            N = len(txt) 
+        
+            # create lps[] that will hold the longest prefix suffix  
+            # values for pattern 
+            lps = [0]*M 
+            j = 0 # index for pat[] 
+        
+            # Preprocess the pattern (calculate lps[] array) 
+            computeLPSArray(pat, M, lps) 
+        
+            i = 0 # index for txt[] 
+            while i < N: 
+                if pat[j] == txt[i]: 
+                    i += 1
+                    j += 1
+        
+                if j == M: 
+                    print "Found pattern at index " + str(i-j) 
+                    j = lps[j-1] 
+        
+                # mismatch after j matches 
+                elif i < N and pat[j] != txt[i]: 
+                    # Do not match lps[0..lps[j-1]] characters, 
+                    # they will match anyway 
+                    if j != 0: 
+                        j = lps[j-1] 
+                    else: 
+                        i += 1
+        
+        def computeLPSArray(pat, M, lps): 
+            len = 0 # length of the previous longest prefix suffix 
+        
+            lps[0] # lps[0] is always 0 
+            i = 1
+        
+            # the loop calculates lps[i] for i = 1 to M-1 
+            while i < M: 
+                if pat[i]== pat[len]: 
+                    len += 1
+                    lps[i] = len
+                    i += 1
+                else: 
+                    # This is tricky. Consider the example. 
+                    # AAACAAAA and i = 7. The idea is similar  
+                    # to search step. 
+                    if len != 0: 
+                        len = lps[len-1] 
+        
+                        # Also, note that we do not increment i here 
+                    else: 
+                        lps[i] = 0
+                        i += 1
+        
+        txt = "ABABDABACDABABCABAB"
+        pat = "ABABCABAB"
+        KMPSearch(pat, txt) 
+
+
 
 ##########################################
 COOL NOTES PART -3: NETWORK FLOW Tutorial: maxflow and mincut
@@ -1764,18 +2600,6 @@ COMPUTING MIN CUT:
 
 
 ############################################
-
-
-###############################################
-COOL NOTES PART 0: String matching algorithms
-
--> Rabin Karp
--> Code regex
-
-
-
-
-
 #########################################3#####
 
 COOL NOTES PART 5: FENWICK TREES: (A VARIENT OF SEGMENT TREES)
@@ -1936,11 +2760,324 @@ COOL NOTES PART 6: UNION FIND PYTHON RECIPEE
 
 
 #######################################################################################################################
+########################################################################################################################33
 
--> Tries
--> Fibonacci heaps
--> Splay trees
+GRAPH REFERENCE (From cheatsheet algos.py)
 
--> Range Tree
--> Balanced BSTs -> AVL/REDBLACK, Find a python one. 
+    WHITE = 0
+    GREY = 1
+    BLACK = 2
+
+    def breadth_first_search(G, s):
+        color = {v: WHITE for v in G}
+        color[s] = GREY
+        pi = {s: None}
+        dist = {s: 0}
+
+        queue = [s]
+        while queue:
+            u = queue.pop(0)
+            for v in G[u]:
+                if color[v] == WHITE:
+                    color[v] = GREY
+                    pi[v] = u
+                    dist[v] = dist[u] + 1
+                    queue.append(v)
+            color[u] = BLACK
+
+        return color, pi, dist
+
+    def depth_first_search(G, s):
+        color = {v: WHITE for v in G}
+        pi = {s: None}
+        time = 0
+        finish_time = {}
+
+        stack = [s]
+        while stack:
+            u = stack.pop()
+            if color[u] == WHITE:
+                color[u] = GREY
+                stack.append(u)
+                for v in G[u]:
+                    if color[v] == WHITE:
+                        stack.append(v)
+                        pi[v] = u
+            elif color[u] == GREY:
+                color[u] = BLACK
+                finish_time[u] = time
+                time += 1
+
+        return color, pi, finish_time
+
+    def depth_first_search_rec(G, s=None):
+        color = {v: WHITE for v in G}
+        pi = {}
+        time = 0
+        finish_time = {}
+
+        def visit(u):
+            nonlocal time
+
+            color[u] = GREY
+            for v in reversed(G[u]):
+                if color[v] == WHITE:
+                    pi[v] = u
+                    visit(v)
+            color[u] = BLACK
+            finish_time[u] = time
+            time += 1
+
+        if s:
+            # Single source
+            pi[s] = None
+            visit(s)
+        else:
+            # DFS forest
+            for s in G:
+                if color[s] == WHITE:
+                    pi[s] = None
+                    visit(s)
+
+        return color, pi, finish_time
+
+    def bipartition(G):
+        seen = set()
+        partition = {}
+        for s in G:
+            if not s in seen:
+                color, _, dist = breadth_first_search(G, s)
+                seen.update(v for v, c in color.items() if c == BLACK)
+                for v, d in dist.items():
+                    partition[v] = d % 2
+
+        for u in G:
+            for v in G[u]:
+                if partition[u] == partition[v]:
+                    return False
+
+        return partition
+
+    def undirected_has_cycle(G):
+        color = {v: WHITE for v in G}
+        cycle = False
+
+        def visit(u, p):
+            nonlocal cycle
+            if cycle:
+                return
+
+            color[u] = GREY
+            for v in G[u]:
+                if color[v] == WHITE:
+                    visit(v, u)
+                elif v != p and color[v] == GREY:
+                    cycle = True
+            color[u] = BLACK
+
+        for s in G:
+            if color[s] == WHITE:
+                visit(s, None)
+                if cycle:
+                    return True
+
+        return cycle
+
+    def topological_sort(G):
+        color = {v: WHITE for v in G}
+        order = []
+        dag = True
+
+        def visit(u):
+            nonlocal dag
+            if not dag:
+                return
+
+            order.append(u)
+            color[u] = GREY
+            for v in G[u]:
+                if color[v] == WHITE:
+                    visit(v)
+                elif color[v] == GREY:
+                    dag = False
+            color[u] = BLACK
+
+        for s in G:
+            if color[s] == WHITE:
+                visit(s)
+                if not dag:
+                    return False
+
+        return order
+
+    def topological_sort_alt(G):
+        in_degree = {v : 0 for v in G}
+        for neighbours in G.values():
+            for v in neighbours:
+                in_degree[v] += 1
+
+        queue = []
+        for v in G:
+            if in_degree[v] == 0:
+                queue.append(v)
+
+        order = []
+        while queue:
+            u = queue.pop(0)
+            order.append(u)
+            for v in G[u]:
+                in_degree[v] -= 1
+                if in_degree[v] == 0:
+                    queue.append(v)
+
+        if len(order) < len(G):
+            return False
+        return order
+
+    def reverse_graph(G):
+        Grev = {v: [] for v in G}
+        for u, neighbours in G.items():
+            for v in neighbours:
+                Grev[v].append(u)
+        return Grev
+
+    def kosaraju(G):
+        f = depth_first_search_rec(G)[2]
+        Grev = reverse_graph(G)
+
+        color = {v: WHITE for v in G}
+        sccs = []
+
+        def visit(u):
+            color[u] = GREY
+            sccs[-1].append(u)
+
+            for v in Grev[u]:
+                if color[v] == WHITE:
+                    visit(v)
+
+            color[u] = BLACK
+
+        for s in sorted(G.keys(), key=lambda v: f[v], reverse=True):
+            if color[s] == WHITE:
+                sccs.append([])
+                visit(s)
+
+        return sccs
+
+    def kruskal(G, w, s):
+        mst = {v: [] for v in G}
+        edges = sorted(w.keys(), key=lambda e: w[e])
+        for u, v in edges:
+            mst[u].append(v)
+            mst[v].append(u)
+            if undirected_has_cycle(mst):
+                mst[u].pop()
+                mst[v].pop()
+        return breadth_first_search(mst, s)[1]
+
+    def prim(G, w, s):
+
+        def get_weight(u, v):
+            if (u, v) in w:
+                return w[u, v]
+            return w[v, u]
+
+        pi = {s: None}
+        connected = {s}
+
+        pq = []
+        for v in G[s]:
+            heappush(pq, (get_weight(s, v), s, v))
+
+        while pq:
+            _, u, v = heappop(pq)
+            assert u in connected
+
+            if not v in connected:
+                connected.add(v)
+                pi[v] = u
+                for z in G[v]:
+                    heappush(pq, (get_weight(v, z), v, z))
+
+        return pi
+
+    def bfs_sssp(G, s):
+        return breadth_first_search(G, s)[2]
+
+    def dijkstra(G, s, w=None):
+
+        def get_weight(u, v):
+            return w[u, v] if w else 1
+
+        dist = {s: 0}
+        entries = {}
+        pq = []
+        for v in G[s]:
+            d = get_weight(s, v)
+            entry = [d, v, True]
+            dist[v] = d
+            entries[v] = entry
+            heappush(pq, entry)
+
+        while pq:
+            u_dist, u, valid = heappop(pq)
+            if valid:
+                for v in G[u]:
+                    new_dist = u_dist + get_weight(u, v)
+                    if not v in dist or new_dist < dist[v]:
+                        dist[v] = new_dist
+                        entry = [new_dist, v, True]
+                        if v in entries:
+                            entries[v][2] = False
+                        entries[v] = entry
+                        heappush(pq, entry)
+
+        return dist
+
+    def dag_sssp(G, s, w=None):
+
+        def get_weight(u, v):
+            return w[u, v] if w else 1
+
+        dist = {s: 0}
+        order = topological_sort(G)
+        assert order
+
+        for u in order:
+            for v in G[u]:
+                new_dist = dist[u] + get_weight(u, v)
+                if not v in dist or new_dist < dist[v]:
+                    dist[v] = new_dist
+
+        return dist
+
+    def floyd_warshall(W):
+        n = len(W)
+        assert all(len(row) == n for row in W)
+
+        D = [row[:] for row in W]
+        E = [[0] * n for _ in range(n)]
+
+        for m in range(n):
+            for i in range(n):
+                for j in range(n):
+                    E[i][j] = min(D[i][j], D[i][m] + D[m][j])
+            D, E = E, D
+
+        return D
+
+    def complement_graph(G):
+        return {u: [v for v in G if u != v and not v in G[u]] for u in G}
+
+    ### Part 5: Intractability and undecidability
+
+    def clique_to_vertex_cover(G, k, vertex_cover):
+        n = len(G)
+        assert k <= n
+
+        Gcomp = complement_graph(G)
+        return vertex_cover(Gcomp, n - k)
+
+
 
