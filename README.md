@@ -1489,6 +1489,127 @@ COOL NOTES PART -2: HOW TO USE HEAP DICTIONARIES WITH DECREASE KEY USING HEAPQ!
 #######################################################################################
 #######################################################################################
 COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
+  
+    BINARY SEARCH
+        #Recursive
+        def binarySearch (arr, l, r, x): 
+        
+            # Check base case 
+            if r >= l: 
+        
+                mid = l + (r - l)/2
+        
+                # If element is present at the middle itself 
+                if arr[mid] == x: 
+                    return mid 
+                
+                # If element is smaller than mid, then it  
+                # can only be present in left subarray 
+                elif arr[mid] > x: 
+                    return binarySearch(arr, l, mid-1, x) 
+        
+                # Else the element can only be present  
+                # in right subarray 
+                else: 
+                    return binarySearch(arr, mid + 1, r, x) 
+        
+            else: 
+                # Element is not present in the array 
+                return -1
+                
+        # Iterative Binary Search Function 
+        # It returns location of x in given array arr if present, 
+        # else returns -1 
+        def binarySearch(arr, l, r, x): 
+        
+            while l <= r: 
+        
+                mid = l + (r - l)/2; 
+                
+                # Check if x is present at mid 
+                if arr[mid] == x: 
+                    return mid 
+        
+                # If x is greater, ignore left half 
+                elif arr[mid] < x: 
+                    l = mid + 1
+        
+                # If x is smaller, ignore right half 
+                else: 
+                    r = mid - 1
+            
+            # If we reach here, then the element was not present 
+            return -1
+
+        # RECURSIVE Ternary Search 
+        def ternarySearch(l, r, key, ar): 
+        
+            if (r >= l): 
+        
+                # Find the mid1 and mid2 
+                mid1 = l + (r - l) //3
+                mid2 = r - (r - l) //3
+        
+                # Check if key is present at any mid 
+                if (ar[mid1] == key):  
+                    return mid1 
+                
+                if (ar[mid2] == key):  
+                    return mid2 
+                
+                # Since key is not present at mid, 
+                # check in which region it is present 
+                # then repeat the Search operation 
+                # in that region 
+                if (key < ar[mid1]):  
+        
+                    # The key lies in between l and mid1 
+                    return ternarySearch(l, mid1 - 1, key, ar) 
+                
+                elif (key > ar[mid2]):  
+        
+                    # The key lies in between mid2 and r 
+                    return ternarySearch(mid2 + 1, r, key, ar) 
+                
+                else:  
+        
+                    # The key lies in between mid1 and mid2 
+                    return ternarySearch(mid1 + 1,  
+                                        mid2 - 1, key, ar) 
+                
+            # Key not found 
+            return -1
+
+        # ITERATIVE Ternary Search 
+        def ternarySearch(l, r, key, ar): 
+            while r >= l: 
+                
+                # Find mid1 and mid2 
+                mid1 = l + (r-l) // 3
+                mid2 = r - (r-l) // 3
+        
+                # Check if key is at any mid 
+                if key == ar[mid1]: 
+                    return mid1 
+                if key == mid2: 
+                    return mid2 
+        
+                # Since key is not present at mid,  
+                # Check in which region it is present 
+                # Then repeat the search operation in that region 
+                if key < ar[mid1]: 
+                    # key lies between l and mid1 
+                    r = mid1 - 1
+                elif key > ar[mid2]: 
+                    # key lies between mid2 and r 
+                    l = mid2 + 1
+                else: 
+                    # key lies between mid1 and mid2 
+                    l = mid1 + 1
+                    r = mid2 - 1
+        
+            # key not found 
+            return -1
 
      Counting sort is following:
         def counting_sort(array, maxval):
