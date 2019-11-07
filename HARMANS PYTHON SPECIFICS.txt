@@ -1,0 +1,182 @@
+################################################################################33
+PRIORITY QUEUE:
+HEAPQ IS A MIN HEAP BY DEFAULT.
+
+how to make it a max heap?
+
+The easiest and ideal solution
+Multiply the values by -1
+There you go. All the highest numbers are now the lowest and vice versa.
+Just remember that when you pop an element to multiply it with -1 
+in order to get the original value again.
+
+
+
+HEAPQ API:
+
+These two make it possible to view the heap as a regular Python 
+list without surprises: heap[0] is the smallest item, 
+and heap.sort() maintains the heap invariant!
+
+To create a heap, use a list initialized to [], or you can 
+transform a populated list into a heap via function heapify().
+
+heapq.heappush(heap, item)
+Push the value item onto the heap, maintaining the heap invariant.
+
+heapq.heappop(heap)
+Pop and return the smallest item from the heap, maintaining the heap invariant. 
+If the heap is empty, IndexError is raised. To access the smallest 
+item without popping it, use heap[0].
+
+heapq.heappushpop(heap, item)
+Push item on the heap, then pop and return the smallest item from the heap. 
+The combined action runs more efficiently than heappush() 
+followed by a separate call to heappop().
+
+heapq.heapify(x)
+Transform list x into a heap, in-place, in linear time.
+
+heapq.heapreplace(heap, item)
+Pop and return the smallest item from the heap, and also push the new item. 
+The heap size doesn’t change. If the heap is empty, IndexError is raised.
+
+This one step operation is more efficient than a heappop() followed by heappush() and
+can be more appropriate when using a fixed-size heap. The pop/push combination 
+always returns an element from the heap and replaces it with item.
+
+The value returned may be larger than the item added. If that isn’t desired, 
+consider using heappushpop() instead. Its push/pop combination returns the 
+smaller of the two values, leaving the larger value on the heap.
+
+The module also offers three general purpose functions based on heaps.
+
+heapq.merge(*iterables)
+Merge multiple sorted inputs into a single 
+sorted output (for example, merge timestamped 
+entries from multiple log files). Returns an iterator over the sorted values.
+
+Similar to sorted(itertools.chain(*iterables)) but returns an iterable, 
+does not pull the data into memory all at once, and assumes 
+that each of the input streams is already sorted (smallest to largest).
+
+New in version 2.6.
+
+heapq.nlargest(n, iterable[, key])
+Return a list with the n largest elements from the 
+dataset defined by iterable. key, if provided, 
+specifies a function of one argument that is used 
+to extract a comparison key from each element in the 
+iterable: key=str.lower Equivalent to: sorted(iterable, key=key, reverse=True)[:n]
+
+New in version 2.4.
+
+Changed in version 2.5: Added the optional key argument.
+
+heapq.nsmallest(n, iterable[, key])
+Return a list with the n smallest elements from 
+the dataset defined by iterable. key, if provided, 
+specifies a function of one argument that is used to 
+extract a comparison key from each element in the iterable: 
+key=str.lower Equivalent to: sorted(iterable, key=key)[:n]
+
+New in version 2.4.
+
+Changed in version 2.5: Added the optional key argument.
+
+The latter two functions perform best for smaller 
+values of n. For larger values, it is more efficient 
+to use the sorted() function. Also, when n==1, it is 
+more efficient to use the built-in min() and max() functions. 
+If repeated usage of these functions is required, consider 
+turning the iterable into an actual heap.
+
+##############################################################################################3
+
+ORDERED DICT
+
+OrderedDict preserves the order in which the keys are inserted. 
+A regular dict doesn’t track the insertion order, and iterating 
+it gives the values in an arbitrary order. By contrast, the order the 
+items are inserted is remembered by OrderedDict.
+
+Important Points:
+
+Key value Change: If the value of a certain key is changed, the position of the key remains unchanged in OrderedDict.
+
+Deletion and Re-Inserting: Deleting and re-inserting the same key will push it to the back 
+                           as OrderedDict however maintains the order of insertion.
+
+
+Ordered Dict can be used as a stack with the help of popitem function. 
+Try implementing LRU cache with Ordered Dict.
+
+from collections import OrderedDict 
+  
+print("Before deleting:\n") 
+od = OrderedDict() 
+od['a'] = 1
+od['b'] = 2
+od['c'] = 3
+od['d'] = 4
+  
+for key, value in od.items(): 
+    print(key, value) 
+  
+print("\nAfter deleting:\n") 
+od.pop('c') 
+for key, value in od.items(): 
+    print(key, value) 
+  
+print("\nAfter re-inserting:\n") 
+od['c'] = 3
+for key, value in od.items(): 
+    print(key, value) 
+
+##########################################################################################################
+
+8.5. bisect — Array bisection algorithm
+New in version 2.1.
+
+
+This module provides support for maintaining a list in sorted order without 
+having to sort the list after each insertion. For long lists of items with 
+expensive comparison operations, this can be an improvement over the more common approach. 
+The module is called bisect because it uses a basic bisection algorithm to do its work. 
+The source code may be most useful as a working example of the algorithm 
+(the boundary conditions are already right!).
+
+
+The following functions are provided:
+
+bisect.bisect_left(a, x, lo=0, hi=len(a))
+Locate the insertion point for x in a to maintain sorted order. 
+The parameters lo and hi may be used to specify a subset of the list 
+which should be considered; by default the entire list is used. If x is
+already present in a, the insertion point will be before (to the left of) 
+any existing entries. The return value is suitable for use as the first 
+parameter to list.insert() assuming that a is already sorted.
+
+The returned insertion point i partitions the array a into two halves so that 
+all(val < x for val in a[lo:i]) for the left side and all(val >= x for val in a[i:hi]) for the right side.
+
+bisect.bisect_right(a, x, lo=0, hi=len(a))
+bisect.bisect(a, x, lo=0, hi=len(a))
+
+Similar to bisect_left(), but returns an insertion point which 
+comes after (to the right of) any existing entries of x in a.
+
+The returned insertion point i partitions the array a into two 
+halves so that all(val <= x for val in a[lo:i]) for the left side 
+and all(val > x for val in a[i:hi]) for the right side.
+
+bisect.insort_left(a, x, lo=0, hi=len(a))
+Insert x in a in sorted order. This is 
+equivalent to a.insert(bisect.bisect_left(a, x, lo, hi), x) assuming that a 
+is already sorted. Keep in mind that the O(log n) search 
+is dominated by the slow O(n) insertion step.
+
+bisect.insort_right(a, x, lo=0, hi=len(a))
+bisect.insort(a, x, lo=0, hi=len(a))
+Similar to insort_left(), but inserting x in a after any existing entries of x.
+

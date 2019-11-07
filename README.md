@@ -5,8 +5,18 @@ Scrape the following -> short and sweet: https://nishmathcs.wordpress.com/catego
 Post about all string algorithms and hashing types (KMP, Boyer Moore, etc, Rabin Karp)
 
 
+Leetcodes PER COMPANY LIST -> http://leetcode.liangjiateng.cn/leetcode/Citadel/algorithm
+
+
 
 THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
+
+0.5) Preprocess and do a running comparison between 2 containers. 
+    For instance, to do certain problems you need to sort a list and then compare the sorted list 
+    to another list to determine ways to do sliding window/2pointer type techniques. 
+
+
+
 0) Branch and Bound algos vs backtracking algos:
 
     Backtracking
@@ -186,6 +196,42 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
             to model that problem as a graph is not to have one node per intersection, but rather to have one
             node per <Intersection, direction> pair. That way you recover the property you need.
 
+10.5) DP Construction:
+        DP problems typically show up at optimization or counting problems 
+        (or have an optimization/counting component). Look for words like 
+        "number of ways", "minimum", "maximum", "shortest", "longest", etc.
+
+        Start by writing your inputs. Identify which inputs are variable and which are constant.
+
+        Now write your output. You output will be whatever you are optimizing or 
+        counting. Because of this, the output might not match exactly what you
+        are solving for (if counting / optimizing is only a component of the problem).
+
+        Write a recurrence using your output as the function, your inputs
+        as inputs to the function, and recursive calls in the function body. 
+        The recursive calls will represent the "choices" that you can make, 
+        so that means you'll have one recursive call per "choice". (You are usually optimizing 
+        over choices are counting different types of choices). Think of ways to split up 
+        your input space into smaller components. The type of input will dictate how this 
+        might look. Array/string inputs usually peel one or two elements from the front 
+        or back of the array and recurse on the rest of the array. Binary tree inputs 
+        usually peel the root off and recurse on the two subtrees. Matrix inputs 
+        usually peel an element off and recurse in both directions (up or down and right or left).
+
+        Come up with base case(s) for the recurrence. When you make the recursive calls, 
+        you decrease the problem size by a certain amount, x. You will probably need about x base cases.
+
+        Write your code. I recommend top-down for interviews since you 
+        don't have to worry about solving subproblems in the right order. 
+        Your cache will have one dimension per non-constant input.
+
+        After writing code, think about whether bottom-up is possible 
+        (can you come up with an ordering of subproblems where smaller 
+        subproblems are visited before larger subproblems?). If so, you 
+        can decide whether it is possible to reduce space complexity by 
+        discarding old answers to subproblems. If it's possible to reduce 
+        space, mention it in the interview (and explain). You probably won't 
+        have to code it. If you have time, feel free to code it bottom-up.
 
 11) Know how to write BFS with a deque, and DFS explicitely with a list. 
     Keep tracking of function arguments in tuple for list. 
@@ -195,6 +241,27 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
 
 
 13) Skip lists are nice
+
+13.5) TOPO SORT -> if you dont know which node to start this from, start from any node.
+                    topo sort will still figure out the sorting. keep visited set. 
+                    result = deque()
+                    def topo_sort(node, visited):
+
+                        visited.add(node)
+                        children = g[node]
+                        
+                        for c in children:
+                            if(c in visited):
+                                continue
+
+                            topo_sort(c, visited)
+                        result.appendleft(node)
+                    
+                    for node in g.keys():
+                        if node not in visited:
+                            topo_sort(node, visited)
+
+
 
 14) Use stacks/queues to take advantage of push/pop structure in problems 
     such as parentheses problems. Or valid expression problems.
@@ -256,7 +323,37 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
         Find the Missing Number (easy)
         Find the Smallest Missing Positive Number (medium)
 
+22.5) CYCLIC SORT EXAMPLE:
 
+
+class Solution(object):
+    def rotate(self, nums, k):
+          
+        start = 0
+        val = nums[start]
+        
+        i = start
+        N = len(nums)
+        swaps = 0
+        
+        while True:
+            pivot = i + k
+            pivot %= N
+            
+            temp = nums[pivot]
+            nums[pivot] = val
+            val = temp
+            i = pivot
+            
+            swaps += 1
+            if(swaps == N):
+                return 
+            if pivot == start:
+                i = start + 1             
+                val = nums[start + 1]
+                start += 1        
+        return nums
+        
 
 22) Know in-place reverse linked list (MEMORIZE)
         # Function to reverse the linked list 
@@ -365,6 +462,49 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
         Problems featuring Top ‘K’ Elements pattern:
         Top ‘K’ Numbers (easy)
         Top ‘K’ Frequent Numbers (medium)
+
+        # Top K Frequent Elements
+
+        class Solution(object):
+            def topKFrequent(self, nums, k):
+                """
+                :type nums: List[int]
+                :type k: int
+                :rtype: List[int]
+                """
+
+                num_of_items_to_return = k
+                m = collections.defaultdict(int)
+                
+                for i in nums:
+                    m[i] += 1
+
+                pq = [] # heapq
+                counter = itertools.count()
+                
+                # entry_finder = {} Used for deleting other elements in heapq!
+                
+                for k, v in m.items():
+                
+                    if len(pq) < num_of_items_to_return:
+                        count = next(counter)
+                        i = [v, count, k] #[priority, count, task]
+                        heappush(pq, i)
+                    else:
+                        top =  pq[0][0] # get priority
+                        print("TOP IS", top)
+
+                        if v > top:
+                            _ = heappop(pq)
+                            
+                            
+                            count = next(counter)
+                            i = [v, count, k] #[priority, count, task]
+                            
+                            heappush(pq, i)
+                            
+                return map(lambda x: x[-1], pq)
+
 
 28) K way Merge:
 
@@ -1190,13 +1330,30 @@ COOL NOTES PART 1: DYNAMIC PROGRAMMING RECURRENCES EXAMPLES:
     When implementing remember to look at your base cases and 
     understand you have to start with those and build up!
     Helps you figure out directionality!
+
+    def lcs(X , Y): 
+        # find the length of the strings 
+        m = len(X) 
+        n = len(Y) 
     
-    for i in range(1, n):
-        for j in range(1, n):
-            if(x[i] == y[j])
-                D[i, j] = D[i-1, j-1] + 1
-            else:
-                D[i, j] = max(D[i-1, j], D[i, j-1])
+        # declaring the array for storing the dp values 
+        L = [[None]*(n+1) for i in xrange(m+1)] 
+    
+        """Following steps build L[m+1][n+1] in bottom up fashion 
+        Note: L[i][j] contains length of LCS of X[0..i-1] 
+        and Y[0..j-1]"""
+        for i in range(m+1): 
+            for j in range(n+1): 
+                if i == 0 or j == 0 : 
+                    L[i][j] = 0
+                elif X[i-1] == Y[j-1]: 
+                    L[i][j] = L[i-1][j-1]+1
+                else: 
+                    L[i][j] = max(L[i-1][j] , L[i][j-1]) 
+    
+        # L[m][n] contains the length of LCS of X[0..n-1] & Y[0..m-1] 
+        return L[m][n] 
+
     
 3) Interval DP
     Given a string x = x1..n, find the min number of chars that need to be inserted to make it a palindrome. 
@@ -1484,6 +1641,10 @@ COOL NOTES PART -2: HOW TO USE HEAP DICTIONARIES WITH DECREASE KEY USING HEAPQ!
                     del entry_finder[task]
                     return task
             raise KeyError('pop from an empty priority queue')
+
+
+#################################################################################3
+
 
 
 #######################################################################################
