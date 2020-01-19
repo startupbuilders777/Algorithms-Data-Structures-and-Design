@@ -1,0 +1,1839 @@
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/1122. Relative Sort Array.cpp b/Algorithms and Data Structures Practice/C++ Algorithms Practice/1122. Relative Sort Array.cpp[m
+[1mdeleted file mode 100644[m
+[1mindex d0c7451..0000000[m
+[1m--- a/Algorithms and Data Structures Practice/C++ Algorithms Practice/1122. Relative Sort Array.cpp[m	
+[1m+++ /dev/null[m
+[36m@@ -1,97 +0,0 @@[m
+[31m-/*[m
+[31m-[m
+[31m-1122. Relative Sort Array[m
+[31m-Easy[m
+[31m-[m
+[31m-245[m
+[31m-[m
+[31m-18[m
+[31m-[m
+[31m-Favorite[m
+[31m-[m
+[31m-Share[m
+[31m-Given two arrays arr1 and arr2, the elements of arr2 are distinct, [m
+[31m-and all elements in arr2 are also in arr1.[m
+[31m-[m
+[31m-Sort the elements of arr1 such that the relative ordering of items [m
+[31m-in arr1 are the same as in arr2.  Elements that don't appear in arr2 [m
+[31m-should be placed at the end of arr1 in ascending order.[m
+[31m-[m
+[31m- [m
+[31m-[m
+[31m-Example 1:[m
+[31m-[m
+[31m-Input: arr1 = [2,3,1,3,2,4,6,7,9,2,19], arr2 = [2,1,4,3,9,6][m
+[31m-Output: [2,2,2,1,4,3,3,9,6,7,19][m
+[31m-[m
+[31m-[m
+[31m-*/[m
+[31m-[m
+[31m-[m
+[31m-#import <unordered_map>[m
+[31m-[m
+[31m-[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    vector<int> relativeSortArray(vector<int>& arr1, vector<int>& arr2) {[m
+[31m-        // Collect elements in map[m
+[31m-        // Do insertion sort for elements that are not keys of map![m
+[31m-        [m
+[31m-        // Do Radix sort or counting sort or insertion sort on other elements![m
+[31m-        [m
+[31m-        [m
+[31m-        unordered_map<int, int> o;[m
+[31m-        vector<int> otherElements; [m
+[31m-        [m
+[31m-        for(auto i: arr2) {[m
+[31m-            // Setup map[m
+[31m-            o[i] = 0;[m
+[31m-        }[m
+[31m-        [m
+[31m-        for(auto i: arr1){[m
+[31m-            if(o.find(i) != o.end()) {[m
+[31m-                o[i] += 1;[m
+[31m-            } else {[m
+[31m-                otherElements.push_back(i);[m
+[31m-            } [m
+[31m-        }[m
+[31m-        [m
+[31m-        vector<int> solution = vector<int>(arr1.size());[m
+[31m-        [m
+[31m-        cout << "ARRY 1 LENGTH " << arr1.size() <<endl;;[m
+[31m-        [m
+[31m-        int i = 0;[m
+[31m-        for(auto key: arr2) {[m
+[31m-            [m
+[31m-           [m
+[31m-            int count = o[key];[m
+[31m-            for(int j = 0; j!= count; ++j) {[m
+[31m-                [m
+[31m-                solution[i] = key;[m
+[31m-                i += 1;[m
+[31m-            }[m
+[31m-            [m
+[31m-        }       [m
+[31m-        [m
+[31m-        sort(otherElements.begin(), otherElements.end(),  [](int a, int b) {return a < b; });[m
+[31m-        [m
+[31m-        for(auto i : o) {[m
+[31m-            [m
+[31m-            cout << i.first << " "<< i.second << endl;[m
+[31m-        [m
+[31m-        }[m
+[31m-        [m
+[31m-        ///solution.insert(solution.begin() + i, otherElements.begin(), otherElements.end());[m
+[31m-        for(auto oe: otherElements) {[m
+[31m-            solution[i] = oe;[m
+[31m-            i +=1;[m
+[31m-            [m
+[31m-        }[m
+[31m-        return solution;[m
+[31m-        [m
+[31m-        [m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[31m-[m
+[31m-[m
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/1200. Minimum Absolute Difference.cpp b/Algorithms and Data Structures Practice/C++ Algorithms Practice/1200. Minimum Absolute Difference.cpp[m
+[1mdeleted file mode 100644[m
+[1mindex bfe159f..0000000[m
+[1m--- a/Algorithms and Data Structures Practice/C++ Algorithms Practice/1200. Minimum Absolute Difference.cpp[m	
+[1m+++ /dev/null[m
+[36m@@ -1,103 +0,0 @@[m
+[31m-/*[m
+[31m-[m
+[31m-1200. Minimum Absolute Difference[m
+[31m-Easy[m
+[31m-[m
+[31m-57[m
+[31m-[m
+[31m-7[m
+[31m-[m
+[31m-Favorite[m
+[31m-[m
+[31m-Share[m
+[31m-Given an array of distinct integers arr, find all pairs of elements with the minimum absolute difference of any two elements. [m
+[31m-[m
+[31m-Return a list of pairs in ascending order(with respect to pairs), each pair [a, b] follows[m
+[31m-[m
+[31m-a, b are from arr[m
+[31m-a < b[m
+[31m-b - a equals to the minimum absolute difference of any two elements in arr[m
+[31m- [m
+[31m-[m
+[31m-Example 1:[m
+[31m-[m
+[31m-Input: arr = [4,2,1,3][m
+[31m-Output: [[1,2],[2,3],[3,4]][m
+[31m-Explanation: The minimum absolute difference is 1. List all pairs with difference equal to 1 in ascending order.[m
+[31m-Example 2:[m
+[31m-[m
+[31m-Input: arr = [1,3,6,10,15][m
+[31m-Output: [[1,3]][m
+[31m-Example 3:[m
+[31m-[m
+[31m-Input: arr = [3,8,-10,23,19,-4,-14,27][m
+[31m-Output: [[-14,-10],[19,23],[23,27]][m
+[31m-[m
+[31m-[m
+[31m-*/[m
+[31m-[m
+[31m-// YOU CAN USE CURLY BRACES AND NOT ADD TYPE!!![m
+[31m-[m
+[31m-[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    vector<vector<int>> minimumAbsDifference(vector<int>& arr) {[m
+[31m-        sort(arr.begin(), arr.end());[m
+[31m-        vector<vector<int>> res;[m
+[31m-        int n = arr.size();[m
+[31m-        int cur = INT_MAX;[m
+[31m-        for (int i = 1; i < n; i++) {[m
+[31m-            if (arr[i] - arr[i - 1] == cur) {[m
+[31m-                res.push_back({arr[i - 1], arr[i]});[m
+[31m-            }[m
+[31m-            else if (arr[i] - arr[i - 1] < cur) {[m
+[31m-                res = {{arr[i - 1], arr[i]}};[m
+[31m-                cur = arr[i] - arr[i - 1];[m
+[31m-            }[m
+[31m-        }[m
+[31m-        return res;[m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[31m-[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    vector<vector<int>> minimumAbsDifference(vector<int>& arr) {[m
+[31m-    [m
+[31m-        [m
+[31m-        vector<vector<int>> result; [m
+[31m-        [m
+[31m-        [m
+[31m-        // Just sort it. [m
+[31m-        // Then take running min -> if new min is found, dump our old result, and start again with that. return result.[m
+[31m-        [m
+[31m-        [m
+[31m-        if(arr.size() == 0){[m
+[31m-            return result;[m
+[31m-        }[m
+[31m-        [m
+[31m-        sort(arr.begin(), arr.end());[m
+[31m-        [m
+[31m-        auto currElement = arr[0];[m
+[31m-        [m
+[31m-        auto currMin = INT_MAX;[m
+[31m-        [m
+[31m-        for(int i = 1; i != arr.size(); ++i) {[m
+[31m-            [m
+[31m-            [m
+[31m-            if(abs(currElement - arr[i])  < currMin) {[m
+[31m-                result.clear();[m
+[31m-                currMin =  abs(currElement - arr[i]); [m
+[31m-            } [m
+[31m-            [m
+[31m-            if(abs(currElement - arr[i]) == currMin) {[m
+[31m-                result.push_back( vector<int>{currElement, arr[i]} );[m
+[31m-            }[m
+[31m-            currElement = arr[i];[m
+[31m-            [m
+[31m-        }[m
+[31m-        [m
+[31m-        return result;[m
+[31m-        [m
+[31m-    }[m
+[31m-};[m
+\ No newline at end of file[m
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/1207. Unique Number Occurrences.cpp b/Algorithms and Data Structures Practice/C++ Algorithms Practice/1207. Unique Number Occurrences.cpp[m
+[1mdeleted file mode 100644[m
+[1mindex 750f049..0000000[m
+[1m--- a/Algorithms and Data Structures Practice/C++ Algorithms Practice/1207. Unique Number Occurrences.cpp[m	
+[1m+++ /dev/null[m
+[36m@@ -1,100 +0,0 @@[m
+[31m-/*[m
+[31m-[m
+[31m-[m
+[31m-Given an array of integers arr, write [m
+[31m-a function that returns true if and [m
+[31m-only if the number of occurrences of [m
+[31m-each value in the array is unique.[m
+[31m-[m
+[31m- [m
+[31m-[m
+[31m-Example 1:[m
+[31m-[m
+[31m-Input: arr = [1,2,2,1,1,3][m
+[31m-Output: true[m
+[31m-Explanation: The value 1 has 3 occurrences, 2 has 2 and 3 has 1. No two values have the same number of occurrences.[m
+[31m-Example 2:[m
+[31m-[m
+[31m-Input: arr = [1,2][m
+[31m-Output: false[m
+[31m-Example 3:[m
+[31m-[m
+[31m-Input: arr = [-3,0,1,-3,1,1,1,-3,10,0][m
+[31m-Output: true[m
+[31m-[m
+[31m-*/[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-#import <unordered_map>[m
+[31m-#import <unordered_set>[m
+[31m-[m
+[31m-class Solution {[m
+[31m-[m
+[31m-    [m
+[31m-    public:[m
+[31m-    bool uniqueOccurrences(vector<int>& arr) {[m
+[31m-        // count the occurences of every element in a map.[m
+[31m-        // itereate through map check if any 2 elements have same value[m
+[31m-        // by putting values in a set. [m
+[31m-        // if set ever "has" a value, return false, otherwise true[m
+[31m-        /*[m
+[31m-        [m
+[31m-        Contrary to most existing answers here, note that there are actually [m
+[31m-        4 methods related to finding an element in a map (ignoring lower_bound, [m
+[31m-        upper_bound and equal_range, which are less precise):[m
+[31m-[m
+[31m-    operator[] only exist in non-const version, as noted it will [m
+[31m-                create the element if it does not exist[m
+[31m-    at(), introduced in C++11, returns a reference to [m
+[31m-            the element if it exists and throws an exception otherwise[m
+[31m-    find() returns an iterator to the element if [m
+[31m-            it exists or an iterator to map::end() if it does not[m
+[31m-    count() returns the number of such elements,[m
+[31m-            in a map, this is 0 or 1[m
+[31m-    Now that the semantics are clear, [m
+[31m-        let us review when to use which:[m
+[31m-[m
+[31m-    if you only wish to know whether an element is[m
+[31m-    present in the map (or not), then use count().[m
+[31m-    if you wish to access the element, and it shall [m
+[31m-    be in the map, then use at().[m
+[31m-    if you wish to access the element, and do not know [m
+[31m-    whether it is in the map or not, then use find(); do [m
+[31m-    not forget to check that the resulting iterator is [m
+[31m-    not equal to the result of end().[m
+[31m-    [m
+[31m-    finally, if you wish to access the element if it exists [m
+[31m-    or create it (and access it) if it does not, use operator[];[m
+[31m-    if you do not wish to call the type default constructor to create it, [m
+[31m-    then use either insert or emplace appropriately[m
+[31m-        [m
+[31m-        */[m
+[31m-        [m
+[31m-        unordered_map<int,int> m;[m
+[31m-        unordered_set<int> s;[m
+[31m-        [m
+[31m-        for(auto i : arr){[m
+[31m-        [m
+[31m-            if(m.find(i) != m.end()){[m
+[31m-            m[i] += 1;[m
+[31m-            } else{[m
+[31m-            m[i] = 1;[m
+[31m-            }[m
+[31m-        [m
+[31m-        }[m
+[31m-        [m
+[31m-        for(pair<int, int> e: m) {[m
+[31m-            auto val = e.second;[m
+[31m-            if(s.count(val)){[m
+[31m-            return false;[m
+[31m-            }[m
+[31m-            s.insert(val);[m
+[31m-        [m
+[31m-        }[m
+[31m-        [m
+[31m-        return true;[m
+[31m-        [m
+[31m-    }[m
+[31m-};[m
+\ No newline at end of file[m
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/206. Reverse Linked List.cpp b/Algorithms and Data Structures Practice/C++ Algorithms Practice/206. Reverse Linked List.cpp[m
+[1mdeleted file mode 100644[m
+[1mindex 991643f..0000000[m
+[1m--- a/Algorithms and Data Structures Practice/C++ Algorithms Practice/206. Reverse Linked List.cpp[m	
+[1m+++ /dev/null[m
+[36m@@ -1,37 +0,0 @@[m
+[31m-/**[m
+[31m- * Definition for singly-linked list.[m
+[31m- * struct ListNode {[m
+[31m- *     int val;[m
+[31m- *     ListNode *next;[m
+[31m- *     ListNode(int x) : val(x), next(NULL) {}[m
+[31m- * };[m
+[31m- */[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    ListNode* reverseList(ListNode* head) {[m
+[31m-        if(head == nullptr){[m
+[31m-            return nullptr;[m
+[31m-        }[m
+[31m-        ListNode* prev = head;[m
+[31m-        ListNode * after = prev->next;[m
+[31m-        [m
+[31m-        head->next = nullptr;[m
+[31m-        [m
+[31m-        while(after != nullptr){[m
+[31m-           // if(after) {[m
+[31m-            ListNode* temp = after->next;[m
+[31m-           // }[m
+[31m-            [m
+[31m-            after->next = prev;[m
+[31m-            [m
+[31m-                [m
+[31m-            prev = after;    [m
+[31m-            after=temp;[m
+[31m-            [m
+[31m-        }[m
+[31m-        [m
+[31m-        return prev;[m
+[31m-        [m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/24 Essential C++ Interview Questions and Answers.pdf b/Algorithms and Data Structures Practice/C++ Algorithms Practice/24 Essential C++ Interview Questions and Answers.pdf[m
+[1mdeleted file mode 100644[m
+[1mindex 45e2618..0000000[m
+Binary files a/Algorithms and Data Structures Practice/C++ Algorithms Practice/24 Essential C++ Interview Questions and Answers.pdf and /dev/null differ
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/310. MinimumHeightTrees.cpp b/Algorithms and Data Structures Practice/C++ Algorithms Practice/310. MinimumHeightTrees.cpp[m
+[1mdeleted file mode 100644[m
+[1mindex 04c31ce..0000000[m
+[1m--- a/Algorithms and Data Structures Practice/C++ Algorithms Practice/310. MinimumHeightTrees.cpp[m	
+[1m+++ /dev/null[m
+[36m@@ -1,513 +0,0 @@[m
+[31m-/*[m
+[31m-310. Minimum Height Trees[m
+[31m-Medium[m
+[31m-[m
+[31m-938[m
+[31m-[m
+[31m-59[m
+[31m-[m
+[31m-Favorite[m
+[31m-[m
+[31m-Share[m
+[31m-For an undirected graph with tree characteristics, we can choose any node as the root.[m
+[31m- The result graph is then a rooted tree. Among all possible rooted trees, those with minimum [m
+[31m- height are called minimum height trees (MHTs). Given such a graph, write a function to find all the MHTs and return a list of their root labels.[m
+[31m-[m
+[31m-Format[m
+[31m-The graph contains n nodes which are labeled from 0 to n - 1. You will be given the number n and a list of undirected edges (each edge is a pair of labels).[m
+[31m-[m
+[31m-You can assume that no duplicate edges will appear in edges. Since all edges are undirected, [0, 1] is the same as [1, 0] and thus will not appear together in edges.[m
+[31m-[m
+[31m-Example 1 :[m
+[31m-[m
+[31m-Input: n = 4, edges = [[1, 0], [1, 2], [1, 3]][m
+[31m-[m
+[31m-        0[m
+[31m-        |[m
+[31m-        1[m
+[31m-       / \[m
+[31m-      2   3 [m
+[31m-[m
+[31m-Output: [1][m
+[31m-Example 2 :[m
+[31m-[m
+[31m-Input: n = 6, edges = [[0, 3], [1, 3], [2, 3], [4, 3], [5, 4]][m
+[31m-[m
+[31m-     0  1  2[m
+[31m-      \ | /[m
+[31m-        3[m
+[31m-        |[m
+[31m-        4[m
+[31m-        |[m
+[31m-        5 [m
+[31m-[m
+[31m-Output: [3, 4][m
+[31m-[m
+[31m-[m
+[31m-*/[m
+[31m-[m
+[31m-//MY ACCEPTED SOLUTION: [m
+[31m-[m
+[31m-#include <map>[m
+[31m-#include <set>[m
+[31m-#include <unordered_map>[m
+[31m-#include <unordered_set>[m
+[31m-#include <queue> [m
+[31m-[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    [m
+[31m-    int getHeight(int currNode, [m
+[31m-                  unordered_map<int, [m
+[31m-                  unordered_set<int> > & tree, [m
+[31m-                  unordered_set<int> & visited) {[m
+[31m-        [m
+[31m-       [m
+[31m-            [m
+[31m-        int height = 0; //leafs have this height[m
+[31m-        try {[m
+[31m-        for(auto child : tree.at(currNode)) {[m
+[31m-            // cout << "Parent " << currNode << " has child " << child << endl;[m
+[31m-            if(visited.find(child) == visited.end()) { [m
+[31m-                visited.insert(child);[m
+[31m-                [m
+[31m-                int theHeight = 1 + this->getHeight(child, tree, visited);[m
+[31m-                [m
+[31m-                if(theHeight > height){[m
+[31m-                    height = theHeight;[m
+[31m-                }[m
+[31m-                [m
+[31m-            }[m
+[31m-        } [m
+[31m-        } catch( ... ) {[m
+[31m-            return 0;[m
+[31m-        }[m
+[31m-        [m
+[31m-        [m
+[31m-         // cout << "GET HEIGHT FOR " << currNode << " whic is "  << height << endl;[m
+[31m-  [m
+[31m-        [m
+[31m-        return height;[m
+[31m-    }[m
+[31m-    [m
+[31m-    vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) {[m
+[31m-        [m
+[31m-        //Create a map that goes from start => end [m
+[31m-        // in other words adjcency list representation?[m
+[31m-        // yee do it to practice data structures.[m
+[31m-        [m
+[31m-        //Choose any node as the root. Then graph becomes rooted tree[m
+[31m-        //Find all minimum height trees.[m
+[31m-        [m
+[31m-        //DFS to get height of tree. Sure. [m
+[31m-        // Do N dfs's and get height for all treess like that. [m
+[31m-        [m
+[31m-        [m
+[31m-        // Or we can BFS from one node to all other nodes. [m
+[31m-        // This node is the "leaf" node of the tree. [m
+[31m-        // return nodes that are 50% away. rite? nah doesnt work.[m
+[31m-        [m
+[31m-        // Fastest solution is to iteratively remove a leaf from the outside, and go in. [m
+[31m-        // a leaf is on the outside if it has only one connection to the graph. [m
+[31m-        // keep doing that until you have [m
+[31m-        // A) only 1 node left, or[m
+[31m-        // B) removing the node at that level causes the tree to disappear (aka one connection)[m
+[31m-        // C) Cant remove nodes because no nodes only have 1 connection[m
+[31m-        [m
+[31m-        [m
+[31m-        //create map that maps int to set[m
+[31m-        [m
+[31m-        //map<int, set<int> > m;[m
+[31m-        unordered_map< int, unordered_set<int> > m;[m
+[31m-        [m
+[31m-        [m
+[31m-        if(edges.size() == 0) {[m
+[31m-            return vector<int>{0};[m
+[31m-        }[m
+[31m-        [m
+[31m-        // This way to put edges in map was incorrect because didnt [m
+[31m-        // realize each vector element is 2 size array[m
+[31m-        /*[m
+[31m-        for(auto it=edges.begin(); it != edges.end(); ++it) {[m
+[31m-            int startNode = it - edges.begin();[m
+[31m-            set<int> neighbors;[m
+[31m-            for(auto jt=it->begin();  jt!= it->end(); ++jt){[m
+[31m-                [m
+[31m-                neighbors.insert(*jt);[m
+[31m-            }[m
+[31m-         [m
+[31m-            //Hard way to insert into map is the following: [m
+[31m-            m.insert(pair<int, set<int> >(startNode, neighbors));[m
+[31m-        }[m
+[31m-        */[m
+[31m-        // ALSO USE UNORDERED_MAP. it has amortized lookup of O(1) VS O(lg n) for regular maps.[m
+[31m-        [m
+[31m-        for(auto &it : edges){[m
+[31m-            auto first = it[0];[m
+[31m-            auto second = it[1];[m
+[31m-            m[first].insert(second);[m
+[31m-            m[second].insert(first);[m
+[31m-        }[m
+[31m-        [m
+[31m-        [m
+[31m-        for(auto mit=m.begin(); mit != m.end(); ++mit){[m
+[31m-            [m
+[31m-            /// cout << "FOR KEY: " << mit->first<< endl;[m
+[31m-            for(auto setElement : mit->second){[m
+[31m-             //   cout << "set element is " << setElement << " ";  [m
+[31m-            }[m
+[31m-            cout << endl;[m
+[31m-        } [m
+[31m-        [m
+[31m-         /*     [m
+[31m-         cout << "map initially looks like this: " << endl;[m
+[31m-         for(auto kv: m){[m
+[31m-                        cout << "key " << kv.first;[m
+[31m-                        for(auto v: kv.second) {[m
+[31m-                            cout << " has val " << v << " " ;[m
+[31m-                        }[m
+[31m-                        cout << endl;[m
+[31m-                    }[m
+[31m-        [m
+[31m-        */[m
+[31m-        [m
+[31m-        // Okay time to do DFS and get min of all trees. [m
+[31m-        [m
+[31m-        /*[m
+[31m-        This is how you get keys and vals from map btw:[m
+[31m-        [m
+[31m-        std::vector<Key> keys;[m
+[31m-        keys.reserve(map.size());[m
+[31m-        std::vector<Val> vals;[m
+[31m-        vals.reserve(map.size());[m
+[31m-[m
+[31m-        for(auto kv : map) {[m
+[31m-            keys.push_back(kv.first);[m
+[31m-            vals.push_back(kv.second);  [m
+[31m-        } [m
+[31m-        */[m
+[31m-        [m
+[31m-        //THIS SOLUTION IS TOO SLOW BECAUSE IT DOES DFS ON EVERY ROOT WHICH IS BAD. [m
+[31m-        /*[m
+[31m-        int currMin = n; // highest height can be. we are looking for things less than this.[m
+[31m-        [m
+[31m-      [m
+[31m-        [m
+[31m-        vector<int> roots; [m
+[31m-        [m
+[31m-        [m
+[31m-        for(auto kv : m) {[m
+[31m-            int i = kv.first;[m
+[31m-                [m
+[31m-            unordered_set<int> visited; [m
+[31m-            visited.insert(i);[m
+[31m-            // Use set in method. Pass as reference![m
+[31m-            [m
+[31m-            int h = this->getHeight(i, m, visited);[m
+[31m-            // cout << "height for node " << i << " is " << h;[m
+[31m-            if(h == currMin){[m
+[31m-                roots.push_back(i);[m
+[31m-            } else if(h < currMin) {[m
+[31m-                [m
+[31m-                currMin = h;[m
+[31m-                roots.clear();[m
+[31m-                roots.push_back(i);[m
+[31m-            }[m
+[31m-        }[m
+[31m-        */[m
+[31m-        [m
+[31m-        // insert all leaf nodes into a queue, then slowly remove [m
+[31m-        // them from map and keep going until youre left with nodes that represent center[m
+[31m-        [m
+[31m-        queue<int> q; [m
+[31m-        queue<int> nextLevel; [m
+[31m-        [m
+[31m-        for(auto kv: m){[m
+[31m-            if(kv.second.size() == 1){[m
+[31m-                cout << kv.first << endl;[m
+[31m-                q.push(kv.first);[m
+[31m-               //  cout << "LEAF IS : " << kv.first << endl;[m
+[31m-            }[m
+[31m-        }[m
+[31m-        [m
+[31m-        // OK SO ALGORITHM IS BASICALLY KEEP REMOVING LEAVES![m
+[31m-        // WHEN YOU GET TO CENTER, IF NEXT LEVEL QUEUE HAS 1 OR 2 ELEMENTS,[m
+[31m-        // AND TOTAL ELEMENTS IS EITHER 1 OR 2, THEN YOU HAVE YOUR SOLUTION![m
+[31m-        // BASICALLY JUST PEEL AWAY LAYERS[m
+[31m-  [m
+[31m-        [m
+[31m-        [m
+[31m-        int counter = n; // Keep popping leaves![m
+[31m-        //THREE BASE CASES FOR MHT'S[m
+[31m-        if(counter == 0) {[m
+[31m-            return vector<int>{0};[m
+[31m-        } else if(counter == 1) {[m
+[31m-            return vector<int>{q.front()};[m
+[31m-        } else if(counter == 2) {[m
+[31m-            return vector<int>{q.back(), q.front()};[m
+[31m-        }[m
+[31m-        [m
+[31m-            while(true){[m
+[31m-                int head = q.front();[m
+[31m-                q.pop();[m
+[31m-                // cout << " POPPED THE FOLLOWING LEAF " << head << endl;[m
+[31m-                [m
+[31m-                --counter;[m
+[31m-                [m
+[31m-                for(auto child: m[head]){[m
+[31m-                    [m
+[31m-                    // delete leaf from child neighbor set.[m
+[31m-                    // if child has set of size 1 afterwards, push em IN![m
+[31m-                    m[child].erase(head);[m
+[31m-                    if(m[child].size() == 1) {[m
+[31m-                        nextLevel.push(child);[m
+[31m-                       [m
+[31m-                    }[m
+[31m-                    [m
+[31m-                }[m
+[31m-                m.erase(head);[m
+[31m-                [m
+[31m-                if(q.empty()) {[m
+[31m-                    [m
+[31m-                    /*[m
+[31m-                    cout << " after popping outer leaves map looks liek this: " << endl;[m
+[31m-                    [m
+[31m-                    for(auto kv: m){[m
+[31m-                        cout << "key " << kv.first;[m
+[31m-                        for(auto v: kv.second) {[m
+[31m-                            cout << " has val " << v << " " ;[m
+[31m-                        }[m
+[31m-                        cout << endl;[m
+[31m-                    }[m
+[31m-                   */[m
+[31m-                    [m
+[31m-                    if(counter == 1) {[m
+[31m-                        return vector<int>{nextLevel.front()};[m
+[31m-                    } else if(counter == 2) {[m
+[31m-                        return vector<int>{nextLevel.front(), nextLevel.back()};[m
+[31m-                    } else{[m
+[31m-                        q = nextLevel; [m
+[31m-                        while(!nextLevel.empty())[m
+[31m-                            nextLevel.pop();[m
+[31m-                    }[m
+[31m-                }[m
+[31m-            [m
+[31m-                   [m
+[31m-            }[m
+[31m-        // return roots; [m
+[31m-        //return vector<int>{1,2,3};[m
+[31m-        }[m
+[31m-        [m
+[31m-       [m
+[31m-    [m
+[31m-[m
+[31m-    [m
+[31m-};[m
+[31m-[m
+[31m-// ################################################################################3[m
+[31m-[m
+[31m-// ################################################################################3[m
+[31m-[m
+[31m-// ################################################################################3[m
+[31m-// FASTER SOLUTION 1[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) {[m
+[31m-        if(n==1) return {0};[m
+[31m-        else if(n==2) return {0,1};[m
+[31m-        [m
+[31m-        vector<int> adj[n];[m
+[31m-        vector<int>deg(n,0);[m
+[31m-        vector<int> res;[m
+[31m-        [m
+[31m-        for(auto e:edges) {[m
+[31m-            deg[e[0]]++;[m
+[31m-            deg[e[1]]++;[m
+[31m-            adj[e[0]].push_back(e[1]);[m
+[31m-            adj[e[1]].push_back(e[0]);[m
+[31m-        }[m
+[31m-        queue<int> leaf;[m
+[31m-        int ctr=n;[m
+[31m-        for(int i=0; i<n; i++) {[m
+[31m-            if(adj[i].size()==1) {[m
+[31m-                leaf.push(i);[m
+[31m-            }[m
+[31m-        }[m
+[31m-        [m
+[31m-        while(ctr>2) {[m
+[31m-            for(int i=leaf.size(); i>0; i--){[m
+[31m-                int l=leaf.front();[m
+[31m-                //cout<<l<<" "<<deg[l]<<" "<<adj[l][0]<<" "<<deg[adj[l][0]]<<endl;;[m
+[31m-                leaf.pop();[m
+[31m-                deg[l]--;[m
+[31m-                ctr--;[m
+[31m-                for(int k=0; k<adj[l].size(); k++) {[m
+[31m-                    if(--deg[adj[l][k]]==1) {[m
+[31m-                        leaf.push(adj[l][k]);[m
+[31m-                    }[m
+[31m-                }[m
+[31m-                [m
+[31m-            }[m
+[31m-        }[m
+[31m-        while(!leaf.empty()) {[m
+[31m-            res.push_back(leaf.front());[m
+[31m-            leaf.pop();[m
+[31m-        }[m
+[31m-        return res;[m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[31m-[m
+[31m-// EVEN FASTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR[m
+[31m-[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) {[m
+[31m-        if (edges.empty()) return {0};[m
+[31m-        [m
+[31m-        vector<vector<int>> graph(n);[m
+[31m-        for (auto& e : edges) {[m
+[31m-            graph[e[0]].push_back(e[1]);[m
+[31m-            graph[e[1]].push_back(e[0]);[m
+[31m-        }[m
+[31m-        vector<int> count(n), res;[m
+[31m-        for (int i = 0; i < n; i++) count[i] = graph[i].size();[m
+[31m-        [m
+[31m-        queue<int> q;[m
+[31m-        for (int i = 0; i < n; i++)[m
+[31m-            if (count[i] == 1) q.push(i);[m
+[31m-        // BFS[m
+[31m-        while(!q.empty()) {[m
+[31m-            res.clear();[m
+[31m-            int sz = q.size();[m
+[31m-            for (int i = 0; i < sz; i++) {[m
+[31m-                int leaf = q.front(); q.pop();[m
+[31m-                res.push_back(leaf); count[leaf]--;[m
+[31m-                for (int adj : graph[leaf]) {[m
+[31m-                    if (count[adj] == 0) continue;[m
+[31m-                    if (count[adj] == 2) q.push(adj);[m
+[31m-                    count[adj]--;[m
+[31m-                }[m
+[31m-            }[m
+[31m-        }[m
+[31m-        return res;[m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[31m-[m
+[31m-// SUPPER FAST SOLUTION[m
+[31m-[m
+[31m-[m
+[31m-class Graph {[m
+[31m-  int V;[m
+[31m-  list<int>* adj;[m
+[31m-    vector<int> degree;[m
+[31m-  [m
+[31m-    public:[m
+[31m-    Graph(int V){[m
+[31m-        this->V = V;[m
+[31m-        adj = new list<int>[V];[m
+[31m-        degree = vector<int>(V, 0);[m
+[31m-    }[m
+[31m-    [m
+[31m-    void addEdge(int u, int v){[m
+[31m-        adj[u].push_back(v);[m
+[31m-        adj[v].push_back(u);[m
+[31m-        degree[u]++;[m
+[31m-        degree[v]++;[m
+[31m-    }[m
+[31m-    [m
+[31m-    vector<int> findMinHeight(){[m
+[31m-        if(V == 1){[m
+[31m-            return vector<int>(1, 0);[m
+[31m-        }[m
+[31m-       queue<int> q;[m
+[31m-        for(int i = 0; i < V; i++){[m
+[31m-            if(degree[i] == 1)[m
+[31m-                q.push(i);[m
+[31m-        }[m
+[31m-        [m
+[31m-        while(V > 2){[m
+[31m-            int size = q.size();[m
+[31m-            for(int i = 0; i < size; i++){[m
+[31m-                int u = q.front();[m
+[31m-                q.pop();[m
+[31m-                V--;[m
+[31m-                [m
+[31m-                for(auto it = adj[u].begin(); it != adj[u].end(); it++){[m
+[31m-                    int v = *it;[m
+[31m-                    degree[v]--; [m
+[31m-                    if (degree[v] == 1) [m
+[31m-                        q.push(v); [m
+[31m-                }[m
+[31m-            }[m
+[31m-        }[m
+[31m-        vector<int> res; [m
+[31m-        while (!q.empty()) [m
+[31m-        { [m
+[31m-            res.push_back(q.front()); [m
+[31m-            q.pop(); [m
+[31m-        } [m
+[31m-        return res; [m
+[31m-    }[m
+[31m-};[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    vector<int> findMinHeightTrees(int n, vector<pair<int, int>>& edges) {[m
+[31m-        int min_height = INT_MAX;[m
+[31m-        vector<int> result;[m
+[31m-        [m
+[31m-        Graph g(n);[m
+[31m-        for(int i = 0; i < edges.size(); i++){[m
+[31m-            g.addEdge(edges[i].first, edges[i].second);[m
+[31m-        }[m
+[31m-        [m
+[31m-        return g.findMinHeight();[m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-// FASTEST SOLUTION[m
+[31m-[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    vector<int> findMinHeightTrees(int n, vector<pair<int, int>>& edges) {[m
+[31m-        static int fast_io = []() { std::ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();[m
+[31m-        vector<int> degree(n, 0);[m
+[31m-        vector<list<int>> adjacent(n, list<int>());[m
+[31m-        [m
+[31m-        for(pair<int, int> edge : edges){[m
+[31m-            ++degree[edge.first];[m
+[31m-            ++degree[edge.second];[m
+[31m-            adjacent[edge.first].push_back(edge.second);[m
+[31m-            adjacent[edge.second].push_back(edge.first);[m
+[31m-        }[m
+[31m-        [m
+[31m-        vector<int> leaf;[m
+[31m-        int remain = n;[m
+[31m-        for(int i = 0; i < n; ++i){[m
+[31m-            if(degree[i] <= 1){[m
+[31m-                leaf.push_back(i);[m
+[31m-            }[m
+[31m-        }[m
+[31m-        [m
+[31m-        while(remain > 2){[m
+[31m-            vector<int> tem;[m
+[31m-            for(int cur_leaf : leaf){[m
+[31m-                for(int adj_leaf : adjacent[cur_leaf]){[m
+[31m-                    --degree[adj_leaf];[m
+[31m-                    if(degree[adj_leaf] == 1) tem.push_back(adj_leaf);[m
+[31m-                }[m
+[31m-            }[m
+[31m-            remain -= leaf.size();[m
+[31m-            leaf = tem;[m
+[31m-        }[m
+[31m-        [m
+[31m-        return leaf;[m
+[31m-    }[m
+[31m-};[m
+\ No newline at end of file[m
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/5. LongestPalindromicSubstring.cpp b/Algorithms and Data Structures Practice/C++ Algorithms Practice/5. LongestPalindromicSubstring.cpp[m
+[1mdeleted file mode 100644[m
+[1mindex 751913e..0000000[m
+[1m--- a/Algorithms and Data Structures Practice/C++ Algorithms Practice/5. LongestPalindromicSubstring.cpp[m	
+[1m+++ /dev/null[m
+[36m@@ -1,181 +0,0 @@[m
+[31m-/*[m
+[31m-Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.[m
+[31m-[m
+[31m-Example 1:[m
+[31m-[m
+[31m-Input: "babad"[m
+[31m-Output: "bab"[m
+[31m-Note: "aba" is also a valid answer.[m
+[31m-Example 2:[m
+[31m-[m
+[31m-Input: "cbbd"[m
+[31m-Output: "bb"[m
+[31m-[m
+[31m-*/[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-// THIS WAS MY ACCEPTED SOLUTION. IT DID NOT USE DYNAMIC PROGRAMMING. [m
+[31m-using namespace std; [m
+[31m-[m
+[31m-typedef pair<int, int> palindrome_key;[m
+[31m-[m
+[31m-[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    [m
+[31m-    bool isPalindrome(int start, int end, const string & str, map< pair<int, int>, bool> & cache) {[m
+[31m-        [m
+[31m-        //compare first half of string with second half![m
+[31m-        for(int t=0; t != (end-start)/2; ++t){[m
+[31m-            if(str[start+t] != str[end-1-t]){[m
+[31m-                return false;[m
+[31m-            }[m
+[31m-        }[m
+[31m-        [m
+[31m-        return true;[m
+[31m-        [m
+[31m-    }[m
+[31m-    [m
+[31m-    string longestPalindrome(string s) {[m
+[31m-        // check all substrings, check if its palindromic, if it is, greater than max, then save[m
+[31m-        // save partial palindroms in a 2d map, keep index of start and end node.[m
+[31m-        // if you are checking somethign is a palindrom m[start-1][end+1] is a palindrom[m
+[31m-        // just check if s[start-1] == s[end+1] is because we already know the inside is![m
+[31m-        // if not make the check and save the result in the map![m
+[31m-        [m
+[31m-        // cant use unordered_map because it needs a suitable hashing function. hmmm[m
+[31m-        map< pair<int, int>, bool> cache;[m
+[31m-        [m
+[31m-        int len = s.size();[m
+[31m-        [m
+[31m-        int longest = 0;[m
+[31m-        int maxI = 0;[m
+[31m-        int maxJ = 0;[m
+[31m-        [m
+[31m-        for(int i = 0; i!= len; ++i) {[m
+[31m-            for(int j = i+1; j != len+1; ++j) { [m
+[31m-                //why do we make j's end len+1. because we want it to go up to len. [m
+[31m-                [m
+[31m-                // cout << "WE ARE TESTING SUBSTRING " << s.substr(i, j-i) <<  " " ;[m
+[31m-                // cout << " and it has length " << j-i << endl;[m
+[31m-                [m
+[31m-                if(j-i > longest && isPalindrome(i, j, s, cache)){[m
+[31m-                    longest = j-i;[m
+[31m-                    maxI = i;[m
+[31m-                    maxJ = j;[m
+[31m-                    [m
+[31m-                }[m
+[31m-            }[m
+[31m-        }[m
+[31m-        [m
+[31m-        return s.substr(maxI, maxJ-maxI);[m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[31m-// redo this, and fix DP please![m
+[31m-// ADDING DYNAMIC PROGRAMMING ACTUALLY MADE IT WORSE BECAUSE I WAS NOT CALCULATING THE OVERLAPPING SOLUTIONS PROPERLY!!!![m
+[31m-// VERY BAD. even when i fixed it so it did overlapping solutions still TLE. [m
+[31m-[m
+[31m-// ANOTHER SOLUTIONS IS THE EXAPAND AROUND CENTER SOLUTION! CHECK 2N-1 centers. return largest palindrome.[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-using namespace std; [m
+[31m-[m
+[31m-typedef pair<int, int> palindrome_key;[m
+[31m-[m
+[31m-[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    [m
+[31m-    bool isPalindrome(int start, int end, const string & str, map< pair<int, int>, bool> & m){[m
+[31m-      /*  [m
+[31m-        // BTW: the following are the same thing: v.push_back({x, y}) and v.push_back(make_pair(x, y));[m
+[31m-        cout << " start was " << start << " and end was  " << end << endl;[m
+[31m-        [m
+[31m-        cout << " LETS CHECK CACHE " << endl;[m
+[31m-            for(auto kv: m) {[m
+[31m-                [m
+[31m-                cout << "For key " << kv.first.first << ", " << kv.first.second << " we have val " << kv.second << endl; [m
+[31m-           }[m
+[31m-        [m
+[31m-        */[m
+[31m-        if(m.count({start+1, end-1}) == 1 ) {[m
+[31m-          //  cout << " ive seen this before : " << [m
+[31m-          //      str.substr(start+1, (start+1)-(end-1)) << [m
+[31m-          //      " and result was: " [m
+[31m-          //      << m[{start+1, end-1}] [m
+[31m-          //      << endl;[m
+[31m-            [m
+[31m-            [m
+[31m-            if(m.at({start+1, end-1}) && [m
+[31m-               str[start] == str[end-1]){[m
+[31m-                [m
+[31m-                m[{start, end}] = true;[m
+[31m-            } else{[m
+[31m-                m[{start, end}] = false;[m
+[31m-            }  [m
+[31m-            return m[{start, end}];[m
+[31m-        }[m
+[31m-        [m
+[31m-        //compare first half of string with second half![m
+[31m-        // maybe we can fill lots of entries through one check actually![m
+[31m-        for(int t=0; t != (end-start)/2; ++t){[m
+[31m-            if(str[start+t] != str[end-1-t]){[m
+[31m-                [m
+[31m-                m[{start, end}] = false;[m
+[31m-                return false;[m
+[31m-            }[m
+[31m-        }[m
+[31m-        [m
+[31m-        m[{start, end}] = true;[m
+[31m-        return true;[m
+[31m-        [m
+[31m-    }[m
+[31m-    [m
+[31m-    string longestPalindrome(string s) {[m
+[31m-        // check all substrings, check if its palindromic, if it is, greater than max, then save[m
+[31m-        // save partial palindroms in a 2d map, keep index of start and end node.[m
+[31m-        // if you are checking somethign is a palindrom m[start-1][end+1] is a palindrom[m
+[31m-        // just check if s[start-1] == s[end+1] is because we already know the inside is![m
+[31m-        // if not make the check and save the result in the map![m
+[31m-        [m
+[31m-        // cant use unordered_map because it needs a suitable hashing function. hmmm[m
+[31m-        map< pair<int, int>, bool> cache;[m
+[31m-        [m
+[31m-        int len = s.size();[m
+[31m-        [m
+[31m-        int longest = 0;[m
+[31m-        int maxI = 0;[m
+[31m-        int maxJ = 0;[m
+[31m-        [m
+[31m-        //You need to make it overlap. it isnt overlapping to take advantage of the map![m
+[31m-        // Let i go from start to end, and j from end to start. [m
+[31m-        [m
+[31m-        for(int i = len-1; i!= -1; --i) {[m
+[31m-            for(int j = len ; j != i; --j) { [m
+[31m-                //why do we make j's end len+1. because we want it to go up to len. [m
+[31m-                [m
+[31m-                // cout << "WE ARE TESTING SUBSTRING " << s.substr(i, j-i) <<  " " ;[m
+[31m-                // cout << " and it has length " << j-i << endl;[m
+[31m-                [m
+[31m-                if( j-i > longest && isPalindrome(i, j, s, cache)){[m
+[31m-                    [m
+[31m-                    longest = j-i;[m
+[31m-                    maxI = i;[m
+[31m-                    maxJ = j;[m
+[31m-                    [m
+[31m-                }[m
+[31m-            }[m
+[31m-            [m
+[31m-            // cout << " LETS CHECK CACHE " << endl;[m
+[31m-          //  for(auto kv: cache) {[m
+[31m-                [m
+[31m-            //    cout << "For key " << kv.first.first << ", " << kv.first.second << " we have val " << kv.second << endl; [m
+[31m-           // }[m
+[31m-        }[m
+[31m-        [m
+[31m-        return s.substr(maxI, maxJ-maxI);[m
+[31m-    }[m
+[31m-};[m
+\ No newline at end of file[m
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/543. Diameter of Binary Tree.cpp b/Algorithms and Data Structures Practice/C++ Algorithms Practice/543. Diameter of Binary Tree.cpp[m
+[1mdeleted file mode 100644[m
+[1mindex 479f7bd..0000000[m
+[1m--- a/Algorithms and Data Structures Practice/C++ Algorithms Practice/543. Diameter of Binary Tree.cpp[m	
+[1m+++ /dev/null[m
+[36m@@ -1,126 +0,0 @@[m
+[31m-/*[m
+[31m-[m
+[31m-543. Diameter of Binary Tree[m
+[31m-Easy[m
+[31m-[m
+[31m-1731[m
+[31m-[m
+[31m-108[m
+[31m-[m
+[31m-Favorite[m
+[31m-[m
+[31m-Share[m
+[31m-Given a binary tree, you need to compute the length of the [m
+[31m-diameter of the tree. The diameter of a binary tree is the [m
+[31m-length of the longest path between any two nodes in a tree. [m
+[31m-This path may or may not pass through the root.[m
+[31m-[m
+[31m-Example:[m
+[31m-Given a binary tree[m
+[31m-          1[m
+[31m-         / \[m
+[31m-        2   3[m
+[31m-       / \     [m
+[31m-      4   5    [m
+[31m-Return 3, which is the length of the path [4,2,1,3] or [5,2,1,3].[m
+[31m-[m
+[31m-Note: The length of path between two nodes is [m
+[31m-represented by the number of edges between them.[m
+[31m-[m
+[31m-[m
+[31m-*/[m
+[31m-[m
+[31m-/*[m
+[31m-Fastest:[m
+[31m-*/[m
+[31m-[m
+[31m-/**[m
+[31m- * Definition for a binary tree node.[m
+[31m- * struct TreeNode {[m
+[31m- *     int val;[m
+[31m- *     TreeNode *left;[m
+[31m- *     TreeNode *right;[m
+[31m- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}[m
+[31m- * };[m
+[31m- */[m
+[31m-class Solution {[m
+[31m-    int diameterOfBinaryTree(TreeNode* root, int& height) {[m
+[31m-        if (!root) {[m
+[31m-            height = -1;[m
+[31m-            return 0;[m
+[31m-        }[m
+[31m-        [m
+[31m-        int left_height, right_height, left_diameter, right_diameter;[m
+[31m-        left_diameter = diameterOfBinaryTree(root->left, left_height);[m
+[31m-        right_diameter = diameterOfBinaryTree(root->right, right_height);[m
+[31m-        [m
+[31m-        height = max(left_height, right_height) + 1;[m
+[31m-        return max({left_height + right_height + 2,[m
+[31m-                    left_diameter,[m
+[31m-                    right_diameter});[m
+[31m-    }[m
+[31m-public:[m
+[31m-    int diameterOfBinaryTree(TreeNode* root) {[m
+[31m-        int height;[m
+[31m-        return diameterOfBinaryTree(root, height);[m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[31m-[m
+[31m-/**[m
+[31m- * Definition for a binary tree node.[m
+[31m- * struct TreeNode {[m
+[31m- *     int val;[m
+[31m- *     TreeNode *left;[m
+[31m- *     TreeNode *right;[m
+[31m- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}[m
+[31m- * };[m
+[31m- */[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    [m
+[31m-    [m
+[31m-    int helper(TreeNode* root, int & currMax) {[m
+[31m-       [m
+[31m-        if(root == nullptr) {[m
+[31m-           return 0;[m
+[31m-       } [m
+[31m-        [m
+[31m-        auto leftH = helper(root->left, currMax);[m
+[31m-        auto rightH = helper(root->right, currMax);[m
+[31m-        [m
+[31m-        if(leftH + rightH > currMax) {[m
+[31m-            currMax = leftH + rightH;[m
+[31m-        } [m
+[31m-        [m
+[31m-        return 1 + max(leftH, rightH);    [m
+[31m-    }[m
+[31m-    [m
+[31m-    int diameterOfBinaryTree(TreeNode* root) {[m
+[31m-        [m
+[31m-        [m
+[31m-        // find the max left and max right from a node. add, if thats bigger than currMax, update[m
+[31m-        [m
+[31m-        [m
+[31m-        /*[m
+[31m-        [m
+[31m-        BFS from root node. [m
+[31m-        [m
+[31m-        get dist of all kids. [m
+[31m-        [m
+[31m-        dist from any 2 kids is computed through dist from root?[m
+[31m-        [m
+[31m-        nah[m
+[31m-        has to be done through dist from common parent of 2 nodes![m
+[31m-        so need to go through parents array as well as dist array:[m
+[31m-        [m
+[31m-        [m
+[31m-        */[m
+[31m-        [m
+[31m-        int max = 0;[m
+[31m-        helper(root, max);[m
+[31m-        [m
+[31m-        return max;[m
+[31m-        [m
+[31m-    }[m
+[31m-};[m
+\ No newline at end of file[m
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/804. Unique Morse Code.cpp b/Algorithms and Data Structures Practice/C++ Algorithms Practice/804. Unique Morse Code.cpp[m
+[1mdeleted file mode 100644[m
+[1mindex 6af791c..0000000[m
+[1m--- a/Algorithms and Data Structures Practice/C++ Algorithms Practice/804. Unique Morse Code.cpp[m	
+[1m+++ /dev/null[m
+[36m@@ -1,100 +0,0 @@[m
+[31m-/*[m
+[31m-[m
+[31m-International Morse Code defines a standard encoding where each letter is mapped to a series of dots and dashes, as follows: "a" maps to ".-", "b" maps to "-...", "c" maps to "-.-.", and so on.[m
+[31m-[m
+[31m-For convenience, the full table for the 26 letters of the English alphabet is given below:[m
+[31m-[m
+[31m-[".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."][m
+[31m-Now, given a list of words, each word can be written as a concatenation of the Morse code of each letter. For example, "cba" can be written as "-.-..--...", (which is the concatenation "-.-." + "-..." + ".-"). We'll call such a concatenation, the transformation of a word.[m
+[31m-[m
+[31m-Return the number of different transformations among all words we have.[m
+[31m-[m
+[31m-Example:[m
+[31m-Input: words = ["gin", "zen", "gig", "msg"][m
+[31m-Output: 2[m
+[31m-Explanation: [m
+[31m-The transformation of each word is:[m
+[31m-"gin" -> "--...-."[m
+[31m-"zen" -> "--...-."[m
+[31m-"gig" -> "--...--."[m
+[31m-"msg" -> "--...--."[m
+[31m-[m
+[31m-There are 2 different transformations, "--...-." and "--...--.".[m
+[31m-[m
+[31m-*/[m
+[31m-[m
+[31m-[m
+[31m- #include <unordered_set>[m
+[31m-    #include <vector>[m
+[31m-    #include <string>[m
+[31m-    #include <iostream>[m
+[31m-[m
+[31m-    using namespace std;[m
+[31m-    [m
+[31m-[m
+[31m-class Solution {[m
+[31m-    [m
+[31m-    [m
+[31m-   [m
+[31m-public:[m
+[31m-    int uniqueMorseRepresentations(vector<string>& words) {[m
+[31m-        [m
+[31m-        auto codes = vector<string>[m
+[31m-        {".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."};[m
+[31m-        [m
+[31m-        [m
+[31m-        string morse = "";[m
+[31m-        unordered_set<string> s; [m
+[31m-        [m
+[31m-            [m
+[31m-        for(string word: words) {[m
+[31m-            for (char c: word) {[m
+[31m-                cout << (c-'a') << " and " << c << endl;[m
+[31m-                    [m
+[31m-                    [m
+[31m-                string piece = codes[c - 'a'];[m
+[31m-                // cout << piece << endl;[m
+[31m-                [m
+[31m-                morse += piece;[m
+[31m-            }[m
+[31m-        [m
+[31m-            s.insert(morse);[m
+[31m-            morse = "";[m
+[31m-                    [m
+[31m-                [m
+[31m-            }[m
+[31m-                    [m
+[31m-    for (auto _s: s) {[m
+[31m-        cout << _s << endl;[m
+[31m-    }[m
+[31m-    [m
+[31m-    return s.size();[m
+[31m-    }[m
+[31m-    [m
+[31m-    [m
+[31m-};[m
+[31m-[m
+[31m-[m
+[31m-//other solutions:[m
+[31m-[m
+[31m-//Faster:[m
+[31m-[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    int uniqueMorseRepresentations(vector<string>& words) {[m
+[31m-        string mapping[] = {".-", "-...", "-.-.", "-..", ".", "..-.",[m
+[31m-                         "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---",[m
+[31m-                         ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-",[m
+[31m-                         "-.--", "--.."};[m
+[31m-        set<string> myset;[m
+[31m-        for (auto &i : words) {[m
+[31m-            string temp = "";[m
+[31m-            for (auto &j : i) {[m
+[31m-                temp += mapping[j - 'a'];[m
+[31m-            }[m
+[31m-            myset.insert(temp);[m
+[31m-        }[m
+[31m-        return myset.size();[m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/95. Unique Binary Search Trees II.cpp b/Algorithms and Data Structures Practice/C++ Algorithms Practice/95. Unique Binary Search Trees II.cpp[m
+[1mdeleted file mode 100644[m
+[1mindex 3c03b78..0000000[m
+[1m--- a/Algorithms and Data Structures Practice/C++ Algorithms Practice/95. Unique Binary Search Trees II.cpp[m	
+[1m+++ /dev/null[m
+[36m@@ -1,342 +0,0 @@[m
+[31m-/*[m
+[31m-[m
+[31m-95. Unique Binary Search Trees II[m
+[31m-Medium[m
+[31m-[m
+[31m-1511[m
+[31m-[m
+[31m-128[m
+[31m-[m
+[31m-Favorite[m
+[31m-[m
+[31m-Share[m
+[31m-Given an integer n, generate all structurally unique BST's [m
+[31m-(binary search trees) that store values 1 ... n.[m
+[31m-[m
+[31m-Example:[m
+[31m-[m
+[31m-Input: 3[m
+[31m-Output:[m
+[31m-[[m
+[31m-  [1,null,3,2],[m
+[31m-  [3,2,null,1],[m
+[31m-  [3,1,null,null,2],[m
+[31m-  [2,1,3],[m
+[31m-  [1,null,2,null,3][m
+[31m-][m
+[31m-Explanation:[m
+[31m-The above output corresponds to the 5 unique BST's shown below:[m
+[31m-[m
+[31m-   1         3     3      2      1[m
+[31m-    \       /     /      / \      \[m
+[31m-     3     2     1      1   3      2[m
+[31m-    /     /       \                 \[m
+[31m-   2     1         2                 3[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-*/[m
+[31m-/*[m
+[31m-[m
+[31m-[m
+[31m-The basic idea is that we can construct the result of n node tree just from the result of n-1 node tree.[m
+[31m-[m
+[31m-Here's how we do it: only 2 conditions: 1) The nth node is the new root, so newroot->left = oldroot;[m
+[31m-[m
+[31m-2) the nth node is not root, we traverse the old tree, every time the node in the old tree has a right child, [m
+[31m-we can perform: old node->right = nth node, nth node ->left = right child; and when we reach the [m
+[31m-end of the tree, don't forget we can also add the nth node here.[m
+[31m-[m
+[31m-One thing to notice is that every time we push a TreeNode in our result, I push the clone version of the root, [m
+[31m-and I recover what I do to the old node immediately. [m
+[31m-This is because you may use the old tree for several times.[m
+[31m-[m
+[31m-*/[m
+[31m-[m
+[31m-[m
+[31m-// No memory leaks in this:[m
+[31m-[m
+[31m-[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    vector<TreeNode*> generateTrees(int n) {[m
+[31m-        return generateTrees_1(n);[m
+[31m-    }[m
+[31m-    [m
+[31m-    TreeNode * clone(TreeNode *old_root)[m
+[31m-    {[m
+[31m-        if(old_root == NULL) return NULL;[m
+[31m-        TreeNode *new_root = new TreeNode(old_root->val);[m
+[31m-        new_root->left = clone(old_root->left);[m
+[31m-        new_root->right = clone(old_root->right);[m
+[31m-        [m
+[31m-        return new_root;[m
+[31m-    }[m
+[31m-    [m
+[31m-    vector<TreeNode*> generateTrees_1(int n)[m
+[31m-    {[m
+[31m-        if(n <= 0) return {};[m
+[31m-        vector<TreeNode *> results;[m
+[31m-        vector<TreeNode *> previous_result(1, NULL);[m
+[31m-        for(int i = 1; i <= n; ++i)[m
+[31m-        {[m
+[31m-            for(int j = 0; j < previous_result.size(); ++j)[m
+[31m-            {[m
+[31m-                // The nth node is the new root[m
+[31m-                TreeNode *new_root = new TreeNode(i);[m
+[31m-                TreeNode *new_left_subtree = clone(previous_result[j]);[m
+[31m-                new_root->left = new_left_subtree;[m
+[31m-                results.push_back(new_root);[m
+[31m-                [m
+[31m-                // traverse the old tree, use new node to replace the old right child[m
+[31m-                TreeNode *root = previous_result[j];[m
+[31m-                TreeNode *root_temp = root;[m
+[31m-                while(root_temp != NULL)[m
+[31m-                {[m
+[31m-                    TreeNode *old_right_subtree = root_temp->right;[m
+[31m-                    TreeNode *new_right_subtree = new TreeNode(i);[m
+[31m-                    new_right_subtree->left = old_right_subtree;[m
+[31m-                    root_temp->right = new_right_subtree;[m
+[31m-                    TreeNode *new_tree = clone(root);[m
+[31m-                    results.push_back(new_tree);[m
+[31m-                    [m
+[31m-                    root_temp->right = old_right_subtree;[m
+[31m-                    delete new_right_subtree;[m
+[31m-                    new_right_subtree = NULL;[m
+[31m-                    root_temp = root_temp->right;[m
+[31m-                }[m
+[31m-            }[m
+[31m-            [m
+[31m-            swap(results, previous_result);[m
+[31m-            results.clear();[m
+[31m-        }[m
+[31m-              [m
+[31m-        return previous_result;[m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-// FASTEST SOLUTION POSSIBLE:[m
+[31m-[m
+[31m-/**[m
+[31m- * Definition for a binary tree node.[m
+[31m- * struct TreeNode {[m
+[31m- *     int val;[m
+[31m- *     TreeNode *left;[m
+[31m- *     TreeNode *right;[m
+[31m- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}[m
+[31m- * };[m
+[31m- */[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    vector<TreeNode*> generateTrees(int n) {[m
+[31m-        if(!n) return vector<TreeNode *> {};[m
+[31m-        vector<int> v;[m
+[31m-        for(int i=1;i<=n;i++) v.push_back(i);[m
+[31m-        [m
+[31m-        return f(v);[m
+[31m-        [m
+[31m-    }[m
+[31m-    [m
+[31m-    vector<TreeNode*> f(vector<int> v) {[m
+[31m-        vector<TreeNode *> res;[m
+[31m-        if(!v.size()) {[m
+[31m-            res.push_back(NULL);[m
+[31m-            return res;[m
+[31m-        }[m
+[31m-        [m
+[31m-        for(int i = 0; i < v.size(); i++)[m
+[31m-        {[m
+[31m-            [m
+[31m-            vector<int> lv(v.begin(), v.begin()+i);[m
+[31m-            vector<int> rv(v.begin()+i+1, v.end());[m
+[31m-            vector<TreeNode *> lres = f(lv);[m
+[31m-            vector<TreeNode *> rres = f(rv);[m
+[31m-            [m
+[31m-            for(int j=0;j<lres.size();j++) {[m
+[31m-                for(int k=0;k<rres.size();k++) {[m
+[31m-                    TreeNode *node = new TreeNode(v[i]);[m
+[31m-                    node->left = lres[j];[m
+[31m-                    node->right = rres[k];[m
+[31m-                    res.push_back(node);[m
+[31m-                }[m
+[31m-            }[m
+[31m-            [m
+[31m-        }[m
+[31m-        return res;[m
+[31m-        [m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-/*[m
+[31m-[m
+[31m-Next Fastest:[m
+[31m-*/[m
+[31m-[m
+[31m-/**[m
+[31m- * Definition for a binary tree node.[m
+[31m- * struct TreeNode {[m
+[31m- *     int val;[m
+[31m- *     TreeNode *left;[m
+[31m- *     TreeNode *right;[m
+[31m- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}[m
+[31m- * };[m
+[31m- */[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    TreeNode* deepCopyAdd(TreeNode* root,int add)[m
+[31m-    {[m
+[31m-        if(root==nullptr)[m
+[31m-            return nullptr;[m
+[31m-        TreeNode* t = new TreeNode(root->val+add);[m
+[31m-        t->left=deepCopyAdd(root->left,add);[m
+[31m-        t->right=deepCopyAdd(root->right,add);[m
+[31m-        return t;[m
+[31m-    }[m
+[31m-    vector<TreeNode*> generateTrees(int n) {[m
+[31m-        if(n==0)[m
+[31m-            return vector<TreeNode*>();[m
+[31m-        unordered_map<int,vector<TreeNode*>> n2t;[m
+[31m-        n2t[0].push_back(nullptr);[m
+[31m-        n2t[1].push_back(new TreeNode(1));[m
+[31m-        TreeNode* nr=nullptr;[m
+[31m-        for(int i=2;i<=n;i++)[m
+[31m-        {[m
+[31m-            for(int j=1;j<=i;j++)[m
+[31m-            {[m
+[31m-                for(auto &p1:n2t[j-1])[m
+[31m-                {[m
+[31m-                    for(auto &p2:n2t[i-j])[m
+[31m-                    {[m
+[31m-                        nr=new TreeNode(j);[m
+[31m-                        nr->left=deepCopyAdd(p1,0);[m
+[31m-                        nr->right=deepCopyAdd(p2,j);[m
+[31m-                        n2t[i].push_back(nr);                        [m
+[31m-                    }[m
+[31m-                }[m
+[31m-[m
+[31m-            }            [m
+[31m-        }[m
+[31m-        return n2t[n];[m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[31m-[m
+[31m-/**[m
+[31m- * Definition for a binary tree node.[m
+[31m- * struct TreeNode {[m
+[31m- *     int val;[m
+[31m- *     TreeNode *left;[m
+[31m- *     TreeNode *right;[m
+[31m- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}[m
+[31m- * };[m
+[31m- */[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    [m
+[31m-    vector<TreeNode*> genU(vector<int> v){[m
+[31m-        [m
+[31m-        if(v.size()==0)return {NULL};[m
+[31m-        [m
+[31m-        if(v.size()==1){[m
+[31m-            TreeNode*x = new TreeNode(v[0]);[m
+[31m-            return {x};[m
+[31m-        }[m
+[31m-        [m
+[31m-        vector<TreeNode*> ans;[m
+[31m-        vector<int> preRoot;[m
+[31m-        vector<int> postRoot=v;[m
+[31m-        postRoot.erase(postRoot.begin());[m
+[31m-        for(int root=0;root<v.size();root++){[m
+[31m-            vector<TreeNode*> pre = genU(preRoot);[m
+[31m-            vector<TreeNode*> post = genU(postRoot);[m
+[31m-            [m
+[31m-            for(int i=0;i<pre.size();i++){[m
+[31m-                for(int j=0;j<post.size();j++){[m
+[31m-                   TreeNode*x = new TreeNode(v[root]);[m
+[31m-                    x->left=pre[i];[m
+[31m-                    x->right=post[j];[m
+[31m-                    ans.push_back(x);[m
+[31m-                }[m
+[31m-            }[m
+[31m-            preRoot.push_back(v[root]);[m
+[31m-            if(!postRoot.empty())[m
+[31m-            postRoot.erase(postRoot.begin());[m
+[31m-        }[m
+[31m-        return ans;     [m
+[31m-    }[m
+[31m-    [m
+[31m-    [m
+[31m-    [m
+[31m-    [m
+[31m-    vector<TreeNode*> generateTrees(int n) {[m
+[31m-        vector<TreeNode*> l;[m
+[31m-        if(n==0)return l;[m
+[31m-        vector<int> v;[m
+[31m-        for(int i=1;i<=n;i++)v.push_back(i);[m
+[31m-        return genU(v);[m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[31m-/**[m
+[31m- * Definition for a binary tree node.[m
+[31m- * struct TreeNode {[m
+[31m- *     int val;[m
+[31m- *     TreeNode *left;[m
+[31m- *     TreeNode *right;[m
+[31m- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}[m
+[31m- * };[m
+[31m- */[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    [m
+[31m-    vector<TreeNode*> generateTreesFromRange(int start, int end) {[m
+[31m-        cout << "start " << start << " end " <<  end << endl;[m
+[31m-        [m
+[31m-        if(start >= end){[m
+[31m-            [m
+[31m-            return vector<TreeNode*>({nullptr});[m
+[31m-        }[m
+[31m-        [m
+[31m-        [m
+[31m-        vector<TreeNode*> result;[m
+[31m-        [m
+[31m-        for(int i = start; i != end; ++i) {[m
+[31m-                [m
+[31m-                auto leftTrees = generateTreesFromRange(start, i);[m
+[31m-                auto rightTrees = generateTreesFromRange(i+1, end);[m
+[31m-                [m
+[31m-                for(auto l: leftTrees ) {[m
+[31m-                    [m
+[31m-                    for(auto r: rightTrees) {[m
+[31m-                        TreeNode * node = new TreeNode(i);[m
+[31m-                        node->left = l;[m
+[31m-                        node->right = r;[m
+[31m-                        cout << "PUSHED" << endl;[m
+[31m-                        result.push_back(node);[m
+[31m-                    }[m
+[31m-                }[m
+[31m-        }[m
+[31m-        [m
+[31m-        return result;[m
+[31m-    }[m
+[31m-    [m
+[31m-    [m
+[31m-    vector<TreeNode*> generateTrees(int n) {[m
+[31m-    [m
+[31m-        // Better solution -> memozie these solutions, [m
+[31m-        // and deep copy instead of rebuilding these trees![m
+[31m-        if(n == 0) {[m
+[31m-            [m
+[31m-            return vector<TreeNode*>();[m
+[31m-        [m
+[31m-        }[m
+[31m-        [m
+[31m-        return generateTreesFromRange(1, n+1);[m
+[31m-        [m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/96. Unique Binary Search Trees.cpp b/Algorithms and Data Structures Practice/C++ Algorithms Practice/96. Unique Binary Search Trees.cpp[m
+[1mdeleted file mode 100644[m
+[1mindex 3c61b6a..0000000[m
+[1m--- a/Algorithms and Data Structures Practice/C++ Algorithms Practice/96. Unique Binary Search Trees.cpp[m	
+[1m+++ /dev/null[m
+[36m@@ -1,143 +0,0 @@[m
+[31m-[m
+[31m-/*[m
+[31m-[m
+[31m-96. Unique Binary Search Trees[m
+[31m-Medium[m
+[31m-[m
+[31m-2107[m
+[31m-[m
+[31m-82[m
+[31m-[m
+[31m-Favorite[m
+[31m-[m
+[31m-Share[m
+[31m-Given n, how many structurally unique BST's (binary search trees) [m
+[31m-that store values 1 ... n?[m
+[31m-[m
+[31m-Example:[m
+[31m-[m
+[31m-Input: 3[m
+[31m-Output: 5[m
+[31m-Explanation:[m
+[31m-Given n = 3, there are a total of 5 unique BST's:[m
+[31m-[m
+[31m-   1         3     3      2      1[m
+[31m-    \       /     /      / \      \[m
+[31m-     3     2     1      1   3      2[m
+[31m-    /     /       \                 \[m
+[31m-   2     1         2                 3[m
+[31m-[m
+[31m-*/[m
+[31m-[m
+[31m-class Solution {[m
+[31m-public:[m
+[31m-    int numTrees(int n) {[m
+[31m-        if(n <= 1) return 1;[m
+[31m-        [m
+[31m-        vector<int> dp(n + 1, 0);[m
+[31m-        dp[0] = 1;[m
+[31m-        dp[1] = 1;        [m
+[31m-        [m
+[31m-        for(int i = 2; i <= n; i++) {[m
+[31m-            for(int j = 0; j < i; j++) {[m
+[31m-                dp[i] += dp[j] * dp[ i - j -1];[m
+[31m-            }[m
+[31m-        }[m
+[31m-        return dp[n];[m
+[31m-        [m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-#include <vector>[m
+[31m-[m
+[31m-class Solution {[m
+[31m-    [m
+[31m-[m
+[31m-public:[m
+[31m-    int numTrees(int n) {[m
+[31m-        [m
+[31m-        [m
+[31m-        [m
+[31m-        /*[m
+[31m-        [m
+[31m-        [m
+[31m-        well we are given n:[m
+[31m-        [m
+[31m-        pick root node. [m
+[31m-        [m
+[31m-        all elements less go to left, [m
+[31m-        all elemetns greater go to right. [m
+[31m-        [m
+[31m-        [m
+[31m-        Problem has DP![m
+[31m-        [m
+[31m-        [m
+[31m-        [m
+[31m-        if we know the solution for n = 3[m
+[31m-        [m
+[31m-        Solution for n=4.[m
+[31m-        Reuses solution for n=2 on its left side. [m
+[31m-        [m
+[31m-        reuse solution n = 1 on right side sorta! because 3 is there (push it back to 1),[m
+[31m-        [m
+[31m-        Multiply left, and right side -> get count for that node. [m
+[31m-        Sum up all pivots![m
+[31m-        [m
+[31m-        [m
+[31m-        [m
+[31m-        There is probably a math formula too:[m
+[31m-        [m
+[31m-        1 ->1[m
+[31m-        [m
+[31m-        2 -> 2[m
+[31m-        [m
+[31m-        3 -> 5[m
+[31m-        [m
+[31m-        4 -> 10 [m
+[31m-        [m
+[31m-        */[m
+[31m-        [m
+[31m-        vector<int> arr = vector<int>(n+1);[m
+[31m-        [m
+[31m-        [m
+[31m-        if(n == 1){[m
+[31m-            return 1;[m
+[31m-        } else  if (n == 2){ [m
+[31m-            return 2;[m
+[31m-        }[m
+[31m-        [m
+[31m-        arr[0] = 1;[m
+[31m-        arr[1] = 1;[m
+[31m-        [m
+[31m-        for(int i = 2; i < n+1; i ++) {[m
+[31m-            [m
+[31m-           arr[i] = 0;   [m
+[31m-        }[m
+[31m-        [m
+[31m-        /*[m
+[31m-        int[3] -> 2 on left side, 2 on right side, 1 on both sides. [m
+[31m-        [m
+[31m-        [m
+[31m-        int[4] -> 3 on left side, 2L 1R, 1L, 2R, 3R, -> sum up all and set it [m
+[31m-        int[5] -> same shit[m
+[31m-        [m
+[31m-        [m
+[31m-        */    [m
+[31m-        [m
+[31m-        for(int i = 2; i < n+1; ++i){[m
+[31m-            [m
+[31m-            //Root node cant be used so subtract 1 [m
+[31m-            int nodes = i-1;[m
+[31m-            [m
+[31m-            for(int rightNodes = 0; rightNodes < nodes +1 ; ++rightNodes){[m
+[31m-                [m
+[31m-                int leftNodes = nodes - rightNodes;[m
+[31m-                arr[i] += (arr[rightNodes] * arr[leftNodes]);[m
+[31m-            }[m
+[31m-        }[m
+[31m-        [m
+[31m-        return arr[n];[m
+[31m-    }[m
+[31m-};[m
+\ No newline at end of file[m
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/AnthonyCalandra_modern-cpp-features_ A cheatsheet of modern C++ language and library features_.pdf b/Algorithms and Data Structures Practice/C++ Algorithms Practice/AnthonyCalandra_modern-cpp-features_ A cheatsheet of modern C++ language and library features_.pdf[m
+[1mdeleted file mode 100644[m
+[1mindex 8be55c5..0000000[m
+Binary files a/Algorithms and Data Structures Practice/C++ Algorithms Practice/AnthonyCalandra_modern-cpp-features_ A cheatsheet of modern C++ language and library features_.pdf and /dev/null differ
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/C++ Tricks - Codeforces.pdf b/Algorithms and Data Structures Practice/C++ Algorithms Practice/C++ Tricks - Codeforces.pdf[m
+[1mdeleted file mode 100644[m
+[1mindex 4a45f17..0000000[m
+Binary files a/Algorithms and Data Structures Practice/C++ Algorithms Practice/C++ Tricks - Codeforces.pdf and /dev/null differ
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/Difference between set, multiset, unordered_set, unordered_multiset - GeeksforGeeks.pdf b/Algorithms and Data Structures Practice/C++ Algorithms Practice/Difference between set, multiset, unordered_set, unordered_multiset - GeeksforGeeks.pdf[m
+[1mdeleted file mode 100644[m
+[1mindex 9ba247a..0000000[m
+Binary files a/Algorithms and Data Structures Practice/C++ Algorithms Practice/Difference between set, multiset, unordered_set, unordered_multiset - GeeksforGeeks.pdf and /dev/null differ
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/STL Cheatsheet for Competitive Programming _ Codementor.pdf b/Algorithms and Data Structures Practice/C++ Algorithms Practice/STL Cheatsheet for Competitive Programming _ Codementor.pdf[m
+[1mdeleted file mode 100644[m
+[1mindex 5ac3b7c..0000000[m
+Binary files a/Algorithms and Data Structures Practice/C++ Algorithms Practice/STL Cheatsheet for Competitive Programming _ Codementor.pdf and /dev/null differ
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/algorithm - Easiest way of using min priority queue with key update in C++ - Stack Overflow.pdf b/Algorithms and Data Structures Practice/C++ Algorithms Practice/algorithm - Easiest way of using min priority queue with key update in C++ - Stack Overflow.pdf[m
+[1mdeleted file mode 100644[m
+[1mindex d7a99e0..0000000[m
+Binary files a/Algorithms and Data Structures Practice/C++ Algorithms Practice/algorithm - Easiest way of using min priority queue with key update in C++ - Stack Overflow.pdf and /dev/null differ
+[1mdiff --git "a/Algorithms and Data Structures Practice/C++ Algorithms Practice/cpp-cheat-sheet_Data Structures and Algorithms.md at master \302\267 gibsjose_cpp-cheat-sheet.pdf" "b/Algorithms and Data Structures Practice/C++ Algorithms Practice/cpp-cheat-sheet_Data Structures and Algorithms.md at master \302\267 gibsjose_cpp-cheat-sheet.pdf"[m
+[1mdeleted file mode 100644[m
+[1mindex 80da2b1..0000000[m
+Binary files "a/Algorithms and Data Structures Practice/C++ Algorithms Practice/cpp-cheat-sheet_Data Structures and Algorithms.md at master \302\267 gibsjose_cpp-cheat-sheet.pdf" and /dev/null differ
+[1mdiff --git a/Algorithms and Data Structures Practice/C++ Algorithms Practice/cpp-cheat-sheet_Data Structures and Algorithms.pdf b/Algorithms and Data Structures Practice/C++ Algorithms Practice/cpp-cheat-sheet_Data Structures and Algorithms.pdf[m
+[1mdeleted file mode 100644[m
+[1mi

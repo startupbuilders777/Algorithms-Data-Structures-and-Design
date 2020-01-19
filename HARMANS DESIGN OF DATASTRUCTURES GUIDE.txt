@@ -4,6 +4,8 @@
 
 -> Range Tree
 -> Balanced BSTs -> AVL/REDBLACK, Find a python one. 
+-> Skip lists
+-> Treaps?
 
 
 ##################################################################################
