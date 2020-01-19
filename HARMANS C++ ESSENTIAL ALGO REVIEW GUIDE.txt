@@ -1,0 +1,495 @@
+0) DETECT CYCLE IN DIRECTED GRAPH C++
+        #include <bits/stdc++.h> 
+        using namespace std; 
+        
+        enum Color {WHITE, GRAY, BLACK}; 
+        
+        // Graph class represents a directed graph using 
+        // adjacency list representation 
+        class Graph 
+        { 
+            int V; // No. of vertices 
+            list<int>* adj; // adjacency lists 
+        
+            // DFS traversal of the vertices reachable from v 
+            bool DFSUtil(int v, int color[]); 
+        public: 
+            Graph(int V);  // Constructor 
+        
+            // function to add an edge to graph 
+            void addEdge(int v, int w); 
+        
+            bool isCyclic(); 
+        }; 
+        
+        // Constructor 
+        Graph::Graph(int V) 
+        { 
+            this->V = V; 
+            adj = new list<int>[V]; 
+        } 
+        
+        // Utility function to add an edge 
+        void Graph::addEdge(int v, int w) 
+        { 
+            adj[v].push_back(w); // Add w to v's list. 
+        } 
+        
+        // Recursive function to find if there is back edge 
+        // in DFS subtree tree rooted with 'u' 
+        bool Graph::DFSUtil(int u, int color[]) 
+        { 
+            // GRAY :  This vertex is being processed (DFS 
+            //         for this vertex has started, but not 
+            //         ended (or this vertex is in function 
+            //         call stack) 
+            color[u] = GRAY; 
+        
+            // Iterate through all adjacent vertices 
+            list<int>::iterator i; 
+            for (i = adj[u].begin(); i != adj[u].end(); ++i) 
+            { 
+                int v = *i;  // An adjacent of u 
+        
+                // If there is 
+                if (color[v] == GRAY) 
+                return true; 
+        
+                // If v is not processed and there is a back 
+                // edge in subtree rooted with v 
+                if (color[v] == WHITE && DFSUtil(v, color)) 
+                return true; 
+            } 
+        
+            // Mark this vertex as processed 
+            color[u] = BLACK; 
+        
+            return false; 
+        } 
+        
+        // Returns true if there is a cycle in graph 
+        bool Graph::isCyclic() 
+        { 
+            // Initialize color of all vertices as WHITE 
+            int *color = new int[V]; 
+            for (int i = 0; i < V; i++) 
+                color[i] = WHITE; 
+        
+            // Do a DFS traversal beginning with all 
+            // vertices 
+            for (int i = 0; i < V; i++) 
+                if (color[i] == WHITE) 
+                if (DFSUtil(i, color) == true) 
+                    return true; 
+        
+            return false; 
+        } 
+        
+        // Driver code to test above 
+        int main() 
+        { 
+            // Create a graph given in the above diagram 
+            Graph g(4); 
+            g.addEdge(0, 1); 
+            g.addEdge(0, 2); 
+            g.addEdge(1, 2); 
+            g.addEdge(2, 0); 
+            g.addEdge(2, 3); 
+            g.addEdge(3, 3); 
+        
+            if (g.isCyclic()) 
+                cout << "Graph contains cycle"; 
+            else
+                cout << "Graph doesn't contain cycle"; 
+        
+            return 0; 
+        } 
+
+1) C++ BFS
+
+
+        // CPP program to implement BFS as per CLRS  
+        // algorithm. 
+        #include <bits/stdc++.h> 
+        using namespace std; 
+        
+        // Declaring the vectors to store color, distance 
+        // and parent 
+        vector<string> colour; 
+        vector<int> d; 
+        vector<int> p; 
+        
+        /* This function adds an edge to the graph. 
+        It is an undirected graph. So edges are  
+        added for both the nodes. */
+        void addEdge(vector <int> g[], int u, int v) 
+        { 
+            g[u].push_back(v); 
+            g[v].push_back(u); 
+        } 
+        
+        /* This function does the Breadth First Search*/
+        void BFSSingleSource(vector <int> g[], int s) 
+        { 
+            // The Queue used for the BFS operation 
+            queue<int> q; 
+        
+            // Pushing the root node inside the queue 
+            q.push(s);  
+        
+            /* Distance of root node is 0 & colour 
+            is gray as it is visited partially now */
+            d[s] = 0; 
+            colour[s] = "green"; 
+                
+            /* Loop to traverse the graph. Traversal 
+            will happen traverse until the queue is  
+            not empty.*/
+            while (!q.empty()) 
+            { 
+                /* Extracting the front element(node)  
+                and poping it out of queue. */
+                int u = q.front(); 
+                q.pop(); 
+        
+                cout << u << " "; 
+        
+                /* This loop traverses all the child nodes of u */
+                for (auto i = g[u].begin(); i != g[u].end(); i++) 
+                { 
+                    /* If the colour is white then the said node 
+                    is not traversed. */
+                    if (colour[*i] == "white") 
+                    { 
+                        colour[*i] = "green"; 
+                        d[*i] = d[u] + 1; 
+                        p[*i] = u; 
+        
+                        /* Pushing the node inside queue 
+                        to traverse its children. */
+                        q.push(*i);  
+                    } 
+                } 
+        
+                /* Now the node u is completely traversed 
+                and colour is changed to black. */
+                colour[u] = "dark_green"; 
+            } 
+        } 
+        
+        void BFSFull(vector <int> g[], int n) 
+        { 
+            /* Initially all nodes are not traversed. 
+            Therefore, the colour is white. */
+            colour.assign(n, "white"); 
+            d.assign(n, 0); 
+            p.assign(n, -1); 
+        
+            // Calling BFSSingleSource() for all white 
+            // vertices. 
+            for (int i = 0; i < n; i++)      
+                if (colour[i] == "white") 
+                    BFSSingleSource(g, i);  
+        } 
+        
+        // Driver Function 
+        int main() 
+        { 
+            // Graph with 7 nodes and 6 edges. 
+            int n = 7; 
+                
+            // The Graph vector 
+            vector <int> g[n]; 
+            
+            addEdge(g, 0, 1); 
+            addEdge(g, 0, 2); 
+            addEdge(g, 1, 3); 
+            addEdge(g, 1, 4); 
+            addEdge(g, 2, 5); 
+            addEdge(g, 2, 6); 
+        
+            BFSFull(g, n); 
+        
+            return 0; 
+        } 
+
+2) C++ TOPOLOGICAL SORT:
+
+        // A C++ program to print topological sorting of a DAG 
+        #include <iostream> 
+        #include <list> 
+        #include <stack> 
+        using namespace std; 
+        
+        // Class to represent a graph 
+        class Graph { 
+            int V; // No. of vertices' 
+        
+            // Pointer to an array containing adjacency listsList 
+            list<int>* adj; 
+        
+            // A function used by topologicalSort 
+            void topologicalSortUtil(int v, bool visited[], stack<int>& Stack); 
+        
+        public: 
+            Graph(int V); // Constructor 
+        
+            // function to add an edge to graph 
+            void addEdge(int v, int w); 
+        
+            // prints a Topological Sort of the complete graph 
+            void topologicalSort(); 
+        }; 
+        
+        Graph::Graph(int V) 
+        { 
+            this->V = V; 
+            adj = new list<int>[V]; 
+        } 
+        
+        void Graph::addEdge(int v, int w) 
+        { 
+            adj[v].push_back(w); // Add w to v’s list. 
+        } 
+        
+        // A recursive function used by topologicalSort 
+        void Graph::topologicalSortUtil(int v, bool visited[], 
+                                        stack<int>& Stack) 
+        { 
+            // Mark the current node as visited. 
+            visited[v] = true; 
+        
+            // Recur for all the vertices adjacent to this vertex 
+            list<int>::iterator i; 
+            for (i = adj[v].begin(); i != adj[v].end(); ++i) 
+                if (!visited[*i]) 
+                    topologicalSortUtil(*i, visited, Stack); 
+        
+            // Push current vertex to stack which stores result 
+            Stack.push(v); 
+        } 
+        
+        // The function to do Topological Sort. It uses recursive 
+        // topologicalSortUtil() 
+        void Graph::topologicalSort() 
+        { 
+            stack<int> Stack; 
+        
+            // Mark all the vertices as not visited 
+            bool* visited = new bool[V]; 
+            for (int i = 0; i < V; i++) 
+                visited[i] = false; 
+        
+            // Call the recursive helper function to store Topological 
+            // Sort starting from all vertices one by one 
+            for (int i = 0; i < V; i++) 
+                if (visited[i] == false) 
+                    topologicalSortUtil(i, visited, Stack); 
+        
+            // Print contents of stack 
+            while (Stack.empty() == false) { 
+                cout << Stack.top() << " "; 
+                Stack.pop(); 
+            } 
+        } 
+        
+        // Driver program to test above functions 
+        int main() 
+        { 
+            // Create a graph given in the above diagram 
+            Graph g(6); 
+            g.addEdge(5, 2); 
+            g.addEdge(5, 0); 
+            g.addEdge(4, 0); 
+            g.addEdge(4, 1); 
+            g.addEdge(2, 3); 
+            g.addEdge(3, 1); 
+        
+            cout << "Following is a Topological Sort of the given graph n"; 
+            g.topologicalSort(); 
+        
+            return 0; 
+        } 
+
+3) LINE SWEEPING ALGORITHM:
+
+        Given n line segments on the plane. It is required to check whether at least two of them intersect with each other. 
+        If the answer is yes, then print this pair of intersecting segments; it is enough to choose any of them among several answers.
+        This article describes an algorithm with the runtime time O(nlogn), which is based on the sweep line algorithm.
+
+        Algorithm
+        Let's draw a vertical line x=−∞ mentally and start moving this line to the right. In the course of its movement, 
+        this line will meet with segments, and at each time a segment intersect with our line it 
+        intersects in exactly one point (we will assume that there are no vertical segments).
+
+        sweep line and line segment intersection
+        Thus, for each segment, at some point in time, its point will appear on the sweep line, then with the movement 
+        of the line, this point will move, and finally, at some point, the segment will disappear from the line.
+
+        We are interested in the relative order of the segments along the vertical. Namely, we will store a list of 
+        segments crossing the sweep line at a given time, 
+        where the segments will be sorted by their y-coordinate on the sweep line.
+
+        relative order of the segments across sweep line
+        This order is interesting because intersecting segments will have the same y-coordinate at least at one time:
+
+        intersection point having same y-coordinate
+        We formulate key statements:
+
+        To find an intersecting pair, it is sufficient to consider only adjacent segments at each fixed position of the sweep line.
+            It is enough to consider the sweep line not in all possible real positions (−∞…+∞), but only in those positions when new 
+            segments appear or old ones disappear. In other words, it is enough to limit yourself only 
+            to the positions equal to the abscissas of the end points of the segments.
+        When a new line segment appears, it is enough to insert it to the desired location in the list obtained 
+            for the previous sweep line. We should only check for the intersection of the added segment 
+            with its immediate neighbors in the list above and below.
+        If the segment disappears, it is enough to remove it from the current list. After that, 
+            it is necessary check for the intersection of the upper and lower neighbors in the list.
+        Other changes in the sequence of segments in the list, except for 
+            those described, do not exist. No other intersection checks are required.
+        To understand the truth of these statements, the following remarks are sufficient:
+
+        Two disjoint segments never change their relative order.
+
+        In fact, if one segment was first higher than the other, and then became lower, 
+            then between these two moments there was an intersection of these two segments.
+        Two non-intersecting segments also cannot have the same y-coordinates.
+        From this it follows that at the moment of the segment appearance we can find the position for this segment in the queue, and we will 
+            not have to rearrange this segment in the queue any more: its order relative to other segments in the queue will not change.
+
+        Two intersecting segments at the moment of their intersection point will be neighbors of each other in the queue.
+        Therefore, for finding pairs of intersecting line segments is sufficient to check the intersection of all and only those pairs 
+            of segments that sometime during the movement of the sweep line at least once were neighbors to each other.
+
+        It is easy to notice that it is enough only to check the added segment with its upper and lower neighbors, as well as 
+            when removing the segment — its upper and lower neighbors (which after removal will become neighbors of each other).
+        It should be noted that at a fixed position of the sweep line, we must first add all the segments that start at 
+            this x-coordinate, and only then remove all the segments that end here.
+        Thus, we do not miss the intersection of segments on the vertex: i.e. such cases when two segments have a common vertex.
+        Note that vertical segments do not actually affect the correctness of the algorithm.
+        These segments are distinguished by the fact that they appear and disappear at the same time. However, due to the 
+            previous comment, we know that all segments will be added to the queue first, and only then they will be deleted. 
+            Therefore, if the vertical segment intersects with some other segment opened at that moment 
+            (including the vertical one), it will be detected.
+
+        In what place of the queue to place vertical segments? After all, a vertical segment does not have one 
+            specific y-coordinate, it extends for an entire segment along the y-coordinate. However, 
+            it is easy to understand that any coordinate from this segment can be taken as a y-coordinate.
+        Thus, the entire algorithm will perform no more than 2n tests on the intersection of a pair of segments, and 
+            will perform O(n) operations with a queue of segments (O(1) operations at the time of appearance and disappearance of each segment).
+
+        The final asymptotic behavior of the algorithm is thus O(nlogn).
+
+        Implementation:
+
+        const double EPS = 1E-9;
+
+        struct pt {
+            double x, y;
+        };
+
+        struct seg {
+            pt p, q;
+            int id;
+
+            double get_y(double x) const {
+                if (abs(p.x - q.x) < EPS)
+                    return p.y;
+                return p.y + (q.y - p.y) * (x - p.x) / (q.x - p.x);
+            }
+        };
+
+        bool intersect1d(double l1, double r1, double l2, double r2) {
+            if (l1 > r1)
+                swap(l1, r1);
+            if (l2 > r2)
+                swap(l2, r2);
+            return max(l1, l2) <= min(r1, r2) + EPS;
+        }
+
+        int vec(const pt& a, const pt& b, const pt& c) {
+            double s = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+            return abs(s) < EPS ? 0 : s > 0 ? +1 : -1;
+        }
+
+        bool intersect(const seg& a, const seg& b)
+        {
+            return intersect1d(a.p.x, a.q.x, b.p.x, b.q.x) &&
+                intersect1d(a.p.y, a.q.y, b.p.y, b.q.y) &&
+                vec(a.p, a.q, b.p) * vec(a.p, a.q, b.q) <= 0 &&
+                vec(b.p, b.q, a.p) * vec(b.p, b.q, a.q) <= 0;
+        }
+
+        bool operator<(const seg& a, const seg& b)
+        {
+            double x = max(min(a.p.x, a.q.x), min(b.p.x, b.q.x));
+            return a.get_y(x) < b.get_y(x) - EPS;
+        }
+
+        struct event {
+            double x;
+            int tp, id;
+
+            event() {}
+            event(double x, int tp, int id) : x(x), tp(tp), id(id) {}
+
+            bool operator<(const event& e) const {
+                if (abs(x - e.x) > EPS)
+                    return x < e.x;
+                return tp > e.tp;
+            }
+        };
+
+        set<seg> s;
+        vector<set<seg>::iterator> where;
+
+        set<seg>::iterator prev(set<seg>::iterator it) {
+            return it == s.begin() ? s.end() : --it;
+        }
+
+        set<seg>::iterator next(set<seg>::iterator it) {
+            return ++it;
+        }
+
+        pair<int, int> solve(const vector<seg>& a) {
+            int n = (int)a.size();
+            vector<event> e;
+            for (int i = 0; i < n; ++i) {
+                e.push_back(event(min(a[i].p.x, a[i].q.x), +1, i));
+                e.push_back(event(max(a[i].p.x, a[i].q.x), -1, i));
+            }
+            sort(e.begin(), e.end());
+
+            s.clear();
+            where.resize(a.size());
+            for (size_t i = 0; i < e.size(); ++i) {
+                int id = e[i].id;
+                if (e[i].tp == +1) {
+                    set<seg>::iterator nxt = s.lower_bound(a[id]), prv = prev(nxt);
+                    if (nxt != s.end() && intersect(*nxt, a[id]))
+                        return make_pair(nxt->id, id);
+                    if (prv != s.end() && intersect(*prv, a[id]))
+                        return make_pair(prv->id, id);
+                    where[id] = s.insert(nxt, a[id]);
+                } else {
+                    set<seg>::iterator nxt = next(where[id]), prv = prev(where[id]);
+                    if (nxt != s.end() && prv != s.end() && intersect(*nxt, *prv))
+                        return make_pair(prv->id, nxt->id);
+                    s.erase(where[id]);
+                }
+            }
+
+            return make_pair(-1, -1);
+        }
+
+        The main function here is solve(), which returns the number of found 
+        intersecting segments, or (−1,−1), if there are no intersections.
+        Checking for the intersection of two segments is carried out by the intersect () function, 
+        using an algorithm based on the oriented area of the triangle.
+        The queue of segments is the global variable s, a set<event>. Iterators that specify the 
+        position of each segment in the queue (for convenient removal of segments from the queue) 
+        are stored in the global array where.
+        Two auxiliary functions prev() and next() are also introduced, which return 
+        iterators to the previous and next elements (or end(), if one does not exist).
+        The constant EPS denotes the error of comparing two real numbers 
+        (it is mainly used when checking two segments for intersection).

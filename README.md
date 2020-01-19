@@ -5,17 +5,73 @@ Scrape the following -> short and sweet: https://nishmathcs.wordpress.com/catego
 Post about all string algorithms and hashing types (KMP, Boyer Moore, etc, Rabin Karp)
 
 
+COMPETITIVE PROGRAMMING GUIDE TO READ: https://cp-algorithms.com/
+TOPCODER COMPETITIVE PROGRAMMING GUIDES -> https://www.topcoder.com/community/competitive-programming/tutorials/
+
+REALLY COOL MEDIUM ARTICLE -> https://medium.com/@karangujar43/best-resources-for-competitive-programming-algorithms-and-data-structures-730cb038e11b
+
 Leetcodes PER COMPANY LIST -> http://leetcode.liangjiateng.cn/leetcode/Citadel/algorithm
 
+TOPICS TO UNDERSTAND: 
+        Segment tree (with lazy propagation)
+        Interval Tree
+        Binary Indexed Tree
+        Fast Modulo Multiplication (Exponential Squaring) 90
+        Heuristic Algorithms
+        KMP string searching
+        Manacher’s Algorithm
+        Union Find/Disjoint Set
+        Trie
+        Prime Miller Rabin
+        Matrix Recurrence + Fast Modulo Multiplication for counting
+        Stable Marriage Problem
+        Extended Euclid’s algorithm 25
+        Ternary Search
+        Fast Fourier Transform for fast polynomial multiplication
+        Djikstra’s algorithm, Bellman-ford algorithm, Floyd-Warshall Algorithm
+        Prim’s Algorithm, Kruskal’s Algorithm
+        RMQ, LCA
+        Flow related algorithms, assignment problem, Hungarian algorithm
+        Bipartite matching algorithms
+        Heavy-light decomposition
+        Sweep line algorithm
+        Z algorithm
+        Convex Hull
+        Suffix Arrays 21
+        LCP
+        Suffix Tree
+        Gaussian Elimination
+        Numerical Integration/Differentiation
+        Line Clipping
+        Advanced Maths Ad-Hoc problems
+        Aho–Corasick string matching algorithm;
+        
+        Calculate nCr % M Lucas’s Theorem 21
+        Graph Coloring
+        Network Flow
+        Sqrt Decomposition
+
+        Heavy Light decomposition in trees
+        Inverse Modulo operations
+        Pollard Rho Integer Factorization
+        Catalan Numbers
+        Euclid’s GCD Algorithm
+        Extended Euclid’s algorithm
+        Binary Search, Ternary Search
+        Sieve of Eratosthenes for finding primes
+        Fast Fourier Transformation for fast polynomial multiplication
+        Graph algorithms - BFS, DFS, finding connected components
+        Djikstra’s algorithm, Bellman-ford algorithm, Floyd-Warshall Algorithm
+        Prim’s Algorithm, Kruskal’s Algorithm
+        RMQ, LCA
+        Flow related algorithms, assignment problem, Hungarian algorithm
+        Bipartite matching algorithms
+        Heavy-light decomposition
+        Sweep line algorithm
+        Z algorithm
 
 
 THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
-
-0.5) Preprocess and do a running comparison between 2 containers. 
-    For instance, to do certain problems you need to sort a list and then compare the sorted list 
-    to another list to determine ways to do sliding window/2pointer type techniques. 
-
-
 
 0) Branch and Bound algos vs backtracking algos:
 
@@ -36,22 +92,35 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
 
     Backtracking
 
-    Backtracking is a general algorithm for finding all (or some) solutions to some computational problems, notably constraint satisfaction problems, that incrementally builds candidates to the solutions, and abandons each partial candidate c ("backtracks") as soon as it determines that c cannot possibly be completed to a valid solution.
-    It enumerates a set of partial candidates that, in principle, could be completed in various ways to give all the possible solutions to the given problem. The completion is done incrementally, by a sequence of candidate extension steps.
-    Conceptually, the partial candidates are represented as the nodes of a tree structure, the potential search tree. Each partial candidate is the parent of the candidates that differ from it by a single extension step, the leaves of the tree are the partial candidates that cannot be extended any further.
+    Backtracking is a general algorithm for finding all (or some) solutions to some computational problems, notably constraint satisfaction problems, 
+    that incrementally builds candidates to the solutions, and abandons each partial candidate c ("backtracks") as 
+    soon as it determines that c cannot possibly be completed to a valid solution.
+    It enumerates a set of partial candidates that, in principle, could be completed in various ways to give all the possible solutions to the given problem. 
+    The completion is done incrementally, by a sequence of candidate extension steps.
+    Conceptually, the partial candidates are represented as the nodes of a tree structure, the potential search tree. 
+    Each partial candidate is the parent of the candidates that differ from it by a single extension step, 
+    the leaves of the tree are the partial candidates that cannot be extended any further.
     It traverses this search tree recursively, from the root down, in depth-first order (DFS). 
     It realizes that it has made a bad choice & undoes the last choice by backing up.
     For more details: Sanjiv Bhatia's presentation on Backtracking for UMSL.
 
     Branch And Bound
 
-    A branch-and-bound algorithm consists of a systematic enumeration of candidate solutions by means of state space search: the set of candidate solutions is thought of as forming a rooted tree with the full set at the root.
-    The algorithm explores branches of this tree, which represent subsets of the solution set. Before enumerating the candidate solutions of a branch, the branch is checked against upper and lower estimated bounds on the optimal solution, and is discarded if it cannot produce a better solution than the best one found so far by the algorithm.
+    A branch-and-bound algorithm consists of a systematic enumeration of candidate solutions by 
+    means of state space search: the set of candidate solutions is thought of as forming a 
+    rooted tree with the full set at the root.
+    The algorithm explores branches of this tree, which represent subsets of the solution set. 
+    Before enumerating the candidate solutions of a branch, the branch is checked against upper and lower estimated 
+    bounds on the optimal solution, and is discarded if it cannot produce a better solution than the best one found so far by the algorithm.
     It may traverse the tree in any following manner:
         BFS (Breath First Search) or (FIFO) Branch and Bound
         D-Search or (LIFO) Branch and Bound
         Least Count Search or (LC) Branch and Bound
 
+
+0.5) Preprocess and do a running comparison between 2 containers. 
+    For instance, to do certain problems you need to sort a list and then compare the sorted list 
+    to another list to determine ways to do sliding window/2pointer type techniques. 
 
 
 1) Exploit problem structure
@@ -71,7 +140,7 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
 
 
 1.5) LOOK AT PROBLEM IN ALL POSSIBLE DIRECTIONS to apply your techniques, whether its 2 pointer, 
-    sliding window, or Dynamic programm
+    sliding window, or Dynamic programming
     a) think about left to right
     b) right to left
     c) 2 pointer on either side and you close into the middle
@@ -83,6 +152,7 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
         -> Maximum sum subarray of size ‘K’ (easy)
         -> Longest substring with ‘K’ distinct characters (medium)
         -> String anagrams (hard)
+
 1.8) Two Pointers is often useful when searching pairs in a 
         sorted array or linked list; for example, 
         when you have to compare each element 
@@ -130,6 +200,13 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
     -> Minimum spanning tree -> use prims algorithm or kruskals algorithm
     -> Find strongly connected components => use kosarju's algo which does dfs on graph and the reverse of the graph from a vertex.
 
+    -> Topological SORT: dfs, process nodes children first, then add node to list. then reverse entire list at end
+     
+     REMOVING CYCLES, DFS, AND BFS using colors: DONE IN GRAPHA ALGO REVIEW SECTION BELOW. 
+
+
+
+
 
 2.6) LRU Cache learnings and techniques=>
     Circular Doubly linked lists are better than doubly linked lists if you set up dummy nodes
@@ -138,13 +215,113 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
        which enables alot of efficiency
 
     -> You can also use just an ordered map for this question to solve it fast!! 
-    (pop items and put them back in to bring them to the front technique to do LRU)
+       (pop items and put them back in to bring them to the front technique to do LRU)
+
+2.7) Common problems solved using DP on broken profile include:
+
+        finding number of ways to fully fill an area (e.g. chessboard/grid) with some figures (e.g. dominoes)
+        finding a way to fill an area with minimum number of figures
+        finding a partial fill with minimum number of unfilled space (or cells, in case of grid)
+        finding a partial fill with the minimum number of figures, such that no more figures can be added
+        Problem "Parquet"
+        Problem description. Given a grid of size N×M. Find number of ways to 
+        fill the grid with figures of size 2×1 (no cell should be left unfilled, 
+        and figures should not overlap each other).
+
+        Let the DP state be: dp[i,mask], where i=1,…N and mask=0,…2^(M)−1.
+
+        i respresents number of rows in the current grid, and mask is the state of 
+        last row of current grid. If j-th bit of mask is 0 then the corresponding 
+        cell is filled, otherwise it is unfilled.
+
+        Clearly, the answer to the problem will be dp[N,0].
+
+        We will be building the DP state by iterating over each i=1,⋯N 
+        and each mask=0,…2^(M)−1, and for each mask we will be only transitioning forward, 
+        that is, we will be adding figures to the current grid.
+        
+        int n, m;
+        vector < vector<long long> > dp;
+        void calc (int x = 0, int y = 0, int mask = 0, int next_mask = 0)
+        {
+            if (x == n)
+                return;
+            if (y >= m)
+                dp[x+1][next_mask] += d[x][mask];
+            else
+            {
+                int my_mask = 1 << y;
+                if (mask & my_mask)
+                    calc (x, y+1, mask, next_mask);
+                else
+                {
+                    calc (x, y+1, mask, next_mask | my_mask);
+                    if (y+1 < m && ! (mask & my_mask) && ! (mask & (my_mask << 1)))
+                        calc (x, y+2, mask, next_mask);
+                }
+            }
+        }
+
+
+        int main()
+        {
+            cin >> n >> m;
+
+            dp.resize (n+1, vector<long long> (1<<m));
+            dp[0][0] = 1;
+            for (int x=0; x<n; ++x)
+                for (int mask=0; mask<(1<<m); ++mask)
+                    calc (x, 0, mask, 0);
+
+            cout << dp[n][0];
+        }
+
+2.8) 0-1 BFS
+    we can use BFS to solve the SSSP (single-source shortest path) 
+    problem in O(|E|), if the weights of each edge is either 0 or 1.
+
+    append new vertices at the beginning if the corresponding edge 
+    has weight 0, i.e. if d[u] = d[v], or at the end if the edge 
+    has weight 1, i.e. if d[u]=d[v]+1. This way the queue still remains sorted at all time.
+
+    vector<int> d(n, INF);
+    d[s] = 0;
+    deque<int> q;
+    q.push_front(s);
+    while (!q.empty()) {
+        int v = q.front();
+        q.pop_front();
+        for (auto edge : adj[v]) {
+            int u = edge.first;
+            int w = edge.second;
+            if (d[v] + w < d[u]) {
+                d[u] = d[v] + w;
+                if (w == 1)
+                    q.push_back(u);
+                else
+                    q.push_front(u);
+            }
+        }
+    }
+
+    Dial's algorithm
+    We can extend this even further if we allow the weights of the edges to be even bigger. 
+    If every edge in the graph has a weight ≤k, than the distances of vertices 
+    in the queue will differ by at most k from the distance of v to the source. 
+    So we can keep k+1 buckets for the vertices in the queue, and
+    whenever the bucket corresponding to the smallest distance gets 
+    empty, we make a cyclic shift to get the bucket with the next higher 
+    distance. This extension is called Dial's algorithm.
+
+
+
 
 4) To do things inplace, such as inplace quick sort, or even binary search, 
     it is best to operate on index values in your recursion instead of slicing and joining arrays.
     Always operate on the pointers for efficiency purposes.
 
-5) If you need to keep track of a list of values instead of just 1 values such as a list of maxes, instead of 1 max, 
+5) If you need to keep track of a list of values instead of just 1 values 
+    such as a list of maxes, instead of 1 max, 
     and pair off them off, use an ordered dictionary! 
     They will keep these values ordered for pairing purposes. 
     pushing and poping an element in an ordered map brings it to the front. 
@@ -152,6 +329,7 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
 6)  If you need to do range searches, you need a range tree. 
     if you dont have time to get a range tree, 
     use binary searching as the substitute!
+    Also try a segment tree, fenwick tree, etc.
 
 7) if the problem is unsorted, try sorting and if you need to keeping 
     track of indexes, use reverse index map, to do computations. 
@@ -167,6 +345,7 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
     -> Check for optimal substructure ( A given problems has Optimal Substructure Property 
                                        if optimal solution of the given problem can be obtained 
                                        by using optimal solutions of its subproblems.)
+    
     -> Check of overlapping solutions. Make problems overlap by processing it in a certian way!!! Look at directionality!!! 
         (DP cant help binary search because no overlapping)
 
@@ -179,6 +358,7 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
             • Write a Recurrence. Now that you've defined your subproblems, you will need to write
             out a recurrence relation that defines OPT(k₁, …, kₙ) in terms of some number of subproblems.
             Make sure that when you do this you include your base cases.
+
     -> The other key property is that there
             should be only a polynomial number of different subproblems. These two properties together allow
             us to build the optimal solution to the final problem from optimal solutions to subproblems.
@@ -195,6 +375,8 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
             to C because you might need to be coming into C in the correct direction. In fact, the right way
             to model that problem as a graph is not to have one node per intersection, but rather to have one
             node per <Intersection, direction> pair. That way you recover the property you need.
+
+
 
 10.5) DP Construction:
         DP problems typically show up at optimization or counting problems 
@@ -232,6 +414,8 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
         discarding old answers to subproblems. If it's possible to reduce 
         space, mention it in the interview (and explain). You probably won't 
         have to code it. If you have time, feel free to code it bottom-up.
+
+
 
 11) Know how to write BFS with a deque, and DFS explicitely with a list. 
     Keep tracking of function arguments in tuple for list. 
@@ -309,7 +493,7 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
 17) Greedy algorithms => requires smart way of thinking about things
 
 
-18) Bit magic -> Entire section below
+18) Bit magic -> Entire section done in math notes.
 
 19) Dynamic programming with bitmasking
 
@@ -358,34 +542,33 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
 
 22.5) CYCLIC SORT EXAMPLE:
 
-
-class Solution(object):
-    def rotate(self, nums, k):
-          
-        start = 0
-        val = nums[start]
-        
-        i = start
-        N = len(nums)
-        swaps = 0
-        
-        while True:
-            pivot = i + k
-            pivot %= N
-            
-            temp = nums[pivot]
-            nums[pivot] = val
-            val = temp
-            i = pivot
-            
-            swaps += 1
-            if(swaps == N):
-                return 
-            if pivot == start:
-                i = start + 1             
-                val = nums[start + 1]
-                start += 1        
-        return nums
+        class Solution(object):
+            def rotate(self, nums, k):
+                
+                start = 0
+                val = nums[start]
+                
+                i = start
+                N = len(nums)
+                swaps = 0
+                
+                while True:
+                    pivot = i + k
+                    pivot %= N
+                    
+                    temp = nums[pivot]
+                    nums[pivot] = val
+                    val = temp
+                    i = pivot
+                    
+                    swaps += 1
+                    if(swaps == N):
+                        return 
+                    if pivot == start:
+                        i = start + 1             
+                        val = nums[start + 1]
+                        start += 1        
+                return nums
         
 
 22) Know in-place reverse linked list (MEMORIZE)
@@ -683,47 +866,47 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     on a binary tree iteratively (or doing any dfs, where you want to vist root node last). 
     you need to USE A FLAG!! (LOOK at morris traversal for cool funs!)
 
-    def postorderTraversal(self, root):
-        traversal, stack = [], [(root, False)]
-        while stack:
-            node, visited = stack.pop()
-            if node:
-                if visited:
-                    # add to result if visited
-                    traversal.append(node.val)
-                else:
-                    # post-order
-                    stack.append((node, True))
-                    stack.append((node.right, False))
-                    stack.append((node.left, False))
+        def postorderTraversal(self, root):
+            traversal, stack = [], [(root, False)]
+            while stack:
+                node, visited = stack.pop()
+                if node:
+                    if visited:
+                        # add to result if visited
+                        traversal.append(node.val)
+                    else:
+                        # post-order
+                        stack.append((node, True))
+                        stack.append((node.right, False))
+                        stack.append((node.left, False))
 
-        return traversal
+            return traversal
 
-    def inorderTraversal(self, root):
-        result, stack = [], [(root, False)]
+        def inorderTraversal(self, root):
+            result, stack = [], [(root, False)]
 
-        while stack:
-            cur, visited = stack.pop()
-            if cur:
-                if visited:
-                    result.append(cur.val)
-                else:
-                    stack.append((cur.right, False))
-                    stack.append((cur, True))
-                    stack.append((cur.left, False))
+            while stack:
+                cur, visited = stack.pop()
+                if cur:
+                    if visited:
+                        result.append(cur.val)
+                    else:
+                        stack.append((cur.right, False))
+                        stack.append((cur, True))
+                        stack.append((cur.left, False))
 
-        return result
-    
-    def preorderTraversal(self, root):
-        ret = []
-        stack = [root]
-        while stack:
-            node = stack.pop()
-            if node:
-                ret.append(node.val)
-                stack.append(node.right)
-                stack.append(node.left)
-        return ret
+            return result
+        
+        def preorderTraversal(self, root):
+            ret = []
+            stack = [root]
+            while stack:
+                node = stack.pop()
+                if node:
+                    ret.append(node.val)
+                    stack.append(node.right)
+                    stack.append(node.left)
+            return ret
 
 
 39) When you need to keep a set of running values such as mins, and prev mins, 
@@ -974,37 +1157,37 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     or whether adding an edge between them would result in a cycle. 
     DETECH CYCLE IN UNDIRECTED GRAPH:
     
-    # A utility function to find the subset of an element i 
-    def find_parent(self, parent,i): 
-        if parent[i] == -1: 
-            return i 
-        if parent[i]!= -1: 
-             return self.find_parent(parent,parent[i]) 
-  
-    # A utility function to do union of two subsets 
-    def union(self,parent,x,y): 
-        x_set = self.find_parent(parent, x) 
-        y_set = self.find_parent(parent, y) 
-        parent[x_set] = y_set 
+        # A utility function to find the subset of an element i 
+        def find_parent(self, parent,i): 
+            if parent[i] == -1: 
+                return i 
+            if parent[i]!= -1: 
+                return self.find_parent(parent,parent[i]) 
+    
+        # A utility function to do union of two subsets 
+        def union(self,parent,x,y): 
+            x_set = self.find_parent(parent, x) 
+            y_set = self.find_parent(parent, y) 
+            parent[x_set] = y_set 
 
-    # The main function to check whether a given graph 
-    # contains cycle or not 
-    def isCyclic(self): 
-          
-        # Allocate memory for creating V subsets and 
-        # Initialize all subsets as single element sets 
-        parent = [-1]*(self.V) 
-  
-        # Iterate through all edges of graph, find subset of both 
-        # vertices of every edge, if both subsets are same, then 
-        # there is cycle in graph. 
-        for i in self.graph: 
-            for j in self.graph[i]: 
-                x = self.find_parent(parent, i)  
-                y = self.find_parent(parent, j) 
-                if x == y: 
-                    return True
-                self.union(parent,x,y) 
+        # The main function to check whether a given graph 
+        # contains cycle or not 
+        def isCyclic(self): 
+            
+            # Allocate memory for creating V subsets and 
+            # Initialize all subsets as single element sets 
+            parent = [-1]*(self.V) 
+    
+            # Iterate through all edges of graph, find subset of both 
+            # vertices of every edge, if both subsets are same, then 
+            # there is cycle in graph. 
+            for i in self.graph: 
+                for j in self.graph[i]: 
+                    x = self.find_parent(parent, i)  
+                    y = self.find_parent(parent, j) 
+                    if x == y: 
+                        return True
+                    self.union(parent,x,y) 
 
 
 49) Detect negative cycles with Bellman Ford:
@@ -1024,6 +1207,42 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     contain negative weight cycle. If we iterate through all edges one more 
     time and get a shorter path for any vertex, then 
     there is a negative weight cycle.
+
+49.5) RANGE MINIMUM QUERY:
+
+    You are given an array A[1..N]. You have to answer incoming queries of the form (L,R), 
+    which ask to find the minimum element in array A between positions L and R inclusive.
+
+    RMQ can appear in problems directly or can be applied in some other tasks, e.g. the Lowest Common Ancestor problem.
+
+    Solution
+    There are lots of possible approaches and data structures that you can use to solve the RMQ task.
+
+    The ones that are explained on this site are listed below.
+
+    First the approaches that allow modifications to the array between answering queries.
+
+    Sqrt-decomposition - answers each query in O(sqrt(N)), preprocessing done in O(N). Pros: a very simple data structure. Cons: worse complexity.
+    
+    Segment tree - answers each query in O(logN), preprocessing done in O(N). 
+    
+                 Pros: good time complexity. Cons: larger amount of code compared to the other data structures.
+    Fenwick tree - answers each query in O(logN), preprocessing done in O(NlogN). 
+                Pros: the shortest code, good time complexity. 
+                Cons: Fenwick tree can only be used for queries with L=1, so it is not applicable to many problems.
+
+    And here are the approaches that only work on static arrays, i.e. it is not possible 
+        to change a value in the array without recomputing the complete data structure.
+
+    Sparse Table - answers each query in O(1), preprocessing done in O(NlogN). Pros: simple data structure, excellent time complexity.
+    Sqrt Tree - answers queries in O(1), preprocessing done in O(NloglogN). Pros: fast. Cons: Complicated to implement.
+    Disjoint Set Union / Arpa's Trick - answers queries in O(1), preprocessing in O(n). 
+            Pros: short, fast. Cons: only works if all queries are known in advance, 
+            i.e. only supports off-line processing of the queries.
+    
+    Cartesian Tree and Farach-Colton and Bender algorithm - answers queries in O(1), preprocessing in O(n). 
+        Pros: optimal complexity. Cons: large amount of code.
+        Note: Preprocessing is the preliminary processing of the given array by building the corresponding data structure for it.
 
 50) Fenwick Tree Structure:
     ->Full binary tree with at least n leaf nodes
@@ -1441,6 +1660,85 @@ COOL NOTES PART 1: DYNAMIC PROGRAMMING RECURRENCES EXAMPLES:
     Symmetic difference: x ^ y
     singleton set {i}: 1 << i
     Membership test: x & (1 << i) != 0
+
+
+#####################################################################################
+####################################################################################3#3
+COOL NOTES PART 2: DYANMIC PROGRAMMING WITH DP, CONVEX HULLS, KNUTH OPTIMIZATION
+
+
+10.6) Divide and Conquer DP:
+
+        Divide and Conquer is a dynamic programming optimization.
+
+        Preconditions
+        Some dynamic programming problems have a recurrence of this form:
+        dp(i,j) = min k≤j {dp(i−1,k)+C(k,j)}
+        where C(k,j) is some cost function.
+
+        Say 1≤i≤n and 1≤j≤m, and evaluating C takes O(1) time. 
+        
+        Straightforward evaluation of the above recurrence is O(nm^2). 
+        
+        There are n×m states, and m transitions for each state.
+
+        Let opt(i,j) be the value of k that minimizes the above expression. 
+        If opt(i,j) ≤ opt(i,j+1) for all i,j, then we can apply divide-and-conquer DP. 
+        This known as the monotonicity condition. 
+        The optimal "splitting point" for a fixed i increases as j increases.
+
+        This lets us solve for all states more efficiently. 
+        Say we compute opt(i,j) for some fixed i and j. Then for any j′<j we 
+        know that opt(i,j′) ≤ opt(i,j). 
+
+        This means when computing opt(i,j′), we don't have to consider as many splitting points!
+
+        To minimize the runtime, we apply the idea behind divide and conquer. 
+        First, compute opt(i,n/2). Then, compute opt(i,n/4), knowing that it is less 
+        than or equal to opt(i,n/2) and opt(i,3n/4) knowing that it is greater than or 
+        equal to opt(i,n/2). By recursively keeping track of the lower and upper bounds on opt, 
+        we reach a O(mnlogn) runtime. Each possible value of opt(i,j) only appears in logn different nodes.
+
+        Note that it doesn't matter how "balanced" opt(i,j) is. Across a fixed level,
+        each value of k is used at most twice, and there are at most logn levels.
+
+        Generic implementation
+        Even though implementation varies based on problem, here's a fairly generic template. 
+        The function compute computes one row i of states dp_cur, given the previous row i−1 of states dp_before. 
+        It has to be called with compute(0, n-1, 0, n-1).
+
+        int n;
+        long long C(int i, int j);
+        vector<long long> dp_before(n), dp_cur(n);
+
+        // compute dp_cur[l], ... dp_cur[r] (inclusive)
+        void compute(int l, int r, int optl, int optr)
+        {
+            if (l > r)
+                return;
+            int mid = (l + r) >> 1;
+
+            pair<long long, int> best = {INF, -1};
+
+            for (int k = optl; k <= min(mid, optr); k++) {
+                best = min(best, {dp_before[k] + C(k, mid), k});
+            }
+
+            dp_cur[mid] = best.first;
+            int opt = best.second;
+
+            compute(l, mid - 1, optl, opt);
+            compute(mid + 1, r, opt, optr);
+        }
+
+        Things to look out for
+        The greatest difficulty with Divide and Conquer DP problems is proving the monotonicity of opt. 
+        Many Divide and Conquer DP problems can also be solved with the Convex Hull 
+        trick or vice-versa. It is useful to know and understand both!
+
+
+
+
 
 #############################################################################
 #######################################################
@@ -2469,6 +2767,7 @@ GRAPH TRAVERSAL ALL TYPES:
                                 distance[neighbor]
 
     Topological Sort
+
         In DFS, we start from a vertex, we first print it and then recursively 
         call DFS for its adjacent vertices. In topological sorting, we use a 
         temporary stack. We don’t print the vertex immediately, we first recursively 
@@ -2795,123 +3094,123 @@ STRING ALGORITHMS:
 
 ##########################################
 COOL NOTES PART -3: NETWORK FLOW Tutorial: maxflow and mincut
-COMPUTING MAX FLOW:
-    Given directed graph, each edge e assocaited with 
-    its capacity c(e) > 0. Two special nodes source s and sink t. 
+    COMPUTING MAX FLOW:
+        Given directed graph, each edge e assocaited with 
+        its capacity c(e) > 0. Two special nodes source s and sink t. 
 
-    Problem: Maximize total amount of flow from s to t subject to 2 constraints:
+        Problem: Maximize total amount of flow from s to t subject to 2 constraints:
 
-    1) Flow on edge e doesnt exceed c(e)
-    2) For every node other than s,t, incoming flow is equal to outgoing.
+        1) Flow on edge e doesnt exceed c(e)
+        2) For every node other than s,t, incoming flow is equal to outgoing.
 
-    Alternate formulation: we want to remove some edges from
-    graph such that after removing the edges, there is no path from
-    s to t. 
-    The cost of removing e is equal to its capacity, c(e)
-    The min cut problem is to find a cut with minimum total cost.
+        Alternate formulation: we want to remove some edges from
+        graph such that after removing the edges, there is no path from
+        s to t. 
+        The cost of removing e is equal to its capacity, c(e)
+        The min cut problem is to find a cut with minimum total cost.
 
-    THRM: MAXIMUM FLOW = MINIMUM CUT
+        THRM: MAXIMUM FLOW = MINIMUM CUT
 
-    Flow decomposition: any valid flow can be decomposed into flow 
-    paths and circulations.
+        Flow decomposition: any valid flow can be decomposed into flow 
+        paths and circulations.
 
-    Ford-Fulkerson Algorithm: Max flow algo. 
-    Main idea: find valid flow paths until there is none left, and 
-    add them up.
+        Ford-Fulkerson Algorithm: Max flow algo. 
+        Main idea: find valid flow paths until there is none left, and 
+        add them up.
 
-        The intuition goes like this: as long as there is a path from the 
-        source to the sink that can take some flow the entire way, we send it. 
-        This path is called an augmenting path. We keep doing this until there 
-        are no more augmenting paths. In the image above, we could start by 
-        sending 2 cars along the topmost path (because only 2 cars can get 
-        through the last portion). Then we might send 3 cars along the bottom 
-        path for a total of 5 cars. Finally, we can send 2 more cars along the 
-        top path for two edges, send them down to bottom path and through to the 
-        sink. The total number of cars sent is now 7, and it is the maximum flow.
+            The intuition goes like this: as long as there is a path from the 
+            source to the sink that can take some flow the entire way, we send it. 
+            This path is called an augmenting path. We keep doing this until there 
+            are no more augmenting paths. In the image above, we could start by 
+            sending 2 cars along the topmost path (because only 2 cars can get 
+            through the last portion). Then we might send 3 cars along the bottom 
+            path for a total of 5 cars. Finally, we can send 2 more cars along the 
+            top path for two edges, send them down to bottom path and through to the 
+            sink. The total number of cars sent is now 7, and it is the maximum flow.
 
-        Simplest algo:
+            Simplest algo:
 
-        Set f total = 0
-        Repeat until there is no path from s to t:
-            Run DFS from s to find a flow path to t
-            Let f be the minimum capacity value on the path
-            Add f to f total
-            For each edge u → v on the path:
-                Decrease c(u → v) by f
-                Increase c(v → u) by f
+            Set f total = 0
+            Repeat until there is no path from s to t:
+                Run DFS from s to find a flow path to t
+                Let f be the minimum capacity value on the path
+                Add f to f total
+                For each edge u → v on the path:
+                    Decrease c(u → v) by f
+                    Increase c(v → u) by f
 
-        SIMPLIFLIED ALGO:
-            initialize flow to 0
-            path = findAugmentingPath(G, s, t)
-            while path exists:
-                augment flow along path                 #This is purposefully ambiguous for now
-                G_f = createResidualGraph()
-                path = findAugmentingPath(G_f, s, t)
-            return flow
-        
-        More Explained version:
-            flow = 0
-            for each edge (u, v) in G:
-                flow(u, v) = 0
-            while there is a path, p, from s -> t in residual network G_f:
-                residual_capacity(p) = min(residual_capacity(u, v) : for (u, v) in p)
-                flow = flow + residual_capacity(p)
-                for each edge (u, v) in p:
-                    if (u, v) is a forward edge:
-                        flow(u, v) = flow(u, v) + residual_capacity(p)
-                    else:
-                        flow(u, v) = flow(u, v) - residual_capacity(p)
-            return flow
+            SIMPLIFLIED ALGO:
+                initialize flow to 0
+                path = findAugmentingPath(G, s, t)
+                while path exists:
+                    augment flow along path                 #This is purposefully ambiguous for now
+                    G_f = createResidualGraph()
+                    path = findAugmentingPath(G_f, s, t)
+                return flow
+            
+            More Explained version:
+                flow = 0
+                for each edge (u, v) in G:
+                    flow(u, v) = 0
+                while there is a path, p, from s -> t in residual network G_f:
+                    residual_capacity(p) = min(residual_capacity(u, v) : for (u, v) in p)
+                    flow = flow + residual_capacity(p)
+                    for each edge (u, v) in p:
+                        if (u, v) is a forward edge:
+                            flow(u, v) = flow(u, v) + residual_capacity(p)
+                        else:
+                            flow(u, v) = flow(u, v) - residual_capacity(p)
+                return flow
 
-    Residual graphs are an important middle step in calculating the maximum flow. 
-    As noted in the pseudo-code, they are calculated at every step 
-    so that augmenting paths can be found from the source to the sink.
+        Residual graphs are an important middle step in calculating the maximum flow. 
+        As noted in the pseudo-code, they are calculated at every step 
+        so that augmenting paths can be found from the source to the sink.
 
-    When a residual graph, G_f is created, edges can be created 
-    that go in the opposite direction when compared to the original graph. 
-    An edge is a 'forward edge' if the edge existed in the original graph, G. 
-    If it is a reversal of an original edge, it is called a 'backwards edge.'
+        When a residual graph, G_f is created, edges can be created 
+        that go in the opposite direction when compared to the original graph. 
+        An edge is a 'forward edge' if the edge existed in the original graph, G. 
+        If it is a reversal of an original edge, it is called a 'backwards edge.'
 
-    Residual capacity is defined as the new capacity after a given flow has been taken away. 
-    In other words, for a given edge (u, v), the residual capacity, c_f is defined as
-    1) c_f(u, v) = c(u,v) - f(u, v)
+        Residual capacity is defined as the new capacity after a given flow has been taken away. 
+        In other words, for a given edge (u, v), the residual capacity, c_f is defined as
+        1) c_f(u, v) = c(u,v) - f(u, v)
 
-    However, there must also be a residual capacity for the reverse edge as well. 
-    The max-flow min-cut theorem states that flow must be preserved 
-    in a network. So, the following equality always holds:
-    2) f(u, v) = -f(v, u)
+        However, there must also be a residual capacity for the reverse edge as well. 
+        The max-flow min-cut theorem states that flow must be preserved 
+        in a network. So, the following equality always holds:
+        2) f(u, v) = -f(v, u)
 
-    residual capacities are used to make a residual network, G_f
-    1) and 2) allow you to operate on residual graph.
+        residual capacities are used to make a residual network, G_f
+        1) and 2) allow you to operate on residual graph.
 
-    In the forward direction, the edges now have a residual capacity 
-    equal to c_f(u, v) = c(u, v) - f(u, v)
-    The flow is equal to 2, so the residual capacity of (S, A) and (A, B) is reduced to 2, 
-    while the edge (B, T) has a residual capacity of 0.
+        In the forward direction, the edges now have a residual capacity 
+        equal to c_f(u, v) = c(u, v) - f(u, v)
+        The flow is equal to 2, so the residual capacity of (S, A) and (A, B) is reduced to 2, 
+        while the edge (B, T) has a residual capacity of 0.
 
-    In the backward direction, the edges now have a residual capacity equal to 
-    c_f(v, u) = c(v, u) - f(v, u) 
-    Because of flow preservation, this can be written as c_f(v, u) = c(v, u) + f(u, v)
+        In the backward direction, the edges now have a residual capacity equal to 
+        c_f(v, u) = c(v, u) - f(v, u) 
+        Because of flow preservation, this can be written as c_f(v, u) = c(v, u) + f(u, v)
 
-    And since the capacity of those backward edges was initially 0, 
-    all of the backward edges (T, B), (B, A), and (A, S) 
-    now have a residual capacity of 2.
+        And since the capacity of those backward edges was initially 0, 
+        all of the backward edges (T, B), (B, A), and (A, S) 
+        now have a residual capacity of 2.
 
-    When a new residual graph is constructed with these new edges, 
-    any edges with a residual capacity of 0—like (B, T)—are not included. 
-    Add all the backward edges to the residual graph! update all the forward edges!
-    keep adding augmenting paths until. There are not more paths from the 
-    source to the sink, so there can be no more augmenting paths. 
+        When a new residual graph is constructed with these new edges, 
+        any edges with a residual capacity of 0—like (B, T)—are not included. 
+        Add all the backward edges to the residual graph! update all the forward edges!
+        keep adding augmenting paths until. There are not more paths from the 
+        source to the sink, so there can be no more augmenting paths. 
 
-COMPUTING MIN CUT:
+    COMPUTING MIN CUT:
 
-    1) Run Ford-Fulkerson algorithm and consider the final residual graph.
+        1) Run Ford-Fulkerson algorithm and consider the final residual graph.
 
-    2) Find the set of vertices that are reachable 
-    from the source in the residual graph.
+        2) Find the set of vertices that are reachable 
+        from the source in the residual graph.
 
-    3) All edges which are from a reachable vertex 
-    to non-reachable vertex are minimum cut edges. Print all such edges.
+        3) All edges which are from a reachable vertex 
+        to non-reachable vertex are minimum cut edges. Print all such edges.
 
 
 
@@ -3075,9 +3374,89 @@ COOL NOTES PART 6: UNION FIND PYTHON RECIPEE
         for o in l:
             del o.parent
 
+################################################################33
+#################################################################33
+COOL NOTES PART 7: 
+
+    SUBMASK ENUMERATION:
+
+        Submask Enumeration
+        
+        Given a bitmask m, you want to efficiently iterate through all of its submasks, 
+        that is, masks s in which only bits that were included in mask m are set.
+
+        Consider the implementation of this algorithm, based on tricks with bit operations:
+
+        int s = m;
+        while (s > 0) {
+        ... you can use s ...
+        s = (s-1) & m;
+        }
+
+        or, using a more compact for statement:
+
+        for (int s=m; s; s=(s-1)&m)
+        ... you can use s ...
+
+        In both variants of the code, the submask equal to zero will not 
+        be processed. We can either process it outside the loop, 
+        or use a less elegant design, for example:
+
+        for (int s=m; ; s=(s-1)&m) {
+        ... you can use s ...
+        if (s==0)  break;
+        }
+
+        Let us examine why the above code visits all submasks of m, without repetition, and in descending order.
+
+        Suppose we have a current bitmask s, and we want to move on to the next bitmask. 
+        By subtracting from the mask s one unit, we will remove the rightmost set bit 
+        and all bits to the right of it will become 1. Then we remove all the "extra" 
+        one bits that are not included in the mask m and therefore can't be a part of a 
+        submask. We do this removal by using the bitwise operation (s-1) & m. As a result, 
+        we "cut" mask s−1 to determine the highest value that it can take, 
+        that is, the next submask after s in descending order.
+
+        Thus, this algorithm generates all submasks of this mask in descending order,
+        performing only two operations per iteration.
+
+        A special case is when s=0. After executing s−1 we get a mask where all bits are 
+        set (bit representation of -1), and after (s-1) & m we will have that s will be equal to m. 
+        Therefore, with the mask s=0 be careful — if the loop does not end at zero, 
+        the algorithm may enter an infinite loop.
+
+    ITERATING THROUGH MASKS AND THEIR SUBMASKS:
+
+
+        Iterating through all masks with their submasks. Complexity O(3n)
+        In many problems, especially those that use bitmask dynamic programming, 
+        you want to iterate through all bitmasks and for each mask, iterate through all of its submasks:
+
+        for (int m=0; m<(1<<n); ++m)
+            for (int s=m; s; s=(s-1)&m)
+        ... s and m ...
+
+
+        Let's prove that the inner loop will execute a total of O(3n) iterations.
+
+        First proof: Consider the i-th bit. There are exactly three options for it:
+
+            it is not included in the mask m (and therefore not included in submask s),
+            it is included in m, but not included in s, or
+            it is included in both m and s.
+        As there are a total of n bits, there will be 3n different combinations.
+
+        Second proof: Note that if mask m has k enabled bits, then it will have 2k submasks. 
+        As we have a total of (nk) masks with k enabled bits (see binomial coefficients), 
+        then the total number of combinations for all masks will be:
+
+        ∑k=0n(nk)⋅2k
+        To calculate this number, note that the sum above is equal to the expansion of (1+2)n using the binomial theorem. 
+        Therefore, we have 3n combinations, as we wanted to prove.
+
 
 #######################################################################################################################
-########################################################################################################################33
+########################################################################################################################
 
 GRAPH REFERENCE (From cheatsheet algos.py)
 

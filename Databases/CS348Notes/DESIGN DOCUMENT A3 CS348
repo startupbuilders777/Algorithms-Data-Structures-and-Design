@@ -1,0 +1,34 @@
+A3 - HARMAN SINGH (20616371)
+
+BIBSeach Design Document
+
+
+bibauthor, bibmaint and bibcontent were implemented.
+
+Bibauthor has a publication cursor that queries all publications for their attributes and saves these attributes in 
+host variables. 
+
+The helper function void printPublication(char * pubid, char * type, char * title, char * publisher, int volume, int year, int number, char * appearsin, int startpage, int endpage), takes the attributes from the above cursor fetch, and prints the publication according to assignment requirements. Withing the print function, there is a fetch to the authors cursor which gets all the authors for a publication using the publication's pubid. These fetched authors are then printed. 
+
+Similarly Bibcontent has a cursor called bibcontent that it uses to query for articles within a specific journal or proceeding, and this cursor is iterated. On each iteration, void printPublication(...), the same function as above, is used to print the results. 
+
+Bibmaint 
+
+Goes through standard input and tokenizes it based on its type using assignment guidelines for the program. EXEC SQL INSERT is used to add the tuple to the database, except for authorurl which does an EXEC SQL UPDATE to update a preexisting tuple in the db. After inserting the tuple, void printPublication(...) which is the same function used in the above 2, is called to print the publication after success. 
+
+
+INSERT INTO ARTICLE values (5, 2, 200, 300)
+INSERT INTO ARTICLE values (6, 2, 400, 500)
+INSERT INTO ARTICLE values (7, 2, 12, 43)
+
+INSERT INTO PUBLICATION VALUES(5, 'art1')
+INSERT INTO PUBLICATION VALUES(6, 'art2')
+INSERT INTO PUBLICATION VALUES (7, 'art3')
+
+INSERT INTO WROTE values (3, 5, 1)
+INSERT INTO WROTE values (4, 5, 2)
+
+INSERT INTO WROTE values (1, 6, 1)
+INSERT INTO WROTE values (5, 6, 2)
+
+INSERT INTO WROTE values (2, 7, 1)

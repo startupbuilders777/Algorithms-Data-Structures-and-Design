@@ -1,0 +1,122 @@
+2i)
+
+create table camara ( 
+   modelNumber char(30) not null,  
+   manufacturer char(30) not null,  
+   productReleaseDate date not null,
+   retailPrice integer not null,
+   sensorSize integer not null ,
+   stockQuantity integer not null,    
+   pixelNumber integer not null ,
+   hasOpticalViewFinder bit not null,
+   hasElectronicViewFinder bit not null, 
+   hasThroughTheLensViewFinder bit not null, 
+   hasOpticalRangeFinder bit not null ,
+   primary key (modelNumber)
+)
+
+//Replacable lens must have atleast 2 lens
+create table replacableLensCamara (
+   modelNumber char(30) not null ,
+   primary key (modelNumber)
+)
+
+create table irreplacableLensCamara (
+ modelNumber char(30) not null ,
+ focalLengthRangeMax integer not null ,
+ focalLengthRangeMin integer not null ,
+ appertureRangeMax integer not null ,
+ appertureRangeMin integer not null , 
+ primary key (modelNumber)
+)
+
+create table lens ( \
+   modelNumber char(30) not null , 
+   camaraModelNumber char(30)  ,
+   manufacturer char(30) not null ,
+   productReleaseDate date not null ,
+   retailPrice integer not null ,
+   stockQuantity integer not null ,
+   apertureRangeMax integer not null ,      
+   apertureRangeMin integer not null ,
+   foreign key (camaraModelNumber) references replacableLensCamara(modelNumber) ,
+   primary key (modelNumber))
+
+create table regularLens( 
+   modelNumber char(30) not null , 
+   focalLenghtMax integer not null, 
+   focalLengthMin integer not null,
+   primary key (modelNumber)
+)
+
+create table primaryLens( 
+   modelNumber char(30) not null, 
+   focalLenght integer not null,    
+   primary key (modelNumber)
+)
+
+
+create table camaraPurchaseOrder( 
+   purchaseOrderId char(30) not null,
+   customerNumber char(30) not null,
+   camaraModelNumber char(30) not null ,
+   sellingPrice integer not null ,
+   isOutstanding bit not null , 
+   foreign key (camaraModelNumber) references camara(modelNumber) ,
+   foreign key (customerNumber) references customer(cNumber) ,
+   primary key (purchaseOrderId, customerNumber)
+)
+
+
+
+create table lensPurchaseOrder( 
+   purchaseOrderId char(30) not null ,
+   customerNumber char(30) not null,
+   lensModelNumber char(30) not null ,
+   sellingPrice integer not null ,
+   isOutstanding bit not null , 
+   foreign key (lensModelNumber) references lens(modelNumber) ,
+   foreign key (customerNumber) references customer(cNumber) ,
+   primary key (purchaseOrderId, customerNumber)
+)
+
+create table customer( 
+   cNumber char(30) not null,  
+   email char(100) not null, 
+   cFirstName char(100) not null, 
+   cLastName char(100) not null, 
+   primary key (cNumber)
+)
+
+create table onlineCustomer( 
+   cNumber char(30) not null 
+   email char(100) not null, 
+   cFirstName char(100) not null, 
+   cLastName char(100) not null, 
+   isDomestic bit not null, 
+   primary key (cNumber)
+)
+
+
+create table camaraCustomerEvaluation( 
+  evaluationId char(30) not null ,
+  customerNumber char(30) not null ,
+  comment char(2000) not null ,
+  score integer not null ,
+  camaraModelNumber char(30) not null ,
+  foreign key (camaraModelNumber) references camara(modelNumber) ,
+  foreign key (customerNumber) references customer(cNumber) ,
+  primary key (evaluationId, customerNumber)
+)
+
+create table lensCustomerEvaluation( 
+  evaluationId char(30) not null, 
+  customerNumber char(30) not null,
+  comment char(2000) not null, 
+  score integer not null, 
+  lensModelNumber not null, 
+  foreign key (lensModelNumber) references lens(modelNumber) ,
+  foreign key (customerNumber) references customer(cNumber), 
+  primary key (evaluationId, customerNumber)
+)
+
