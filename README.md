@@ -1956,6 +1956,7 @@ COOL NOTES PART -4: Graph Algorithms
             OR we can say that the initial values of shortest distances 
             are based on shortest paths considering no  
             intermediate vertices """
+
             dist = map(lambda i : map(lambda j : j , i) , graph) 
             
             """ Add all vertices one by one to the set of intermediate 
@@ -3726,348 +3727,349 @@ COMPETITIVE PROGRAMMING GRAPH ALGORITHM GUIDE:
        (we can use a stack).
     
     2) Then, we start from the vertex with the greatest finishing time, and 
-      for each vertex  v that is not yet in any SCC do : 
-        for each u that v is reachable by u and u is not yet in any SCC, 
-            put it in the SCC of vertex v. 
+        (OPERATE ON THE REVERSED GRAPH)
+        for each vertex  v that is not yet in any SCC do : 
 
+            for each u that v is reachable by u and u is not yet in any SCC, 
+                put it in the SCC of vertex v. 
 
-    Shortest path
-    Shortest path algorithms are algorithms to find 
-    some shortest paths in directed or undirected graphs.
 
     Dijkstra
-    This algorithm is a single source shortest path (from one source to any other vertices). Pay attention that you can't have edges with negative weight.
+    This algorithm is a single source shortest path (from one source to any other vertices). 
+    Pay attention that you can't have edges with negative weight.
 
-    Pseudo code :
+        dijkstra(v) :
+                d[i] = inf for each vertex i
+                d[v] = 0
+                s = new empty set
+                while s.size() < n
+                        x = inf
+                        u = -1
+                        for each i in V-s //V is the set of vertices
+                                if x >= d[i]
+                                        then x = d[i], u = i
+                        insert u into s
+                        // The process from now is called Relaxing
+                        for each i in adj[u]
+                                d[i] = min(d[i], d[u] + w(u,i))
+                                
+        There are two different implementations for this. Both are useful (C++11).
 
-    dijkstra(v) :
+        One) O(n2)
+
+        int mark[MAXN];
+        void dijkstra(int v){
+            fill(d,d + n, inf);
+            fill(mark, mark + n, false);
+            d[v] = 0;
+            int u;
+            while(true){
+                int x = inf;
+                u = -1;
+                for(int i = 0;i < n;i ++)
+                    if(!mark[i] and x >= d[i])
+                        x = d[i], u = i;
+                if(u == -1)	break;
+                mark[u] = true;
+                for(auto p : adj[u]) //adj[v][i] = pair(vertex, weight)
+                    if(d[p.first] > d[u] + p.second)
+                        d[p.first] = d[u] + p.second;
+            }
+        }
+        Two) 
+
+        1) Using std :: set :
+
+        void dijkstra(int v){
+            fill(d,d + n, inf);
+            d[v] = 0;
+            int u;
+            set<pair<int,int> > s;
+            s.insert({d[v], v});
+            while(!s.empty()){
+                u = s.begin() -> second;
+                s.erase(s.begin());
+                for(auto p : adj[u]) //adj[v][i] = pair(vertex, weight)
+                    if(d[p.first] > d[u] + p.second){
+                        s.erase({d[p.first], p.first});
+                        d[p.first] = d[u] + p.second;
+                        s.insert({d[p.first], p.first});
+                    }
+            }
+        }
+        2) Using std :: priority_queue (better):
+
+        bool mark[MAXN];
+        void dijkstra(int v){
+            fill(d,d + n, inf);
+            fill(mark, mark + n, false);
+            d[v] = 0;
+            int u;
+            priority_queue<pair<int,int>,vector<pair<int,int> >, less<pair<int,int> > > pq;
+            pq.push({d[v], v});
+            while(!pq.empty()){
+                u = pq.top().second;
+                pq.pop();
+                if(mark[u])
+                    continue;
+                mark[u] = true;
+                for(auto p : adj[u]) //adj[v][i] = pair(vertex, weight)
+                    if(d[p.first] > d[u] + p.second){
+                        d[p.first] = d[u] + p.second;
+                        pq.push({d[p.first], p.first});
+                    }
+            }
+        }
+
+    Floyd-Warshall---------------------
+        Floyd-Warshal algorithm is an all-pairs shortest 
+        path algorithm using dynamic programming.
+
+            Floyd-Warshal(graph)
+                # start by assigning all the graph weights to d[i][j],
+                # and set the non-neighbors as infinite
+
+                d[v][u] = inf for each pair (v,u)
+                d[v][v] = 0 for each vertex v
+                for k = 1 to n
+                    for i = 1 to n
+                        for j = 1 to n
+                            d[i][j] = min(d[i][j], d[i][k] + d[k][j])
+            Time complexity : O(n3).
+
+    Bellman-Ford------------------------------
+        Bellman-Ford is an algorithm for single source shortest path where 
+        edges can be negative (but if there is a cycle with negative weight, 
+        then this problem will be NP).
+
+        The main idea is to relax all the edges exactly n - 1 times 
+        (read relaxation above in dijkstra). 
+        You can prove this algorithm using induction.
+
+        If in the n - th step, we relax an edge, 
+        then we have a negative cycle (this is if and only if).
+
+
+        Bellman-Ford(int v)
             d[i] = inf for each vertex i
             d[v] = 0
-            s = new empty set
-            while s.size() < n
-                    x = inf
-                    u = -1
-                    for each i in V-s //V is the set of vertices
-                            if x >= d[i]
-                                    then x = d[i], u = i
-                    insert u into s
-                    // The process from now is called Relaxing
-                    for each i in adj[u]
-                            d[i] = min(d[i], d[u] + w(u,i))
-                            
-    There are two different implementations for this. Both are useful (C++11).
+            for step = 1 to n
+                for all edges like e
+                    i = e.first // first end
+                    j = e.second // second end
+                    w = e.weight
+                    if d[j] > d[i] + w
+                        if step == n
+                            then return "Negative cycle found"
+                        d[j] = d[i] + w
+        Time complexity : O(nm).
 
-    One) O(n2)
 
-    int mark[MAXN];
-    void dijkstra(int v){
-        fill(d,d + n, inf);
-        fill(mark, mark + n, false);
-        d[v] = 0;
-        int u;
-        while(true){
-            int x = inf;
-            u = -1;
-            for(int i = 0;i < n;i ++)
-                if(!mark[i] and x >= d[i])
-                    x = d[i], u = i;
-            if(u == -1)	break;
-            mark[u] = true;
-            for(auto p : adj[u]) //adj[v][i] = pair(vertex, weight)
-                if(d[p.first] > d[u] + p.second)
-                    d[p.first] = d[u] + p.second;
-        }
-    }
-    Two) 
+    SPFA -----------------------------
+        SPFA (Shortest Path Faster Algorithm) is a fast and simple algorithm (single source) 
+        that its complexity is not calculated yet. But if m = O(n2) it's 
+        better to use the first implementation of Dijkstra.
 
-    1) Using std :: set :
+        Its code looks like the combination of Dijkstra and BFS :
 
-    void dijkstra(int v){
-        fill(d,d + n, inf);
-        d[v] = 0;
-        int u;
-        set<pair<int,int> > s;
-        s.insert({d[v], v});
-        while(!s.empty()){
-            u = s.begin() -> second;
-            s.erase(s.begin());
-            for(auto p : adj[u]) //adj[v][i] = pair(vertex, weight)
-                if(d[p.first] > d[u] + p.second){
-                    s.erase({d[p.first], p.first});
-                    d[p.first] = d[u] + p.second;
-                    s.insert({d[p.first], p.first});
-                }
-        }
-    }
-    2) Using std :: priority_queue (better):
+        SPFA(v):
+            d[i] = inf for each vertex i
+            d[v] = 0
+            queue q
+            q.push(v)
+            while q is not empty
+                u = q.front()
+                q.pop()
+                for each i in adj[u]
+                    if d[i] > d[u] + w(u,i)
+                        then d[i] = d[u] + w(u,i)
+                        if i is not in q
+                            then q.push(i)
+        Time complexity : Unknown!.
 
-    bool mark[MAXN];
-    void dijkstra(int v){
-        fill(d,d + n, inf);
-        fill(mark, mark + n, false);
-        d[v] = 0;
-        int u;
-        priority_queue<pair<int,int>,vector<pair<int,int> >, less<pair<int,int> > > pq;
-        pq.push({d[v], v});
-        while(!pq.empty()){
-            u = pq.top().second;
-            pq.pop();
-            if(mark[u])
-                continue;
-            mark[u] = true;
-            for(auto p : adj[u]) //adj[v][i] = pair(vertex, weight)
-                if(d[p.first] > d[u] + p.second){
-                    d[p.first] = d[u] + p.second;
-                    pq.push({d[p.first], p.first});
-                }
-        }
-    }
-    Problem: ShortestPath Query
-
-    Floyd-Warshall
-    Floyd-Warshal algorithm is an all-pairs shortest path algorithm using dynamic programming.
-
-    It is too simple and undrestandable :
-
-    Floyd-Warshal()
-        d[v][u] = inf for each pair (v,u)
-        d[v][v] = 0 for each vertex v
-        for k = 1 to n
-            for i = 1 to n
-                for j = 1 to n
-                    d[i][j] = min(d[i][j], d[i][k] + d[k][j])
-    Time complexity : O(n3).
-
-    Bellman-Ford
-    Bellman-Ford is an algorithm for single source shortest path where edges can be negative (but if there is a cycle with negative weight, then this problem will be NP).
-
-    The main idea is to relax all the edges exactly n - 1 times (read relaxation above in dijkstra). You can prove this algorithm using induction.
-
-    If in the n - th step, we relax an edge, then we have a negative cycle (this is if and only if).
-
-    Code :
-
-    Bellman-Ford(int v)
-        d[i] = inf for each vertex i
-        d[v] = 0
-        for step = 1 to n
-            for all edges like e
-                i = e.first // first end
-                j = e.second // second end
-                w = e.weight
-                if d[j] > d[i] + w
-                    if step == n
-                        then return "Negative cycle found"
-                    d[j] = d[i] + w
-    Time complexity : O(nm).
-
-    SPFA
-    SPFA (Shortest Path Faster Algorithm) is a fast and simple algorithm (single source) that its complexity is not calculated yet. But if m = O(n2) it's better to use the first implementation of Dijkstra.
-
-    The origin of this algorithm is unknown. It's said that at first Chinese coders used it in programming contests.
-
-    Its code looks like the combination of Dijkstra and BFS :
-
-    SPFA(v):
-        d[i] = inf for each vertex i
-        d[v] = 0
-        queue q
-        q.push(v)
-        while q is not empty
-            u = q.front()
-            q.pop()
-            for each i in adj[u]
-                if d[i] > d[u] + w(u,i)
-                    then d[i] = d[u] + w(u,i)
-                    if i is not in q
-                        then q.push(i)
-    Time complexity : Unknown!.
-
-    MST
-    MST = Minimum Spanning Tree :) (if you don't know what it is, google it).
-
-    Best MST algorithms :
 
     Kruskal
-    In this algorithm, first we sort the edges in ascending order of their weight in an array of edges.
+        In this algorithm, first we sort the edges in ascending order of 
+        their weight in an array of edges.
 
-    Then in order of the sorted array, we add ech edge if and only if after adding it there won't be any cycle (check it using DSU).
+        Then in order of the sorted array, we add ech edge if and only if 
+        after adding it there won't be any cycle (check it using DSU).
 
-    Code :
 
-    Kruskal()
-        solve all edges in ascending order of their weight in an array e
-        ans = 0
-        for i = 1 to m
-            v = e.first
-            u = e.second
-            w = e.weight
-            if merge(v,u) // there will be no cycle
-                then ans += w
-    Time complexity : .
+        Kruskal()
+            solve all edges in ascending order of their weight in an array e
+            ans = 0
+            for i = 1 to m
+                v = e.first
+                u = e.second
+                w = e.weight
+                if merge(v,u) // there will be no cycle
+                    then ans += w
+        Time complexity : .
 
     Prim
-    In this approach, we act like Dijkstra. We have a set of vertices S, in each step we add the nearest vertex to S, in S (distance of v from  where weight(i, j) is the weight of the edge from i to j) .
+        In this approach, we act like Dijkstra. We have a set of vertices S, 
+        in each step we add the nearest vertex to S, in S 
+        (distance of v from  where weight(i, j) 
+        is the weight of the edge from i to j) .
 
-    So, pseudo code will be like this:
+        So, pseudo code will be like this:
 
-    Prim()
-        S = new empty set
-        for i = 1 to n
-            d[i] = inf
-        while S.size() < n
-            x = inf
-            v = -1
-            for each i in V - S // V is the set of vertices
-                if x >= d[v]
-                    then x = d[v], v = i
-            d[v] = 0
-            S.insert(v)
-            for each u in adj[v]
-                do d[u] = min(d[u], w(v,u))
-    C++ code:
+        Prim()
+            S = new empty set
+            for i = 1 to n
+                d[i] = inf
+            while S.size() < n
+                x = inf
+                v = -1
+                for each i in V - S // V is the set of vertices
+                    if x >= d[v]
+                        then x = d[v], v = i
+                d[v] = 0
+                S.insert(v)
+                for each u in adj[v]
+                    do d[u] = min(d[u], w(v,u))
+        C++ code:
 
-    One) O(n2)
+        One) O(n2)
 
-    bool mark[MAXN];
-    void prim(){
-        fill(d, d + n, inf);
-        fill(mark, mark + n, false);
-        int x,v;
-        while(true){
-            x = inf;
-            v = -1;
-            for(int i = 0;i < n;i ++)
-                if(!mark[i] and x >= d[i])
-                    x = d[i], v = i;
-            if(v == -1)
-                break;
-            d[v] = 0;
-            mark[v] = true;
-            for(auto p : adj[v]){ //adj[v][i] = pair(vertex, weight)
-                int u = p.first, w = p.second;
-                d[u] = min(d[u], w);
-            }
-        }
-    }
-    Two) 
-
-    void prim(){
-        fill(d, d + n, inf);
-        set<pair<int,int> > s;
-        for(int i = 0;i < n;i ++)
-            s.insert({d[i],i});
-        int v;
-        while(!s.empty()){
-            v = s.begin() -> second;
-            s.erase(s.begin());
-            for(auto p : adj[v]){
-                int u = p.first, w = p.second;
-                if(d[u] > w){
-                    s.erase({d[u], u});
-                    d[u] = w;
-                    s.insert({d[u], u});
+        bool mark[MAXN];
+        void prim(){
+            fill(d, d + n, inf);
+            fill(mark, mark + n, false);
+            int x,v;
+            while(true){
+                x = inf;
+                v = -1;
+                for(int i = 0;i < n;i ++)
+                    if(!mark[i] and x >= d[i])
+                        x = d[i], v = i;
+                if(v == -1)
+                    break;
+                d[v] = 0;
+                mark[v] = true;
+                for(auto p : adj[v]){ //adj[v][i] = pair(vertex, weight)
+                    int u = p.first, w = p.second;
+                    d[u] = min(d[u], w);
                 }
             }
         }
-    }
-    As Dijkstra you can use std :: priority_queue instead of std :: set.
+        Two) 
+
+        void prim(){
+            fill(d, d + n, inf);
+            set<pair<int,int> > s;
+            for(int i = 0;i < n;i ++)
+                s.insert({d[i],i});
+            int v;
+            while(!s.empty()){
+                v = s.begin() -> second;
+                s.erase(s.begin());
+                for(auto p : adj[v]){
+                    int u = p.first, w = p.second;
+                    if(d[u] > w){
+                        s.erase({d[u], u});
+                        d[u] = w;
+                        s.insert({d[u], u});
+                    }
+                }
+            }
+        }
+        As Dijkstra you can use std :: priority_queue instead of std :: set.
 
     Maximum Flow
-    You can read all about maximum flow here.
+    
+        algorithm EdmondsKarp
+            input:
+                C[1..n, 1..n] (Capacity matrix)
+                E[1..n, 1..?] (Neighbour lists)
+                s             (Source)
+                t             (Sink)
+            output:
+                f             (Value of maximum flow)
+                F             (A matrix giving a legal flow with the maximum value)
+            f := 0 (Initial flow is zero)
+            F := array(1..n, 1..n) (Residual capacity from u to v is C[u,v] - F[u,v])
+            forever
+                m, P := BreadthFirstSearch(C, E, s, t, F)
+                if m = 0
+                    break
+                f := f + m
+                (Backtrack search, and write flow)
+                v := t
+                while v ≠ s
+                    u := P[v]
+                    F[u,v] := F[u,v] + m
+                    F[v,u] := F[v,u] - m
+                    v := u
+            return (f, F)
+            
+            
+            
+        algorithm BreadthFirstSearch
+            input:
+                C, E, s, t, F
+            output:
+                M[t]          (Capacity of path found)
+                P             (Parent table)
+            P := array(1..n)
+            for u in 1..n
+                P[u] := -1
+            P[s] := -2 (make sure source is not rediscovered)
+            M := array(1..n) (Capacity of found path to node)
+            M[s] := ∞
+            Q := queue()
+            Q.offer(s)
+            while Q.size() > 0
+                u := Q.poll()
+                for v in E[u]
+                    (If there is available capacity, and v is not seen before in search)
+                    if C[u,v] - F[u,v] > 0 and P[v] = -1
+                        P[v] := u
+                        M[v] := min(M[u], C[u,v] - F[u,v])
+                        if v ≠ t
+                            Q.offer(v)
+                        else
+                            return M[t], P
+            return 0, P
+            
+            
+            
+        EdmondsKarp pseudo code using Adjacency nodes:
 
-    I only wanna put the source code here (EdmondsKarp):
-
-    algorithm EdmondsKarp
-        input:
-            C[1..n, 1..n] (Capacity matrix)
-            E[1..n, 1..?] (Neighbour lists)
-            s             (Source)
-            t             (Sink)
-        output:
-            f             (Value of maximum flow)
-            F             (A matrix giving a legal flow with the maximum value)
-        f := 0 (Initial flow is zero)
-        F := array(1..n, 1..n) (Residual capacity from u to v is C[u,v] - F[u,v])
-        forever
-            m, P := BreadthFirstSearch(C, E, s, t, F)
-            if m = 0
-                break
-            f := f + m
-            (Backtrack search, and write flow)
-            v := t
-            while v ≠ s
-                u := P[v]
-                F[u,v] := F[u,v] + m
-                F[v,u] := F[v,u] - m
-                v := u
-        return (f, F)
-        
-        
-        
-    algorithm BreadthFirstSearch
-        input:
-            C, E, s, t, F
-        output:
-            M[t]          (Capacity of path found)
-            P             (Parent table)
-        P := array(1..n)
-        for u in 1..n
-            P[u] := -1
-        P[s] := -2 (make sure source is not rediscovered)
-        M := array(1..n) (Capacity of found path to node)
-        M[s] := ∞
-        Q := queue()
-        Q.offer(s)
-        while Q.size() > 0
-            u := Q.poll()
-            for v in E[u]
-                (If there is available capacity, and v is not seen before in search)
-                if C[u,v] - F[u,v] > 0 and P[v] = -1
-                    P[v] := u
-                    M[v] := min(M[u], C[u,v] - F[u,v])
-                    if v ≠ t
-                        Q.offer(v)
-                    else
-                        return M[t], P
-        return 0, P
-        
-        
-        
-    EdmondsKarp pseudo code using Adjacency nodes:
-
-    algorithm EdmondsKarp
-        input:
-            graph (Graph with list of Adjacency nodes with capacities,flow,reverse and destinations)
-            s             (Source)
-            t             (Sink)
-        output:
-            flow             (Value of maximum flow)
-        flow := 0 (Initial flow to zero)
-        q := array(1..n) (Initialize q to graph length)
-        while true
-            qt := 0            (Variable to iterate over all the corresponding edges for a source)
-            q[qt++] := s    (initialize source array)
-            pred := array(q.length)    (Initialize predecessor List with the graph length)
-            for qh=0;qh < qt && pred[t] == null
-                cur := q[qh]
-                for (graph[cur]) (Iterate over list of Edges)
-                    Edge[] e :=  graph[cur]  (Each edge should be associated with Capacity)
-                    if pred[e.t] == null && e.cap > e.f
-                        pred[e.t] := e
-                        q[qt++] : = e.t
-            if pred[t] == null
-                break
-            int df := MAX VALUE (Initialize to max integer value)
-            for u = t; u != s; u = pred[u].s
-                df := min(df, pred[u].cap - pred[u].f)
-            for u = t; u != s; u = pred[u].s
-                pred[u].f  := pred[u].f + df
-                pEdge := array(PredEdge)
-                pEdge := graph[pred[u].t]
-                pEdge[pred[u].rev].f := pEdge[pred[u].rev].f - df;
-            flow := flow + df
-        return flow
+        algorithm EdmondsKarp
+            input:
+                graph (Graph with list of Adjacency nodes with capacities,flow,reverse and destinations)
+                s             (Source)
+                t             (Sink)
+            output:
+                flow             (Value of maximum flow)
+            flow := 0 (Initial flow to zero)
+            q := array(1..n) (Initialize q to graph length)
+            while true
+                qt := 0            (Variable to iterate over all the corresponding edges for a source)
+                q[qt++] := s    (initialize source array)
+                pred := array(q.length)    (Initialize predecessor List with the graph length)
+                for qh=0;qh < qt && pred[t] == null
+                    cur := q[qh]
+                    for (graph[cur]) (Iterate over list of Edges)
+                        Edge[] e :=  graph[cur]  (Each edge should be associated with Capacity)
+                        if pred[e.t] == null && e.cap > e.f
+                            pred[e.t] := e
+                            q[qt++] : = e.t
+                if pred[t] == null
+                    break
+                int df := MAX VALUE (Initialize to max integer value)
+                for u = t; u != s; u = pred[u].s
+                    df := min(df, pred[u].cap - pred[u].f)
+                for u = t; u != s; u = pred[u].s
+                    pred[u].f  := pred[u].f + df
+                    pEdge := array(PredEdge)
+                    pEdge := graph[pred[u].t]
+                    pEdge[pred[u].rev].f := pEdge[pred[u].rev].f - df;
+                flow := flow + df
+            return flow
+            
     Dinic's algorithm
     Here is Dinic's algorithm as you wanted.
 
