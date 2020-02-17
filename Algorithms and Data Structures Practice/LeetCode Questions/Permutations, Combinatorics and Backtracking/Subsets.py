@@ -35,7 +35,9 @@ class Solution:
             bits = bin(i)
             subset = []
             for j in range(0, numberOfSubsets):
-                if i >> j & 1:  # Check if the first bit is on, then check if second bit is on, then check third bit is on, and keep going
+                if i >> j & 1:  # Check if the first bit is on, 
+                                # then check if second bit is on, 
+                                # then check third bit is on, and keep going
                     subset.append(nums[j])
 
             subsets.append(subset)

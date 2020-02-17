@@ -10,7 +10,6 @@ TOPCODER COMPETITIVE PROGRAMMING GUIDES -> https://www.topcoder.com/community/co
 
 REALLY COOL MEDIUM ARTICLE -> https://medium.com/@karangujar43/best-resources-for-competitive-programming-algorithms-and-data-structures-730cb038e11b
 
-Leetcodes PER COMPANY LIST -> http://leetcode.liangjiateng.cn/leetcode/Citadel/algorithm
 
 TOPICS TO UNDERSTAND: 
         Segment tree (with lazy propagation)
@@ -69,57 +68,249 @@ TOPICS TO UNDERSTAND:
         Z algorithm
 
 
-THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
+THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
 
-0) Branch and Bound algos vs backtracking algos:
 
-    Backtracking
-    [1] It is used to find all possible solutions available to the problem.
-    [2] It traverse tree by DFS(Depth First Search).
-    [3] It realizes that it has made a bad choice & undoes the last choice by backing up.
-    [4] It search the state space tree until it found a solution.
-    [5] It involves feasibility function.
+0)  For problems like parenthesis matching. You can use a stack to solve the matching. But you can also
+    do matching by incrementing and decrementing an integer variable. Or you can use colors or 
+    other types of INDICATOR VARIABLE TYPE SOLUTIONS that contain meta information on the problem. 
 
-    Branch-and-Bound
-    [1] It is used to solve optimization problem.
-    [2] It may traverse the tree in any manner, DFS or BFS.
-    [3] It realizes that it already has a better optimal solution 
-        that the pre-solution leads to so it abandons that pre-solution.
-    [4] It completely searches the state space tree to get optimal solution.
-    [5] It involves bounding function.
+0.05) To solve a difficult 3D problem or 2D problem. Solve the lower dimension first, 
+     and then use it to guide your solution for higher dimensions. 
+     Such as max area of rectangle of 1's.
 
-    Backtracking
 
-    Backtracking is a general algorithm for finding all (or some) solutions to some computational problems, notably constraint satisfaction problems, 
-    that incrementally builds candidates to the solutions, and abandons each partial candidate c ("backtracks") as 
-    soon as it determines that c cannot possibly be completed to a valid solution.
-    It enumerates a set of partial candidates that, in principle, could be completed in various ways to give all the possible solutions to the given problem. 
-    The completion is done incrementally, by a sequence of candidate extension steps.
-    Conceptually, the partial candidates are represented as the nodes of a tree structure, the potential search tree. 
-    Each partial candidate is the parent of the candidates that differ from it by a single extension step, 
-    the leaves of the tree are the partial candidates that cannot be extended any further.
-    It traverses this search tree recursively, from the root down, in depth-first order (DFS). 
-    It realizes that it has made a bad choice & undoes the last choice by backing up.
-    For more details: Sanjiv Bhatia's presentation on Backtracking for UMSL.
+0.1) When doing string splitting, there are helper functions 
+     but sometimes its better to for loop through the 
+     string character by character because you have more granularity 
+     which can help to solve the problem easily. 
 
-    Branch And Bound
+0.15)   One-line Tree in Python
+        Using Python's built-in defaultdict we can easily define a tree data structure:
 
-    A branch-and-bound algorithm consists of a systematic enumeration of candidate solutions by 
-    means of state space search: the set of candidate solutions is thought of as forming a 
-    rooted tree with the full set at the root.
-    The algorithm explores branches of this tree, which represent subsets of the solution set. 
-    Before enumerating the candidate solutions of a branch, the branch is checked against upper and lower estimated 
-    bounds on the optimal solution, and is discarded if it cannot produce a better solution than the best one found so far by the algorithm.
-    It may traverse the tree in any following manner:
-        BFS (Breath First Search) or (FIFO) Branch and Bound
-        D-Search or (LIFO) Branch and Bound
-        Least Count Search or (LC) Branch and Bound
+        def tree(): return defaultdict(tree)
+        
+        users = tree()
+        users['harold']['username'] = 'hrldcpr'
+        users['handler']['username'] = 'matthandlersux'
+
+0.2) Learnings from interval coloring. Sometimes we care a lot about tracking our current running value
+    such as current running intersection to generate a solution output. However it can be better to
+    focus on the negative space, and care about what will be evicted first, as our main tracking 
+    concern using a priority queue. Look at problems with both positive and negative space in mind. 
+    Know whats best to track, and track it. dont be fooled by the question. 
+
+0.25) Look to see if the question is a
+      in the negative space of questions you've 
+      seen before!
+      For instance, Non-overlapping intervals LC, where
+      you find the minimum number of intervals to remove 
+      to make the rest of the intervals non-overlapping
+      is the negative of max interval scheduling using
+      earliest finish time.
+
+      But you can also solve directly:
+      Sort the intervals by their start time. 
+      If two intervals overlap, the interval 
+      with larger end time will be removed 
+      so as to have as little impact on 
+      subsequent intervals
+
+
+
+0.3) Granularity === Optimization. Break up variables and track everything. Structurd things like
+      for loops, and functional structures like reduction, and map, and filter 
+      that dont fit the required granlarity should be thrown away if it interferes. 
+
+0.4) HOW TO do cieling using python floor int truncation:
+
+    def ceiling_division(n, d):
+        return -(n // -d)
+
+0.45) When you are solving a problem, and it seems like DP. 
+      take a step back and see if you can use  hash map abuse + greedy,
+      to solve the problem. DP uses hash maps too, but maybe you can
+      be smart and add direction, and running values, which will allow  
+      hash map abuse to work (try thinking of it bottom up, base case, direction,
+      to help you think of hash map abuse or a greedy soln). 
+
 
 
 0.5) Preprocess and do a running comparison between 2 containers. 
     For instance, to do certain problems you need to sort a list and then compare the sorted list 
     to another list to determine ways to do sliding window/2pointer type techniques. 
 
+0.55) GREEDY AND 2 POINTER SOLUTION GUIDE: 
+      
+      For an optimization problem, to do it greedily and efficiently, do not enumerate 
+      all states, only ones that you are sure could possibily be better under the problems
+      constraints. 
+      Do this first:
+      
+      DISCOVER ALL THE CONSTRIANTS INTRODUCED BY THE PROBLEM FIRST!
+      THEN THINK OF THEOREMS THAT MUST BE TRUE AS A RESULT OF THE CONSTRAINTS.
+      RUN THROUGH EXAMPLES, TO ENSURE THEOREMS ARE TRUE, and then step through a 
+      solution to see how they work: 
+
+      Do both 1 and 2 at same time to come up with a solution:
+      1) EXPLOT THEOREMS TO CREATE the OPTIMIZATION PATTERNS AND STEPS TO EXECUTE.
+         Thinking of the problem using DP can help with greedy creation. 
+      2) THINK OF WHAT A PROOF TO THE GREEDY PROBLEM COULD BE GIVEN THE THEREMS;
+         use proof to guide creation of greedy.
+
+      Example: Container with most water: 
+        
+        Find two lines, which together with x-axis forms a container, 
+        such that the container contains the most water.
+        Input: [1,8,6,2,5,4,8,3,7]
+        Output: 49
+        
+        class Solution:
+            def maxArea(self, height):
+                i, j = 0, len(height) - 1
+                water = 0
+                while i < j:
+                    water = max(water, (j - i) * min(height[i], height[j]))
+                    if height[i] < height[j]:
+                        i += 1
+                    else:
+                        j -= 1
+                return water
+
+0.56) SLIDING WINDOW ALGO DESIGN PATTERN:
+      Max Sum Contiguous Subarray: 
+      
+    # Function to find the maximum contiguous subarray 
+    from sys import maxint 
+    def maxSubArraySum(a,size): 
+        
+        max_so_far = -maxint - 1
+        max_ending_here = 0
+        
+        for i in range(0, size): 
+            max_ending_here = max_ending_here + a[i] 
+            if (max_so_far < max_ending_here): 
+                max_so_far = max_ending_here 
+    
+            if max_ending_here < 0: 
+                max_ending_here = 0   
+        return max_so_far 
+
+
+
+0.6) To delete from a list in O(1), any index, you can swap the middle indexed element with
+    the last element in the array. then call array.pop(). This is O(1). You could also use a linked
+    list. The problem is, this will mess up the sorting of your array if you do this. 
+    so dont do it if your result needs to be sorted. 
+
+
+0.65) EMULATE DO WHILE IN PYTHON:
+
+        i = 1
+
+        while True:
+            print(i)
+            i = i + 1
+            if(i > 3):
+                break
+
+0.67) PYTHON AND BINARY Enumerate all subsets:
+    class Solution:
+        def subsets(self, nums):
+            numberOfSubsets = len(nums)
+            subsets = []
+            for i in range(0, 2 ** numberOfSubsets):
+                bits = bin(i)
+                subset = []
+                for j in range(0, numberOfSubsets):
+                    if i >> j & 1:  # Check if the first bit is on, 
+                                    # then check if second bit is on, 
+                                    # then check third bit is on, and keep going
+                        subset.append(nums[j])
+
+                subsets.append(subset)
+
+            return subsets
+
+        Iterate through all subsets of a 
+        subset y (not including empty set) (TODO WRITE IN PYTHON):
+
+        given a set of numbers, we want to find the sum of all subsets.
+
+            Sol: This is easy to code using bitmasks. we can use an array to store all the results.
+
+            int sum_of_all_subset ( vector< int > s ){
+                        int n = s.size() ;
+                        int results[ ( 1 << n ) ] ;     // ( 1 << n )= 2^n
+
+                    //initialize results to 0
+                        memset( results, 0, sizeof( results ) ) ;
+
+                    // iterate through all subsets
+                    // for each subset, O(2^n)
+                    for( int i = 0 ; i < ( 1 << n ) ; ++ i ) {    
+                            // check membership, O(n)
+                            for ( int j = 0; j < n ; ++ j ) {       
+                                // test bit
+                                if ( ( i & ( 1 << j ) ) ! = 0 )    
+                                    results[i] += s [j] ;          
+                                }
+                }
+            }
+
+0.68) When you are doing a question that requires modifying a list as you go
+      dont save pointers to the list and reprocess list and other stuff. 
+      Do all the modifications in one loop as you go.
+      Such as for Insert Interval (LC 57)
+      
+0.69) When the question has products involved. Use Logs to turn it into a sums question. 
+
+
+0.7) Iterate backwards through array using python for dp:
+    for i in range(len(arr) - 1, -1, -1):
+        print(i)
+
+0.71) Remember that its constant space when you are enumerating over the alphabet!!
+
+0.75) To get the fastest greedy solution possible, you must keep getting more
+     and more greedy and breaking assumptions you think you have. Only 
+     care about the answer, not the details of the question. Focus on 
+     what you REALLY NEED!!! when you keep breaking the questions rules
+     you thought were rules, find the true constraints!
+     Look at 621) Task Scheduler. It looked complicated but we just 
+     kept getting more greedy to get the most optimal MATHEMATICAL SOLUTION.
+     USE MATH AND ANALYSIS TO GET THE BEST SOLUTION!
+
+
+
+0.8) Sometimes you will get TLE with the bottom up solution. 
+     
+     This is because bottom up is slower since it is performing a BFS, 
+     rather than going directly to the solution unlike DFS + memoization, 
+     that tries to solve as quickly as possible. 
+
+     => If you only need a subset of the possible outputs 
+     from the algorithm, then the answer could also be yes. 
+     You only calculate the outputs you need, and so you avoid unneeded work.
+    => Jump 
+
+
+0.85) When their is a max or min problem. 
+      TRY GREEDY first before doing GRAPH SEARCH + DP
+      Be smart first and do 
+      GREEDY + EXPLOIT PROBLEM STRUCTURE before anything 
+      else. 
+
+0.9) Bidirectional BFS Reasons to use:
+
+    Bi-directional BFS will yield much better 
+    results than simple BFS in most cases. Assume the 
+    distance between source and target is k, and the 
+    branching factor is B (every vertex has on average B edges).
+
+    BFS will traverse 1 + B + B^2 + ... + B^k vertices.
+    Bi-directional BFS will traverse 2 + 2B^2 + ... + 2B^(k/2) vertices.
+    For large B and k, the second is obviously much faster the the first.
 
 1) Exploit problem structure
 
@@ -136,6 +327,17 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
         solved in O(N) (OR even O(log N) if you implement 
         binary searching 2 pointers)
 
+1.3) Count set bits in integer:
+      (Log N!!) if N represents size of number
+
+    # Function to get no of set bits in binary 
+    # representation of positive integer n */ 
+    def  countSetBits(n): 
+        count = 0
+        while (n): 
+            count += n & 1
+            n >>= 1
+        return count 
 
 1.5) LOOK AT PROBLEM IN ALL POSSIBLE DIRECTIONS to apply your techniques, whether its 2 pointer, 
     sliding window, or Dynamic programming
@@ -145,11 +347,57 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
     d) 2 pointers, one that traverses even indexes, and the other that traverses odd indexes
     e) Be creative in how you see the DIRECTIONALITY of the solution for a given problem. 
 
+1.6) Coin Change Bottom Up DP:
+        You are given coins of different denominations and a total amount of money amount. 
+        Write a function to compute the fewest number of coins that you need to 
+        make up that amount. If that amount of money cannot be made 
+        up by any combination of the coins, return -1.
+
+        Example 1:
+
+        Input: coins = [1, 2, 5], amount = 11
+        Output: 3 
+        Explanation: 11 = 5 + 5 + 1
+        Example 2:
+
+        Input: coins = [2], amount = 3
+        Output: -1
+        Note:
+        You may assume that you have an infinite number of each kind of coin.  
+        
+        class Solution(object):
+            def coinChange(self, coins, amount):
+                """
+                :type coins: List[int]
+                :type amount: int
+                :rtype: int
+                """
+                rs = [amount+1] * (amount+1)
+                rs[0] = 0
+                for i in xrange(1, amount+1):
+                    for c in coins:
+                        if i >= c:
+                            rs[i] = min(rs[i], rs[i-c] + 1)
+
+                if rs[amount] == amount+1:
+                    return -1
+                return rs[amount]
+
 
 1.7) Sliding window: Common problems you use the sliding window pattern with:
         -> Maximum sum subarray of size ‘K’ (easy)
         -> Longest substring with ‘K’ distinct characters (medium)
         -> String anagrams (hard)
+
+1.75) Transpose matrix:
+      Switch (i, j) with (j,i) either by 
+      iterating over upper triangle or lower triangle:
+
+       n = len(A)
+        for i in range(n):
+            for j in range(i):
+                A[i][j], A[j][i] = A[j][i], A[i][j]
+
 
 1.8) Two Pointers is often useful when searching pairs in a 
         sorted array or linked list; for example, 
@@ -173,6 +421,48 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
         Linked List Cycle (easy)
         Palindrome Linked List (medium)
         Cycle in a Circular Array (hard)
+
+
+1.95) Use pointer on the fly construction !!
+      Combining running 2 pointers, running 2 container concepts, and space-efficient
+      dynamic programming concepts to get O(N) speed, O(1) space except for output container.
+      Think in terms of containers to implement fast 2 pointer solution!
+      Then think in terms of DP to reduce to a 1 pointer solution!
+
+
+      which does not count:
+        
+        238. Product of Array Except Self
+
+        Given an array nums of n integers where n > 1,  
+        return an array output such that output[i] is 
+        equal to the product of all the elements of nums except nums[i].
+
+        Example:
+
+        Input:  [1,2,3,4]
+        Output: [24,12,8,6]
+        Note: Please solve it without division and in O(n).
+
+        Follow up:
+        Could you solve it with constant space complexity? 
+
+        class Solution:
+            # @param {integer[]} nums
+            # @return {integer[]}
+            def productExceptSelf(self, nums):
+                p = 1
+                n = len(nums)
+                output = []
+                for i in range(0,n):
+                    output.append(p)
+                    p = p * nums[i]
+                p = 1
+                for i in range(n-1,-1,-1):
+                    output[i] = output[i] * p
+                    p = p * nums[i]
+                return output
+
 
 
 2) Back tracking
@@ -202,7 +492,8 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
      
      REMOVING CYCLES, DFS, AND BFS using colors: DONE IN GRAPHA ALGO REVIEW SECTION BELOW. 
 
-
+2.35) In head recursion , the recursive call, when it happens, comes 
+      before other processing in the function (think of it happening at the top, or head, of the function). In tail recursion , it's the opposite—the processing occurs before the recursive call.
 
 2.4) CUT VERTEX AKA ARTICULATION POINT finding:
 
@@ -343,6 +634,90 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
 
 
 
+2.55) MATRIX Problems Tips:
+      Try reversing. Try transposing. Try circular sorting. 
+      Flipping on x axis or y axis is just reversing. 
+
+      MATRIX ROTATION:
+        HARMAN SOLN:
+
+        def rotate(self, matrix):
+            n = len(matrix)
+            N = len(matrix)
+            indexN = N - 1
+            
+            for d in range(n//2):
+                swaps_to_do_this_layer = len(matrix) - 2*d - 1
+                # Swap everything except the last element. that is 
+                # automatically swapped on the first swap in the loop
+                for i in range( swaps_to_do_this_layer ):              
+                    # CONSIDER D AS THE BOUNDARY (with the help of indexN) AND 
+                    # I AS THE OFFSET TO THE ELEMENTS WITHIN BOUNDARY
+                    # I should only be offsetting one side, either a row, or a column
+                    
+                    northR, northC = d, i+d
+                    eastR, eastC = i + d, indexN - d
+                    southR, southC = indexN - d, indexN - d - i
+                    westR, westC = indexN - d - i, d
+                    
+                    matrix[northR][northC], matrix[eastR][eastC], matrix[southR][southC], matrix[westR][westC] =\
+                        matrix[westR][westC], matrix[northR][northC], matrix[eastR][eastC], matrix[southR][southC]
+        SMARTER WAY:
+        def rotate(self, matrix):
+            n = len(matrix)
+            for l in xrange(n / 2):
+                r = n - 1 - l
+                for p in xrange(l, r):
+                    q = n - 1 - p
+                    cache = matrix[l][p]
+                    matrix[l][p] = matrix[q][l]
+                    matrix[q][l] = matrix[r][q]
+                    matrix[r][q] = matrix[p][r]
+                    matrix[p][r] = cache     
+
+        REVERSE - TRANSPOSE:
+
+        def rotate(self, matrix):
+            n = len(matrix)
+            matrix.reverse()
+            for i in xrange(n):
+                for j in xrange(i + 1, n):
+                    matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+        
+        # walks over the "top-left quadrant" 
+        # of the matrix and directly rotates each element with the 
+        # three corresponding elements in the other three quadrants. 
+        # Note that I'm moving the four elements in 
+        # parallel and that [~i] is way nicer than [n-1-i].
+
+        class Solution:
+            def rotate(self, A):
+                n = len(A)
+                for i in range(n/2):
+                    for j in range(n-n/2):
+                        A[i][j], A[~j][i], A[~i][~j], A[j][~i] = \
+                                A[~j][i], A[~i][~j], A[j][~i], A[i][j]
+
+        # Flip Flip, all by myself - 48 ms
+
+        # Similar again, but I first transpose and then flip 
+        # left-right instead of upside-down, and do it all 
+        # by myself in loops. This one is 100% in-place 
+        # again in the sense of just moving the elements.
+
+        class Solution:
+            def rotate(self, A):
+                n = len(A)
+                for i in range(n):
+                    for j in range(i):
+                        A[i][j], A[j][i] = A[j][i], A[i][j]
+                for row in A:
+                    for j in range(n/2):
+                        row[j], row[~j] = row[~j], row[j]
+
+
+
+
 2.6) LRU Cache learnings and techniques=>
     Circular Doubly linked lists are better than doubly linked lists if you set up dummy nodes
     so you dont have to deal with edge cases regarding changing front and back pointers
@@ -351,6 +726,79 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
 
     -> You can also use just an ordered map for this question to solve it fast!! 
        (pop items and put them back in to bring them to the front technique to do LRU)
+
+    from collections import OrderedDict
+    class LRUCache:
+
+        def __init__(self, capacity: int):
+            self.max_capacity = capacity
+            self.lru_cache = OrderedDict()
+            
+        def get(self, key: int) -> int:
+            key = str(key)
+            if(key not in self.lru_cache):
+                return -1
+            value = self.lru_cache[key]
+            del self.lru_cache[key]
+            self.lru_cache[key] = value
+            return value
+
+        def put(self, key: int, value: int) -> None:
+            key = str(key)
+            if(key not in self.lru_cache):
+                if(len(self.lru_cache) < self.max_capacity):
+                    self.lru_cache[key] = value
+                else:
+                    # last=False signals you want to delete first instead
+                    # of last entry. 
+                    self.lru_cache.popitem(last=False)
+                    self.lru_cache[key] = value
+            else:
+                del self.lru_cache[key]
+                self.lru_cache[key] = value
+
+    # WITH A DOUBLY LINKED CIRCULAR LIST:
+    
+    class LRUCache:
+        def __init__(self, capacity):
+            self.capacity = capacity
+            self.dic = dict()
+            self.head = Node(0, 0)
+            self.tail = Node(0, 0)
+            self.head.next = self.tail
+            self.tail.prev = self.head
+
+        def get(self, key):
+            if key in self.dic:
+                n = self.dic[key]
+                self._remove(n)
+                self._add(n)
+                return n.val
+            return -1
+
+        def set(self, key, value):
+            if key in self.dic:
+                self._remove(self.dic[key])
+            n = Node(key, value)
+            self._add(n)
+            self.dic[key] = n
+            if len(self.dic) > self.capacity:
+                n = self.head.next
+                self._remove(n)
+                del self.dic[n.key]
+
+        def _remove(self, node):
+            p = node.prev
+            n = node.next
+            p.next = n
+            n.prev = p
+
+        def _add(self, node):
+            p = self.tail.prev
+            p.next = node
+            self.tail.prev = node
+            node.prev = p
+            node.next = self.tail
 
 2.7) Common problems solved using DP on broken profile include:
 
@@ -411,7 +859,70 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
             cout << dp[n][0];
         }
 
-2.8) 0-1 BFS
+2.8) ROLLING HASH USAGE: 
+    Consider the string abcd and we have to find the hash values of 
+    substrings of this string having length 3 ,i.e.,abc and bcd.
+    
+    For simplicity let us take 5 as the base but in actual scenarios we should mod it 
+    with a large prime number to avoid overflow.The highest 
+    power of base is calculated as (len-1) where len is length of substring.
+
+    H(abc) => a*(5^2) + b*(5^1) + c*(5^0) 
+    = 97*25 + 98*5 + 99*1 = 3014
+
+    H(bcd) => b*(5^2) + c*(5^1) + d*(5^0) 
+    = 98*25 + 99*5 + 100*1 = 3045
+    
+    So, we do not need to rehash the string again. Instead, we can subtract 
+    the hash code corresponding to the first character from 
+    the first hash value,multiply the result by the considered 
+    prime number and add the hash code corresponding to the next character to it.
+    
+    H(bcd)=(H(abc)-a*(5^2))*5 + d*(5^0)=(3014-97*25)*5 + 100*1 = 3045
+
+    In general,the hash H can be defined as:-
+
+    H=( c1ak-1 + c2ak-2 + c3ak-3. . . . + cka0 ) % m
+    
+    where a is a constant, c1,c2, ... ck are the input characters 
+    and m is a large prime number, since the probability of 
+    two random strings colliding is about ≈ 1/m.
+
+    Then, the hash value of next substring,Hnxt using rolling hash can be defined as:-
+
+    Hnxt=( ( H - c1ak-1 ) * a + ck+1a0 ) % m
+
+    // computes the hash value of the input string s
+    long long compute_hash(string s) {
+        const int p = 31;   // base 
+        const int m = 1e9 + 9; // large prime number
+        long long hash_value = 0;
+        long long p_pow = 1;
+        for (char c : s) {
+            hash_value = (hash_value + (c - 'a' + 1) * p_pow) % m;
+            p_pow = (p_pow * p) % m;  
+        }
+        return hash_value;
+    }
+    // finds the hash value of next substring given nxt as the ending character 
+    // and the previous substring prev 
+    long long rolling_hash(string prev,char nxt)
+    {
+        const int p = 31;
+        const int m = 1e9 + 9;
+        long long H=compute_hash(prev);
+        long long Hnxt=( ( H - pow(prev[0],prev.length()-1) ) * p + (int)nxt ) % m;
+        return Hnxt;
+    }
+
+    The various applications of Rolling Hash algorithm are:
+
+    Rabin-Karp algorithm for pattern matching in a string in O(n) time
+    Calculating the number of different substrings of a string in O(n2logn)
+    Calculating the number of palindromic substrings in a str
+
+
+3) 0-1 BFS
     we can use BFS to solve the SSSP (single-source shortest path) 
     problem in O(|E|), if the weights of each edge is either 0 or 1.
 
@@ -447,7 +958,6 @@ THESE ARE HARMANS PERSONAL SET OF PARADIGMS:
     whenever the bucket corresponding to the smallest distance gets 
     empty, we make a cyclic shift to get the bucket with the next higher 
     distance. This extension is called Dial's algorithm.
-
 
 
 
@@ -1796,6 +2306,230 @@ COOL NOTES PART 1: DYNAMIC PROGRAMMING RECURRENCES EXAMPLES:
     singleton set {i}: 1 << i
     Membership test: x & (1 << i) != 0
 
+#######################################
+##########################################
+
+COOL Notes PART 1.5: DP with bitmasking example: 
+    Problem
+    Your task will be to calculate number of different assignments of n different 
+    topics to n students such that everybody gets exactly one topic he likes.
+    1 means the student likes the subject. 0 means they dont.
+
+    Solution:
+        Defining the DP state
+        So, we can define our DP state with two variables, 
+        'k' and 'B' as :
+
+        DP(k,B) = Total no. of possible arrangements of 
+        students 0 to k choosing subset of subjects as per bitmask B.
+
+        Time for some optimization. The best way to optimize a DP solution is to 
+        reduce its "dimension", i.e, reduce the no. of state variables. 
+        In or case, we can see that k = No. of set bits in B. So, k 
+        can be easily calculated from B and hence not a part of our DP states anymore.
+
+        The new DP state is :
+
+        DP(B) = Total no. of possible arrangements of students 
+        0 to k assigning subjects as per bitmask B.
+
+        where k = count set bits of B
+        The base case should be DP(0) = 1 , as there is 
+        exactly 1 way to arrange 0 students and 0 subjects.
+
+        For a state B , we can define the recurrence relation as follows :
+
+        where k = number of set bits in B,
+
+            DP(B) = for each i'th set bit in B, 
+            check  whether k'th student likes i'th subject. 
+            if true, DP(B) += DP(unset i'th bit from B)
+
+        basically, for any arrangement, we remove 
+        one bit at a time and add up the resulting 
+        state if it satisfies the "liking" criteria. 
+        For example :
+
+        DP(1011) = DP(0011) + DP(1001) + DP(1010)
+
+        (assuming 3rd student likes 1st, 3rd and 
+        4th subjects. If he didn't like any of 
+        those, then those disliked states wouldn't be added)
+
+        logically, this can be explained as follows :
+
+        for a DP state 1011, the 3rd student can be assigned 
+        to either 1st,3rd or 4th subject. Now, if the student 
+        was assigned to 1st subject, then the number of ways to 
+        assign the previous students is given by DP(0011). 
+        Similarly, if 3rd student gets 3rd subject, we 
+        add DP(1001), and for 4th subject we add DP(1010).
+
+        Implementation
+        in practice, we create a single dimensional array of 
+        size 1<<20 (i.e. 2^20) . Let it be called DP[ ].
+        First, set DP[0] = 1 ;
+        then , run a loop from 1 to (1<<n)-1 (i.e. (2^n)-1) to generate all possible bitmasks
+        for each index of the loop, apply the recurrence relation as discussed above
+        finally, DP[(1<<n)-1] gives the answer.
+
+        //base case
+	    dp[0] = 1;
+      
+        //recurrence relation implemented
+        for (int j = 1; j < (1 << n) ; j++) {
+            int idx = Integer.bitCount(j);
+            for (int k = 0; k < n; k++) {
+                if (likes[idx-1][k] == false || (j & (1 << k)) == 0)
+                    continue;
+                dp[j] += dp[(j & ~(1 << k))];
+            }
+        }
+        
+        //final answer
+        System.out.println(dp[(1 << n) -1]);
+
+################################################################
+############################################################
+########################################################
+
+COOL NOTES PART 1.6 => DIGIT DP
+
+    How many numbers x are there in the range a to b, where the digit d occurs exactly k times in x? 
+    (can solve with combinatorics too.)
+
+
+    Building a sequence of digits
+        Let’s consider the number as a sequence of digits. Let’s name the sequence sq. 
+        Initially sq is empty. We’ll try to add new digits from left to right to build the sequence. 
+        n each recursive call we’ll place a digit in our current position and 
+        will call recursively to add a digit in the next position. 
+
+    Information we need to place a digit at the current position
+        Let’s say during the building of the sequence, currently we are at position pos.
+        We have already placed some digits in position from 1 to pos-1. So now we are trying to 
+        place a digit at current position pos. If we knew the whole sequence 
+        we have build so far till position pos-1 then we could 
+        easily find out which digits we can place now. But how?
+
+        You can see that, in the sequence sq the left most digit is actually the most significant digit. 
+        And the significance get decreased from left to right. So if 
+        there exist any position t (1<=t<pos) where sq[t] < b[t] then we can 
+        place any digit in our current position. Because the sequence has 
+        already become smaller than b no matter which digit we place in the later positions. 
+        Note, b[t] means the digit at position t at number b.
+
+        But if there was no t that satisfy that condition then at position pos, 
+        we can’t place any digit greater than b[pos]. 
+        Because then the number will become larger than b.
+        
+        using an extra parameter f1(true/false) in our function we can handle that. 
+        Whenever we place a digit at position t which is smaller than b[t] 
+        we can make f1 = 1 for the next recursive call. So whenever we are at any position later, 
+        we don’t actually need the whole sequence. Using the value of f1 
+        we can know if the sequence have already become smaller than b.
+
+    Extra condition
+        digit d will have to occur exactly k times in sequence sq. We need another parameter cnt. 
+        cnt is basically the number of times we have placed digit d so far in 
+        our sequence sq. Whenever we place digit d in our sequence sq we just 
+        increment cnt in our next recursive call.
+
+        In the base case when we have built the whole sequence we just need to check if 
+        cnt is equal to k. If it is then we return 1, 
+        otherwise we return 0.
+
+    Final DP States
+        If we have understood everything so far then it's easy to see that we need 
+        total three states for DP memoization. At which position we are, 
+        if the number has already become smaller than b and the frequency of digit d till now.
+
+    Solve for range (a to b)
+        Using the above approach we can find the total valid numbers in the range 0 to b. 
+        But in the original problem the range was actually a to b. How to handle that? 
+        Well, first we can find the result for range 0 to b and then just 
+        remove the result for range 0 to a-1. Then what we 
+        are left off is actually the result from range a to b.
+
+    How to solve for range a to b in a single recursion?
+        In the above approach we used an extra parameter f1 which helped us to make sure 
+        the sequence is not getting larger than b. Can’t we do the similar thing so that 
+        the sequence does not become smaller than a? Yes of course. For that, 
+        we need to maintain an extra parameter f2 which will say if there 
+        exist a position t such that sq[t] > a[t]. Depending on the value of 
+        f2 we can select the digits in our current position so that the sequence 
+        does not become smaller than a. Note: We also have to 
+        maintain the condition for f1 parallely so that the sequence remains valid.
+
+        #include <bits/stdc++.h>
+        using namespace std;
+
+        vector<int> num;
+        int a, b, d, k;
+        int DP[12][12][2];
+        /// DP[p][c][f] = Number of valid numbers <= b from this state
+        /// p = current position from left side (zero based)
+        /// c = number of times we have placed the digit d so far
+        /// f = the number we are building has already become smaller than b? [0 = no, 1 = yes]
+
+        int call(int pos, int cnt, int f){
+            if(cnt > k) return 0;
+
+            if(pos == num.size()){
+                if(cnt == k) return 1;
+                return 0;
+            }
+
+            if(DP[pos][cnt][f] != -1) return DP[pos][cnt][f];
+            int res = 0;
+
+            int LMT;
+
+            if(f == 0){
+                /// Digits we placed so far matches with the prefix of b
+                /// So if we place any digit > num[pos] in the current position, then the number will become greater than b
+                LMT = num[pos];
+            } else {
+                /// The number has already become smaller than b. We can place any digit now.
+                LMT = 9;
+            }
+
+            /// Try to place all the valid digits such that the number doesn't exceed b
+            for(int dgt = 0; dgt<=LMT; dgt++){
+                int nf = f;
+                int ncnt = cnt;
+                if(f == 0 && dgt < LMT) nf = 1; /// The number is getting smaller at this position
+                if(dgt == d) ncnt++;
+                if(ncnt <= k) res += call(pos+1, ncnt, nf);
+            }
+
+            return DP[pos][cnt][f] = res;
+        }
+
+        int solve(int b){
+            num.clear();
+            while(b>0){
+                num.push_back(b%10);
+                b/=10;
+            }
+            reverse(num.begin(), num.end());
+            /// Stored all the digits of b in num for simplicity
+
+            memset(DP, -1, sizeof(DP));
+            int res = call(0, 0, 0);
+            return res;
+        }
+
+        int main () {
+
+            cin >> a >> b >> d >> k;
+            int res = solve(b) - solve(a-1);
+            cout << res << endl;
+
+            return 0;
+        }
+
+
 
 #####################################################################################
 ####################################################################################3#3
@@ -2955,6 +3689,127 @@ GRAPH TRAVERSAL ALL TYPES:
         (a list of all the graph's keys) instead of a list with only a single starting node. 
         For the recursive version, replace the call to recursive_helper(node) with a loop 
         that calls the helper function on every node in the graph if it's not yet in seen.
+
+#########################################################################
+########################################################################3
+Z algorithm (https://www.hackerearth.com/practice/algorithms/string-algorithm/z-algorithm/tutorial/)
+
+COOL NOTES: Z ALGORITHM FOR STRINGS:
+
+
+    The Z-function for a string S of length N is an array of length N 
+    where the i th element is equal to the greatest number of 
+    characters starting from the position i 
+    that coincide with the first characters of S.
+
+    In other words, z[i] is the length 
+    of the longest common prefix between S 
+    and the suffix of S starting at i. We assume 0-based indexes; 
+    that is, the first character of S has index 0 and the last one has index N-1.
+
+    The first element of Z-functions, z[0], is generally not 
+    well-defined. In this article we will assume it is zero.
+
+    z [ 0 ] = 0
+
+    This article presents an algorithm for calculating the Z-function 
+    in O(N) time, as well as various of its applications.
+
+
+    Examples
+
+    For example, here are the values of the Z-function computed for different strings:
+
+    s = 'aaaaa'
+    Z[0]	Z[1]	Z[2]	Z[3]	Z[4]
+    0	      4	      3	      2	      1
+
+    s = 'aaabaab'
+    Z[0]	Z[1]	Z[2]	Z[3]	Z[4]	Z[5]	Z[6]
+    0	      2	      1	      0	      2	      1	      0
+
+    s = 'abacaba'
+    Z[0]	Z[1]	Z[2]	Z[3]	Z[4]	Z[5]	Z[6]
+    0	      0	      1	      0	      3       0	      1
+
+    Trivial algorithm
+
+    The formal definition can be represented in the following elementary implementation.
+
+    vector<int> z_function_trivial(string s) 
+    {
+        int n = (int) s.length();
+        vector<int> z(n);
+        for (int i = 1; i < n; ++i)
+            while (i + z[i] < n && s[z[i]] == s[i + z[i]])
+                ++z[i];
+        return z;
+    }
+
+    We just iterate through every position and update for each one of them, 
+    starting from and incrementing it as long as we do not 
+    find a mismatch (and as long as we do not reach the end of the line).
+
+    Efficient algorithm
+
+    The idea is to maintain an interval [L, R] which is the interval with max R
+    such that [L,R] is prefix substring (substring which is also prefix). 
+
+    Steps for maintaining this interval are as follows – 
+
+    1) If i > R then there is no prefix substring that starts before i and 
+    ends after i, so we reset L and R and compute new [L,R] by comparing 
+    str[0..] to str[i..] and get Z[i] (= R-L+1).
+
+    2) If i <= R then let K = i-L,  now Z[i] >= min(Z[K], R-i+1)  because 
+    str[i..] matches with str[K..] for atleast R-i+1 characters (they are in
+    [L,R] interval which we know is a prefix substring).     
+    Now two sub cases arise – 
+        a) If Z[K] < R-i+1  then there is no prefix substring starting at 
+            str[i] (otherwise Z[K] would be larger)  so  Z[i] = Z[K]  and 
+            interval [L,R] remains same.
+        b) If Z[K] >= R-i+1 then it is possible to extend the [L,R] interval
+            thus we will set L as i and start matching from str[R]  onwards  and
+            get new R then we will update interval [L,R] and calculate Z[i] (=R-L+1).
+
+            
+    Implementation
+    // returns array z[] where z[i] is z-function of s[i]
+    int[] zFucntion(String s) {
+        int n = s.length();
+        int z[] = new int[n];
+        int R = 0;
+        int L = 0;
+        for(int i = 1; i < n; i++) {
+            z[i] = 0;
+            if (R > i) {
+                z[i] = Math.min(R - i, z[i - L]);
+            }
+            while (i + z[i] < n && s.charAt(i+z[i]) == s.charAt(z[i])) {
+                z[i]++;
+            }
+            if (i + z[i] > R) {
+                L = i;
+                R = i + z[i];
+            }
+        }
+        z[0] = n;
+        return z;
+    }
+
+    Complexity
+    Worst case time complexity: Θ(N)
+    Average case time complexity: Θ(N)
+    Best case time complexity: Θ(N)
+    Space complexity: Θ(log N)
+
+    Applications
+
+    Applications of Z algorithms are as follows:
+    Finding all occurrences of the pattern P inside the text T in O(length(T) + length(P))
+    Counting the number of distinct substrings of a string S in O(1)
+    Finding a string T of shortest length such that S can be represented as a concatenation of one or more copies of T
+
 #################################################################################
 #################################################################################
 STRING ALGORITHMS:
@@ -2962,7 +3817,6 @@ STRING ALGORITHMS:
         Boyer moore good character heuristic/bad char heuristic
         Aho-Corasick Algorithm for Pattern Searching
         Suffix Tree/Suffix Array
-        Z algorithm (https://www.hackerearth.com/practice/algorithms/string-algorithm/z-algorithm/tutorial/)
         Manachars algorithm (https://www.hackerearth.com/practice/algorithms/string-algorithm/manachars-algorithm/tutorial/)
 
     Rabin Karp
@@ -3509,6 +4363,103 @@ COOL NOTES PART 6: UNION FIND PYTHON RECIPEE
 
         for o in l:
             del o.parent
+###############################################################
+################################################################3
+COOL NOTES PART 6.5
+    BITMASK OPERATIONS FOR BITMASP DP AND HANDLING SETS. 
+
+    1. Representation. You know that shit cause you in CS. 
+
+    2. To multiply/divide an integer by 2: 
+        We only need to shift the bits in the integer left/right, respectively.
+        Notice that the truncation in the shift right operation automatically rounds the division-by-2 down,
+        e.g. 17/2  = 8.
+
+        For example:         A = 34 (base 10)                  = 100010 (base 2)
+                            A = A << 1 = A * 2 = 68 (base 10) = 1000100 (base 2)
+                            A = A >> 2 = A / 4 = 17 (base 10) = 10001 (base 2)
+                            A = A >> 1 = A / 2 = 8 (base 10) = 1000 (base 2) <- LSB( Least Significant Bit )is gone
+
+    3. Add the jth object to the subset (set the jth bit from 0 to 1):
+        use the bitwise OR operation A |= (1 << j).
+
+        For example:     A = 34 (base 10) = 100010 (base 2)
+                        j = 3, 1 << j    = 001000 <- bit ‘1’ is shifted to the left 3 times
+                                            -------- OR (true if either of the bits is true)
+                        A = 42 (base 10) = 101010 (base 2) // update A to this new value 42
+
+    4. Remove the jth object from the subset (set the jth bit from 1 to 0):
+        use the bitwise AND operation A &= ∼(1 << j).
+
+        For example:         A = 42 (base 10) = 101010 (base 2)
+                            j = 1, ~(1 << j) = 111101 <- ‘~’ is the bitwise NOT operation
+                                                -------- AND
+                            A = 40 (base 10) = 101000 (base 2) // update A to this new value 40
+
+    5. Check whether the jth object is in the subset (check whether jth bit is 1):
+        use the bitwise AND operation T = A & (1 << j).
+        If T = 0, then the j-th item of the set is off.
+        If T != 0 (to be precise, T = (1 << j)), then the j-th item of the set is on.
+
+    For example:    A = 42 (base 10) = 101010 (base 2)
+                    j = 3, 1 << j    = 001000 <- bit ‘1’ is shifted to the left 3 times
+                                        -------- AND (only true if both bits are true)
+                    T = 8 (base 10)  = 001000 (base 2) -> not zero, the 3rd item is on
+
+    6. To toggle (flip the status of) the j-th item of the set:
+    use the bitwise XOR operation A ∧ = (1 << j).
+
+    For example:       A = 40 (base 10) = 101000 (base 2)
+                        j = 2, (1 << j)  = 000100 <- bit ‘1’ is shifted to the left 2 times
+                                            -------- XOR <- true if both bits are different
+                        A = 44 (base 10) = 101100 (base 2) // update A to this new value 44
+
+    7. To get the value of the least significant bit that is on (first from the right):
+    use T = (A & (-A)).
+
+    For example:     A =  40 (base 10) = 000...000101000 (32 bits, base 2)
+                    -A = -40 (base 10) = 111...111011000 (two’s complement)
+                                        ----------------- AND
+                        T =   8 (base 10) = 000...000001000 (3rd bit from right is on)
+
+    8. To turn on all bits in a set of size n: (be careful with overflows)
+    use A = (1 << n) - 1 ;
+
+    9. Iterate through all subsets of a set of size n:
+            for ( x = 0; x < (1 << n); ++x )  
+
+    10. Iterate through all subsets of a subset y (not including empty set):
+                for ( x = y; x > 0; x = ( y & (x-1) ) )
+    Example of a subset problem: given a set of numbers, we want to find the sum of all subsets.
+
+    Sol: This is easy to code using bitmasks. we can use an array to store all the results.
+
+    int sum_of_all_subset ( vector< int > s ){
+                int n = s.size() ;
+                int results[ ( 1 << n ) ] ;     // ( 1 << n )= 2^n
+
+            //initialize results to 0
+                memset( results, 0, sizeof( results ) ) ;
+
+            // iterate through all subsets
+
+            for( int i = 0 ; i < ( 1 << n ) ; ++ i ) {    // for each subset, O(2^n)
+                    for ( int j = 0; j < n ; ++ j ) {       // check membership, O(n)
+                        i f ( ( i & ( 1 << j ) ) ! = 0 )    // test if bit ‘j’ is turned on in subset ‘i’?
+                            results[i] += s [j] ;          // if yes, process ‘j’
+                        }
+                    }
+            }
+
+    11. LIMITATIONS:
+        a. Always check the size of the set to determine whether to use an int or long long or not using bitmask at all
+        b. Always use parenthesis to indicate the precedence of operations when doing bitwise operations!
+            When it involves bitwise operators and not putting parenthesis can yield undesirable results!
+
+            For example, let x = 5. Then x - 1 << 2 = 16, but x - (1 << 2) = 1
+
+
+
 
 ################################################################33
 #################################################################33
@@ -3888,13 +4839,12 @@ COMPETITIVE PROGRAMMING GRAPH ALGORITHM GUIDE:
         Time complexity : Unknown!.
 
 
-    Kruskal
+    Kruskal ------------------------------------------
         In this algorithm, first we sort the edges in ascending order of 
         their weight in an array of edges.
 
         Then in order of the sorted array, we add ech edge if and only if 
         after adding it there won't be any cycle (check it using DSU).
-
 
         Kruskal()
             solve all edges in ascending order of their weight in an array e
@@ -4070,291 +5020,72 @@ COMPETITIVE PROGRAMMING GRAPH ALGORITHM GUIDE:
                 flow := flow + df
             return flow
             
-    Dinic's algorithm
-    Here is Dinic's algorithm as you wanted.
+    Dinic's algorithm -------------------------------------
+        Here is Dinic's algorithm as you wanted.
 
-    Input: A network G = ((V, E), c, s, t).
+        Input: A network G = ((V, E), c, s, t).
 
-    Output: A max s - t flow.
+        Output: A max s - t flow.
 
-    1.set f(e) = 0 for each e in E
-    2.Construct G_L from G_f of G. if dist(t) == inf, then stop and output f 
-    3.Find a blocking flow fp in G_L
-    4.Augment flow f by fp  and go back to step 2.
-    Time complexity : .
+        1.set f(e) = 0 for each e in E
+        2.Construct G_L from G_f of G. if dist(t) == inf, then stop and output f 
+        3.Find a blocking flow fp in G_L
+        4.Augment flow f by fp  and go back to step 2.
+        Time complexity : .
 
-    Theorem: Maximum flow = minimum cut.
+        Theorem: Maximum flow = minimum cut.
 
-    Maximum Matching in bipartite graphs
-    Maximum matching in bipartite graphs is solvable also by maximum flow like below :
+ 
+    Maximum matching in bipartite graphs is ---------------------
+        solvable also by maximum flow like below :
 
-    Add two vertices S, T to the graph, every edge from X to Y (graph parts) has capacity 1, add an edge from S with capacity 1 to every vertex in X, add an edge from every vertex in Y with capacity 1 to T.
+        Add two vertices S, T to the graph, every edge from X to Y (graph parts) 
+        has capacity 1, add an edge from S with capacity 1 to every vertex in X, 
+        add an edge from every vertex in Y with capacity 1 to T.
 
-    Finally, answer = maximum matching from S to T .
+        Finally, answer = maximum matching from S to T .
 
-    But it can be done really easier using DFS.
+        But it can be done  easier using DFS.
 
-    As, you know, a bipartite matching is the maximum matching if and only if there is no augmenting path (read Introduction to graph theory).
+        As, you know, a bipartite matching is the maximum matching 
+        if and only if there is no augmenting path 
+        (read Introduction to graph theory).
 
-    The code below finds a augmenting path:
+        The code below finds a augmenting path:
 
-    bool dfs(int v){// v is in X, it reaturns true if and only if there is an augmenting path starting from v
-        if(mark[v])
+        bool dfs(int v){
+            // v is in X, it reaturns true if and only 
+            // if there is an augmenting path starting from v
+            if(mark[v])
+                return false;
+            mark[v] = true;
+            for(auto &u : adj[v])
+                if(match[u] == -1 or dfs(match[u])) 
+                    // match[i] = the vertex i is matched 
+                    // with in the current matching, initially -1
+                    return match[v] = u, match[u] = v, true;
             return false;
-        mark[v] = true;
-        for(auto &u : adj[v])
-            if(match[u] == -1 or dfs(match[u])) // match[i] = the vertex i is matched with in the current matching, initially -1
-                return match[v] = u, match[u] = v, true;
-        return false;
-    }
-    An easy way to solve the problem is:
-
-    for(int i = 0;i < n;i ++)if(match[i] == -1){
-        memset(mark, false, sizeof mark);
-        dfs(i);
-    }
-    But there is a faster way:
-
-    while(true){
-        memset(mark, false, sizeof mark);
-        bool fnd = false;
-        for(int i = 0;i < n;i ++) if(match[i] == -1 && !mark[i])
-            fnd |= dfs(i);
-        if(!fnd)
-            break;
-    }
-    In both cases, time complexity = O(nm).
-
-    Problem: 498C - Array and Operations
-
-    Trees
-    Trees are the most important graphs.
-
-    In the last lectures we talked about segment trees on trees and heavy-light decomposition.
-
-    Partial sum on trees
-    We can also use partial sum on trees.
-
-    Example: Having a rooted tree, each vertex has a value (initially 0), each query gives you numbers v and u (v is an ancestor of u) and asks you to increase the value of all vertices in the path from u to v by 1.
-
-    So, we have an array p, and for each query, we increase p[u] by 1 and decrease p[par[v]] by 1. The we run this (like a normal partial sum):
-
-    void dfs(int v){
-        for(auto u : adj[v])
-            if(u - par[v])
-                dfs(u), p[v] += p[u];
-    }
-    DSU on trees
-    We can use DSU on a rooted tree (not tree DSUs, DSUs like vectors).
-
-    For example, in each node, we have a vector, all nodes in its subtree (this can be used only for offline queries, because we may have to delete it for memory usage).
-
-    Here again we use DSU technique, we will have a vector V for every node. When we want to have V[v] we should merge the vectors of its children. I mean if its children are u1, u2, ..., uk where V[u1].size() ≤ V[u2].size() ≤ ... ≤ V[uk].size(), we will put all elements from V[ui] for every 1 ≤ i < k, in V[k] and then, V[v] = V[uk].
-
-    Using this trick, time complexity will be .
-
-    C++ example (it's a little complicated) :
-
-    typedef vector<int> vi;
-    vi *V[MAXN];
-    void dfs(int v, int par = -1){
-        int mx = 0, chl = -1;
-        for(auto u : adj[v])if(par - u){
-            dfs(u,v);
-            if(mx < V[u]->size()){
-                mx = V[u]->size();
-                chl = u;
-            }
         }
-        for(auto u : adj[v])if(par - u and chl - u){
-            for(auto a : *V[u])
-                V[chl]->push_back(a);
-            delete V[u];
+
+        An easy way to solve the problem is:
+
+        for(int i = 0;i < n;i ++)if(match[i] == -1){
+            memset(mark, false, sizeof mark);
+            dfs(i);
         }
-        if(chl + 1)
-            V[v] = V[chl];
-        else{
-            V[v] = new vi;
-            V[v]->push_back(v);
+
+        But there is a faster way:
+
+        while(true){
+            memset(mark, false, sizeof mark);
+            bool fnd = false;
+            for(int i = 0;i < n;i ++) if(match[i] == -1 && !mark[i])
+                fnd |= dfs(i);
+            if(!fnd)
+                break;
         }
-    }
-    LCA
-    LCA of two vertices in a rooted tree, is their lowest common ancestor.
 
-    There are so many algorithms for this, I will discuss the important ones.
-
-    Each algorithm has complexities  < O(f(n)), O(g(n)) > , it means that this algorithm's preprocess is O(f(n)) and answering a query is O(g(n)) .
-
-    In all algorithms, h[v] =  height of vertex v.
-
-    One) Brute force  < O(n), O(n) > 
-
-    The simplest approach. We go up enough to achieve the goal.
-
-    Preproccess :
-
-    void dfs(int v,int p = -1){
-        if(par + 1)
-            h[v] = h[p] + 1;
-        par[v] = p;
-        for(auto u : adj[v])	if(p - u)
-            dfs(u,v);
-    }
-    Query :
-
-    int LCA(int v,int u){
-        if(v == u)
-            return v;
-        if(h[v] < h[u])
-            swap(v,u);
-        return LCA(par[v], u);
-    }
-    Two) SQRT decomposition 
-
-    I talked about SQRT decomposition in the first lecture.
-
-    Here, we will cut the tree into  (H = height of the tree), starting from 0, k - th of them contains all vertices with h in interval .
-
-    Also, for each vertex v in k - th piece, we store r[v] that is, its lowest ancestor in the piece number k - 1.
-
-    Preprocess:
-
-    void dfs(int v,int p = -1){
-        if(par + 1)
-            h[v] = h[p] + 1;
-        par[v] = p;
-        if(h[v] % SQRT == 0)
-            r[v] = p;
-        else
-            r[v] = r[p];
-        for(auto u : adj[v])	if(p - u)
-            dfs(u,v);
-    }
-    Query:
-
-    int LCA(int v,int u){
-        if(v == u)
-            return v;
-        if(h[v] < h[u])
-            swap(v,u);
-        if(h[v] == h[u])
-            return (r[v] == r[u] ? LCA(par[v], par[u]) : LCA(r[v], r[u]));
-        if(h[v] - h[u] < SQRT)
-            return LCA(par[v], u);
-        return LCA(r[v], u);
-    }
-    Three) Sparse table 
-
-    Let's introduce you an order of tree vertices, haas and I named it Euler order. It is like DFS order, but every time we enter a vertex, we write it's number down (even when we come from a child to this node in DFS).
-
-    Code for calculate this :
-
-    vector<int> euler;
-    void dfs(int v,int p = -1){
-        euler.push_back(v);
-        for(auto u : adj[v])	if(p - u)
-            dfs(u,v), euler.push_back(v);
-    }
-    If we have a vector<pair<int,int> > instead of this and push {h[v], v} in the vector, and the first time {h[v], v} is appeared is s[v] and s[v] < s[u] then LCA(v, u) = (mini = s[v]s[u]euler[i]).second.
-
-    For this propose we can use RMQ problem, and the best algorithm for that, is to use Sparse table.
-
-    Four) Something like Sparse table :) 
-
-    This is the most useful and simple (among fast algorithms) algorithm.
-
-    For each vector v and number i, we store its 2i-th ancestor. This can be done in . Then, for each query, we find the lowest ancestors of them which are in the same height, but different (read the source code for understanding).
-
-    Preprocess:
-
-    int par[MAXN][MAXLOG]; // initially all -1
-    void dfs(int v,int p = -1){
-        par[v][0] = p;
-        if(p + 1)
-            h[v] = h[p] + 1;
-        for(int i = 1;i < MAXLOG;i ++)
-            if(par[v][i-1] + 1)
-                par[v][i] = par[par[v][i-1]][i-1];
-        for(auto u : adj[v])	if(p - u)
-            dfs(u,v);
-    }
-    Query:
-
-    int LCA(int v,int u){
-        if(h[v] < h[u])
-            swap(v,u);
-        for(int i = MAXLOG - 1;i >= 0;i --)
-            if(par[v][i] + 1 and h[par[v][i]] >= h[u])
-                v = par[v][i];
-        // now h[v] = h[u]
-        if(v == u)
-            return v;
-        for(int i = MAXLOG - 1;i >= 0;i --)
-            if(par[v][i] - par[u][i])
-                v = par[v][i], u = par[u][i];
-        return par[v][0];
-    }
-    Five) Advance RMQ  < O(n), O(1) > 
-
-    In the third approach, we said that LCA can be solved by RMQ.
-
-    When you look at the vector euler you see that for each i that 1 ≤ i < euler.size(), |euler[i].first - euler[i + 1].first| = 1.
-
-    So, we can convert the euler from its size(we consider its size is n + 1) into a binary sequence of length n (if euler[i].first - euler[i + 1].first = 1 we put 1 otherwise 0).
-
-    So, we have to solve the problem on a binary sequence A .
-
-    To solve this restricted version of the problem we need to partition A into blocks of size . Let A'[i] be the minimum value for the i - th block in A and B[i] be the position of this minimum value in A. Both A and B are  long. Now, we preprocess A' using the Sparse Table algorithm described in lecture 1. This will take  time and space. After this preprocessing we can make queries that span over several blocks in O(1). It remains now to show how the in-block queries can be made. Note that the length of a block is , which is quite small. Also, note that A is a binary array. The total number of binary arrays of size l is . So, for each binary block of size l we need to lock up in a table P the value for RMQ between every pair of indices. This can be trivially computed in  time and space. To index table P, preprocess the type of each block in A and store it in array . The block type is a binary number obtained by replacing  - 1 with 0 and  + 1 with 1 (as described above).
-
-    Now, to answer RMQA(i, j) we have two cases:
-
-    i and j are in the same block, so we use the value computed in P and T
-    i and j are in different blocks, so we compute three values: the minimum from i to the end of i's block using P and T, the minimum of all blocks between i's and j's block using precomputed queries on A' and the minimum from the beginning of j's block to j, again using T and P; finally return the position where the overall minimum is using the three values you just computed.
-    Six) Tarjan's algorithm O(na(n)) (a(n) is the inverse ackermann function)
-
-    Tarjan's algorithm is offline; that is, unlike other lowest common ancestor algorithms, it requires that all pairs of nodes for which the lowest common ancestor is desired must be specified in advance. The simplest version of the algorithm uses the union-find data structure, which unlike other lowest common ancestor data structures can take more than constant time per operation when the number of pairs of nodes is similar in magnitude to the number of nodes. A later refinement by Gabow & Tarjan (1983) speeds the algorithm up to linear time.
-
-    The pseudocode below determines the lowest common ancestor of each pair in P, given the root r of a tree in which the children of node n are in the set n.children. For this offline algorithm, the set P must be specified in advance. It uses the MakeSet, Find, and Union functions of a disjoint-set forest. MakeSet(u) removes u to a singleton set, Find(u) returns the standard representative of the set containing u, and Union(u, v) merges the set containing u with the set containing v. TarjanOLCA(r) is first called on the root r.
-
-    function TarjanOLCA(u)
-        MakeSet(u);
-        u.ancestor := u;
-        for each v in u.children do
-            TarjanOLCA(v);
-            Union(u,v);
-            Find(u).ancestor := u;
-        u.colour := black;
-        for each v such that {u,v} in P do
-            if v.colour == black
-                print "Tarjan's Lowest Common Ancestor of " + u +
-                    " and " + v + " is " + Find(v).ancestor + ".";
-    Each node is initially white, and is colored black after it and all its children have been visited. The lowest common ancestor of the pair {u, v} is available as Find(v).ancestor immediately (and only immediately) after u is colored black, provided v is already black. Otherwise, it will be available later as Find(u).ancestor, immediately after v is colored black.
-
-    function MakeSet(x)
-        x.parent := x
-        x.rank   := 0
-    
-    function Union(x, y)
-        xRoot := Find(x)
-        yRoot := Find(y)
-        if xRoot.rank > yRoot.rank
-            yRoot.parent := xRoot
-        else if xRoot.rank < yRoot.rank
-            xRoot.parent := yRoot
-        else if xRoot != yRoot
-            yRoot.parent := xRoot
-            xRoot.rank := xRoot.rank + 1
-    
-    function Find(x)
-        if x.parent == x
-            return x
-        else
-            x.parent := Find(x.parent)
-            return x.parent
-
-
-
-
+        In both cases, time complexity = O(nm).
 
 #######################################################################################################################
 ########################################################################################################################

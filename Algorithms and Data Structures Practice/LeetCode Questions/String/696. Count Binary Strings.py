@@ -148,3 +148,35 @@ class Solution(object):
                     
                     
                     
+# FAST SOLUTION:
+class Solution(object):
+    def countBinarySubstrings(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        """
+        s = map(len,s.replace('10','1 0').replace('01','0 1').split())
+        print s
+        i = 0
+        x = 0
+        while i+1 < len(s):
+            x += min(s[i],s[i+1])
+            i += 1
+        return x
+        """
+        
+        x = s[0]
+        count = 0
+        prev = 0
+        out = 0
+        for i in s:
+            if i == x:
+                count += 1
+            else:
+                #print count,prev
+                out += prev if prev < count else count
+                prev = count
+                count = 1
+                x = i                       
+        return out + (prev if prev < count else count)

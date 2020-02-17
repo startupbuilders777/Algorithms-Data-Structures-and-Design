@@ -28,7 +28,8 @@ cache.get(4);       // returns 4
 #DONEEEE
 
 '''
-For a fixed-size queue, where the oldest entry is to be automatically discarded, a better data structure 
+For a fixed-size queue, where the oldest entry is to be automatically discarded,
+ a better data structure 
 would be a circular-buffer, which in Python is provided by the 
 collections.deque class. You should make a deque(maxlen=capacity) 
 instead of your LinkedList.
@@ -150,7 +151,8 @@ class LRUCache(object):
 
 # THEY MADE CODE MUCH EASIER BY USIGN HEAD TAIL NODES. LEARN HOW TO DO THIS!!!!
 # ALSO CIRCULAR DOUBLY LINKED LIST TO MAKE CODE EASIER!!!
-# ALSO MEMORY EFFICIENT BECAUSE STORE VALUE IN NODE, AND MAP GOES KEY TO NODE. INSTEAD OF 2 MAPS!!!
+# ALSO MEMORY EFFICIENT BECAUSE STORE VALUE IN NODE, 
+# AND MAP GOES KEY TO NODE. INSTEAD OF 2 MAPS!!!
 
 class Node:
     def __init__(self, k, v):
