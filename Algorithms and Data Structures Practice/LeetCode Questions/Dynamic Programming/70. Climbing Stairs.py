@@ -118,7 +118,7 @@ class Solution(object):
         """
         
         # bottom up
-        if n == 0 or n == 1:
+        if n ==     0 or n == 1:
             return 1
         num_ways = [0] * (n+1)
         num_ways[0] = 1

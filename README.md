@@ -116,6 +116,95 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
       so as to have as little impact on 
       subsequent intervals
 
+0.26) Introduce multiple running variables, if maintaining one 
+        running variable makes the updates too difficult or tricky
+        (SEPERATION OF CONCERNS USING MULTIPLE VARS OR CONTAINERS TRICK)
+
+        For instance: LC -> 
+        Given an integer array nums, find the contiguous 
+        subarray within an array (containing at least one number) 
+        which has the largest product.
+
+        Example 1:
+
+        Input: [2,3,-2,4]
+        Output: 6
+        Explanation: [2,3] has the largest product 6.
+        
+        Solution:
+        int maxProduct(int A[], int n) {
+            // store the result that is the max we have found so far
+            int r = A[0];
+
+            // imax/imin stores the max/min product of
+            // subarray that ends with the current number A[i]
+            for (int i = 1, imax = r, imin = r; i < n; i++) {
+                // multiplied by a negative makes big number smaller, small number bigger
+                // so we redefine the extremums by swapping them
+                if (A[i] < 0)
+                    swap(imax, imin);
+
+                // max/min product for the current number is either the current number itself
+                // or the max/min by the previous number times the current one
+                imax = max(A[i], imax * A[i]);
+                imin = min(A[i], imin * A[i]);
+
+                // the newly computed max value is a candidate for our global result
+                r = max(r, imax);
+            }
+            return r;
+        }
+
+    
+
+
+
+0.27) Memorize 0-1 Knapsack and strategy
+      and space efficiency strategy:
+    
+    # Geeks for Geeks:
+    def knapSack(W, wt, val, n): 
+        K = [[0 for x in range(W + 1)] for x in range(n + 1)] 
+    
+        # Build table K[][] in bottom up manner 
+        for i in range(n + 1): 
+            for w in range(W + 1): 
+                if i == 0 or w == 0: 
+                    K[i][w] = 0
+                elif wt[i-1] <= w: 
+                    K[i][w] = max(val[i-1] + K[i-1][w-wt[i-1]],  K[i-1][w]) 
+                else: 
+                    K[i][w] = K[i-1][w] 
+    
+        return K[n][W] 
+
+    # SPACE EFFICIENT
+    You can reduce the 2d array to a 1d array saving the values for the current iteration. 
+    For this to work, we have to iterate capacity (inner for-loop) in the 
+    opposite direction so we that we don't use the values that 
+    were updated in the same iteration 
+
+    from collections import namedtuple
+
+    def knapsack(capacity, items):
+        # A DP array for the best-value that could be achieved for each weight.
+        best_value = [0] * (capacity + 1)
+        # The previous item used to achieve the best-value for each weight.
+        previous_item = [None] * (capacity + 1)
+        for item in items:
+            for w in range(capacity, item.weight - 1, -1):
+                value = best_value[w - item.weight] + item.value
+                if value > best_value[w]:
+                    best_value[w] = value
+                    previous_item[w] = item
+
+        cur_weight = capacity
+        taken = []
+        while cur_weight > 0:
+            taken.append(previous_item[cur_weight])
+            cur_weight -= previous_item[cur_weight].weight
+
+        return best_value[capacity], taken
 
 
 0.3) Granularity === Optimization. Break up variables and track everything. Structurd things like
@@ -196,6 +285,38 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
                 max_ending_here = 0   
         return max_so_far 
 
+
+0.57) Interval Coloring:
+    
+    from heapq import *
+    import itertools
+    def minMeetingRooms(self, intervals):
+        sorted_i = sorted(intervals, key=lambda x: x.start)
+        
+        pq = []
+        counter = itertools.count()
+        active_colors = 0
+        max_colors = 0
+        
+        for i in sorted_i:
+            iStart = i.start
+            iEnd = i.end
+            
+            while len(pq) != 0:
+                
+                min_end_time, _, interval_to_be_popped = pq[0]                
+                if(iStart <= min_end_time):
+                    break                
+                active_colors -= 1
+                _ = heappop(pq)
+                            
+            c = next(counter)
+            item = [iEnd, c, i]
+            heappush(pq, item)
+            print("increment active colors")
+            active_colors += 1
+            max_colors = max(active_colors, max_colors)
+        return max_colors
 
 
 0.6) To delete from a list in O(1), any index, you can swap the middle indexed element with
@@ -476,7 +597,10 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
 2.3) Graphs =>
     Try BFS/DFS/A star search
     Use dist/parent/visited maps to get values
-    -> Cycle detection -> use visited map
+    -> Cycle detection -> use visited map. 
+        Actually need to carry parent in param as well in dfs 
+        for undirected graph
+
     -> shortest path = BFS
     -> Do parent stuff with parents map (such as common ancestors).
     -> Cool graph techniques is coloring nodes, or flagging nodes 
@@ -716,6 +840,100 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
                         row[j], row[~j] = row[~j], row[j]
 
 
+2.57) To find the root nodes in a directed graph (NOT DAG):
+      Reverse graph and find nodes with 0 children.
+      However, there may not be root nodes!
+
+2.58) Cycle finding in directed graph and undirected graph is 
+      completely different! Memorize details of each way. 
+
+    Directed graph cycle finding: Course Schedule (LC):
+    There are a total of n courses you have to take, 
+    labeled from 0 to n-1.
+
+    Some courses may have prerequisites, for example 
+    to take course 0 you have to first take course 1, 
+    which is expressed as a pair: [0,1]
+
+    Given the total number of courses and a list of prerequisite 
+    pairs, is it possible for you to finish all courses?
+    
+    Method 1 COLORED DFS:
+        def canFinishWithColoredDFS(self, numCourses, prerequisites):        
+            g = defaultdict(set)
+
+            for req in prerequisites:
+                g[req[1]].add(req[0])
+            
+            def has_cycle_directed(node, g, colors):
+                colors[node] = "G" # Grey being processed
+                
+                for c in g[node]:
+                    if colors.get(c) is None and has_cycle_directed(c, g, colors):
+                        return True
+                    elif colors.get(c) == "G":
+                        # We are processing this node but we looped back around somehow
+                        # so cycle
+                        return True
+                    else: 
+                        # The node we are processing has already been processed. 
+                        continue  
+                colors[node] = "B" # Black
+                return False
+            
+            colors = {}  # None -> white, Black -> Done, Grey -> Processing 
+            for i in range(numCourses):
+                # process each forest seperately
+                # print("DFS ON", i)
+                if(colors.get(i) is None and has_cycle_directed(i, g, colors)):
+                    print("COLORS ARE, ", colors)
+                    return False     
+            return True
+
+    METHOD 2 BFS + TOPOSORT WITH INORDER OUTORDER:
+        def canFinish(self, numCourses, prerequisites):
+
+            g = defaultdict(set)
+            inorder_count = defaultdict(int)    
+            # Init
+            for c in range(numCourses):
+                inorder_count[c] = 0
+                
+            for req in prerequisites:
+                g[req[1]].add(req[0])
+                inorder_count[req[0]] += 1
+            
+            print("inorder count")
+            
+            root_nodes = [k for (k,v) in  inorder_count.items() if v == 0]
+            print("root nodes", root_nodes)
+            
+            print("G", g)
+            print("Inorder count", inorder_count)
+            
+            d = deque(root_nodes)
+            visited = set()
+            while d:
+                node = d.popleft()
+                
+                visited.add(node)
+                
+                children = g[node]
+                for c in children:
+                    inorder_count[c] -= 1
+                    if(inorder_count[c] == 0):
+                        d.append(c)
+                               
+            # If you cant visit all nodes from root nodes, then there is a cycle 
+            # in directed graph.      
+            return len(visited) == numCourses
+
+
+2.59) Cycle finding in undirected graph:
+      
+
+
+
 
 
 2.6) LRU Cache learnings and techniques=>
@@ -800,6 +1018,8 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
             node.prev = p
             node.next = self.tail
 
+
+
 2.7) Common problems solved using DP on broken profile include:
 
         finding number of ways to fully fill an area (e.g. chessboard/grid) with some figures (e.g. dominoes)
@@ -858,6 +1078,13 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
 
             cout << dp[n][0];
         }
+2.7) When you DFS/BACKTRACK, one way to reduce space usage, is using grid itself
+     as the visited set, and assigning and reverting it.  
+      Additionally, RETURN ASAP. PRUNE, PRUNE PRUNE. 
+      Do not aggregrate all the results then return.
+      NO UNNECESSARY SEARCHING. Look at Word Search in leet folder. 
+
+
 
 2.8) ROLLING HASH USAGE: 
     Consider the string abcd and we have to find the hash values of 
@@ -1216,7 +1443,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
                 return nums
         
 
-22) Know in-place reverse linked list (MEMORIZE)
+22.6) Know in-place reverse linked list (MEMORIZE)
         # Function to reverse the linked list 
             def reverse(self): 
                 prev = None
@@ -1230,6 +1457,49 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
         
         Reverse a Sub-list (medium)
         Reverse every K-element Sub-list (medium)
+
+22.7) Find the start of a loop in a linked list:
+        Algorithm
+        Use two references slow, fast, initialized to the head
+        Increment slow and fast until they meet
+        fast is incremented twice as fast as slow
+        If fast.next is None, we do not have a circular list
+        When slow and fast meet, move slow to the head
+        Increment slow and fast one node at a time until they meet
+        Where they meet is the start of the loop
+
+        class MyLinkedList(LinkedList):
+
+            def find_loop_start(self):
+                if self.head is None or self.head.next is None:
+                    return None
+                slow = self.head
+                fast = self.head
+                while fast.next is not None:
+                    slow = slow.next
+                    fast = fast.next.next
+                    if fast is None:
+                        return None
+                    if slow == fast:
+                        break
+                slow = self.head
+                while slow != fast:
+                    slow = slow.next
+                    fast = fast.next
+                    if fast is None:
+                        return None
+                return slow
+
+22.8) Find kth to last element of linked list
+
+        Algorithm
+        Setup two pointers, fast and slow
+        Give fast a headstart, incrementing it once if k = 1, twice if k = 2, ...
+        Increment both pointers until fast reaches the end
+        Return the value of slow
+
+
+
 
 23) TREE DFS:
     Decide whether to process the current node now (pre-order), 

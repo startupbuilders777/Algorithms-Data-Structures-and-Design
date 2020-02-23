@@ -13,15 +13,106 @@ If there is such window, you are guaranteed that there will always be only one u
 '''
 
 
+#### My second time writing the solution:
+
+from collections import Counter
+
+class Solution(object):    
+    def minWindow(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: str
+        """
+        # Super Fast 
+        t_set = set(t)
+        
+        t_count =  Counter(t)
+        
+        
+        filtered_s = []
+        
+        for idx, c in enumerate(s):
+            if(c in t_set):
+                filtered_s.append((idx, c))
+            
+        curr = set(t)
+        l = 0
+        r = 0
+        
+        curr_lidx = 0
+        curr_ridx = None
+        min_lidx = 0
+        min_ridx = float("inf")
+        curr_count = Counter()
+        
+        completed = set()
+        
+        print("FILTERED_S", filtered_s)
+        
+        while True:
+            
+            # Move right pointer. 
+            rCompleted = False
+            while(r < len(filtered_s)):
+                idx, k = filtered_s[r]
+                
+                curr_ridx  = idx
+                curr_count[k] += 1
+                
+                # print("R PROCESSED, ", r, k, curr_ridx, curr_count)
+                
+                r += 1
+
+                if(curr_count[k] >= t_count[k]):
+                    completed.add(k)
+                
+                if(len(completed) == len(t_set)):
+                    rCompleted = True
+                    break 
+
+            # Move left pointer towards right pointer        
+            while(l < r): 
+                idx2, k = filtered_s[l]
+                
+                curr_count[k] -= 1
+                l += 1
+                # print("L PROCESSED. curr_lidx", l, k, curr_lidx, idx2, curr_count)
+                curr_lidx = idx2
+                if(curr_count[k] < t_count[k]):
+    
+                    if(rCompleted and curr_ridx - curr_lidx < min_ridx - min_lidx):
+                         min_ridx = curr_ridx
+                         min_lidx = curr_lidx
+                    
+                    if k in completed:          
+                        completed.remove(k)
+                    
+                    break
+                    
+            
+            if( r == len(filtered_s)):
+                break
+            
+        if(min_ridx != float("inf")):
+            return s[min_lidx:min_ridx+1]
+        else:
+            return ""
+                
+
 
 '''
 Algorithm
 
-We start with two pointers, leftleft and rightright initially pointing to the first element of the string SS.
+We start with two pointers, leftleft and rightright initially 
+pointing to the first element of the string SS.
 
-We use the rightright pointer to expand the window until we get a desirable window i.e. a window that contains all of the characters of TT.
+We use the rightright pointer to expand the window until we get a 
+desirable window i.e. a window that contains all of the characters of TT.
 
-Once we have a window with all the characters, we can move the left pointer ahead one by one. If the window is still a desirable one we keep on updating the minimum window size.
+Once we have a window with all the characters, we can move the left pointer 
+ahead one by one. If the window is still a desirable one we keep on 
+updating the minimum window size.
 
 If the window is not desirable any more, we repeat step \; 2step2 onwards.
 
