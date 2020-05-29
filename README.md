@@ -69,6 +69,28 @@ TOPICS TO UNDERSTAND:
 
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
+-2) For sliding window, remember that you can do optimized sliding window 
+    by skipping multiple indexes ahead instead of skipping one at a time. 
+    COMPRESS THE STEPS TO FURTHER OPTIMIZE SLIDING WINDOW!
+    OR USE MULTIPLE POINTERS. 
+
+    
+
+
+-1)     DFS, BFS + COLORS IS POWERFUL!
+        Another way to check if graph is bipartionable. 
+        ALGORITHM:
+        CAN DO BIPARTITION WITH DFS AND 2 COLORING. 
+
+        For each connected component, we can check whether 
+        it is bipartite by 
+        just trying to coloring it with two colors. How to do this is as follows: 
+        color any node red, then all of it's neighbors blue, 
+        then all of those neighbors 
+        red, and so on. If we ever color a red node blue 
+        (or a blue node red), then we've reached a conflict.
+
+
 
 
 0)  For problems like parenthesis matching. You can use a stack to solve the matching. But you can also

@@ -92,11 +92,6 @@ class Solution(object):
         :rtype: bool
         """
         
-        '''
-        1) One way you can do it is with BFS. 
-           Detect if it is bipartite. 
-           If it is not -> you found a cycle during your recursion         
-        '''
         g = defaultdict(set)
             
         for req in prerequisites:

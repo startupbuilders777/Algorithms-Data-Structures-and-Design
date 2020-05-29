@@ -2,6 +2,41 @@
 PROBLEMS TO WORK ON: 
 
 
+Find and do janestreet/citadel question!!!!!!!!!!!!!!!
+    String compressions and decompression. 
+
+
+PROBLEM TYPES TO PRACTICE: 
+    LRU CACHE/LFU CACHE/ OTHER CACHE PROBLEMS
+    Rotate Checkerboard/ ROTATION PROBLEMS/GEOMETRY/LINE SWEEP
+    Rectangle AREA/ Rectangle DP
+    Create binary trees inorder/postorder
+    Geometry
+    Math and Number Computation
+    Permutations and Combinations
+    Linked List problem set
+    B-trees
+    Regular Expression questions
+    Boyer moore - complicated string algos, Z algo
+    Interval Trees, Range Tree, KDTree, Quad Tree. 
+    DP Bitmask
+    Stock Questions
+    Matrix, 2D Array problems. 
+    Probability
+    Skyline problem
+    Course Schedule I, II, III, IV, Graph problems, Bipartition check, coloring
+    XOR PROBLEM SET/Binary operations
+    Implementing all datastructures. 
+    Serialize and deserialize binary tree.
+
+ONSITE PRACTICE: 
+    System Design/Concurrency/SQL Practice for onsites. 
+
+
+
+
+
+
 Leetcodes PER COMPANY LIST -> http://leetcode.liangjiateng.cn/leetcode/Citadel/algorithm
 https://learntocodetogether.com/top-150-leetcodes-best-practice-problems/
 https://medium.com/@koheiarai94/60-leetcode-questions-to-prepare-for-coding-interview-8abbb6af589e
@@ -52,4 +87,7 @@ all rotation problems
 
 linked list hard ones. 
 
+
+Graph problem practice here:
+https://leetcode.com/discuss/general-discussion/655708/graph-problems-for-beginners-practice-problems-and-sample-solutions
 
