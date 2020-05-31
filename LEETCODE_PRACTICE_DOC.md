@@ -7,6 +7,9 @@ Find and do janestreet/citadel question!!!!!!!!!!!!!!!
 
 
 PROBLEM TYPES TO PRACTICE: 
+    PERMUTATION TREES
+    ENCODE AND DECODE TREES!!!
+
     LRU CACHE/LFU CACHE/ OTHER CACHE PROBLEMS
     Rotate Checkerboard/ ROTATION PROBLEMS/GEOMETRY/LINE SWEEP
     Rectangle AREA/ Rectangle DP
@@ -31,10 +34,6 @@ PROBLEM TYPES TO PRACTICE:
 
 ONSITE PRACTICE: 
     System Design/Concurrency/SQL Practice for onsites. 
-
-
-
-
 
 
 Leetcodes PER COMPANY LIST -> http://leetcode.liangjiateng.cn/leetcode/Citadel/algorithm

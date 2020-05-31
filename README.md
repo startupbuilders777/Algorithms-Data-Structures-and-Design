@@ -13,6 +13,7 @@ REALLY COOL MEDIUM ARTICLE -> https://medium.com/@karangujar43/best-resources-fo
 
 TOPICS TO UNDERSTAND: 
         Segment tree (with lazy propagation)
+        Skip lists.
         Interval Tree
         Binary Indexed Tree
         Fast Modulo Multiplication (Exponential Squaring) 90
@@ -69,13 +70,128 @@ TOPICS TO UNDERSTAND:
 
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
+-6) Review linked list 2, reversing a linked list between integers m and n 
+   and 
+   how to use recursive stack and nonlocal variables to
+   access backpointers in singly linked list. 
+   Also how to use dummy pointers to simplify code 
+   at the start.
+   and always check before doing .next to stop null errors. 
+   Iterative soln:
+
+    class Solution:
+        '''
+        When we are at the line pre.next.next = cur 
+        the LL looks like this for [1,2,3,4,5] m = 2, n = 4
+
+        1 -> 2 <- 3 <- 4 5
+
+        Note that there is no connection between 4 and 5, 
+        here pre is node 1, reverse is node 4, cur is node 5; 
+        So pre.next.next = cur is basically linking 2 with 5; 
+        pre.next = reverse links node 1 with node 4.
+        '''
+        
+        def reverseBetween(self, head, m, n):
+            if m == n:
+                return head
+            p = dummy = ListNode(0)
+            dummy.next = head
+            for _ in range(m - 1):
+                p = p.next
+            cur = p.next
+            pre = None
+            for _ in range(n - m + 1):
+                cur.next, pre, cur = pre, cur, cur.next
+            p.next.next = cur
+            p.next = pre
+            return dummy.next
+
+   
+-5) How to use nonlocals in python3 to make code easier:
+    (check if palindrome exists in singly linked list)
+        def isPalindrome(self, head):
+            """
+            :type head: ListNode
+            :rtype: bool
+            """
+            
+            if(head == None):
+                return True
+            
+            n = head
+            l = 0      
+            while n:
+                n = n.next
+                l += 1
+            
+            lp = head
+            rp = head        
+            rpCounter = (l+1)//2
+            lpCounter = (l//2 -1)
+            left_counter = 0
+            
+            for i in range(rpCounter):
+                rp = rp.next
+                
+            def check_palin(lp): 
+                # We only need these 2 as nonlocals. 
+                # because we modify in the closure. 
+                # Also cant use rp as argument 
+                # to function call. unless you wrap in []. Why?
+
+                nonlocal rp 
+                nonlocal left_counter
+
+                if (left_counter < lpCounter):
+                    left_counter += 1
+                    result = check_palin(lp.next)
+                    if result == False:
+                        return False
+                
+                if(rp == None):
+                    return True
+                
+                if(rp.val == lp.val):
+                    rp = rp.next # check next rp. 
+                    return True # needed when there are only 2 nodes in linked list. 
+                else:
+                    return False
+            return check_palin(lp)
+
+
+
+-4) Python generator for converting binary to value, but 
+    binary is encoded as a linked list:
+    
+    class Solution(object):
+        def yield_content(self, head):
+            current = head
+            yield current.val
+            while current.next != None:
+                current = current.next
+                yield current.val
+
+        def getDecimalValue(self, head):
+            bin_number = ''
+            generator = self.yield_content(head)
+            while True:
+                try:
+                    bin_number += str(next(generator))
+                except StopIteration:
+                    break
+            return int(bin_number, 2)
+
+-3) WHEN GIVEN CONSTRAINTS TO A PROBLEM
+    NEGATE THE CONsTRAINTS TO EXPLOIT PROBLEM STRUCTURE. think combinatorically 
+    about how to use constraints, whether that means to do there exists, or there 
+    doesnt exist such that the constrain is satisfied. especially for greedy questions. 
+    think in positive space and negative space.
+
 -2) For sliding window, remember that you can do optimized sliding window 
     by skipping multiple indexes ahead instead of skipping one at a time. 
     COMPRESS THE STEPS TO FURTHER OPTIMIZE SLIDING WINDOW!
     OR USE MULTIPLE POINTERS. 
-
-    
-
 
 -1)     DFS, BFS + COLORS IS POWERFUL!
         Another way to check if graph is bipartionable. 
@@ -91,12 +207,13 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
         (or a blue node red), then we've reached a conflict.
 
 
-
-
 0)  For problems like parenthesis matching. You can use a stack to solve the matching. But you can also
     do matching by incrementing and decrementing an integer variable. Or you can use colors or 
     other types of INDICATOR VARIABLE TYPE SOLUTIONS that contain meta information on the problem. 
+    Also remember that as you see each element, you can push multiple times to stack, not just once
+    in case u need to keep count of something before a pop occurs. 
 
+    
 0.05) To solve a difficult 3D problem or 2D problem. Solve the lower dimension first, 
      and then use it to guide your solution for higher dimensions. 
      Such as max area of rectangle of 1's.
