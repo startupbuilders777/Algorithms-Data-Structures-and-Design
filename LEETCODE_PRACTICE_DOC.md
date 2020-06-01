@@ -62,6 +62,9 @@ https://leetcode.com/problems/longest-palindromic-subsequence/discuss/222605/dp-
 ALSO SEARCH AND do following counting problems:
 LEETCODE COUNTING PROBLEMS in google, practice permutation trees
 
+DO all the best time to buy and sell stocks!!!
+
+
 
 https://yangshun.github.io/tech-interview-handbook/best-practice-questions/
 

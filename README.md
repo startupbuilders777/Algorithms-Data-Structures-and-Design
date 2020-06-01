@@ -2648,7 +2648,328 @@ Cool Notes Part 0.5: Sliding Window with a deque
         It takes only O(n) time to process a N-size sliding window minimum/maximum problem.
         Note: different from a priority queue (which takes O(nlogk) to solve this problem), 
         it doesn't pop the max element: It pops the first element (in original order) in queue.
+###################################################################################
+###################################################################################
+COOL NOTES PART 0.90: DYNAMIC PROGRAMMING PATTERNS, ILLUSTRATIONS, AND EXAMPLES: 
 
+    Patterns
+    Minimum (Maximum) Path to Reach a Target
+    Distinct Ways
+    Merging Intervals
+    DP on Strings
+    Decision Making
+
+    Minimum (Maximum) Path to Reach a Target
+    Statement
+    Given a target find minimum (maximum) cost / path / sum to reach the target.
+
+    Approach
+    Choose minimum (maximum) path among all possible paths 
+    before the current state, then add value for the current state.
+
+    routes[i] = min(routes[i-1], routes[i-2], ... , routes[i-k]) + cost[i]
+    Generate optimal solutions for all values in the target and return the value for the target.
+
+    for (int i = 1; i <= target; ++i) {
+        for (int j = 0; j < ways.size(); ++j) {
+            if (ways[j] <= i) {
+                dp[i] = min(dp[i], dp[i - ways[j]] + cost / path / sum) ;
+            }
+        }
+    }
+    return dp[target]
+
+    Similar Problems
+
+    746. Min Cost Climbing Stairs Easy
+    for (int i = 2; i <= n; ++i) {
+        dp[i] = min(dp[i-1], dp[i-2]) + (i == n ? 0 : cost[i]);
+    }
+    return dp[n]
+    
+    64. Minimum Path Sum Medium
+    for (int i = 1; i < n; ++i) {
+        for (int j = 1; j < m; ++j) {
+            grid[i][j] = min(grid[i-1][j], grid[i][j-1]) + grid[i][j];
+        }
+    }
+    return grid[n-1][m-1]
+    
+    322. Coin Change Medium
+    for (int j = 1; j <= amount; ++j) {
+        for (int i = 0; i < coins.size(); ++i) {
+            if (coins[i] <= j) {
+                dp[j] = min(dp[j], dp[j - coins[i]] + 1);
+            }
+        }
+    }
+
+    931. Minimum Falling Path Sum Medium
+    983. Minimum Cost For Tickets Medium
+    650. 2 Keys Keyboard Medium
+    279. Perfect Squares Medium
+    1049. Last Stone Weight II Medium
+    120. Triangle Medium
+    474. Ones and Zeroes Medium
+    221. Maximal Square Medium
+    322. Coin Change Medium
+    1240. Tiling a Rectangle with the Fewest Squares Hard
+    174. Dungeon Game Hard
+    871. Minimum Number of Refueling Stops Hard
+
+    Distinct Ways
+    Statement
+    Given a target find a number of distinct ways to reach the target.
+
+    Approach
+    Sum all possible ways to reach the current state.
+
+    routes[i] = routes[i-1] + routes[i-2], ... , + routes[i-k]
+    Generate sum for all values in the target and return the value for the target.
+
+    for (int i = 1; i <= target; ++i) {
+        for (int j = 0; j < ways.size(); ++j) {
+            if (ways[j] <= i) {
+                dp[i] += dp[i - ways[j]];
+            }
+        }
+    }
+    return dp[target]
+    
+    Similar Problems
+    70. Climbing Stairs easy
+    for (int stair = 2; stair <= n; ++stair) {
+        for (int step = 1; step <= 2; ++step) {
+            dp[stair] += dp[stair-step];   
+        }
+    }
+
+    62. Unique Paths Medium
+    for (int i = 1; i < m; ++i) {
+        for (int j = 1; j < n; ++j) {
+            dp[i][j] = dp[i][j-1] + dp[i-1][j];
+        }
+    }
+
+    1155. Number of Dice Rolls With Target Sum Medium
+
+        You have d dice, and each die has 
+        f faces numbered 1, 2, ..., f.
+
+        Return the number of possible ways (out of f^d total ways) modulo 10^9 + 7 
+        to roll the dice so the sum of the face up numbers equals target.
+        Example 1:
+        Input: d = 1, f = 6, target = 3
+        Output: 1
+        Explanation: 
+        You throw one die with 6 faces.  There is only one way to get a sum of 3.
+        
+        Example 2:
+        Input: d = 2, f = 6, target = 7
+        Output: 6
+        Explanation: 
+        You throw two dice, each with 6 faces.  There are 6 ways to get a sum of 7:
+        1+6, 2+5, 3+4, 4+3, 5+2, 6+1.
+
+    for (int rep = 1; rep <= d; ++rep) {
+        vector<int> new_ways(target+1);
+        for (int already = 0; already <= target; ++already) {
+            for (int pipe = 1; pipe <= f; ++pipe) {
+                if (already - pipe >= 0) {
+                    new_ways[already] += ways[already - pipe];
+                    new_ways[already] %= mod;
+                }
+            }
+        }
+        ways = new_ways;
+    }
+
+
+    Note
+
+    Some questions point out the number of repetitions, 
+    in that case, add one more loop to simulate every repetition.
+
+    688. Knight Probability in Chessboard Medium
+    494. Target Sum Medium
+    377. Combination Sum IV Medium
+    935. Knight Dialer Medium
+    1223. Dice Roll Simulation Medium
+    416. Partition Equal Subset Sum Medium
+    808. Soup Servings Medium
+    790. Domino and Tromino Tiling Medium
+    801. Minimum Swaps To Make Sequences Increasing
+    673. Number of Longest Increasing Subsequence Medium
+    63. Unique Paths II Medium
+    576. Out of Boundary Paths Medium
+    1269. Number of Ways to Stay in the Same Place After Some Steps Hard
+    1220. Count Vowels Permutation Hard
+
+    Merging Intervals
+    Statement
+    Given a set of numbers find an optimal solution 
+    for a problem considering the current number 
+    and the best you can get from the left and right sides.
+
+    Approach
+    Find all optimal solutions for every interval 
+    and return the best possible answer.
+
+    // from i to j
+    dp[i][j] = dp[i][k] + result[k] + dp[k+1][j]
+    Get the best from the left and right sides and add a solution for the current position.
+
+    for(int l = 1; l<n; l++) {
+        for(int i = 0; i<n-l; i++) {
+            int j = i+l;
+            for(int k = i; k<j; k++) {
+                dp[i][j] = max(dp[i][j], dp[i][k] + result[k] + dp[k+1][j]);
+            }
+        }
+    }
+    return dp[0][n-1]
+    
+    
+    Similar Problems
+    1130. Minimum Cost Tree From Leaf Values Medium
+
+
+    Given an array arr of positive integers, 
+    consider all binary trees that can be possibly constructed
+    from the arr:
+
+    Each node has either 0 or 2 children;                               
+    The values of arr correspond to the values of each 
+    leaf in an in-order traversal of the tree.  
+    The value of each non-leaf node is equal to the 
+    product of the largest leaf value 
+    in its left and right subtree respectively.
+    Among all possible binary trees considered, return the 
+    smallest possible sum of the values of each non-leaf node.  
+    It is guaranteed this sum fits into a 32-bit integer.
+
+    for (int l = 1; l < n; ++l) {
+        for (int i = 0; i < n - l; ++i) {
+            int j = i + l;
+            dp[i][j] = INT_MAX;
+            for (int k = i; k < j; ++k) {
+                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k+1][j] + maxs[i][k] * maxs[k+1][j]);
+            }
+        }
+    }
+
+    96. Unique Binary Search Trees Medium
+    1039. Minimum Score Triangulation of Polygon Medium
+    546. Remove Boxes Medium
+    1000. Minimum Cost to Merge Stones Medium
+    312. Burst Balloons Hard
+    375. Guess Number Higher or Lower II Medium
+
+    DP on Strings
+    General problem statement for this pattern 
+    can vary but most of the time you are given 
+    two strings where lengths of those strings are not big
+
+    Statement
+    Given two strings s1 and s2, return some result.
+
+    Approach
+    Most of the problems on this pattern requires 
+    a solution that can be accepted in O(n^2) complexity.
+
+    // i - indexing string s1
+    // j - indexing string s2
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= m; ++j) {
+            if (s1[i-1] == s2[j-1]) {
+                dp[i][j] = /*code*/;
+            } else {
+                dp[i][j] = /*code*/;
+            }
+        }
+    }
+
+    If you are given one string s the approach may little vary
+
+    for (int l = 1; l < n; ++l) {
+        for (int i = 0; i < n-l; ++i) {
+            int j = i + l;
+            if (s[i] == s[j]) {
+                dp[i][j] = /*code*/;
+            } else {
+                dp[i][j] = /*code*/;
+            }
+        }
+    }
+
+    1143. Longest Common Subsequence Medium
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= m; ++j) {
+            if (text1[i-1] == text2[j-1]) {
+                dp[i][j] = dp[i-1][j-1] + 1;
+            } else {
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+    }
+
+    
+    647. Palindromic Substrings Medium
+    for (int l = 1; l < n; ++l) {
+        for (int i = 0; i < n-l; ++i) {
+            int j = i + l;
+            if (s[i] == s[j] && dp[i+1][j-1] == j-i-1) {
+                dp[i][j] = dp[i+1][j-1] + 2;
+            } else {
+                dp[i][j] = 0;
+            }
+        }
+    }
+
+    516. Longest Palindromic Subsequence Medium
+    1092. Shortest Common Supersequence Medium
+    72. Edit Distance Hard
+    115. Distinct Subsequences Hard
+    712. Minimum ASCII Delete Sum for Two Strings Medium
+    5. Longest Palindromic Substring Medium
+
+    Decision Making
+    The general problem statement for this pattern is 
+    forgiven situation decide whether to use or 
+    not to use the current state. So, the 
+    problem requires you to make a decision at a current state.
+
+    Statement
+    Given a set of values find an answer with an 
+    option to choose or ignore the current value.
+
+    Approach
+    If you decide to choose the current value use the 
+    previous result where the value was ignored; 
+    vice-versa, if you decide to ignore the 
+    current value use previous result where value was used.
+
+    // i - indexing a set of values
+    // j - options to ignore j values
+    for (int i = 1; i < n; ++i) {
+        for (int j = 1; j <= k; ++j) {
+            dp[i][j] = max({dp[i][j], dp[i-1][j] + arr[i], dp[i-1][j-1]});
+            dp[i][j-1] = max({dp[i][j-1], dp[i-1][j-1] + arr[i], arr[i]});
+        }
+    }
+
+    198. House Robber Easy
+
+    for (int i = 1; i < n; ++i) {
+        dp[i][1] = max(dp[i-1][0] + nums[i], dp[i-1][1]);
+        dp[i][0] = dp[i-1][1];
+    }
+    
+    121. Best Time to Buy and Sell Stock Easy
+    714. Best Time to Buy and Sell Stock with Transaction Fee Medium
+    309. Best Time to Buy and Sell Stock with Cooldown Medium
+    123. Best Time to Buy and Sell Stock III Hard
+    188. Best Time to Buy and Sell Stock IV Hard
 
 #####################################################################################################################
 #####################################################################################################################
