@@ -70,22 +70,68 @@ TOPICS TO UNDERSTAND:
 
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
+
+-9 Remember that you can do in-order and post-order to help you do
+   tree problems such as validate bst which does it in-order:
+
+    def isValidBST(self, root):
+        res, self.flag = [], True
+        self.helper(root, res)
+        return self.flag
+    
+    def helper(self, root, res):
+        if root:
+            self.helper(root.left, res)
+            if res and root.val <= res[-1]:
+                self.flag = False
+                return
+            res.append(root.val)
+            self.helper(root.right, res)
+
+    
+-8) Dynamic programming -> check if they want permutations or combinations.  
+    The DP needs to change so that this invarient is 
+    maintained such as in Coin Change 2,
+
+    Input: amount = 5, coins = [1, 2, 5]
+    Output: 4
+    Explanation: there are four ways to make up the amount
+    with the denominations. 
+    THIS IS A COMBINATIONS DP PROBLEM. DONT DO PERMUTATIONS DP. 
+    2 + 2 + 1 IS THE SAME AS 2 + 1 + 2, so forloop over coins first
+    so we dont reuse the same denomiation twice aka:
+
+    class Solution(object):
+        def change(self, amount, coins):
+            dic = {0: 1}
+            for coin in coins:
+                for j in range(amount + 1):
+                    dic[j] = dic.get(j, 0) +  dic.get(j - coin, 0)
+            return dic.get(amount, 0)
+    
+-7) CONTINUE TO PUSH FACTS AND DETAILS INTO A SOLUTION, ABUSE TO MAKE IT FASTER. 
+    Longest increasing subsequence can be solved with patience sort using NlogN. 
+    logN time to find pile and insert in pile. To come up with this method, 
+    look at your algorithm, realize what facts its using, realize if there 
+    are facts that you know the algorithm is not using but are true, 
+    then use those facts to ENHANCE YOUR SOLUTION, permutate the facts, look
+    for directionality in the facts, force it in with datastructures, and try to 
+    be clean as you do so. 
+
 -6) Review linked list 2, reversing a linked list between integers m and n 
-   and 
-   how to use recursive stack and nonlocal variables to
+   and how to use recursive stack and nonlocal variables to
    access backpointers in singly linked list. 
    Also how to use dummy pointers to simplify code 
    at the start.
    and always check before doing .next to stop null errors. 
    Iterative soln:
 
-    class Solution:
         '''
         When we are at the line pre.next.next = cur 
         the LL looks like this for [1,2,3,4,5] m = 2, n = 4
-
-        1 -> 2 <- 3 <- 4 5
-
+        we want: 1->4->3->2->5
+        we have: 1 -> 2 <- 3 <- 4 5
+ 
         Note that there is no connection between 4 and 5, 
         here pre is node 1, reverse is node 4, cur is node 5; 
         So pre.next.next = cur is basically linking 2 with 5; 
@@ -107,7 +153,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
             p.next = pre
             return dummy.next
 
-   
 -5) How to use nonlocals in python3 to make code easier:
     (check if palindrome exists in singly linked list)
         def isPalindrome(self, head):
@@ -158,7 +203,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
                 else:
                     return False
             return check_palin(lp)
-
 
 
 -4) Python generator for converting binary to value, but 
@@ -1710,6 +1754,8 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
         Search in a Sorted Infinite Array (medium)
 
 27) Top K elements
+        -> CAN BE SOLVED IN O(N) WITH BUCKET SORT, AND QUICK SELECT. CHECK OUT
+        -> TOP K MOST FREQUENT ELEMENTS QUESTION TO SEE THIS. 
 
         Any problem that asks us to find the top/smallest/frequent ‘K’ 
         elements among a given set falls under this pattern.
@@ -1986,7 +2032,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     HOWEVER, AS AN O(1) space optimization, you might be able 
     to go backward from the child node to the root node,
     and only end up traversing a path rather than a tree!
-    FOR INSTANCE THE FOLLOWING PROBLEM:
+    Go up the tree for SPEED. 
 
 
 41) FORD FULKERSON ALGORITHM PYTHON (MAX FLOW MIN CUT):
@@ -2397,7 +2443,6 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
 
 
 53) The art of segment trees and monoqueues:
-
 
     Previously we saw segment trees.
     That data structure was able to answer the question

@@ -3,7 +3,16 @@ PROBLEMS TO WORK ON:
 
 
 Find and do janestreet/citadel question!!!!!!!!!!!!!!!
-    String compressions and decompression. 
+    String compressions and decompression 
+    aka 
+    encode and decode strings on lintcode
+
+
+review KMP, Z ALGO, RABIN KARP, ALL OF BOYER MOORES TRICKS, REGEX. 
+
+
+DO ALL PREMIUM LEETCODE QUESTIONS.  
+IMPLEMENT/REVIEW/STUDY/MEMORIZE ALL DATA STRUCTURES. 
 
 
 PROBLEM TYPES TO PRACTICE: 
@@ -36,10 +45,22 @@ ONSITE PRACTICE:
     System Design/Concurrency/SQL Practice for onsites. 
 
 
+https://leetfree.com/company/appdynamics.html -> SUS website which contains company probs
+
 Leetcodes PER COMPANY LIST -> http://leetcode.liangjiateng.cn/leetcode/Citadel/algorithm
 https://learntocodetogether.com/top-150-leetcodes-best-practice-problems/
 https://medium.com/@koheiarai94/60-leetcode-questions-to-prepare-for-coding-interview-8abbb6af589e
+
 https://www.teamblind.com/post/New-Year-Gift---Curated-List-of-Top-75-LeetCode-Questions-to-Save-Your-Time-OaM1orEU
+
+DP PROBLEMS, EASY, MED, HARD TO DO AND CLASSIFICATION:
+https://leetcode.com/discuss/general-discussion/491522/dynamic-programming-questions-thread
+
+https://leetcode.com/problems/longest-palindromic-subsequence/discuss/222605/dp-problem-classifications-helpful-notes
+
+
+ALSO SEARCH AND do following counting problems:
+LEETCODE COUNTING PROBLEMS in google, practice permutation trees
 
 
 https://yangshun.github.io/tech-interview-handbook/best-practice-questions/
