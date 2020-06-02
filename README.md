@@ -1,9 +1,9 @@
 
-For very quick refresher -> Understand the following. He goes through 300 leetcode problems: https://nishmathcs.wordpress.com/category/leetcode-questions/
+For very quick refresher -> Understand the following. 
+He goes through 300 leetcode problems: https://nishmathcs.wordpress.com/category/leetcode-questions/
+
 Scrape the following -> short and sweet: https://nishmathcs.wordpress.com/category/data-structures-algorithms/page/1/
-
 Post about all string algorithms and hashing types (KMP, Boyer Moore, etc, Rabin Karp)
-
 
 COMPETITIVE PROGRAMMING GUIDE TO READ: https://cp-algorithms.com/
 TOPCODER COMPETITIVE PROGRAMMING GUIDES -> https://www.topcoder.com/community/competitive-programming/tutorials/
@@ -256,12 +256,10 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
     other types of INDICATOR VARIABLE TYPE SOLUTIONS that contain meta information on the problem. 
     Also remember that as you see each element, you can push multiple times to stack, not just once
     in case u need to keep count of something before a pop occurs. 
-
     
 0.05) To solve a difficult 3D problem or 2D problem. Solve the lower dimension first, 
      and then use it to guide your solution for higher dimensions. 
      Such as max area of rectangle of 1's.
-
 
 0.1) When doing string splitting, there are helper functions 
      but sometimes its better to for loop through the 
@@ -337,9 +335,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
             }
             return r;
         }
-
-    
-
 
 
 0.27) Memorize 0-1 Knapsack and strategy
