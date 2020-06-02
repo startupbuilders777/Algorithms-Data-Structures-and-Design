@@ -96,7 +96,9 @@ class Solution:
             
         return head
             
-            
+# You can find middle of list much more easily like so:
+
+      
 def reorderList(self, head):
     if not head:
         return
