@@ -2543,7 +2543,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     default could assume be any values.
 
     This obviously had a lot of power, but we can use something a lot 
-    simpler if we want to easier problems. 
+    simpler if we want to answer easier problems. 
     Suppose instead, we wanted to ask the question
 
     reduce(lambda x,y: operator(x,y), arr[i:i + L])
@@ -2566,16 +2566,38 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         def __init__(self, operator):
             self.q = deque()
             self.op = operator
+        
         def get_best(self):
             if not self.q:
                 return None
             return self.q[0][0]
+        
+        '''
+
+        if q has elements, look at back of queue. 
+        pop the elements off that cannot be best possible (i think? WTF??)
+        Ok sure. What the count does is it shows the range for which 
+        it is the best possible value. once you exit the range, remove the front
+        of the queue, and go to the next best, which will be the best for a certain sized window
+        before another thing is the best. 
+        So we keep track of the bests at each step only, and keep the best even if we "pop" because
+        its located a lil to the right, of the thing you popped on the main stream. 
+        '''
         def push(self, val):
             count = 0
             while self.q and self.op(val, self.q[-1][0]):
                 count += 1 + self.q[-1][1]
                 self.q.pop()
             self.q.append([val, count])
+        '''
+        Pop front. only if count is == 0.
+        Otherwise, decrement the count. Why is the count important?
+        I guess the count keeps track of the range you are sliding across
+        so if you pop it, and slide to the right, its still THE BEST POSSIBLE VALUE 
+        (because the best possible value is located somewhere a lil to the right), 
+        because it was not actually popped. just some garbage element on the main list 
+        was popped. 
+        '''
         def pop(self):
             if not self.q:
                 return None
@@ -2758,10 +2780,12 @@ Cool Notes Part 0.5: Sliding Window with a deque
                     # previous window, so print it 
                     print(str(arr[Qi[0]]) + " ", end = "") 
                     
-                    # Remove the elements which are  
-                    # out of this window 
+                    # Remove our really good candidates which are  
+                    # out of window now. SO SAD!! 
                     # out of window elements are in the front of the queue. 
                     # indexes are increasing like above -> 2 -> 5
+                    # its i-k because we want to shift our removal range to start at index 0 
+                    # and go up to n-k for the last window.
                     while Qi and Qi[0] <= i-k: 
                         
                         # remove from front of deque 
@@ -2797,6 +2821,8 @@ Cool Notes Part 0.5: Sliding Window with a deque
         It takes only O(n) time to process a N-size sliding window minimum/maximum problem.
         Note: different from a priority queue (which takes O(nlogk) to solve this problem), 
         it doesn't pop the max element: It pops the first element (in original order) in queue.
+
+
 ###################################################################################
 ###################################################################################
 COOL NOTES PART 0.90: DYNAMIC PROGRAMMING PATTERNS, ILLUSTRATIONS, AND EXAMPLES: 

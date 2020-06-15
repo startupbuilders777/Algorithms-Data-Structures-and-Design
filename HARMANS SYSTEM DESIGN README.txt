@@ -1,3 +1,16 @@
+My approach for solving system design in an interview:
+
+Functional Requirements / Use Cases - Spend max of 5 mins here. (Note: not asking questions is red flag)
+Non-Functional Requirements/NFR (scalability, latency, CAP, durability etc)- 2 minutes
+Back of the envelope (capacity) estimations - Spend max of 2-5 mins.
+Generic High Level Design (HLD)-- covering in-flow and outflow of data -- 5-10 mins
+Data Model / APIs (as applicable) - 5 mins
+Scale each component in HLD depending on NFR - 10 mins
+Verify your design / Discuss trade-offs of your design with interviewer (important) - 5 mins
+Make your own notes on below items which you can refer to the day before each interview as a quick reference.
+
+
+###########################################
 From https://github.com/jwasham/coding-interview-university#data-structures
 
 You can expect system design questions if you have 4+ years of experience.
