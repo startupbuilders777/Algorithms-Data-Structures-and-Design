@@ -1,6 +1,0 @@
-Operation	Binary[6]	Binomial[6]	Fibonacci[6][7]	Pairing[8]	Brodal[9][b]	Rank-pairing[11]	Strict Fibonacci[12]
-find-min	Θ(1)	Θ(log n)	Θ(1)	Θ(1)	Θ(1)	Θ(1)	Θ(1)
-delete-min	Θ(log n)	Θ(log n)	O(log n)[c]	O(log n)[c]	O(log n)	O(log n)[c]	O(log n)
-insert	O(log n)	Θ(1)[c]	Θ(1)	Θ(1)	Θ(1)	Θ(1)	Θ(1)
-decrease-key	Θ(log n)	Θ(log n)	Θ(1)[c]	o(log n)[c][d]	Θ(1)	Θ(1)[c]	Θ(1)
-merge	Θ(n)	O(log n)[e]	Θ(1)	Θ(1)	Θ(1)	Θ(1)	Θ(1)

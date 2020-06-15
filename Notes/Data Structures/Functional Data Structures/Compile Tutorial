@@ -1,4 +1,0 @@
-To compile a ocaml project:
-
-ocamlc -o Q1 Q1.mli Q1.ml
-

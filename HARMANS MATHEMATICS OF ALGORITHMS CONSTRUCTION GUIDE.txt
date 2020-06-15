@@ -2,6 +2,10 @@
 SCRAPE AND WRITE NOTES FOR FOLLOWING: https://www.geeksforgeeks.org/number-theory-competitive-programming/#basics
 SCRAPE AND WRITE NOTES FOR FOLLOWING: https://medium.com/algorithms-and-leetcode/math-related-problems-on-leetcode-9537df481fbe
 
+REVIEW MATHEMATICS/GEOMETRY ALGORITHMS FROM CP ALGORITHMS:
+https://cp-algorithms.com/
+
+
 WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
 
 
@@ -411,16 +415,8 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
 
 
 
-
-
- 
-
-
-###################################################3
-
-
-
-#################################################################################################################
+###################################################
+####################################################
 
 COOL Notes PART 2: Bit Magic
 

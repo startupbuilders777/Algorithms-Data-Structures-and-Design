@@ -53,22 +53,14 @@ class Solution:
         d = deque()
         stack = [ (root, d )]
         
-        
         while stack:
             el, r = stack.pop()
             
             if(el is None):
                 continue
             
-            
-            
             r.appendleft(el.val)
-            
             stack.append( (el.left, r) )
             stack.append( (el.right, r) )
-            
-            
-
-            
             
         return list(d)

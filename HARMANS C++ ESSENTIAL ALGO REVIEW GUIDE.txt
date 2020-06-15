@@ -488,7 +488,6 @@
         } 
 
 
-
 4) FIND BRIDGES AKA CUT EDGES in a graph:
         We do DFS traversal of the given graph. In DFS tree an edge (u, v) (u is parent of v in DFS tree) 
         is bridge if there does not exist any other alternative to reach u or an ancestor of u 

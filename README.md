@@ -117,6 +117,75 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
     then use those facts to ENHANCE YOUR SOLUTION, permutate the facts, look
     for directionality in the facts, force it in with datastructures, and try to 
     be clean as you do so. 
+    
+    # Lacks bin search below but one after adds it. 
+    The idea is to make piles as you traverse the array. The first pile is the 
+    first number in the array. As you iterate over the array, you check from 
+    the left most pile and if the current number is <= to the pile it can be 
+    placed there (greedy if I fits I sits rule) Otherwise, continue down the pile. 
+    If it can not fit on any pile you create a new one.
+
+    class Solution:
+        def lengthOfLIS(self, nums: List[int]) -> int:
+            if not nums:
+                return 0
+            # start with first pile as first num
+            piles = [nums[0]]
+            
+            for num in range(1, len(nums)):
+                # keep track if current number is placed
+                placed= False
+                # traverse the piles being greedy left to right. If it fits it sits
+                for x in range(len(piles)):
+                    if nums[num] <= piles[x]:
+                            piles[x] = nums[num]
+                            placed = True
+                            break
+                # Make home for the number if it didn't find one :(
+                if not placed:
+                    piles.append(nums[num])
+            return len(piles)
+            
+    # SOLUTION WITH BINSEARCH      
+    def lengthOfLIS(self, l: List[int]) -> int:
+        if not l: return 0
+        
+        # Create a placeholder for each pile. In the worst case, 
+        # the number of piles is the number of items in the list.
+        topOfEachPile = [0] * len(l)
+        
+        # From the deck/videos, we should know that  the Patience Algorithm is Greedy. 
+        # This results in the fewest number of piles possible.
+        # The LIS is then the number of piles that exist.
+        # Here we create a variable that describes the number 
+        # of piles that we have initialised from our placeholder above.
+        numberOfPiles = 0
+        
+        # Iterate over each number. For each number, do binary 
+        # search to figure out which of the piles to place the number.
+        for n in l:
+            # These variables set the range of the binary search. 
+            # We only want to do BS on the piles that have been initialised.
+            # We include, at the very right, a new pile. This is useful 
+            # because if the n can't fit into any of the existing 
+            # piles we have to add it into this new pile.
+            beg, end = 0, numberOfPiles
+        
+            # This BS is where we are greedy. If n is the same as l[middle] or less, we go left. 
+            while beg != end:
+                middle = (beg + end) // 2
+                if n > topOfEachPile[middle]:
+                    beg = middle + 1
+                else:
+                    end = middle
+            
+            # Update the top card at this pile.
+            topOfEachPile[beg] = n
+            
+            # If we did end up using a new pile, then beg == numberOfPiles. 
+            if beg == numberOfPiles: numberOfPiles += 1
+        
+        return numberOfPiles
 
 -6) Review linked list 2, reversing a linked list between integers m and n 
    and how to use recursive stack and nonlocal variables to
@@ -149,8 +218,8 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
             pre = None
             for _ in range(n - m + 1):
                 cur.next, pre, cur = pre, cur, cur.next
-            p.next.next = cur
-            p.next = pre
+            p.next.next = cur # 2's next is 5
+            p.next = pre # connect 1 to 4. 
             return dummy.next
 
 -5) How to use nonlocals in python3 to make code easier:
@@ -337,53 +406,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
         }
 
 
-0.27) Memorize 0-1 Knapsack and strategy
-      and space efficiency strategy:
-    
-    # Geeks for Geeks:
-    def knapSack(W, wt, val, n): 
-        K = [[0 for x in range(W + 1)] for x in range(n + 1)] 
-    
-        # Build table K[][] in bottom up manner 
-        for i in range(n + 1): 
-            for w in range(W + 1): 
-                if i == 0 or w == 0: 
-                    K[i][w] = 0
-                elif wt[i-1] <= w: 
-                    K[i][w] = max(val[i-1] + K[i-1][w-wt[i-1]],  K[i-1][w]) 
-                else: 
-                    K[i][w] = K[i-1][w] 
-    
-        return K[n][W] 
-
-    # SPACE EFFICIENT
-    You can reduce the 2d array to a 1d array saving the values for the current iteration. 
-    For this to work, we have to iterate capacity (inner for-loop) in the 
-    opposite direction so we that we don't use the values that 
-    were updated in the same iteration 
-
-    from collections import namedtuple
-
-    def knapsack(capacity, items):
-        # A DP array for the best-value that could be achieved for each weight.
-        best_value = [0] * (capacity + 1)
-        # The previous item used to achieve the best-value for each weight.
-        previous_item = [None] * (capacity + 1)
-        for item in items:
-            for w in range(capacity, item.weight - 1, -1):
-                value = best_value[w - item.weight] + item.value
-                if value > best_value[w]:
-                    best_value[w] = value
-                    previous_item[w] = item
-
-        cur_weight = capacity
-        taken = []
-        while cur_weight > 0:
-            taken.append(previous_item[cur_weight])
-            cur_weight -= previous_item[cur_weight].weight
-
-        return best_value[capacity], taken
-
 
 0.3) Granularity === Optimization. Break up variables and track everything. Structurd things like
       for loops, and functional structures like reduction, and map, and filter 
@@ -400,8 +422,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
       be smart and add direction, and running values, which will allow  
       hash map abuse to work (try thinking of it bottom up, base case, direction,
       to help you think of hash map abuse or a greedy soln). 
-
-
 
 0.5) Preprocess and do a running comparison between 2 containers. 
     For instance, to do certain problems you need to sort a list and then compare the sorted list 
@@ -468,6 +488,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
     
     from heapq import *
     import itertools
+
     def minMeetingRooms(self, intervals):
         sorted_i = sorted(intervals, key=lambda x: x.start)
         
@@ -528,7 +549,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
                         subset.append(nums[j])
 
                 subsets.append(subset)
-
             return subsets
 
         Iterate through all subsets of a 
@@ -581,7 +601,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
      USE MATH AND ANALYSIS TO GET THE BEST SOLUTION!
 
 
-
 0.8) Sometimes you will get TLE with the bottom up solution. 
      
      This is because bottom up is slower since it is performing a BFS, 
@@ -626,6 +645,20 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
         solved in O(N) (OR even O(log N) if you implement 
         binary searching 2 pointers)
 
+        # binary search        
+        def twoSum(self, numbers, target):
+            for i in xrange(len(numbers)):
+                l, r = i+1, len(numbers)-1
+                tmp = target - numbers[i]
+                while l <= r:
+                    mid = l + (r-l)//2
+                    if numbers[mid] == tmp:
+                        return [i+1, mid+1]
+                    elif numbers[mid] < tmp:
+                        l = mid+1
+                    else:
+                        r = mid-1
+
 1.3) Count set bits in integer:
       (Log N!!) if N represents size of number
 
@@ -644,7 +677,8 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
     b) right to left
     c) 2 pointer on either side and you close into the middle
     d) 2 pointers, one that traverses even indexes, and the other that traverses odd indexes
-    e) Be creative in how you see the DIRECTIONALITY of the solution for a given problem. 
+    e) Linked list pointers, second moves twice as fast as the first. When second gets to end, first is at halfway node. 
+    f) Be creative in how you see the DIRECTIONALITY of the solution for a given problem. 
 
 1.6) Coin Change Bottom Up DP:
         You are given coins of different denominations and a total amount of money amount. 
@@ -692,7 +726,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
       Switch (i, j) with (j,i) either by 
       iterating over upper triangle or lower triangle:
 
-       n = len(A)
+        n = len(A)
         for i in range(n):
             for j in range(i):
                 A[i][j], A[j][i] = A[j][i], A[i][j]
@@ -701,8 +735,8 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
 1.8) Two Pointers is often useful when searching pairs in a 
         sorted array or linked list; for example, 
         when you have to compare each element 
+
         Here are some problems that feature the Two Pointer pattern:
-     
         of an array to its other elements.
         Squaring a sorted array (easy)
         Triplets that sum to zero (medium)
@@ -718,6 +752,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
         pointer should catch the slow pointer once both the pointers are in a cyclic loop.
         
         Linked List Cycle (easy)
+        Linked List Cycle || (medium)
         Palindrome Linked List (medium)
         Cycle in a Circular Array (hard)
 
@@ -727,9 +762,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
       dynamic programming concepts to get O(N) speed, O(1) space except for output container.
       Think in terms of containers to implement fast 2 pointer solution!
       Then think in terms of DP to reduce to a 1 pointer solution!
+      
 
-
-      which does not count:
+        FOR THIS PROBLEM, TRY LAGGING YOUR RUNNING VARIABLES AND INSERTIONS TO MAKE THE ALGO WORK.
         
         238. Product of Array Except Self
 
@@ -762,8 +797,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
                     p = p * nums[i]
                 return output
 
-
-
 2) Back tracking
     => For permutations, need some intense recursion 
         (recurse on all kids, get all their arrays, and append our chosen element to everyones array, return) 
@@ -771,6 +804,8 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
     => For combinations, use a binary tree. Make the following choice either: CHOOSE ELEMENT. DONT CHOOSE ELEMENT. 
         Recurse on both cases to get all subsets
     => To get all subsets, count from 0 to 2^n, and use bits to choose elements.
+    => When doing DP, check to see if you are dealing with permutations or combinations type solutions, and 
+        adjust your DP CAREFULLY ACCORDING TO THAT -> AKA CHECK COIN CHANGE 2
 
 2.3) Graphs =>
     Try BFS/DFS/A star search
@@ -778,97 +813,157 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
     -> Cycle detection -> use visited map. 
         Actually need to carry parent in param as well in dfs 
         for undirected graph
-
     -> shortest path = BFS
     -> Do parent stuff with parents map (such as common ancestors).
     -> Cool graph techniques is coloring nodes, or flagging nodes 
         if you are trying to get multiple paths in graph and looking for path intersections. 
     -> To do topological sort, USE DFS and get start end times. also can count in-nodes and out-nodes to sort them !
     -> Reverse the graph to get the shortest path starting from all other nodes to your node!
-
     -> Sometimes in a problem, you cant bfs/dfs once. you need to bfs/dfs every vertex!
     -> Minimum spanning tree -> use prims algorithm or kruskals algorithm
     -> Find strongly connected components => use kosarju's algo which does dfs on graph and the reverse of the graph from a vertex.
-
     -> Topological SORT: dfs, process nodes children first, then add node to list. then reverse entire list at end
-     
      REMOVING CYCLES, DFS, AND BFS using colors: DONE IN GRAPHA ALGO REVIEW SECTION BELOW. 
 
 2.35) In head recursion , the recursive call, when it happens, comes 
-      before other processing in the function (think of it happening at the top, or head, of the function). In tail recursion , it's the opposite—the processing occurs before the recursive call.
+      before other processing in the function (think of it happening at the top, 
+      or head, of the function). In tail recursion , it's the 
+      opposite—the processing occurs before the recursive call.
+
+2.37) Articulation Points Algorithm:
+    A cut vertex is a vertex that when removed (with its boundary edges) 
+    from a graph creates more components than previously in the graph. 
+    A recursive function that find articulation points  using DFS traversal 
+    
+    In DFS tree, a vertex u is articulation point if one of the 
+    following two conditions is true.
+    
+    1) u is root of DFS tree and it has at least two children.
+       the first case is simple to detect. For every vertex, count children. 
+       If currently visited vertex u is root (parent[u] is NIL) 
+       and has more than two children, print it.
+    
+    2) u is not root of DFS tree and it has a child v such that no vertex 
+       in subtree rooted with v has a back edge to one of the ancestors (in DFS tree) of u.
+
+        How to handle second case? The second case is trickier. 
+        We maintain an array disc[] to store discovery time of vertices. 
+        For every node u, we need to find out the earliest visited vertex 
+        (the vertex with minimum discovery time) that can be reached 
+        from subtree rooted with u. So we maintain an additional array 
+        low[] which is defined as follows.
+
+        low[u] = min(disc[u], disc[w]) 
+        where w is an ancestor of u and there is a back edge from 
+        some descendant of u to w.
+
+
+2.39) Articulation points and Biconnected graphs:
+    In graph theory, a biconnected component (sometimes known as a 2-connected component) 
+    is a maximal biconnected subgraph. Any connected graph decomposes into a 
+    tree of biconnected components called the block-cut tree of the graph. 
+    The blocks are attached to each other at shared vertices called 
+    cut vertices or articulation points. Specifically, a 
+    cut vertex is any vertex whose removal 
+    increases the number of connected components.
+
+    biconnected graph -> if any one vertex were to be removed, 
+    the graph will remain connected. 
+    Therefore a biconnected graph has no articulation vertices.
+    
+    We obviously need two passes. In the first pass, we want to figure out which 
+    vertex we can see from each vertex through back edges, if any. 
+    In the second pass we want to visit vertices in the opposite 
+    direction and collect the minimum bi-component ID 
+    (i.e. earliest ancestor accessible from any descendants).
+
+    AP Pseudocode:
+
+    time = 0
+    visited[i] = false for all i
+    GetArticulationPoints(u)
+        visited[u] = true
+        u.st = time++
+        u.low = v.st    //keeps track of highest ancestor reachable from any descendants
+        dfsChild = 0    //needed because if no child then removing this node doesn't decompose graph
+        for each ni in adj[i]
+            if not visited[ni]
+                GetArticulationPoints(ni)
+                ++dfsChild
+                parents[ni] = u
+                u.low = Min(u.low, ni.low)  //while coming back up, get the lowest reachable ancestor from descendants
+            else if ni <> parent[u] //while going down, note down the back edges
+                u.low = Min(u.low, ni.st)
+
+        //For dfs root node, we can't mark it as articulation point because 
+        //disconnecting it may not decompose graph. So we have extra check just for root node.
+        if (u.low = u.st and dfsChild > 0 and parent[u] != null) or (parent[u] = null and dfsChild > 1)
+            Output u as articulation point
+            Output edges of u with v.low >= u.low as bridges
+            Output u.low as bicomponent ID
 
 2.4) CUT VERTEX AKA ARTICULATION POINT finding:
+        u --> The vertex to be visited next 
+        visited[] --> keeps tract of visited vertices 
+        disc[] --> Stores discovery times of visited vertices 
+        parent[] --> Stores parent vertices in DFS tree 
+        ap[] --> Store articulation points
 
-    '''A recursive function that find articulation points  
-    using DFS traversal 
-    u --> The vertex to be visited next 
-    visited[] --> keeps tract of visited vertices 
-    disc[] --> Stores discovery times of visited vertices 
-    parent[] --> Stores parent vertices in DFS tree 
-    ap[] --> Store articulation points'''
-    def APUtil(self,u, visited, ap, parent, low, disc): 
-  
-        #Count of children in current node  
-        children =0
-  
-        # Mark the current node as visited and print it 
-        visited[u]= True
-  
-        # Initialize discovery time and low value 
-        disc[u] = self.Time 
-        low[u] = self.Time 
-        self.Time += 1
-  
-        #Recur for all the vertices adjacent to this vertex 
-        for v in self.graph[u]: 
-            # If v is not visited yet, then make it a child of u 
-            # in DFS tree and recur for it 
-            if visited[v] == False : 
-                parent[v] = u 
-                children += 1
-                self.APUtil(v, visited, ap, parent, low, disc) 
-  
-                # Check if the subtree rooted with v has a connection to 
-                # one of the ancestors of u 
-                low[u] = min(low[u], low[v]) 
-  
-                # u is an articulation point in following cases 
-                # (1) u is root of DFS tree and has two or more chilren. 
-                if parent[u] == -1 and children > 1: 
-                    ap[u] = True
-  
-                #(2) If u is not root and low value of one of its child is more 
-                # than discovery value of u. 
-                if parent[u] != -1 and low[v] >= disc[u]: 
-                    ap[u] = True    
-                      
-                # Update low value of u for parent function calls     
-            elif v != parent[u]:  
-                low[u] = min(low[u], disc[v]) 
-  
-  
-    #The function to do DFS traversal. It uses recursive APUtil() 
-    def AP(self): 
-   
-        # Mark all the vertices as not visited  
-        # and Initialize parent and visited,  
-        # and ap(articulation point) arrays 
-        visited = [False] * (self.V) 
-        disc = [float("Inf")] * (self.V) 
-        low = [float("Inf")] * (self.V) 
-        parent = [-1] * (self.V) 
-        ap = [False] * (self.V) #To store articulation points 
-  
-        # Call the recursive helper function 
-        # to find articulation points 
-        # in DFS tree rooted with vertex 'i' 
-        for i in range(self.V): 
-            if visited[i] == False: 
-                self.APUtil(i, visited, ap, parent, low, disc) 
-  
-        for index, value in enumerate (ap): 
-            if value == True: print index, 
+        def AP(self): 
+            visited = [False] * (self.V) 
+            disc = [float("Inf")] * (self.V) 
+            low = [float("Inf")] * (self.V) 
+            parent = [-1] * (self.V) 
+            ap = [False] * (self.V) #To store articulation points 
+    
+            # Call the recursive helper function 
+            # to find articulation points 
+            # in DFS tree rooted with vertex 'i' 
+            for i in range(self.V): 
+                if visited[i] == False: 
+                    self.APUtil(i, visited, ap, parent, low, disc) 
+    
+            for index, value in enumerate (ap): 
+                if value == True: print index, 
 
+        def APUtil(self,u, visited, ap, parent, low, disc): 
+            #Count of children in current node  
+            children = 0
+    
+            # Mark the current node as visited and print it 
+            visited[u]= True
+    
+            # Initialize discovery time and low value 
+            disc[u] = self.Time 
+            low[u] = self.Time 
+            self.Time += 1
+    
+            #Recur for all the vertices adjacent to this vertex 
+            for v in self.graph[u]: 
+                # If v is not visited yet, then make it a child of u 
+                # in DFS tree and recur for it 
+                if visited[v] == False : 
+                    parent[v] = u 
+                    children += 1
+                    self.APUtil(v, visited, ap, parent, low, disc) 
+    
+                    # Check if the subtree rooted with v has a connection to 
+                    # one of the ancestors of u 
+                    low[u] = min(low[u], low[v]) 
+    
+                    # u is an articulation point in following cases 
+                    # (1) u is root of DFS tree and has two or more chilren. 
+                    if parent[u] == -1 and children > 1: 
+                        ap[u] = True
+    
+                    #(2) If u is not root and low value of one of its child is more 
+                    # than discovery value of u. 
+                    if parent[u] != -1 and low[v] >= disc[u]: 
+                        ap[u] = True    
+                        
+                    # Update low value of u for parent function calls     
+                elif v != parent[u]:  # found backedge!
+                    low[u] = min(low[u], disc[v]) 
 
 
 2.5) CUT EDGE AKA BRIDGE finding. 
@@ -881,6 +976,21 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
     visited[] --> keeps tract of visited vertices 
     disc[] --> Stores discovery times of visited vertices 
     parent[] --> Stores parent vertices in DFS tree'''
+    def bridge(self): 
+   
+        # Mark all the vertices as not visited and Initialize parent and visited,  
+        # and ap(articulation point) arrays 
+        visited = [False] * (self.V) 
+        disc = [float("Inf")] * (self.V) 
+        low = [float("Inf")] * (self.V) 
+        parent = [-1] * (self.V) 
+  
+        # Call the recursive helper function to find bridges 
+        # in DFS tree rooted with vertex 'i' 
+        for i in range(self.V): 
+            if visited[i] == False: 
+                self.bridgeUtil(i, visited, parent, low, disc)
+
     def bridgeUtil(self,u, visited, parent, low, disc): 
   
         # Mark the current node as visited and print it 
@@ -915,26 +1025,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
                       
             elif v != parent[u]: # Update low value of u for parent function calls. 
                 low[u] = min(low[u], disc[v]) 
-  
-  
-    # DFS based function to find all bridges. It uses recursive 
-    # function bridgeUtil() 
-    def bridge(self): 
-   
-        # Mark all the vertices as not visited and Initialize parent and visited,  
-        # and ap(articulation point) arrays 
-        visited = [False] * (self.V) 
-        disc = [float("Inf")] * (self.V) 
-        low = [float("Inf")] * (self.V) 
-        parent = [-1] * (self.V) 
-  
-        # Call the recursive helper function to find bridges 
-        # in DFS tree rooted with vertex 'i' 
-        for i in range(self.V): 
-            if visited[i] == False: 
-                self.bridgeUtil(i, visited, parent, low, disc)
-
-
 
 2.55) MATRIX Problems Tips:
       Try reversing. Try transposing. Try circular sorting. 
@@ -1107,10 +1197,32 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
             return len(visited) == numCourses
 
 
-2.59) Cycle finding in undirected graph:
-      
+2.59) Cycle finding in undirected graph: 
 
+        def undirected_has_cycle(G):
+            color = {v: WHITE for v in G}
+            cycle = False
 
+            def visit(u, p):
+                nonlocal cycle
+                if cycle:
+                    return
+
+                color[u] = GREY
+                for v in G[u]:
+                    if color[v] == WHITE:
+                        visit(v, u)
+                    elif v != p and color[v] == GREY:
+                        cycle = True
+                color[u] = BLACK
+
+            for s in G:
+                if color[s] == WHITE:
+                    visit(s, None)
+                    if cycle:
+                        return True
+
+            return cycle
 
 
 
@@ -1154,7 +1266,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
                 self.lru_cache[key] = value
 
     # WITH A DOUBLY LINKED CIRCULAR LIST:
-    
     class LRUCache:
         def __init__(self, capacity):
             self.capacity = capacity
@@ -1198,75 +1309,55 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
 
 
 
-2.7) Common problems solved using DP on broken profile include:
-
-        finding number of ways to fully fill an area (e.g. chessboard/grid) with some figures (e.g. dominoes)
-        finding a way to fill an area with minimum number of figures
-        finding a partial fill with minimum number of unfilled space (or cells, in case of grid)
-        finding a partial fill with the minimum number of figures, such that no more figures can be added
-        Problem "Parquet"
-        Problem description. Given a grid of size N×M. Find number of ways to 
-        fill the grid with figures of size 2×1 (no cell should be left unfilled, 
-        and figures should not overlap each other).
-
-        Let the DP state be: dp[i,mask], where i=1,…N and mask=0,…2^(M)−1.
-
-        i respresents number of rows in the current grid, and mask is the state of 
-        last row of current grid. If j-th bit of mask is 0 then the corresponding 
-        cell is filled, otherwise it is unfilled.
-
-        Clearly, the answer to the problem will be dp[N,0].
-
-        We will be building the DP state by iterating over each i=1,⋯N 
-        and each mask=0,…2^(M)−1, and for each mask we will be only transitioning forward, 
-        that is, we will be adding figures to the current grid.
-        
-        int n, m;
-        vector < vector<long long> > dp;
-        void calc (int x = 0, int y = 0, int mask = 0, int next_mask = 0)
-        {
-            if (x == n)
-                return;
-            if (y >= m)
-                dp[x+1][next_mask] += d[x][mask];
-            else
-            {
-                int my_mask = 1 << y;
-                if (mask & my_mask)
-                    calc (x, y+1, mask, next_mask);
-                else
-                {
-                    calc (x, y+1, mask, next_mask | my_mask);
-                    if (y+1 < m && ! (mask & my_mask) && ! (mask & (my_mask << 1)))
-                        calc (x, y+2, mask, next_mask);
-                }
-            }
-        }
-
-
-        int main()
-        {
-            cin >> n >> m;
-
-            dp.resize (n+1, vector<long long> (1<<m));
-            dp[0][0] = 1;
-            for (int x=0; x<n; ++x)
-                for (int mask=0; mask<(1<<m); ++mask)
-                    calc (x, 0, mask, 0);
-
-            cout << dp[n][0];
-        }
 2.7) When you DFS/BACKTRACK, one way to reduce space usage, is using grid itself
      as the visited set, and assigning and reverting it.  
-      Additionally, RETURN ASAP. PRUNE, PRUNE PRUNE. 
-      Do not aggregrate all the results then return.
-      NO UNNECESSARY SEARCHING. Look at Word Search in leet folder. 
+     Additionally, RETURN ASAP. PRUNE, PRUNE PRUNE. 
+     Do not aggregrate all the results then return.
+     NO UNNECESSARY SEARCHING. Look at Word Search in leet folder. 
 
+    Given a 2D board and a word, find if the word exists in the grid.
+
+    class Solution:
+        def exist(self, board: List[List[str]], word: str) -> bool:
+        
+            def CheckLetter(row, col, cur_word):
+            #only the last letter remains
+                if len(cur_word) == 1:
+                    return self.Board[row][col] == cur_word[0]
+                else:
+                #mark the cur pos as explored -- None so that other can move here
+                    self.Board[row][col] = None
+                    if row+1<self.max_row and self.Board[row+1][col] == cur_word[1]:
+                        if CheckLetter(row+1, col, cur_word[1:]):
+                            return True
+                    if row-1>=0 and self.Board[row-1][col] == cur_word[1]:
+                        if CheckLetter(row-1, col, cur_word[1:]):
+                            return True
+                    if col+1<self.max_col and self.Board[row][col+1] == cur_word[1]:
+                        if CheckLetter(row, col+1, cur_word[1:]):
+                            return True
+                    if col-1>=0 and self.Board[row][col-1] == cur_word[1]:
+                        if CheckLetter(row, col-1, cur_word[1:]):
+                            return True
+                    #revert changes made
+                    self.Board[row][col] = cur_word[0]
+                    return False                  
+        
+            self.Board = board
+            self.max_row = len(board)
+            self.max_col = len(board[0])
+            if len(word)>self.max_row*self.max_col:
+                return False
+            for i in range(self.max_row):
+                for j in range(self.max_col):
+                    if self.Board[i][j] == word[0]:
+                        if CheckLetter(i, j, word):return True
+            return False
 
 
 2.8) ROLLING HASH USAGE: 
     Consider the string abcd and we have to find the hash values of 
-    substrings of this string having length 3 ,i.e.,abc and bcd.
+    substrings of this string having length 3 ,i.e., abc and bcd.
     
     For simplicity let us take 5 as the base but in actual scenarios we should mod it 
     with a large prime number to avoid overflow.The highest 
@@ -1287,7 +1378,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
 
     In general,the hash H can be defined as:-
 
-    H=( c1ak-1 + c2ak-2 + c3ak-3. . . . + cka0 ) % m
+    H=( c1a_{k-1} + c2a_{k-2} + c3a_{k-3}. . . . + cka_0 ) % m
     
     where a is a constant, c1,c2, ... ck are the input characters 
     and m is a large prime number, since the probability of 
@@ -1326,7 +1417,47 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
     Calculating the number of different substrings of a string in O(n2logn)
     Calculating the number of palindromic substrings in a str
 
+    EXAMPLE:
 
+    187. Repeated DNA Sequences
+    Write a function to find all the 10-letter-long sequences 
+    (substrings) that occur more than once in a DNA molecule.
+
+    Example:
+
+    Input: s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"
+
+    Output: ["AAAAACCCCC", "CCCCCAAAAA"]
+
+    def findRepeatedDnaSequences(self, s):
+        # We can use rolling hash to effeciently 
+        # compute hash values of the pattern
+        # hsh as counter for hash value => string
+        hsh = {}
+        def cal_hsh(string):
+            assert(len(string) == 10)
+            hsh_val = 0
+            for i in range(10):
+                hsh_val += ord(string[i]) * 7**i
+            return hsh_val    
+        def update_hsh(prev_val, drop_idx, add_idx):
+            return (prev_val - ord(s[drop_idx]))//7 + ord(s[add_idx]) * 7 ** 9
+        
+        n = len(s)
+        if n < 10: return []
+        hsh_val = cal_hsh(s[:10])
+        hsh[hsh_val] = s[:10]
+        ret = set()
+        # Notice this is n-9 since we want the last substring of length 10
+        for i in range(1, n-9):
+            hsh_val = update_hsh(hsh_val, i-1, i+9)
+            if hsh_val in hsh:
+                ret.add(s[i:i+10])
+            else:
+                hsh[hsh_val] = s[i:i+10]
+        return list(ret)
+
+    
 3) 0-1 BFS
     we can use BFS to solve the SSSP (single-source shortest path) 
     problem in O(|E|), if the weights of each edge is either 0 or 1.
@@ -1367,7 +1498,8 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
 
 
 4) To do things inplace, such as inplace quick sort, or even binary search, 
-    it is best to operate on index values in your recursion instead of slicing and joining arrays.
+    it is best to operate on index values in your recursion 
+    instead of slicing and joining arrays.
     Always operate on the pointers for efficiency purposes.
 
 5) If you need to keep track of a list of values instead of just 1 values 
@@ -1377,9 +1509,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
     pushing and poping an element in an ordered map brings it to the front. 
 
 6)  If you need to do range searches, you need a range tree. 
-    if you dont have time to get a range tree, 
+    if you dont have time to get a range tree, or a kd tree 
     use binary searching as the substitute!
-    Also try a segment tree, fenwick tree, etc.
+
 
 7) if the problem is unsorted, try sorting and if you need to keeping 
     track of indexes, use reverse index map, to do computations. 
@@ -1427,7 +1559,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
             node per <Intersection, direction> pair. That way you recover the property you need.
 
 
-
 10.5) DP Construction:
         DP problems typically show up at optimization or counting problems 
         (or have an optimization/counting component). Look for words like 
@@ -1465,6 +1596,57 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
         space, mention it in the interview (and explain). You probably won't 
         have to code it. If you have time, feel free to code it bottom-up.
 
+10.7) Memorize 0-1 Knapsack and strategy
+      and space efficiency strategy:
+    
+    # n is number of items. 
+    def knapSack(W, wt, val, n): 
+        K = [[0 for x in range(W + 1)] for x in range(n + 1)] 
+    
+        # Build table K[][] in bottom up manner 
+        for i in range(n + 1): 
+            for w in range(W + 1): 
+                if i == 0 or w == 0: 
+                    K[i][w] = 0
+                elif wt[i-1] <= w: 
+                    K[i][w] = max(val[i-1] + K[i-1][w-wt[i-1]],  K[i-1][w]) 
+                else: 
+                    K[i][w] = K[i-1][w] 
+    
+        return K[n][W] 
+
+    # SPACE EFFICIENT
+    You can reduce the 2d array to a 1d array saving the values for the current iteration. 
+    For this to work, we have to iterate capacity (inner for-loop) in the 
+    opposite direction so we that we don't use the values that 
+    were updated in the same iteration 
+
+    TO REMEMBER HOW TO DO BOTTOM PROBLEM, FOR DP REMEMBER THAT YOU ARE FILLING 
+    A 2D GRID. HOW SHOULD THE GRID BE FILLED WITH PENCIL AND PAPER? 
+    THATS HOW YOU FIGURE IT OUT 
+    (aka what are the entries in the map if you did topdown?)
+    
+    from collections import namedtuple
+
+    def knapsack(capacity, items):
+        # A DP array for the best-value that could be achieved for each weight.
+        best_value = [0] * (capacity + 1)
+        # The previous item used to achieve the best-value for each weight.
+        previous_item = [None] * (capacity + 1)
+        for item in items:
+            for w in range(capacity, item.weight - 1, -1):
+                value = best_value[w - item.weight] + item.value
+                if value > best_value[w]:
+                    best_value[w] = value
+                    previous_item[w] = item
+
+        cur_weight = capacity
+        taken = []
+        while cur_weight > 0:
+            taken.append(previous_item[cur_weight])
+            cur_weight -= previous_item[cur_weight].weight
+
+        return best_value[capacity], taken
 
 
 11) Know how to write BFS with a deque, and DFS explicitely with a list. 
@@ -1504,13 +1686,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
             return count
         
 
-
-
-
-13) Skip lists are nice
-
-13.5) TOPO SORT -> if you dont know which node to start this from, start from any node.
+13) TOPO SORT -> if you dont know which node to start this from, start from any node.
                     topo sort will still figure out the sorting. keep visited set. 
+                    
                     result = deque()
                     def topo_sort(node, visited):
 
@@ -1542,13 +1720,17 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
 
 17) Greedy algorithms => requires smart way of thinking about things
 
-
 18) Bit magic -> Entire section done in math notes.
 
 19) Dynamic programming with bitmasking
 
-20) B+ Trees + Fenwick Trees
-
+20) GRIDS THOUGHT PROCESS AND DP:
+    When you do DP bottom up think of GRIDS. How many dimensions are your grid?
+    How would you fill a grid if you were to do it by pencil? Which direction?
+    Think about top down case -> HOW DOES THE MAP FILL UP. OK HOW SHOULD the GRID FILL UP
+    Whats the base cases in the GRID? 
+    Whats the recurrence relation?
+    What locations need to be filled in GRID before other spots. 
 
 21) 4. Merge Intervals
         The Merge Intervals pattern is an efficient technique to deal with 
@@ -1556,7 +1738,8 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
         either need to find overlapping intervals or merge intervals if they overlap. 
         The pattern works like this:
         Given two intervals (‘a’ and ‘b’), there will be six different ways the 
-        two intervals can relate to each other: => a consumes b, b consumes a, b after a, a after b, b after a no overlap, a after b no overlap
+        two intervals can relate to each other:
+         => a consumes b, b consumes a, b after a, a after b, b after a no overlap, a after b no overlap
 
         How do you identify when to use the Merge Intervals pattern?
             If you’re asked to produce a list with only mutually exclusive intervals
@@ -1577,9 +1760,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
 
         How do I identify this pattern?
         They will be problems involving a sorted array with numbers in a given range
-        If the problem asks you to find the missing/duplicate/smallest number in an sorted/rotated array
-    
-        
+        If the problem asks you to find the: 
+        -> missing/duplicate/smallest number in an sorted/rotated array
+           
         We one by one consider all cycles. We first consider the cycle that 
         includes first element. We find correct position of first element, 
         place it at its correct position, say j. We consider old value of arr[j] 
@@ -1637,6 +1820,24 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
         Reverse every K-element Sub-list (medium)
 
 22.7) Find the start of a loop in a linked list:
+
+       Consider the following linked list, where E is the cylce entry and X, the crossing point of fast and slow.
+        H: distance from head to cycle entry E
+        D: distance from E to X
+        L: cycle length
+                          _____
+                         /     \
+        head_____H______E       \
+                        \       /
+                         X_____/   
+        
+    
+        If fast and slow both start at head, when fast catches slow, slow has traveled H+D and fast 2(H+D). 
+        Assume fast has traveled n loops in the cycle, we have:
+        2H + 2D = H + D + L  -->  H + D = nL  --> H = nL - D
+        Thus if two pointers start from head and X, respectively, one first reaches E, the other also reaches E. 
+        In my solution, since fast starts at head.next, we need to move slow one step forward in the beginning of part 2
+
         Algorithm
         Use two references slow, fast, initialized to the head
         Increment slow and fast until they meet
@@ -1678,7 +1879,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
 
 
 
-
 23) TREE DFS:
     Decide whether to process the current node now (pre-order), 
     or between processing two children (in-order) 
@@ -1688,7 +1888,8 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
     -> You can also just use Tree DFS to process in bfs order
 
 23.5) 2 STACKS == QUEUE TECHNIQUE!
-      push onto one, if you pop and empty, dump first one into second one!
+      push onto one, if you pop and empty, 
+      dump first one into second one!
 
 24) TWO HEAPS TECHNIQUE!!!
 
@@ -1708,15 +1909,15 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
 
         Ways to identify the Two Heaps pattern:
         Useful in situations like Priority Queue, Scheduling
-        If the problem states that you need to find the smallest/largest/median elements of a set
+        If the problem states that you need to find the 
+        -> smallest/largest/median elements of a set
         Sometimes, useful in problems featuring a binary tree data structure
         Problems featuring
-        Find the Median of a Number Stream (medium)
+        -> Find the Median of a Number Stream (medium)
 
 
 25) BFS CREATION OF SUBSETS! (instead of dfs choose/dont choose strat. 
     Can this strat also be used to do TOP DOWN DP with BFS ?)
-
 
     A huge number of coding interview problems involve 
     dealing with Permutations and Combinations of a 
@@ -1841,7 +2042,6 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         Merge K Sorted Lists (medium)
         K Pairs with Largest Sums (Hard)
 
-
 29) Questions you can solve with XOR can also probably be done with other operators such as +, -, *, /. Make
     sure you check for integer overflow. thats why xor method is always better.
 
@@ -1858,6 +2058,8 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         element of the array. Store it as thrice_sum. Subtract the sum of the whole array 
         from the thrice_sum and divide the result by 2. The number we get is the required 
         number (which appears once in the array).
+        How do we add each number once though? we cant use a set. 
+        XOr? wtf?
 
 32) DP is like traversing a DAG. it can have a parents array, dist, and visited set. SOmetimes you need to backtrack
     to retrieve parents so remember how to do that!!!!. 
@@ -1866,7 +2068,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     (i think its good for early termination in case there is no path)
 
 34) For linked list questions, draw it out. Dont think about it. Then figur eout how you are rearranging the ptrs.
-    and how many new variables you need.
+    and how many new variables you need. ALSO USE DUMMY POINTERS to not deal with modifying head pointer case. 
 
 
 35) Linear Algorithms:
@@ -1898,21 +2100,21 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
             3) Finally, root of the MH is the kth smallest element.
 
             Time complexity of this solution is O(k + (n-k)*Logk)
-        METHOD 4(BEST METHOD QUICK SELECT): -> DO MEDIAN OF MEDIANS TO GET O(N) worst time!!!
+        METHOD 4(BEST METHOD QUICK SELECT): -> DO MEDIAN OF MEDIANS TO GET O(N) NOT WORST AVERAGE CASE? worst time!!!
 
            The idea is, not to do complete quicksort, but stop at the point where pivot itself is k’th         
             smallest element. Also, not to recur for both left and right sides of pivot, 
             but recur for one of them according to the position of pivot. The worst case time          
             complexity of this method is O(n^2), but it works in O(n) on average.
 
-
     Sorting in linear time
         Given array, each int between [0, 100] can we sort in O(n). yeah counting sort.
         What if given arry has range of 32 bit unsigned ints [0, 2^32 -1] => radix sort
 
-    SLiding window
+    Sliding window
         -> Given an array of n elements, can we find a smallest sub-array size so that the sum of the sub-array is greater 
         than or equal to a constant S in O(n)
+        
         2 pointers both start at index 0. move end pointer 
         to right until you have S. then keep that as current_min_running_length_of_subarray.
         move start pointer to right to remove elements, then fix by extending end pointer if sum falls below S. 
@@ -1930,16 +2132,17 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         def heapify(A):
             for root in xrange(len(A)//2-1, -1, -1):
                 rootVal = A[root]
-                child = 2*root+1
+                child = 2*root + 1
                 while child < len(A):
+                    # we pick the smaller child to sort?
+                    # makes sense because the smaller child is the one
+                    # that has to fight with the parent in a min heap.
                     if child+1 < len(A) and A[child] > A[child+1]:
                         child += 1
                     if rootVal <= A[child]:
                         break
                     A[child], A[(child-1)//2] = A[(child-1)//2], A[child]
                     child = child *2 + 1
-
-
 
 37) Understand counting sort, radix sort.
         Counting sort is a linear time sorting algorithm that sort in O(n+k) 
@@ -1950,11 +2153,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         Radix Sort is the answer. The idea of Radix Sort is to do digit by digit 
         sort starting from least significant digit to most significant digit. 
         Radix sort uses counting sort as a subroutine to sort.
-
-        The Radix Sort Algorithm
-        1) Do following for each digit i where i varies from least significant digit to the most significant digit.
-        ………….a) Sort input array using counting sort (or any stable sort) according to the i’th digit.
-
+        Look at section below for impls.
 
 
 38) To do post order traversal or inorder traversal 
@@ -2019,7 +2218,6 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     maintain the running min.
 
 
-
 40) In some questions you can 
     do DFS or BFS from a root node to a specific 
     child node and you end up traversing a tree, 
@@ -2028,6 +2226,39 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     to go backward from the child node to the root node,
     and only end up traversing a path rather than a tree!
     Go up the tree for SPEED. 
+
+
+40.1) Can create queue with 2 stacks
+
+
+40.2) Heap
+    -> Given a node k, easy to compute indices for
+        parent and children
+        - Parent Node: floor(k/2)
+        - Children: 2k, 2k+1
+    You must refer to the definition of a Binary Heap:
+
+        A Binary heap is by definition a complete binary tree ,that is, all levels of the       
+        tree, 
+        except possibly the last one (deepest) are fully filled, and, if the last     
+        level of the tree is not complete, the nodes of that level are filled from left to        
+        right.
+        
+        It is by definition that it is never unbalanced. The maximum difference in balance      
+        of the two subtrees is 1, when the last level is partially filled with nodes only       
+        in the left subtree.
+
+    -> To insert node: (running time O(lgn)) (SIFT UP)
+    1) make a new node at last level as far left as possible. 
+    2) if node breaks heap property, swap with its parent node. 
+    3) new node moves up tree. repeat 1) to 3) until all conflicts resolved.
+
+    -> Deleting root node: (SIFT DOWN)
+    1) Remove the root, and bring the last node (rightmost node 
+    in the last leve) to the root. 
+    2) If the root breaks the heap property, look at its children
+    and swap it with the larger one. 
+    3) Repeat 2 until all conflicts resolved
 
 
 41) FORD FULKERSON ALGORITHM PYTHON (MAX FLOW MIN CUT):
@@ -2079,6 +2310,8 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
                 # through the path found. 
                 path_flow = float("Inf") 
                 s = sink 
+
+                # Get the limiting flow in the path. Traverse parents array to get path
                 while(s !=  source): 
                     path_flow = min (path_flow, self.graph[parent[s]][s]) 
                     s = parent[s] 
@@ -2145,40 +2378,6 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
             Circulate flow through the cycle to decrease the total cost,
             until one of the edges is saturated.
                 -> Total amount of flow doesnt change .
-
-45) Can create queue with 2 stacks
-
-
-46) Heap
-    -> Given a node k, easy to compute indices for
-        parent and children
-        - Parent Node: floor(k/2)
-        - Children: 2k, 2k+1
-    You must refer to the definition of a Binary Heap:
-
-        A Binary heap is by definition a complete binary tree ,that is, all levels of the       
-        tree, 
-        except possibly the last one (deepest) are fully filled, and, if the last     
-        level of the tree is not complete, the nodes of that level are filled from left to        
-        right.
-        
-        It is by definition that it is never unbalanced. The maximum difference in balance      
-        of the two subtrees is 1, when the last level is partially filled with nodes only       
-        in the left subtree.
-
-    -> To insert node: (running time O(lgn)) (SIFT UP)
-    1) make a new node at last level as far left as possible. 
-    2) if node breaks heap property, swap with its parent node. 
-    3) new node moves up tree. repeat 1) to 3) until all conflicts resolved.
-
-    -> Deleting root node: (SIFT DOWN)
-    1) Remove the root, and bring the last node (rightmost node 
-    in the last leve) to the root. 
-    2) If the root breaks the heap property, look at its children
-    and swap it with the larger one. 
-    3) Repeat 2 until all conflicts resolved
-
-
 
 47) Union Find Structure
     -> Used to store disjoint sets
@@ -2250,7 +2449,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     This model can then be used to determine whether 
     two vertices belong to the same component, 
     or whether adding an edge between them would result in a cycle. 
-    DETECH CYCLE IN UNDIRECTED GRAPH:
+    DETECT CYCLE IN UNDIRECTED GRAPH:
     
         # A utility function to find the subset of an element i 
         def find_parent(self, parent,i): 
@@ -2303,111 +2502,6 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     time and get a shorter path for any vertex, then 
     there is a negative weight cycle.
 
-49.5) RANGE MINIMUM QUERY:
-
-    You are given an array A[1..N]. You have to answer incoming queries of the form (L,R), 
-    which ask to find the minimum element in array A between positions L and R inclusive.
-
-    RMQ can appear in problems directly or can be applied in some other tasks, e.g. the Lowest Common Ancestor problem.
-
-    Solution
-    There are lots of possible approaches and data structures that you can use to solve the RMQ task.
-
-    The ones that are explained on this site are listed below.
-
-    First the approaches that allow modifications to the array between answering queries.
-
-    Sqrt-decomposition - answers each query in O(sqrt(N)), preprocessing done in O(N). Pros: a very simple data structure. Cons: worse complexity.
-    
-    Segment tree - answers each query in O(logN), preprocessing done in O(N). 
-    
-                 Pros: good time complexity. Cons: larger amount of code compared to the other data structures.
-    Fenwick tree - answers each query in O(logN), preprocessing done in O(NlogN). 
-                Pros: the shortest code, good time complexity. 
-                Cons: Fenwick tree can only be used for queries with L=1, so it is not applicable to many problems.
-
-    And here are the approaches that only work on static arrays, i.e. it is not possible 
-        to change a value in the array without recomputing the complete data structure.
-
-    Sparse Table - answers each query in O(1), preprocessing done in O(NlogN). Pros: simple data structure, excellent time complexity.
-    Sqrt Tree - answers queries in O(1), preprocessing done in O(NloglogN). Pros: fast. Cons: Complicated to implement.
-    Disjoint Set Union / Arpa's Trick - answers queries in O(1), preprocessing in O(n). 
-            Pros: short, fast. Cons: only works if all queries are known in advance, 
-            i.e. only supports off-line processing of the queries.
-    
-    Cartesian Tree and Farach-Colton and Bender algorithm - answers queries in O(1), preprocessing in O(n). 
-        Pros: optimal complexity. Cons: large amount of code.
-        Note: Preprocessing is the preliminary processing of the given array by building the corresponding data structure for it.
-
-50) Fenwick Tree Structure:
-    ->Full binary tree with at least n leaf nodes
-    ->kth leaf node stores the value of item k
-    
-    ->Each internal node(not leaf) stores the sum of value of its children
-    
-    Main idea: choose the minimal set of nodes whose sum gives the 
-    desired value
-    -> We will see that
-        - at most 1 node is chosen at each level so that 
-        the total number of nodes we look at is log(base 2)n
-        - and this can be done in O(lgn) time
-
-    Computing Prefix sums:
-        Say we want to compute Sum(k)
-        Maintain a pointer P which initially points at leaf k.
-        Climb the tree using the following procedure:
-            If P is pointing to a left child of some node: 
-                -> Add the value of P
-                -> Set P to the parent node of P's left neighbor
-                -> If P has no left neighbor terminate
-            Otherwise:
-                Set P to the parent node of P
-        
-        Use an array to implement!
-
-    Updating a value:
-    Say we want to do Set(k, x) (set value of leaf k as x)
-    -> Start at leaft k, change its val to x
-    -> Go to parent, recompute its val. Repeat until you get to root.
-
-    Extension: make the Sum() function work for any interval,
-    not just ones that start from item 1
-    Can support: Min(i, j), Max(i,j ) (Min/Max element among items i,..j)
-
-
-51) Lowest Common Ancestor:
-    Preprocess tree in O(nlgn) time in order to 
-    answer each LCA query in O(lgn) time
-    Compute Anc[x][k]  
-
-    Each node stores its depth, as well as the links to every 
-    2kth ancestor:
-    O(lgn) adiditional storage per node
-    - Anc[x][k] denotes the 2kth ancestor of node x
-    - Anc[x][0] = x's parent
-    - Anc[x][k] = Anc[Anc[x][k-1]][k-1]
-    
-    Answer query:
-    Given two node indices x and y
-        Without loss of generality, assume depth(x) ≤ depth(y)
-        
-        Maintain two pointers p and q, initially pointing at x and y
-        If depth(p) < depth(q), bring q to the same depth as p
-        – using Anc that we computed before
-        
-        Now we will assume that depth(p) = depth(q)
-
-        If p and q are the same, return p
-        Otherwise, initialize k as ⌈log 2 n⌉ and repeat:
-        – If k is 0, return p’s parent node
-        – If Anc[p][k] is undefined, or if Anc[p][k] and Anc[q][k]
-        point to the same node:
-            Decrease k by 1
-        – Otherwise:
-        
-            Set p = Anc[p][k] and q = Anc[q][k] to bring p and q up
-            by 2^k levels
-
 52) Flattening a multilevel doubly linked list using a stack:
         def flatten(self, head):
             if not head:
@@ -2432,7 +2526,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
                     root.child = None
                 prev = root        
                 
-            
+            # disengage dummy node
             dummy.next.prev = None
             return dummy.next
 
@@ -2533,6 +2627,66 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     than k, then just add it to the dictionary with count 1. 
     Otherwise, decrement all the counters by 1, and delete 
     any candidates with a counter 1.
+
+55)    Common problems solved using DP on broken profile include:
+
+        finding number of ways to fully fill an area (e.g. chessboard/grid) with some figures (e.g. dominoes)
+        finding a way to fill an area with minimum number of figures
+        finding a partial fill with minimum number of unfilled space (or cells, in case of grid)
+        finding a partial fill with the minimum number of figures, such that no more figures can be added
+        Problem "Parquet"
+        
+        Problem description. Given a grid of size N×M. Find number of ways to 
+        fill the grid with figures of size 2×1 (no cell should be left unfilled, 
+        and figures should not overlap each other).
+
+        Let the DP state be: dp[i,mask], where i=1,…N and mask=0,…2^(M)−1.
+
+        i respresents number of rows in the current grid, and mask is the state of 
+        last row of current grid. If j-th bit of mask is 0 then the corresponding 
+        cell is filled, otherwise it is unfilled.
+
+        Clearly, the answer to the problem will be dp[N,0].
+
+        We will be building the DP state by iterating over each i=1,⋯N 
+        and each mask=0,…2^(M)−1, and for each mask we will be only transitioning forward, 
+        that is, we will be adding figures to the current grid.
+        
+        int n, m;
+        vector < vector<long long> > dp;
+        void calc (int x = 0, int y = 0, int mask = 0, int next_mask = 0)
+        {
+            if (x == n)
+                return;
+            if (y >= m)
+                dp[x+1][next_mask] += d[x][mask];
+            else
+            {
+                int my_mask = 1 << y;
+                if (mask & my_mask)
+                    calc (x, y+1, mask, next_mask);
+                else
+                {
+                    calc (x, y+1, mask, next_mask | my_mask);
+                    if (y+1 < m && ! (mask & my_mask) && ! (mask & (my_mask << 1)))
+                        calc (x, y+2, mask, next_mask);
+                }
+            }
+        }
+
+
+        int main()
+        {
+            cin >> n >> m;
+
+            dp.resize (n+1, vector<long long> (1<<m));
+            dp[0][0] = 1;
+            for (int x=0; x<n; ++x)
+                for (int mask=0; mask<(1<<m); ++mask)
+                    calc (x, 0, mask, 0);
+
+            cout << dp[n][0];
+        }
 
 
 #############################################################################
@@ -4974,86 +5128,6 @@ COOL NOTES PART -3: NETWORK FLOW Tutorial: maxflow and mincut
 
 
 
-
-############################################
-#########################################3#####
-
-COOL NOTES PART 5: FENWICK TREES: (A VARIENT OF SEGMENT TREES)
-        '''
-        We have an array arr[0 . . . n-1]. We would like to
-        1 Compute the sum of the first i-th elements.
-        2 Modify the value of a specified element of the array arr[i] = x where 0 <= i <= n-1.
-        Could we perform both the query and update operations in O(log n) time? 
-        One efficient solution is to use Segment Tree that performs both operations in O(Logn) time.
-
-        An alternative solution is Binary Indexed Tree, 
-        which also achieves O(Logn) time complexity for both operations. 
-        Compared with Segment Tree, Binary Indexed Tree 
-        requires less space and is easier to implement..
-        '''
-
-        # Python implementation of Binary Indexed Tree 
-    
-        # Returns sum of arr[0..index]. This function assumes 
-        # that the array is preprocessed and partial sums of 
-        # array elements are stored in BITree[]. 
-
-        def getsum(BITTree,i): 
-            s = 0 #initialize result 
-        
-            # index in BITree[] is 1 more than the index in arr[] 
-            i = i+1
-        
-            # Traverse ancestors of BITree[index] 
-            while i > 0: 
-        
-                # Add current element of BITree to sum 
-                s += BITTree[i] 
-        
-                # Move index to parent node in getSum View 
-                i -= i & (-i) 
-            return s 
-        
-        # Updates a node in Binary Index Tree (BITree) at given index 
-        # in BITree. The given value 'val' is added to BITree[i] and 
-        # all of its ancestors in tree. 
-        def updatebit(BITTree , n , i ,v): 
-        
-            # index in BITree[] is 1 more than the index in arr[] 
-            i += 1
-        
-            # Traverse all ancestors and add 'val' 
-            while i <= n: 
-        
-                # Add 'val' to current node of BI Tree 
-                BITTree[i] += v 
-        
-                # Update index to that of parent in update View 
-                i += i & (-i) 
-        
-        
-        # Constructs and returns a Binary Indexed Tree for given 
-        # array of size n. 
-        def construct(arr, n): 
-        
-            # Create and initialize BITree[] as 0 
-            BITTree = [0]*(n+1) 
-        
-            # Store the actual values in BITree[] using update() 
-            for i in range(n): 
-                updatebit(BITTree, n, i, arr[i]) 
-
-            return BITTree 
-        
-        
-        # Driver code to test above methods 
-        freq = [2, 1, 1, 3, 2, 3, 4, 5, 6, 7, 8, 9] 
-        BITTree = construct(freq,len(freq)) 
-        print("Sum of elements in arr[0..5] is " + str(getsum(BITTree,5))) 
-        freq[3] += 6
-        updatebit(BITTree, len(freq), 3, 6) 
-        print("Sum of elements in arr[0..5]"+
-                            " after update is " + str(getsum(BITTree,5))) 
     
 
 ###################################################################################################################

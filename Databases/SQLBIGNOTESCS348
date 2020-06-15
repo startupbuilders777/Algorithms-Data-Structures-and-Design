@@ -125,6 +125,7 @@ department, and who are teaching CS245 for the first time.
 */
 
 -- You are teaching the class but you dont have a CS 245 class where marks are recorded for it.
+
 select distinct professor.pnum as ProfessorNumber, professor.pname ProfessorName
 from professor, class
 where professor.deptcode <> 'PM' and 
@@ -203,6 +204,11 @@ where s1.snum = m1.snum and \
 
 
 */
+
+
+
+
+
 
 
 /*
@@ -537,13 +543,13 @@ where class.deptcode = course.deptcode
       and class.cnum = course.cnum
 group by course.deptcode, course.cnum
 having COUNT(*) <=  (
-			select COUNT(*) 
-			from class, course
-			where class.deptcode = course.deptcode 
-			and class.cnum = course.cnum
-			group by course.deptcode, course.cnum
-			order by COUNT(*) asc
-			limit 1 offset 2		
+				select COUNT(*) 
+				from class, course
+				where class.deptcode = course.deptcode 
+				and class.cnum = course.cnum
+				group by course.deptcode, course.cnum
+				order by COUNT(*) asc
+				limit 1 offset 2		
 			) ;
 
 
@@ -867,22 +873,8 @@ group by courseWithCount.classCount
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
+______________________________________________________________________
 
 I understand the point of GROUP BY x
 
@@ -947,21 +939,20 @@ Hopefully that makes sense.
 
 
 Example 1
-
 Calculates the average advance and the sum of the sales for each type of book:
 
 select type, avg (advance), sum (total_sales) 
 from titles 
 group by type
-Example 2
 
+Example 2
 Groups the results by type, then by pub_id within each type:
 
 select type, pub_id, avg (advance), sum (total_sales) 
 from titles 
 group by type, pub_id
-Example 3
 
+Example 3
 Calculates results for all groups, but displays 
 only groups whose type begins with “p”:
 
@@ -969,8 +960,9 @@ select type, avg (price)
 from titles 
 group by type 
 having type like 'p%'
-Example 4
 
+
+Example 4
 Calculates results for all groups, but displays 
 results for groups matching the multiple conditions in the having clause:
 
@@ -980,8 +972,8 @@ group by pub_id
 having sum (advance) > $15000 
 and avg (price) < $10 
 and pub_id > "0700"
-Example 5
 
+Example 5
 Calculates the total sales for each group (publisher) 
 after joining the titles and publishers tables:
 
@@ -989,8 +981,8 @@ select p.pub_id, sum (t.total_sales)
 from publishers p, titles t
 where p.pub_id = t.pub_id
 group by p.pub_id
-Example 6
 
+Example 6
 Displays the titles that have an advance of more than $1000 
 and a price that is more than the average price of all titles:
 
@@ -998,6 +990,13 @@ select title_id, advance, price
 from titles
 where advance > 1000
 having price > avg (price)
+
+______________________________________________________________________
+______________________________________________________________________
+______________________________________________________________________
+
+
+
 
 
 SELECT sub.*
@@ -1008,7 +1007,6 @@ SELECT sub.*
        ) sub
  WHERE sub.resolution = 'NONE'
  
-
  
  SELECT LEFT(sub.date, 2) AS cleaned_month,
        sub.day_of_week,
@@ -1024,16 +1022,19 @@ SELECT sub.*
  ORDER BY 1,2
  
 
+The trick to placing a subquery in the select clause is that 
+the subquery must return a single value. This is why an 
+aggregate function such as the SUM, COUNT, MIN, or MAX 
+function is commonly used in the subquery.
+
+
  SELECT e1.last_name, e1.first_name,
   (SELECT MAX(salary)
    FROM employees e2
    WHERE e1.employee_id = e2.employee_id) subquery2
 FROM employees e1;
 
-The trick to placing a subquery in the select clause is that 
-the subquery must return a single value. This is why an 
-aggregate function such as the SUM, COUNT, MIN, or MAX 
-function is commonly used in the subquery.
+
 
 
 SELECT   JobTitle,
@@ -1070,6 +1071,7 @@ HAVING   AVG(VacationHours) >
              FROM   HumanResources.Employee
              WHERE  HumanResources.Employee. Gender = 
                     E. Gender)
+
 Is a broken query.  If you try to run it you’ll get the following error:
 
 Column ‘HumanResources.Employee.Gender’ is invalid in the HAVING clause 
@@ -1111,8 +1113,9 @@ the result.  This statement is very similar to
 SELECT DISTINCT OrderID
 FROM OrderDetails
 WHERE Quantity <= 100;
-But there is a key difference.  
 
+
+But there is a key difference.  
 The DISTINCT modifier stops at outputting unique combination 
 of rows, whereas with the GROUP BY statement, 
 we can calculate values based on the underlying 
@@ -1127,8 +1130,6 @@ GROUP BY OrderID;
 COUNT is an example of an aggregate function, these are what 
 really give the GROUP BY statement its special value.
 
-
-
 Some of the most common aggregate functions include:
 
 AVG(expression)	Calculate the average of the expression.
@@ -1138,7 +1139,6 @@ MIN(expression)	Finds the minimum expression value.
 MAX(expression)	Finds the maximum expression value.
 SUM(expression)	Calculate the sum of the expression.
  
-
 These functions can be used on their own on in conjunction 
 with the GROUP BY clause.  On their own, they operate across the 
 entire table; however, when used with GROUP BY, their 
@@ -1169,21 +1169,18 @@ You can also use Distinct with COUNT to find the number
 of unique values within a group.
 
 To find the number of OrderDetail Lines per order
-
 SELECT OrderID, COUNT(OrderDetailID)
 FROM OrderDetails
 GROUP BY OrderID;
-To find the number of unique orders per product
 
+
+To find the number of unique orders per product
 SELECT ProductID, COUNT(DISTINCT OrderID)
 FROM OrderDetails
 GROUP BY ProductID;
 
 
-
-
 If we wanted to find all orders greater than $1000 we would write
-
 SELECT OrderID, 
        SUM(UnitPrice * Quantity) as TotalPrice
 FROM OrderDetails
@@ -1263,35 +1260,34 @@ GROUP BY o.customerid ;
 
 
 
-
-down vote
-accepted
 All columns in the SELECT clause that do not have an aggregate need to be in the GROUP BY
 
 Good:
-
 SELECT col1, col2, col3, MAX(col4)
 ...
 GROUP BY col1, col2, col3
-Also good:
 
+
+Also good:
 SELECT col1, col2, col3, MAX(col4)
 ...
 GROUP BY col1, col2, col3, col5, col6
+
+
 No other columns = no GROUP BY needed
 
 SELECT MAX(col4)
 ...
 Won't work:
-
 SELECT col1, col2, col3, MAX(col4)
 ...
 GROUP BY col1, col2
+
+
 Pointless:
 
 SELECT col1, col2, col3, MAX(col4)
 ...
 GROUP BY col1, col2, col3, MAX(col4)
 Having an aggregate (MAX etc) with other columns without a GROUP BY makes no sense because the query becomes ambiguous.
-
 */

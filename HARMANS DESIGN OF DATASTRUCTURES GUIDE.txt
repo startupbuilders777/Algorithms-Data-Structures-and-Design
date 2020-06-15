@@ -1,16 +1,28 @@
--> Tries
--> Fibonacci heaps
+-> Compressed Tries
+
+-> Binary/Binomial/Fibonacci heaps
 -> Splay trees
 
 -> Range Tree
+-> KD trees, quad trees, 
+-> 2-3 trees, m-n trees
+
 -> Balanced BSTs -> AVL/REDBLACK, Find a python one. 
 -> Skip lists
 -> Treaps?
+-> Suffix Trees, and Suffix tries (http://www.cs.jhu.edu/~langmea/resources/lecture_notes/tries_and_suffix_tries.pdf)
+
+van Emde Boas Trees
+B-Trees
+Red black trees, 
+2-3 search trees
+2-3-4 Trees (aka 2-4 trees)
+Huffman trees and compression?
+Block Cut Trees
+Fenwick Tree
 
 
 ##################################################################################
-TRIE:
-
 Trie Implementation
 
 This data structure is pretty useful for storing large databases of words. 
@@ -42,9 +54,7 @@ class Trie(object):
                 root.children[c] = TrieNode()
             root = root.children[c]
         root.leaf = True
-         
-         
- 
+
     def search(self, word):
         """
         Returns if the word is in the trie.
@@ -72,100 +82,377 @@ class Trie(object):
             root = root.children[c]
         return True
 
-##########################################################################################
-
-MinHeap Implementation
-
-Maxheap can be implemented similarly, mainly just know the heapify algorithm and you should be fine.
-
-class MinHeap:
-    def __init__(self):
-        self.heap = []
-    def parent(self, i):
-        return (i - 1)/2
-    def left_child(self, i):
-        return (i * 2 + 1)
-    def right_child(self, i):
-        return (i * 2 + 2)
-    def insertKey(self, k):
-        self.heap.append(k)
-        i = len(self.heap) - 1
-        while i != 0 and self.heap[self.parent(i)] > self.heap[i]:
-            self.heap[i], self.heap[self.parent(i)] = self.heap[self.parent(i)], self.heap[i]
-            i = self.parent(i)
-    def decreaseKey(self, i, new_val):
-        self.heap[i] = new_val
-        while i != 0 and self.heap[self.parent(i)] > self.heap[i]:
-            self.heap[i], self.heap[self.parent(i)] = self.heap[self.parent(i)], self.heap[i]
-            i = self.parent(i)
-    def increaseKey(self, i, new_val):
-        heap[i] = new_val
-        minHeapify(i)
-    def getMin(self):
-        return self.heap[0]
-    def minHeapify(self, i):
-        left_child = self.left_child(i)
-        right_child = self.right_child(i)
-        smallest = i
-        if left_child < len(self.heap) and self.heap[left_child] < self.heap[smallest]:
-            smallest = left_child
-        if right_child < len(self.heap) and self.heap[right_child] < self.heap[smallest]:
-            smallest = right_child
-        if smallest != i:
-            self.heap[i], self.heap[smallest] = self.heap[smallest], self.heap[i]
-            self.minHeapify(smallest)
-    def extractMin(self):
-        tmp = self.heap[0]
-        self.heap[0] = self.heap[-1]
-        self.heap.pop()
-        self.minHeapify(0)
-        return tmp
-    def deleteKey(self, i):
-        self.decreaseKey(i, float('inf') * -1)
-        self.extractMin()
 
 ###################################################################################################
 Segment trees are soooo cool. 
-Basically, if you have some list, and you want to calculate.
 
-reduce(operation, arr[i:j], default_value
+    Basically, if you have some list, and you want to calculate.
 
-And you want to do this repeatedly. You can have O(n) for this operation 
-every time and O(1) for updating the array, or you can have O(log(n)) to 
-calculate this value and O(log(n)) to update using a Segment Tree.
+    reduce(operation, arr[i:j], default_value)
 
-class SegmentTree:
-    def __init__(self, arr, operator, default):
-        self.n = len(arr)
-        self.default = default
-        self.arr = [0 for _ in range(2 * len(arr) - 1)]
-        self.operator = operator
-        for i in range(len(arr) - 1, len(self.arr)):
-            self.arr[i] = arr[i - len(arr) + 1]
-        for i in range(len(arr) - 2, -1, -1):
-            self.arr[i] = self.operator(self.arr[i * 2 + 1], self.arr[i * 2 + 2])
-    def update(self, idx, value):
-        idx = self.n - 1 + idx
-        self.arr[idx] = value
-        while idx > 0:
-            idx = (idx - 1)/2
-            self.arr[idx] = self.operator(self.arr[idx * 2 + 1], self.arr[idx * 2 + 2])
-    def get_segment_value(self, left, right):
-        left = self.n - 1 + left
-        right = self.n - 1 + right
-        ans = self.default
-        while left < right:
-            if left % 2 == 0:
-                ans = self.operator(ans, self.arr[left])
-                left += 1
-            if right % 2 == 0:
-                right -= 1
-                ans = self.operator(ans, self.arr[right])
-            left, right = (left - 1)/2, (right - 1)/2
-        return ans
+    And you want to do this repeatedly. You can have O(n) for this operation 
+    every time and O(1) for updating the array, or you can have O(log(n)) to 
+    calculate this value and O(log(n)) to update using a Segment Tree.
 
+    class SegmentTree:
+        
+        def __init__(self, arr, operator, default):
+            self.n = len(arr)
+            self.default = default
+            self.arr = [0 for _ in range(2 * len(arr) - 1)]
+            self.operator = operator
+            
+            for i in range(len(arr) - 1, len(self.arr)):
+                self.arr[i] = arr[i - len(arr) + 1]
 
-########################## DESIGN CIRCULAR BIDIRECTIONAL LINKED LIST ############################
+            for i in range(len(arr) - 2, -1, -1):
+                self.arr[i] = self.operator(self.arr[i * 2 + 1], self.arr[i * 2 + 2])
+
+        def update(self, idx, value):
+            idx = self.n - 1 + idx
+            self.arr[idx] = value
+            while idx > 0:
+                idx = (idx - 1)/2
+                self.arr[idx] = self.operator(self.arr[idx * 2 + 1], self.arr[idx * 2 + 2])
+
+        def get_segment_value(self, left, right):
+            left = self.n - 1 + left
+            right = self.n - 1 + right
+            ans = self.default
+            while left < right:
+                if left % 2 == 0:
+                    ans = self.operator(ans, self.arr[left])
+                    left += 1
+                if right % 2 == 0:
+                    right -= 1
+                    ans = self.operator(ans, self.arr[right])
+                left, right = (left - 1)/2, (right - 1)/2
+            return ans
+
+####################################################################
+Segment trees Analysis and in C++
+
+    Let our data be in an array arr[] of size nn.
+
+    The root of our segment tree typically represents the entire interval of data 
+    we are interested in. This would be arr[0:n-1].
+    
+    -> Each leaf of the tree represents a range comprising of just a single element. 
+    -> Thus the leaves represent arr[0], arr[1] and so on till arr[n-1].
+    -> The internal nodes of the tree would represent the merged or union result of their children nodes.
+    -> Each of the children nodes could represent approximately half of the range represented by their parent.
+    -> A segment tree for an n element range can be comfortably represented using an array of size n≈4∗n.
+    PROOF:
+        -> What is happening here is, if you have an array of n elements, 
+        then the segment tree will have a leaf node for each of these n entries. 
+        Thus, we have (n) leaf nodes, and also (n-1) internal nodes.
+        -> Total number of nodes= n + (n-1) = 2n-1 
+        -> Now, we know its a full binary tree and thus the height is: ceil(Log2(n)) +1
+        -> Total no. of nodes = 2^0 + 2^1 + 2^2 + … + 2^ceil(Log2(n)) 
+        // which is a geometric progression where 2^i denotes, the number of nodes at level i.
+        -> Formula of summation G.P. = a * (r^size - 1)/(r-1) where a=2^0
+        -> Total no. of nodes = 1*(2^(ceil(Log2(n))+1) -1)/(2-1)
+        = 2* [2^ceil(Log2(n))] -1 (you need space in the array for each of the internal 
+        as well as leaf nodes which are this count in number), thus it is the array of size.
+        = O(4 * n) approx..
+    
+    EASIER PROOF:
+        Also, the better explanation is: if the array size n is a power of 2, 
+        then we have exactly n-1 internal nodes, summing up to 2n-1 total nodes. 
+        But not always, we have n as the power of 2, so we basically 
+        need the smallest power of 2 which is greater than n. That means this,
+        int s=1;
+        for(; s<n; s<<=1);
+
+    The node of the tree is at index 0. Thus tree[0] is the root of our tree.
+    The children of tree[i] are stored at tree[2*i+1] and tree[2*i+2].
+
+    1. Build the tree from the original data.
+    void buildSegTree(vector<int>& arr, int treeIndex, int lo, int hi)
+    {
+        if (lo == hi) {                 // leaf node. store value in node.
+            tree[treeIndex] = arr[lo];
+            return;
+        }
+
+        int mid = lo + (hi - lo) / 2;   // recurse deeper for children.
+        buildSegTree(arr, 2 * treeIndex + 1, lo, mid);
+        buildSegTree(arr, 2 * treeIndex + 2, mid + 1, hi);
+
+        // merge build results
+        tree[treeIndex] = merge(tree[2 * treeIndex + 1], tree[2 * treeIndex + 2]);
+    }
+
+    // call this method as buildSegTree(arr, 0, 0, n-1);
+    // Here arr[] is input array and n is its size.
+
+    The method builds the entire tree in a bottom up fashion. When the condition 
+    lo = hi is satisfied, we are left with a range comprising of 
+    just a single element (which happens to be arr[lo]). 
+    This constitutes a leaf of the tree. The rest of the 
+    nodes are built by merging the results of their two children.
+    treeIndex is the index of the current node of the segment tree which is being processed.
+
+    Input -> 10 nodes -> arr[] = { 18, 17, 13, 19, 15, 11, 20, 12, 33, 25 };
+    tree[] = { 183, 82, 101, 48, 34, 43, 58, 35, 13, 19, 15, 31, 12, 33, 
+               25, 18, 17, 0, 0, 0, 0, 0, 0, 11, 20, 0, 0, 0, 0, 0, 0 };
+
+    Notice the the groups of zeros near the end of the tree[] array? 
+    Those are null values we used as padding to ensure a complete binary tree 
+    is formed (since we only had 1010 leaf elements. Had we had, say, 
+    16 leaf elements, we wouldn't need any null element
+
+    NOTE: The merge operation varies from problem to problem. 
+    You should closely think of what to store in a node of the segment 
+    tree and how two nodes will merge to provide a result before you even 
+    start building a segment tree.
+
+    2. Read/Query on an interval or segment of the data.
+    int querySegTree(int treeIndex, int lo, int hi, int i, int j)
+    {
+        // query for arr[i..j]
+
+        if (lo > j || hi < i)               // segment completely outside range
+            return 0;                       // represents a null node
+
+        if (i <= lo && j >= hi)             // segment completely inside range
+            return tree[treeIndex];
+        
+        // partial overlap of current segment and queried range. Recurse deeper.
+        int mid = lo + (hi - lo) / 2;       
+
+        if (i > mid)
+            return querySegTree(2 * treeIndex + 2, mid + 1, hi, i, j);
+        else if (j <= mid)
+            return querySegTree(2 * treeIndex + 1, lo, mid, i, j);
+
+        // When mid is between i and j. Find the range by traversing left and right subtrees
+        // but now look for intervals [i, mid] and [mid+1, j] which is [i, j]
+
+        int leftQuery = querySegTree(2 * treeIndex + 1, lo, mid, i, mid);
+        int rightQuery = querySegTree(2 * treeIndex + 2, mid + 1, hi, mid + 1, j);
+
+        // merge query results, for instance sum.
+        return merge(leftQuery, rightQuery);
+    }
+
+    // call this method as querySegTree(0, 0, n-1, i, j);
+    // Here [i,j] is the range/interval you are querying.
+    // This method relies on "null" nodes being equivalent to storing zero.
+
+    In the above example, we are trying to find the sum of 
+    the elements in the range [2, 8] . No segment completely 
+    represents the range [2, 8]. 
+    However we can see that [2, 8] can be built up using the ranges 
+    [2, 2], [3, 4], [5, 7] and [8, 8]. 
+     
+    void updateValSegTree(int treeIndex, int lo, int hi, int arrIndex, int val)
+    {
+        if (lo == hi) {                 // leaf node. update element.
+            tree[treeIndex] = val;
+            return;
+        }
+
+        int mid = lo + (hi - lo) / 2;   // recurse deeper for appropriate child
+
+        if (arrIndex > mid)
+            updateValSegTree(2 * treeIndex + 2, mid + 1, hi, arrIndex, val);
+        else if (arrIndex <= mid)
+            updateValSegTree(2 * treeIndex + 1, lo, mid, arrIndex, val);
+
+        // merge updates, and update the upper levels of the tree straight to the root.
+        tree[treeIndex] = merge(tree[2 * treeIndex + 1], tree[2 * treeIndex + 2]);
+    }
+    
+    This makes the build process run in O(n) linear complexity.
+    Both the read and update queries now take logarithmic O(log_2(n))
+##########################################################################################3
+PYTHON SEGMENT TREE FOR ABOVE:
+
+class NumArray:
+    tree = None
+    n = None
+    def __init__(self, nums: List[int]):
+        self.n = len(nums)
+        if self.n:
+            self.tree = [0] * 4 * len(nums)
+            self.buildTree(nums, 0, 0, len(nums) - 1)
+
+    '''
+    arr: The original array
+    index: the Segment tree index
+    low: the lower bound
+    high: the upper bound
+    '''
+    def buildTree(self, arr, index, low, high):
+        if low == high:
+            self.tree[index] = arr[low] if low < len(arr) else 0
+        else:
+            mid = (low + high) // 2
+            self.buildTree(arr, 2 * index + 1, low, mid)
+            self.buildTree(arr, 2 * index + 2, mid + 1, high)
+            self.tree[index] = self.tree[2 * index + 1] + self.tree[2 * index + 2]
+    
+    '''
+    i: the index that needs to be updated
+    val: the value been updated
+    index: the index of segment tree
+    low: the lower bound
+    high: the higher bound
+    '''
+    def update(self, i: int, val: int, index = 0, low = 0, high = float('inf')) -> None:
+        if high == float('inf'):
+            high = self.n - 1
+        if low == high:
+            self.tree[index] = val
+        else:
+            mid = (low + high) // 2
+            if mid >= i:
+                self.update(i, val, 2 * index + 1, low, mid)
+            else:
+                self.update(i, val , 2 * index + 2, mid + 1, high)
+            self.tree[index] = self.tree[2 * index + 1] + self.tree[2 * index + 2]
+
+    '''
+    i: the lower bound of the query
+    j: the upper bound of the query
+    '''
+    def sumRange(self, i: int, j: int, index = 0, low = 0, high = float('inf')) -> int:
+        if high == float('inf'):
+            high = self.n - 1
+        if low > j or high < i:
+            return 0
+        if i <= low and j >= high:
+            return self.tree[index]
+        mid = (low + high) // 2
+        if i > mid:
+            return self.sumRange(i, j, 2 * index + 2, mid + 1, high)
+        elif j <= mid:
+            return self.sumRange(i, j, 2 * index + 1, low, mid)
+        left = self.sumRange(i, mid , 2 * index + 1, low, mid)
+        right = self.sumRange(mid + 1, j , 2 * index + 2, mid + 1, high)
+        return left + right    
+
+###########################################################################################
+LAZY PROPOGATION SEGMENT TREE:
+
+    Till now we have been updating single elements only. 
+    That happens in logarithmic time and it's pretty efficient.
+    But what if we had to update a range of elements? By our current method, 
+    each of the elements would have to be updated 
+    independently, each incurring some run time cost.
+    The construction of a tree poses another issue called ancestral locality. 
+    Ancestors of adjacent leaves are guaranteed to be common at 
+    some levels of the tree. Updating each of these leaves individually 
+    would mean that we process their common ancestors multiple times. 
+    What if we could reduce this repetitive computation?
+    A third kind of problem is when queried ranges do not contain frequently updated elements. 
+    We might be wasting valuable time updating nodes which are rarely going to be accessed/read.
+
+    TO IMPLEMENT:
+    We use another array lazy[] which is the same size as our segment tree 
+    array tree[] to represent a lazy node. lazy[i] holds the amount by which 
+    the node tree[i] needs to be incremented, when that node is finally accessed 
+    or queried. When lazy[i] is zero, it means that node 
+    tree[i] is not lazy and has no pending updates.
+
+    1. Updating a range lazily
+    This is a three step process:
+
+    -> Normalize the current node. This is done by removing laziness. 
+       We simple increment the current node by appropriate amount to 
+       remove it's laziness. Then we mark its children to be lazy as 
+       the descendants haven't been processed yet.
+    
+    -> Apply the current update operation to the current node if the 
+       current segment lies inside the update range.
+
+    -> Recurse for the children as you would normally to find appropriate segments to update.
+
+    void updateLazySegTree(int treeIndex, int lo, int hi, int i, int j, int val)
+    {
+        if (lazy[treeIndex] != 0) {                             // this node is lazy
+            tree[treeIndex] += (hi - lo + 1) * lazy[treeIndex]; // normalize current node by removing laziness
+
+            if (lo != hi) {                                     // update lazy[] for children nodes
+                lazy[2 * treeIndex + 1] += lazy[treeIndex];
+                lazy[2 * treeIndex + 2] += lazy[treeIndex];
+            }
+
+            lazy[treeIndex] = 0;                                // current node processed. No longer lazy
+        }
+
+        if (lo > hi || lo > j || hi < i)
+            return;                                             // out of range. escape.
+
+        if (i <= lo && hi <= j) {                               // segment is fully within update range
+            tree[treeIndex] += (hi - lo + 1) * val;             // update segment
+
+            if (lo != hi) {                                     // update lazy[] for children
+                lazy[2 * treeIndex + 1] += val;
+                lazy[2 * treeIndex + 2] += val;
+            }
+
+            return;
+        }
+
+        int mid = lo + (hi - lo) / 2;                             // recurse deeper for appropriate child
+
+        updateLazySegTree(2 * treeIndex + 1, lo, mid, i, j, val);
+        updateLazySegTree(2 * treeIndex + 2, mid + 1, hi, i, j, val);
+
+        // merge updates
+        tree[treeIndex] = tree[2 * treeIndex + 1] + tree[2 * treeIndex + 2];
+    }
+    // call this method as updateLazySegTree(0, 0, n-1, i, j, val);
+    // Here you want to update the range [i, j] with value val.
+
+    2. Querying a lazily propagated tree
+    This is a two step process:
+    Normalize the current node by removing laziness. This step is the same as the update step.
+    Recurse for the children as you would normally to find appropriate segments which fit in queried range.
+
+        int queryLazySegTree(int treeIndex, int lo, int hi, int i, int j)
+    {
+        // query for arr[i..j]
+
+        if (lo > j || hi < i)                                   // segment completely outside range
+            return 0;                                           // represents a null node
+
+        if (lazy[treeIndex] != 0) {                             // this node is lazy
+            tree[treeIndex] += (hi - lo + 1) * lazy[treeIndex]; // normalize current node by removing laziness
+
+            if (lo != hi) {                                     // update lazy[] for children nodes
+                lazy[2 * treeIndex + 1] += lazy[treeIndex];
+                lazy[2 * treeIndex + 2] += lazy[treeIndex];
+            }
+
+            lazy[treeIndex] = 0;                                // current node processed. No longer lazy
+        }
+
+        if (i <= lo && j >= hi)                                 // segment completely inside range
+            return tree[treeIndex];
+        
+        // partial overlap of current segment and queried range. Recurse deeper.
+        int mid = lo + (hi - lo) / 2;                           
+
+        if (i > mid)
+            return queryLazySegTree(2 * treeIndex + 2, mid + 1, hi, i, j);
+        else if (j <= mid)
+            return queryLazySegTree(2 * treeIndex + 1, lo, mid, i, j);
+
+        int leftQuery = queryLazySegTree(2 * treeIndex + 1, lo, mid, i, mid);
+        int rightQuery = queryLazySegTree(2 * treeIndex + 2, mid + 1, hi, mid + 1, j);
+
+        // merge query results
+        return leftQuery + rightQuery;
+    }
+    // call this method as queryLazySegTree(0, 0, n-1, i, j);
+    // Here [i,j] is the range/interval you are querying.
+    // This method relies on "null" nodes being equivalent to storing zero.
+    
+
+########################## DESIGN CIRCULAR BIDIRECTIONAL LINKED LIST PYTHON ############################
 
 class Node:
     def __init__(self, v, p=None, n=None):
@@ -245,6 +532,240 @@ class MyLinkedList:
 # obj.deleteAtIndex(index)
 
 
+########################## DESIGN CIRCULAR BIDIRECTIONAL LINKED LIST C++ ############################
+class MyLinkedList {
+    struct Node {
+        Node* prev;
+        Node* next;
+        int val;
+    };
+
+    Node head;
+
+    Node* addAfter(Node* position, int val) {
+        const auto node = new Node{position, position->next, val};
+        position->next->prev = node;
+        position->next = node;
+        return node;
+    }
+
+    Node* addBefore(Node* position, int val) {
+        const auto node = new Node{position->prev, position, val};
+        position->prev->next = node;
+        position->prev = node;
+        return node;
+    }
+
+    void remove(Node* node) {
+        const auto prev = node->prev;
+        const auto next = node->next;
+        node->prev->next = next;
+        node->next->prev = prev;
+        delete node;
+    }
+
+    pair<Node*, int> at(int index) {
+        Node* node = &head;
+        index++;
+        while (index > 0) {
+            index--;
+            node = node->next;
+            if (node == &head) {
+                break;
+            }
+        }
+        return {node, index};
+    }
+
+public:
+    /** Initialize your data structure here. */
+    MyLinkedList() {
+        head = {&head, &head, -1};
+    }
+
+    /** Get the value of the index-th node in the linked list. If the index is invalid, return -1. */
+    int get(int index) {
+        return at(index).first->val;
+    }
+
+    /** Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. */
+    void addAtHead(int val) {
+        addAfter(&head, val);
+    }
+
+    /** Append a node of value val to the last element of the linked list. */
+    void addAtTail(int val) {
+        addBefore(&head, val);
+    }
+
+    /** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. */
+    void addAtIndex(int index, int val) {
+        const auto [node, excess] = at(index);
+        if (excess == 0) {
+            addBefore(node, val);
+        }
+    }
+
+    /** Delete the index-th node in the linked list, if the index is valid. */
+    void deleteAtIndex(int index) {
+        const auto node = at(index).first;
+        if (node != &head) {
+            remove(node);
+        }
+    }
+};
+
+##########################################################################################
+
+MinHeap Implementation
+
+    Maxheap can be implemented similarly, mainly 
+    just know the heapify algorithm and you should be fine.
+
+    class MinHeap:
+        def __init__(self):
+            self.heap = []
+        def parent(self, i):
+            return (i - 1)/2
+        def left_child(self, i):
+            return (i * 2 + 1)
+        def right_child(self, i):
+            return (i * 2 + 2)
+        def insertKey(self, k):
+            self.heap.append(k)
+            i = len(self.heap) - 1
+            while i != 0 and self.heap[self.parent(i)] > self.heap[i]:
+                self.heap[i], self.heap[self.parent(i)] = self.heap[self.parent(i)], self.heap[i]
+                i = self.parent(i)
+        def decreaseKey(self, i, new_val):
+            self.heap[i] = new_val
+            while i != 0 and self.heap[self.parent(i)] > self.heap[i]:
+                self.heap[i], self.heap[self.parent(i)] = self.heap[self.parent(i)], self.heap[i]
+                i = self.parent(i)
+        def increaseKey(self, i, new_val):
+            heap[i] = new_val
+            minHeapify(i)
+        def getMin(self):
+            return self.heap[0]
+        def minHeapify(self, i):
+            left_child = self.left_child(i)
+            right_child = self.right_child(i)
+            smallest = i
+            if left_child < len(self.heap) and self.heap[left_child] < self.heap[smallest]:
+                smallest = left_child
+            if right_child < len(self.heap) and self.heap[right_child] < self.heap[smallest]:
+                smallest = right_child
+            if smallest != i:
+                self.heap[i], self.heap[smallest] = self.heap[smallest], self.heap[i]
+                self.minHeapify(smallest)
+        def extractMin(self):
+            tmp = self.heap[0]
+            self.heap[0] = self.heap[-1]
+            self.heap.pop()
+            self.minHeapify(0)
+            return tmp
+        def deleteKey(self, i):
+            self.decreaseKey(i, float('inf') * -1)
+            self.extractMin()
+
+
+############################## BUILD HEAP AND WHY ITS O(N) (Using MAX HEAP HERE)############################
+
+Making the correct choice between siftUp and siftDown is critical 
+to get O(n) performance for buildHeap
+
+siftDown swaps a node that is too small with its largest child (thereby moving it down) 
+until it is at least as large as both nodes below it.
+
+siftUp swaps a node that is too large with its parent (thereby moving it up) 
+until it is no larger than the node above it.
+
+The number of operations required for siftDown and siftUp is proportional 
+to the distance the node may have to move. For siftDown, it is the distance 
+to the bottom of the tree, so siftDown is expensive for nodes at the top 
+of the tree. With siftUp, the work is proportional to the distance to the 
+top of the tree, so siftUp is expensive for nodes at the bottom of the tree. 
+Although both operations are O(log n) in the worst case, in a heap, only one 
+node is at the top whereas half the nodes lie in the bottom layer. So it 
+shouldn't be too surprising that if we have to apply an operation to every node, 
+we would prefer siftDown over siftUp.
+
+Two ways:
+
+Start at the top of the heap (the beginning of the array) and call 
+siftUp on each item. At each step, the previously sifted items (the items before the current 
+item in the array) form a valid heap, and sifting the next item up places it into a 
+valid position in the heap. After sifting up each node, all items satisfy the heap property.
+
+Or, go in the opposite direction: start at the end of the array and 
+move backwards towards the front. At each iteration, you sift an item 
+down until it is in the correct location.
+
+Both of these solutions will produce a valid heap. Unsurprisingly, 
+the more efficient one is the second operation that uses siftDown.
+
+Let h = log n represent the height of the heap. 
+The work required for the siftDown approach is given by the sum
+(0 * n/2) + (1 * n/4) + (2 * n/8) + ... + (h * 1).
+
+In contrast, the sum for calling siftUp on each node is
+(h * n/2) + ((h-1) * n/4) + ((h-2)*n/8) + ... + (0 * 1).
+
+USE SIFT DOWN!!
+
+BUILD HEAP (BUT FOR MIN HEAP):
+
+def heapify(A):
+    for root in xrange(len(A)//2-1, -1, -1):
+        rootVal = A[root]
+        child = 2*root + 1
+        while child < len(A):
+            # we pick the smaller child to sort?
+            # makes sense because the smaller child is the one
+            # that has to fight with the parent in a min heap.
+            if child+1 < len(A) and A[child] > A[child+1]:
+                child += 1
+            if rootVal <= A[child]:
+                break
+            A[child], A[(child-1)//2] = A[(child-1)//2], A[child]
+            child = child *2 + 1
+
+
+############################################ TREE ANALYSIS ######################33
+
+Segment tree stores intervals, and optimized for "which of these intervals contains a given point" queries.
+Interval tree stores intervals as well, but optimized for "which of these intervals overlap with a given interval" queries. 
+        It can also be used for point queries - similar to segment tree.
+Range tree stores points, and optimized for "which points fall within a given interval" queries.
+Binary indexed tree stores items-count per index, and optimized for "how many items are there between index m and n" queries.
+
+Performance / Space consumption for one dimension:
+
+Segment tree - O(n logn) preprocessing time, O(k+logn) query time, O(n logn) space
+Interval tree - O(n logn) preprocessing time, O(k+logn) query time, O(n) space
+Range tree - O(n logn) preprocessing time, O(k+logn) query time, O(n) space
+Binary Indexed tree - O(n logn) preprocessing time, O(logn) query time, O(n) space
+(k is the number of reported results).
+
+All data structures can be dynamic, in the sense that 
+the usage scenario includes both data changes and queries:
+
+Segment tree - interval can be added/deleted in O(logn) time (see here)
+Interval tree - interval can be added/deleted in O(logn) time
+Range tree - new points can be added/deleted in O(logn) time (see here)
+Binary Indexed tree - the items-count per index can be increased in O(logn) time
+Higher dimensions (d>1):
+
+Segment tree - O(n(logn)^d) preprocessing time, O(k+(logn)^d) query time, O(n(logn)^(d-1)) space
+Interval tree - O(n logn) preprocessing time, O(k+(logn)^d) query time, O(n logn) space
+Range tree - O(n(logn)^d) preprocessing time, O(k+(logn)^d) query time, O(n(logn)^(d-1))) space
+Binary Indexed tree - O(n(logn)^d) preprocessing time, O((logn)^d) query time, O(n(logn)^d) space
+
+
+
+
+
+
 ########################## HASH MAP AND HASH SET NOTES ###############################3
 
 How to handle Collisions?
@@ -253,7 +774,7 @@ There are mainly two methods to handle collision:
 2) Open Addressing
 
 
-Seperate Chaining >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.: 
+Seperate Chaining >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
 
 The bucket chains are often searched sequentially using the order 
 the entries were added to the bucket. If the load factor is large 
@@ -263,8 +784,6 @@ such as balanced search trees, are worth considering only if the load factor is 
 or if the hash distribution is likely to be very non-uniform, or if one must guarantee good performance 
 even in a worst-case scenario. However, using a larger table and/or a 
 better hash function may be even more effective in those cases.
-
-
 
 Advantages:
 1) Simple to implement.
@@ -529,7 +1048,7 @@ class MyHashSet(object):
         return False
 
 
-##################################3 HASH MAP ################################### (OPEN CHAINING)
+#################################### HASH MAP ################################### (OPEN CHAINING)
 ### THIS SOLUTION SHOULD USE LOAD FACTORS! => LIKE THE SOLUTION ABOVE.
 
 
@@ -617,6 +1136,14 @@ class MyHashMap:
 # param_2 = obj.get(key)
 # obj.remove(key)
 
+
+###########################################################################################################################
+################################# SKIP LIST
+
+
 ###########################################################################################################################
 ################################# CIRCULAR DEQUE:
 
+
+###########################################################################################################################
+################################# CIRCULAR QUEUE
