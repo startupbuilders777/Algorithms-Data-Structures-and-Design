@@ -60,6 +60,11 @@ B-Trees
 Red black trees, 
 
 
+ALSO SEARCH AND do following counting problems:
+LEETCODE COUNTING PROBLEMS in google, practice permutation trees
+
+DO all the best time to buy and sell stocks!!!
+
 DO ALL PREMIUM LEETCODE QUESTIONS.  
 IMPLEMENT/REVIEW/STUDY/MEMORIZE ALL DATA STRUCTURES. 
 
@@ -67,7 +72,6 @@ IMPLEMENT/REVIEW/STUDY/MEMORIZE ALL DATA STRUCTURES.
 PROBLEM TYPES TO PRACTICE: 
     PERMUTATION TREES
     ENCODE AND DECODE TREES!!!
-
     LRU CACHE/LFU CACHE/ OTHER CACHE PROBLEMS
     Rotate Checkerboard/ ROTATION PROBLEMS/GEOMETRY/LINE SWEEP
     Rectangle AREA/ Rectangle DP
@@ -101,25 +105,21 @@ https://medium.com/@koheiarai94/60-leetcode-questions-to-prepare-for-coding-inte
 
 https://leetcode.com/discuss/career/448024/Topic-wise-problems-for-Beginners
 https://www.teamblind.com/post/New-Year-Gift---Curated-List-of-Top-75-LeetCode-Questions-to-Save-Your-Time-OaM1orEU
+
+
 More question lists: https://seanprashad.com/leetcode-patterns/
 https://leetcode.com/discuss/career/448285/List-of-questions-sorted-by-common-patterns
-
-
 https://leetcode.com/discuss/general-discussion/457546/LeetCode-Problem-Patterns-from-*** <---> the list for this is:  https://leetcode.com/list/xigkpi0j/
+
+
 
 DP PROBLEMS, EASY, MED, HARD TO DO AND CLASSIFICATION:
 https://leetcode.com/discuss/general-discussion/491522/dynamic-programming-questions-thread
 https://leetcode.com/problems/longest-palindromic-subsequence/discuss/222605/dp-problem-classifications-helpful-notes
 
 
-GREEDY PROBLEM PRACTICE:
+############################# GREEDY PROBLEM PRACTICE:
 https://leetcode.com/discuss/general-discussion/669996/greedy-for-beginners-problems-sample-solutions
-
-
-ALSO SEARCH AND do following counting problems:
-LEETCODE COUNTING PROBLEMS in google, practice permutation trees
-
-DO all the best time to buy and sell stocks!!!
 
 
 
@@ -156,7 +156,7 @@ all rotation problems
 
 linked list hard ones. 
 
-
+#############################################################################
 Graph problem practice here:
 https://leetcode.com/discuss/general-discussion/655708/graph-problems-for-beginners-practice-problems-and-sample-solutions
 

@@ -12,7 +12,6 @@ class Solution(object):
         :rtype: ListNode
         """
         
-        
         seen = set()
         while headA is not None:
             seen.add(headA)

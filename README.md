@@ -71,6 +71,263 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
 
+-14) Learn to use iterators: Serialize and Deserialize bin tree preorder style:
+
+    class Codec:
+        def serialize(self, root):
+            def doit(node):
+                if node:
+                    vals.append(str(node.val))
+                    doit(node.left)
+                    doit(node.right)
+                else:
+                    vals.append('#')
+            vals = []
+            doit(root)
+            return ' '.join(vals)
+
+        def deserialize(self, data):
+            def doit():
+                val = next(vals)
+                if val == '#':
+                    return None
+                node = TreeNode(int(val))
+                node.left = doit()
+                node.right = doit()
+                return node
+            vals = iter(data.split())
+            return doit()
+
+
+
+
+-13) GREEDY HILL FINDING WITH REVERSE POINTERS, 
+     AKA MOST IMPORTANT INDEXES ONLY FINDING AND USING SMARTLY 
+     AKA MONOQUEUE EXTENSION
+
+    Some problems require you to find optimal hills, to get answer. 
+    These hills are valid for certain indexes, and then you have to use new hills
+    They have a sort of max min aura to them, and seem similar to monoqueue type 
+    problems.
+    When you see a max-min type optimization pattern, then you have to find HILLS:
+    
+    For instance:
+    Input a = [21,5,6,56,88,52], output = [5,5,5,4,-1,-1] . 
+
+    Output array values is made up of indices of the 
+    element with value greater than the current element 
+    but with largest index. So 21 < 56 (index 3), 
+    21 < 88 (index 4) but also 21 < 52 (index 5) 
+    so we choose index 5 (value 52). 
+    Same applies for 5,6 and for 56 its 88 (index 4).
+    
+    Algorithm 1: Find the hills, and binsearch the indexes: 
+
+    need to keep track of biggest element on right side. 
+    on the right side, keep the hills!
+    52, is a hill, 
+    then 88, because its bigger than 52,
+    not 56, not 6, not 5, not 21, because you can just use 52, or 88 
+    so elements check against 52 first, then against 88. 
+    
+    import bisect
+    def soln(arr):
+        hills = []
+        hill_locations = []
+        running_max = float("-inf")
+        for i in range(len(arr)-1, -1, -1):
+            if running_max < arr[i]:
+                running_max = arr[i]
+                hills.append(arr[i])
+                hill_locations.append(i)
+        hill_locations_pop_idx = hill_locations[-1]
+        ans = []
+
+        def bin_search(arr, val):
+            l = 0
+            r = len(arr) 
+            mid = None
+            while l != r:
+                mid = l + (r-l)//2
+                if arr[mid]  == val:
+                    return mid 
+                elif arr[mid] > val:
+                    r = mid 
+                else:
+                    l = mid  + 1
+            return l
+        
+        for i in range(len(arr)):
+            if i == hill_locations_pop_idx:
+                # you have to invalidate indexes because you dont want to 
+                # invalid indexes to be found in bin search.
+                hill_locations.pop()
+                hills.pop()
+                hill_locations_pop_idx = -1 if len(hill_locations) == 0 else hill_locations[-1]
+            # Locate the insertion point for x in a to maintain sorted order.
+            x = bisect.bisect_left(hills, arr[i], lo=0, hi=len(hills))
+            y = bin_search(hills, arr[i])
+            print("x, y", (x, y)) # will be same
+            if y < len(hill_locations):
+                ans.append(hill_locations[x])
+            else:
+                ans.append(-1)
+        return ans  
+
+    Algorithm 2: Insert everything in pq. Pop off 1 by 1, check running max idx. and assign idx. 
+
+
+
+-12) SIMULATE BINARY SEARCH INSERTION POINT FINDER 
+     AKA bisect.bisect_left(arr, val, lo=0, hi=len(arr)) 
+    # Locate the insertion point for x in a to maintain sorted order.
+    # REMEMBER THAT THE FINAL ANSWER IS LOW NOTTTTT MID
+
+    # HERE WE INITIALIZED RIGHT AS LEN(NUMS) - 1
+    def searchInsert(self, nums, target):
+        low = 0
+        high = len(nums) - 1
+        while low <= high:
+            mid = (low + high) / 2
+            if nums[mid] == target:
+                return mid
+            elif nums[mid] < target:
+                low = mid + 1
+            else:
+                high = mid - 1
+        return low
+
+    # HERE WE INITIALIZED RIGHT AS LEN(NUMS) KNOW THE DIFFERENCE. 
+    def searchInsert(self, nums: List[int], target: int) -> int:
+        
+        l = 0
+        r = len(nums)
+        mid = None
+        
+        while l != r:            
+            mid = l + (r-l)//2
+            
+            if nums[mid] == target:
+                return mid
+            elif nums[mid] < target:
+                l = mid + 1
+            else:
+                r = mid
+
+        # DO NOT RETURN MID, RETURN L
+        return l
+
+
+
+
+-11) Merkle Hashing and Tree to String Methods:
+
+    Given two non-empty binary trees s and t, check whether tree 
+    t has exactly the same structure and node values with a subtree of s.
+    A subtree of s is a tree consists of a node in s and all of this node's 
+    descendants. The tree s could also be considered as a subtree of itself.
+
+    Normal way runtime is O(|s| * |t|)
+    Runtime O(|s| + |t|) (Merkle hashing):
+
+    For each node in a tree, we can create node.merkle, 
+    a hash representing it's subtree. This hash is formed by hashing the 
+    concatenation of the merkle of the left child, the node's value, 
+    and the merkle of the right child. Then, two trees are identical if 
+    and only if the merkle hash of their roots are equal (except when 
+    there is a hash collision.) From there, finding the answer is straightforward: 
+    we simply check if any node in s has node.merkle == t.merkle
+
+    def isSubtree(self, s, t):
+        from hashlib import sha256
+        def hash_(x):
+            S = sha256()
+            S.update(x)
+            return S.hexdigest()
+            
+        def merkle(node):
+            if not node:
+                return '#'
+            m_left = merkle(node.left)
+            m_right = merkle(node.right)
+            node.merkle = hash_(m_left + str(node.val) + m_right)
+            return node.merkle
+            
+        merkle(s)
+        merkle(t)
+        def dfs(node):
+            if not node:
+                return False
+            return (node.merkle == t.merkle or 
+                    dfs(node.left) or dfs(node.right))
+                        
+        return dfs(s)
+    
+    QA below:
+    Soln doesnt check for hash collisions but we use hash resistant function:
+    For practical purposes, we can assume that there will not be a hash collision, 
+    as the probability of a collision will be in the order of |S|^2 / 2^256. 
+    A computer can do a sha256 hash in about 1 microsecond, 
+    but sha256 hashes are technically proportional to their input length, 
+    and you would be hashing hex digest (32 bytes each) as well as the node.val strings.
+
+    For this problem though, collision resistant hash functions like sha256 
+    are not necessary, from performance perspective. You can use some 
+    computationally cheaper hash functions. With an addition of O(|T|) 
+    checking every time hash values match, correctness is also made sure.
+
+    Convert Trees to Strings Method F strings:
+    Basically we convert our tree into string representation, 
+    then just check whether substring exists in target string.
+    
+    >>> f"Hello, {name}. You are {age}."
+    'Hello, Eric. You are 74.'
+
+    class Solution:
+        def isSubtree(self, s: TreeNode, t: TreeNode) -> bool:
+            string_s = self.traverse_tree(s)
+            string_t = self.traverse_tree(t)
+            if string_t in string_s:
+                return True
+            return False
+        
+        
+        def traverse_tree(self, s):
+            if s:
+                return f"#{s.val} {self.traverse_tree(s.left)} {self.traverse_tree(s.right)}"
+            return None
+
+
+
+
+
+
+
+
+-10) Learn how to index for binsearch. 
+     Left index, getting mid, and right index is always boundary (so len(arr))
+
+    # Given an array where elements are sorted in ascending order, 
+    # convert it to a height balanced BST.
+
+    class Solution:
+        def sortedArrayToBST(self, nums: List[int]) -> TreeNode:            
+            def build_tree(l, r):
+                if(l == r):
+                    return None
+                
+                mid =  l + (r-l)//2
+                root = nums[mid]
+                
+                # you never include right value
+                left = build_tree(l, mid)
+                right = build_tree(mid+1, r)
+                return TreeNode(val=root, left=left, right=right)
+                
+            return build_tree(0, len(nums))
+
+
+
 -9 Remember that you can do in-order and post-order to help you do
    tree problems such as validate bst which does it in-order:
 
