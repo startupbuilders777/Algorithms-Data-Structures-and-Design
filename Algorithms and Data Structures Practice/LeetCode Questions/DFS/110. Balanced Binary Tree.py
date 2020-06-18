@@ -33,3 +33,4 @@ class Solution:
                 return (False, 0)
         
         return balance(root)[0]
+

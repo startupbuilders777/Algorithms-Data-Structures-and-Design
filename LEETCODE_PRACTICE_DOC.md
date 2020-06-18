@@ -104,7 +104,7 @@ https://medium.com/@koheiarai94/60-leetcode-questions-to-prepare-for-coding-inte
 
 
 https://leetcode.com/discuss/career/448024/Topic-wise-problems-for-Beginners
-https://www.teamblind.com/post/New-Year-Gift---Curated-List-of-Top-75-LeetCode-Questions-to-Save-Your-Time-OaM1orEU
+https://www.teamblind.com/post/New-Year-Gift---Curated-List-of-Top-75-LeetCode-Questions-to-Save-Your-Time-OaM1or EU
 
 
 More question lists: https://seanprashad.com/leetcode-patterns/

@@ -89,5 +89,4 @@ class Codec:
             return n
         
         return build(arr)
-    
 
