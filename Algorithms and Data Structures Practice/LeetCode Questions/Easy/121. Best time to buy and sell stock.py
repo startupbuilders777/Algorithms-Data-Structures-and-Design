@@ -22,64 +22,52 @@ Output: 0
 Explanation: In this case, no transaction is done, i.e. max profit = 0.
 '''
 
-class Solution(object):
-    def maxProfit(self, prices):
-        """
-        :type prices: List[int]
-        :rtype: int
-        """
-        '''
-        YOU CANT DO THIS INCORRECT!!!
-
-        buyPrice = float("inf")
-        sellPrice = 0
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
         
-        for i in prices:
-            if(i < buyPrice):
-                buyPrice = i
-            elif(i > sellPrice):
-                sellPrice = i
-            
-        if(sellPrice > buyPrice):
-            return sellPrice - buyPrice
-        else: 
+        # Find all hills. 
+        
+        '''
+        3, 20, 1, 8, 2, 10, -12, 9
+        # we take smallest from left side, 
+        # largest from right side. 
+        you can go right to left. 
+        or left to right
+        '''
+        
+        if len(prices) == 0:
             return 0
+        i = 0
+        currMin = prices[0]
+        maxProfit = 0
+        for i in range(1, len(prices)):
             
-        '''        
-        
-        '''
-        ok run thru. 
-        if you find a smallest price, start j going to right
-        to find biggest price before you reach another smallest price.
-        
-        record that as current largest.
-        then start again from the next smallest price -> run it right to get 
-        its largest buy price.
-        update current largest.
-        return current largest at end of array.
-        
-        '''
-        
-        buy = float("inf")
-        sell = 0
-        # runningMaxProfit = 0 (can be derived from sell - buy)
-        
-        bestProfit = 0
-        
-        for i in prices:
-            print("curr buy and sell are", (buy, sell))
-            if(i < buy):
-                # update bestProfit, 
-                # then set a new running max profit
-                if((sell-buy) > bestProfit):
-                    bestProfit = (sell-buy)
-                
-                buy = i
-                sell = 0
-            elif(i > sell):
-                sell = i
-        
-        if((sell-buy) > bestProfit):
-            bestProfit = (sell-buy)
-        
-        return bestProfit
+            price = prices[i]
+            
+            if price < currMin:
+                currMin = price 
+            else:
+                maxProfit = max(maxProfit, price - currMin)
+        return maxProfit
+
+
+'''
+The logic to solve this problem is same as "max subarray problem" using Kadane's Algorithm. Since no body has mentioned this so far, I thought it's a good thing for everybody to know.
+
+All the straight forward solution should work, but if the interviewer twists the question slightly by giving the difference array of prices, Ex: for {1, 7, 4, 11}, if he gives {0, 6, -3, 7}, you might end up being confused.
+
+Here, the logic is to calculate the difference (maxCur += prices[i] - prices[i-1]) of the original array, and find a contiguous subarray giving maximum profit. If the difference falls below 0, reset it to zero.
+
+    public int maxProfit(int[] prices) {
+        int maxCur = 0, maxSoFar = 0;
+        for(int i = 1; i < prices.length; i++) {
+            maxCur = Math.max(0, maxCur += prices[i] - prices[i-1]);
+            maxSoFar = Math.max(maxCur, maxSoFar);
+        }
+        return maxSoFar;
+    }
+*maxCur = current maximum value
+
+*maxSoFar = maximum value found so far
+
+'''

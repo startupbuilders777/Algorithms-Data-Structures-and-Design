@@ -36,8 +36,6 @@ https://www.geeksforgeeks.org/must-coding-questions-company-wise/
 
 INTERVIEW DOGO: https://docs.google.com/spreadsheets/d/1pvgE9Tyqb80L3tlegJqjfmzWyGApanHsS8owe4mmwig/edit?usp=drive_web&ouid=112328876402233278219
 
-
-
 Review Data structures readme, and do design skip list. 
 
 
@@ -45,6 +43,9 @@ Review Data structures readme, and do design skip list.
 PROBLEMS TO WORK ON: 
 
 
+all rotation problems
+
+linked list hard ones. 
 
 Find and do jane street/citadel question!!!!!!!!!!!!!!!
     String compressions and decompression 
@@ -94,7 +95,10 @@ PROBLEM TYPES TO PRACTICE:
     Implementing all datastructures. 
     Serialize and deserialize binary tree.
 
-
+#################################################################################33
+#################################################################################33
+#################################################################################33
+#################################################################################33
 
 https://leetfree.com/company/appdynamics.html -> SUS website which contains company probs
 
@@ -112,16 +116,74 @@ https://leetcode.com/discuss/career/448285/List-of-questions-sorted-by-common-pa
 https://leetcode.com/discuss/general-discussion/457546/LeetCode-Problem-Patterns-from-*** <---> the list for this is:  https://leetcode.com/list/xigkpi0j/
 
 
-
+========================= DYNAMIC PROGRAMMING PROBLEMS ======================================
 DP PROBLEMS, EASY, MED, HARD TO DO AND CLASSIFICATION:
-https://leetcode.com/discuss/general-discussion/491522/dynamic-programming-questions-thread
-https://leetcode.com/problems/longest-palindromic-subsequence/discuss/222605/dp-problem-classifications-helpful-notes
+
+Problem categories and related videos: (below)
+Palindrome Based: LC 516, 5 647
+Palindrome Partitioning: LC 132 133
+Decode ways: LC 91
+Stocks: LC 121 122 309 714
+Path : LC 62 63 64
+Jump Game : 55 45
+Stairs: 70 746
+Wildcard: LC 44 10
+Word Break: 139 140
+Max Sq & Rect: 85 221
+Super Egg: LC 887
+Coin Change: LC 322, 518, 441
+Longest Common substring: 718
+
+Others :
+House Robber: LC 213, 198
+Paint House : LC 256 265
+Subarray : LC 53, 152
+Subsequence LIS : LC 300 354
+Math: LC 279 343 204
+
+EASY:
+256. Paint House
+
+MEDIUM:
+63. Unique Paths II
+64. Minimum Path Sum
+91. Decode Ways
+139. Word Break
+221. Maximal Square
+300. Longest Increasing Subsequence
+322. Coin Change
+464. Can I Win
+474. Ones and Zeroes
+516. Longest Palindromic Subsequence
+698. Partition to K Equal Sum Subsets
+787. Cheapest Flights Within K Stops
+1027. Longest Arithmetic Sequence
+1049. Last Stone Weight II
+1105. Filling Bookcase Shelves
+1143. Longest Common Subsequence
+1155. Dice Roll Sum
+
+HARD:
+32. Longest Valid Parantheses
+44. Wildcard Matching
+72. Edit Distance
+123. Best Time to Buy and Sell Stock III
+312. Burst Balloons
+1000. Minimum Cost to Merge Stones
+1335. Minimum Difficulty of a Job Schedule
+
+
+============================================================================================
+
 
 
 ############################# GREEDY PROBLEM PRACTICE:
 https://leetcode.com/discuss/general-discussion/669996/greedy-for-beginners-problems-sample-solutions
 
+########################33 Binary Search Practice List:
 
+https://leetcode.com/list/xcrx4mxm/
+########################################################
 
 https://yangshun.github.io/tech-interview-handbook/best-practice-questions/
 
@@ -140,21 +202,10 @@ https://www.lintcode.com/problem/meeting-rooms-ii/description
 TOP 50 EASY, TOP 50 MED, TOP 50 HARD LEETS:
 https://learntocodetogether.com/top-150-leetcodes-best-practice-problems/
 
-
-
 https://leetcode.com/discuss/career/448024/Topic-wise-problems-for-Beginners
 
 https://leetcode.com/discuss/career/448285/List-of-questions-sorted-by-common-patterns
 
-####
-
-OK so
-work on:
-
-
-all rotation problems
-
-linked list hard ones. 
 
 #############################################################################
 Graph problem practice here:

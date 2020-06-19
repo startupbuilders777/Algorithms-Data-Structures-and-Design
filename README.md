@@ -69,7 +69,335 @@ TOPICS TO UNDERSTAND:
         Z algorithm
 
 
-THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS:
+THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
+
+
+-19) Hill finding part 1: Best time to buy and sell stock I
+    def maxProfit(self, prices: List[int]) -> int:
+        if not prices:
+            return 0
+        min_i = prices[0]
+        max_profit = 0
+        for i,x in enumerate(prices):
+            min_i = min(min_i, x)
+            profit = x - min_i
+            max_profit = max(max_profit, profit)
+        return max_profit
+
+    CAN ALSO SOLVE WITH KADANES ALGORITHM (Max subarray sum):
+    if the interviewer twists the question slightly by giving the difference 
+    array of prices, Ex: for {1, 7, 4, 11}, 
+    if he gives {0, 6, -3, 7}, you might end up being confused. Do this:
+
+        public int maxProfit(int[] prices) {
+        int maxCur = 0, maxSoFar = 0;
+        for(int i = 1; i < prices.length; i++) {
+            maxCur = Math.max(0, maxCur += prices[i] - prices[i-1]);
+            maxSoFar = Math.max(maxCur, maxSoFar);
+        }
+        return maxSoFar;
+    }
+
+
+-18) Sorting algorithms and true space complexity. 
+
+    Quicksort: For quicksort, your intuition about recursion requiring O(log(n)) space is correct. 
+    Since quicksort calls itself on the order of log(n) times (in the average case, worst 
+    case number of calls is O(n)), at each recursive call a new stack frame of constant 
+    size must be allocated. Hence the O(log(n)) space complexity.
+
+    Mergesort: Since mergesort also calls itself on the order of log(n) times, 
+    why the O(n) space requirement? The extra space comes from the merge operation. 
+    Most implementations of merge use an auxiliary array with length equal to the 
+    length of the merged result, since in-place merges are very complicated. 
+    In other words, to merge two sorted arrays of length n/2, most merges will 
+    use an auxiliary array of length n. The final step of mergesort 
+    does exactly this merge, hence the O(n) space requirement.
+
+
+    Merge sort on linked lists can be executed using only O(1) extra space if 
+    you take a bottom-up approach by counting where the boundaries of 
+    the partitions are and merging accordingly.
+
+
+-17.5) IMPLEMENTED QUICK SORT FOR LINKED LISTS:
+            
+    # USE MORE DUMMY NODES TO SEPERATE CONCERNS, AND REDUCE MISTAKES
+    # I HAD A PROBLEM WITH CYCLES BECAUSE I WAS REUSING NODES.
+
+    def sortList(self, head: ListNode) -> ListNode:
+        '''
+        random.randint(a, b)¶
+        Return a random integer N such that a <= N <= b. Alias for randrange(a, b+1).
+        '''
+        
+        node = head
+        l = 0
+        while node:
+            l += 1
+            node = node.next
+            
+        def partition(head, start, end, pivot):
+            if start == end:
+                return head
+            if head is None:
+                return None
+            
+            pivotVal = pivot.val
+            before = ListNode(0)
+            after = ListNode(0)
+            afterCopy = after
+            beforeCopy = before
+            
+            temp = head
+            left_len = 0
+            
+            while temp:       
+                # print("processing temp", temp.val)
+                if temp == pivot:
+                    temp = temp.next
+                    continue
+                    
+                if temp.val < pivotVal: 
+                    left_len += 1
+                    before.next = temp
+                    before = before.next
+                    temp = temp.next
+                else:
+                    after.next = temp
+                    after = after.next
+                    temp = temp.next
+                        
+            before.next = None
+            after.next = None
+            return beforeCopy.next, left_len, afterCopy.next
+ 
+        def quicksort(head, start, end):
+            if head is None:
+                return None
+            
+            if end-start <= 1:
+                return head 
+            
+            pivotLoc = random.randint(start, end-1)            
+            pivot = head
+            i = 0
+            while i < pivotLoc:
+                pivot = pivot.next
+                i += 1
+                
+            if pivot is None:
+                return None
+               
+            left, left_len, right = partition(head, start, end, pivot) 
+            sorted_left = quicksort(left, 0, left_len)
+            sorted_right = quicksort(right, 0, end - left_len - 1)
+            
+            if sorted_left:
+                temp = sorted_left
+                while temp and temp.next:
+                    temp = temp.next
+                temp.next = pivot
+            else:
+                sorted_left = pivot
+
+            pivot.next = sorted_right
+            return sorted_left
+        
+        return quicksort(head, 0, l)
+
+
+-17.9 Bottom Up Merge Sort for Linked List (O(1) space )
+    class Solution {
+    public:
+        ListNode *sortList(ListNode *head) {
+            if(!head || !(head->next)) return head;
+            //get the linked list's length
+            ListNode* cur = head;
+            int length = 0;
+            while(cur){
+                length++;
+                cur = cur->next;
+            }
+            
+            ListNode dummy(0);
+            dummy.next = head;
+            ListNode *left, *right, *tail;
+            for(int step = 1; step < length; step <<= 1){
+                cur = dummy.next;
+                tail = &dummy;
+                while(cur){
+                    left = cur;
+                    right = split(left, step);
+                    cur = split(right,step);
+                    tail = merge(left, right, tail);
+                }
+            }
+            return dummy.next;
+        }
+    private:
+        ListNode* split(ListNode *head, int n){
+            //if(!head) return NULL;
+            for(int i = 1; head && i < n; i++) head = head->next;
+            
+            if(!head) return NULL;
+            ListNode *second = head->next;
+            head->next = NULL;
+            return second;
+        }
+        ListNode* merge(ListNode* l1, ListNode* l2, ListNode* head){
+            ListNode *cur = head;
+            while(l1 && l2){
+                if(l1->val > l2->val){
+                    cur->next = l2;
+                    cur = l2;
+                    l2 = l2->next;
+                }
+                else{
+                    cur->next = l1;
+                    cur = l1;
+                    l1 = l1->next;
+                }
+            }
+            cur->next = (l1 ? l1 : l2);
+            while(cur->next) cur = cur->next;
+            return cur;
+        }
+    };
+
+
+
+-17) Storing 2 integer values at same index in an array:
+
+    First we have to find a value greater than 
+    all the elements of the array. Now we can store the 
+    original value as modulus and the second value as division. 
+    Suppose we want to store arr[i] and arr[j] both at index 
+    i(means in arr[i]). First we have to find a ‘maxval’ 
+    greater than both arr[i] and arr[j]. Now we can store 
+    as arr[i] = arr[i] + arr[j]*maxval. Now arr[i]%maxval 
+    will give the original value of arr[i] and arr[i]/maxval 
+    will give the value of arr[j].
+
+
+
+
+
+
+-16) Modified Bin Search: Find Minimum in Rotated Sorted Array
+    
+    Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
+    (i.e.,  [0,1,2,4,5,6,7] might become  [4,5,6,7,0,1,2]).
+    Find the minimum element.
+    You may assume no duplicate exists in the array.
+    
+    This soln is abusing the fact that 
+    left side is bigger than right side,
+    for all rotated cases. 
+    [3,4,5,1,2]
+
+    def findMin(self, nums: List[int]) -> int:
+        left, right = 0, len(nums) - 1
+        while nums[left] > nums[right]:
+            middle  = (left + right) // 2
+            if nums[middle] < nums[right]:
+                right = middle
+            else:
+                left = middle + 1
+        return nums[left]
+
+    My soln didnt use this fact. it instead took the first 
+    element as a reference, and then cut the middle, check left
+    and right element for pivot, and binary searched left or right
+    based on comparing referenced element to middle element. 
+    In other words. I gutta SLOW DOWN, UNDERSTAND PROBLEM,
+    EXPLOIT MORE CONSTRAINTS, LOOK AT PROBLEM STRUCTURE,
+    IDENTIFY CORE TRUTHS FOR ALL CASES!!!
+
+    
+
+
+
+
+-15) Wierd~Modified~Customized Memoization / Tree Memoization Pattern:      
+     Path Sum III
+     You are given a binary tree in which 
+     each node contains an integer value.
+     Find the number of paths that sum to a given value.
+     The path does not need to start or end at the root or 
+     a leaf, but it must go downwards 
+     (traveling only from parent nodes to child nodes).
+     
+    IDEA 1: You need two recursive functions. SEPERATE CONCERNS. 
+          DONT TRY TO DO IT ALL IN ONE RECURSIVE FUNCTION!
+          WATCH FOR WEIRD BASE CASES -> ESP when you get errors
+          When debugging look at base cases -> think about if you
+          need more recursive functions -> because having it all in 
+          one recursive function may lead 4 cases and 2 cases are undesirable
+    
+        class Solution:
+            def verifySum(self, node, val):         
+                if node is None:
+                    return 0
+                count = 0
+                if node.val == val:
+                    count = 1    
+                verifyRight = self.verifySum(node.right, val - node.val)
+                verifyLeft = self.verifySum(node.left, val - node.val)
+                count += (verifyRight + verifyLeft)    
+                return count
+            
+            def pathSum(self, root: TreeNode, sum: int) -> int: 
+                if root is None:
+                    return 0   
+                count = 0
+                count = self.verifySum(root, sum)
+                right = self.pathSum(root.right, sum)
+                left =  self.pathSum(root.left, sum)
+                count += right
+                count += left
+                return count     
+        
+    IDEA 2: Memoization -> When do tree recursion, check for repeat solutions.
+            Here solution is like 2-SUM, and hash map abuse. 
+            The 50% Top 50 % Bottom Memoization Pattern
+
+         why initialize cache = {0:1} why not just empty dictionary?
+            Initializing the cache to {0:1} allows us to consider the path starting 
+            from root. Another way to consider this path 
+            would be to check the value of currPathSum directly:
+
+        class Solution:
+            def dfs(self,node,isum,target):
+                if node ==None:
+                    return
+                nxtSum = isum + node.val
+                
+                # THIS IS EXACTLY 2 SUM. WE ARE LOOKING FOR THE DIFFERENCE!
+                # BECAUSE WE WANT TO TRY THE SUMS BETWEEN ANY 2 NODES, SO WE 
+                # GUTTA COUNT EM!
+                if nxtSum - target in self.map:
+                    self.count += self.map[nxtSum - target]
+                
+                if nxtSum not in self.map:
+                    self.map[nxtSum] = 1
+                else:    
+                    self.map[nxtSum] += 1
+                
+                self.dfs(node.left,nxtSum,target)
+                self.dfs(node.right,nxtSum,target)
+                
+                # WE NO LONGER HAVE THIS NODE TO CREATE A PATH SEGMENT, SUBTRACT IT OUT. 
+                # BECAUSE WE SWITCHED BRANCHES
+                self.map[nxtSum] -= 1
+    
+            def pathSum(self, root: TreeNode, sum: int) -> int:
+                self.map = {}
+                self.map[0] = 1
+                self.count = 0
+                self.dfs(root,0,sum)
+                return self.count
+
 
 -14) Learn to use iterators: Serialize and Deserialize bin tree preorder style:
 
@@ -4390,6 +4718,9 @@ COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
             
             return xs
     
+
+
+
     INPLACE MERGE SORT 2:
 
         // Merges two subarrays of arr[]. 
