@@ -677,12 +677,13 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 -8) Dynamic programming -> check if they want permutations or combinations.  
     The DP needs to change so that this invarient is 
     maintained such as in Coin Change 2,
-
+    
+    THIS IS A COMBINATIONS DP PROBLEM. 
     Input: amount = 5, coins = [1, 2, 5]
     Output: 4
     Explanation: there are four ways to make up the amount
     with the denominations. 
-    THIS IS A COMBINATIONS DP PROBLEM. DONT DO PERMUTATIONS DP. 
+    DONT DO PERMUTATIONS DP. 
     2 + 2 + 1 IS THE SAME AS 2 + 1 + 2, so forloop over coins first
     so we dont reuse the same denomiation twice aka:
 
@@ -693,6 +694,45 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                 for j in range(amount + 1):
                     dic[j] = dic.get(j, 0) +  dic.get(j - coin, 0)
             return dic.get(amount, 0)
+    
+    THIS IS A PERMUATIONS DP PROBLEM, DONT DO COMBINATIONS:
+    Given an integer array with all positive numbers and no duplicates, 
+    find the number of possible combinations that add up to a positive integer target.
+
+    nums = [1, 2, 3]
+    target = 4
+
+    The possible combination ways are:
+    (1, 1, 1, 1), (1, 1, 2), (1, 2, 1), (1, 3), (2, 1, 1), (2, 2), (3, 1)
+
+    def combinationSum4(self, nums: List[int], target: int) -> int:        
+        amounts = [0 for _ in range(target + 1)]
+        amounts[0] = 1 # When you reach amount 0, yield 1, for the coin, base case
+        
+        for amt in range(1, target+1):
+            for coin in nums: 
+                if coin <= amt: 
+                    amounts[amt] += amounts[amt-coin]
+                    
+        return amounts[target]
+
+    What if negative numbers are allowed in the given array?
+    How does it change the problem?
+    What limitation we need to add to the question to allow negative numbers?
+    We should bound the length because solutions can have infinite length!!!
+    Code to follow up: 
+ 
+    def combinationSum4WithLength(self, nums, target, length, memo=collections.defaultdict(int)):
+        if length <= 0: return 0
+        if length == 1: return 1 * (target in nums)
+        if (target, length) not in memo: 
+            for num in nums:
+                memo[target, length] += self.combinationSum4(nums, target - num, length - 1)
+        return memo[target, length]
+
+
+
+
     
 -7) CONTINUE TO PUSH FACTS AND DETAILS INTO A SOLUTION, ABUSE TO MAKE IT FASTER. 
     Longest increasing subsequence can be solved with patience sort using NlogN. 
@@ -1696,6 +1736,11 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 2.57) To find the root nodes in a directed graph (NOT DAG):
       Reverse graph and find nodes with 0 children.
       However, there may not be root nodes!
+
+2.575) REMEMBER CYCLE DETECING ON DIRECTED GRAPH ALWAYS NEEDS AT LEAST 3 COLORS!!!
+     WHILE ON UNDIRECTED YOU COULD JUST USE A VISTED SET. 
+     
+
 
 2.58) Cycle finding in directed graph and undirected graph is 
       completely different! Memorize details of each way. 

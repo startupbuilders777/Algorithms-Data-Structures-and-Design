@@ -12,7 +12,11 @@ Behavioral STAR matrix
 ###########################################
 
 ONSITE PRACTICE: 
+    
     System Design/Concurrency/SQL Practice for onsites. 
+    
+    For data engineering -> REVIEW PANDAS
+
 
 SYSTEM DESIGN:
 CREATE A README FROM THIS:
