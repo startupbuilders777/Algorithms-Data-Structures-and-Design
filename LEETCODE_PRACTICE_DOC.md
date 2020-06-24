@@ -183,7 +183,7 @@ HARD:
 
 ############################# GREEDY PROBLEM PRACTICE:
 https://leetcode.com/discuss/general-discussion/669996/greedy-for-beginners-problems-sample-solutions
-
+ -> THE LIST IS THIS: https://leetcode.com/list/xyehq5j6/
 ########################33 Binary Search Practice List:
 
 https://leetcode.com/list/xcrx4mxm/

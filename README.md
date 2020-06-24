@@ -657,7 +657,8 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
 -9 Remember that you can do in-order and post-order to help you do
-   tree problems such as validate bst which does it in-order:
+   tree problems such as validate bst: 
+   (i did it pre-order, by also keep track of the range)
 
     def isValidBST(self, root):
         res, self.flag = [], True
@@ -1030,6 +1031,98 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
             return r;
         }
 
+
+0.27) Binary Tree Max Path Sum: the binary tree version of max subarray sum:
+
+    Given a non-empty binary tree, find the maximum path sum.
+    For this problem, a path is defined as any sequence of nodes from 
+    some starting node to any node in the tree along the parent-child connections. 
+    The path must contain at least one node and does not need to go through the root.
+    
+    def maxPathSum(self, root: TreeNode) -> int:
+        m = float(-inf)
+        def helper(node):
+            nonlocal m
+            if node is None:
+                return 0
+            maxRightPath =  helper(node.right)
+            maxLeftPath = helper(node.left)           
+            right = maxRightPath + node.val
+            left = maxLeftPath + node.val
+            connected = maxRightPath + maxLeftPath + node.val
+            m = max(m, right, left, connected, node.val)
+            maxPath = max(right, left, node.val, 0)
+            return maxPath
+        helper(root)
+        return m
+
+
+0.28) Given an unbalacned binary search tree, write a function 
+      kthSmallest to find the kth smallest element in it.
+    # GENERATOR SOLN:
+    def traverse(node):
+        if node:
+            yield from traverse(node.left)
+            yield node
+            yield from traverse(node.right)
+        
+    def kthSmallest(root, k):
+        k -= 1
+        for i, node in enumerate(traverse(root)):
+            if i == k:
+                return node.val
+
+
+    # RECURSIVE
+    def kthSmallest(self, root: TreeNode, k: int) -> int:
+        # LETS DO INORDER THIS TIME. 
+        found = None
+        count = 0
+
+        def inorder(node):
+            nonlocal found
+            nonlocal count
+            
+            # Ok found left side. 
+            if node is None:
+                return 
+            
+            inorder(node.left)
+            count += 1
+            if count == k:
+                found = node.val
+                return 
+            inorder(node.right)
+        inorder(root)
+        return found
+    
+    # ITERATION:
+    def kthSmallest(self, root, k):
+        stack = []
+        while True:
+            while root:
+                stack.append(root)
+                root = root.left
+            root = stack.pop()
+            k -= 1
+            if not k:
+                return root.val
+            root = root.right
+    
+    What if the BST is modified (insert/delete operations) 
+    often and you need to find the kth smallest frequently?
+    How would you optimize the kthSmallest routine?
+    
+    Seems like a database description, isn't it? Let's use here 
+    the same logic as for LRU cache design, and combine an 
+    indexing structure (we could keep BST here) with a double linked list.
+    Such a structure would provide:
+
+    O(H) time for the insert and delete.
+    O(K) for the search of kth smallest.
+
+    You could also add a count field to each node but this would make performance:
+    It's not O(log n). O(h) instead. h is the height of the BST.
 
 
 0.3) Granularity === Optimization. Break up variables and track everything. Structurd things like
@@ -1738,7 +1831,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
       However, there may not be root nodes!
 
 2.575) REMEMBER CYCLE DETECING ON DIRECTED GRAPH ALWAYS NEEDS AT LEAST 3 COLORS!!!
-     WHILE ON UNDIRECTED YOU COULD JUST USE A VISTED SET. 
+     WHILE ON UNDIRECTED YOU COULD JUST USE A VISTED SET. (OR FOR DIRECTED,
+     JUST REMEMBER TO POP THE PROCESSED ELEMENT FROM THE VISITED PATH, SO THAT A 
+     DIFFERENT DIRECTED PATH CAN VISIT THE PROCESSED ELEMENT)
      
 
 
