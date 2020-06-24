@@ -186,6 +186,83 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     the partitions are and merging accordingly.
 
 
+-17.9)  For the GREEDY CANDY PROBLEM. You are given constraints to respect. 
+        The constraints are hard unless you break them up!
+        ALSO try to understand the problem before you start:
+        review it in most important problems.
+        
+        There are N children standing in a line. Each child is assigned a rating value.
+
+        You are giving candies to these children subjected to the following requirements:
+
+        Each child must have at least one candy.
+        Children with a higher rating get more candies than their neighbors.
+        What is the minimum candies you must give?
+        Input: [1,0,2] 
+        Output: 2, 1, 2  -> 5
+        Input: [1,2,2]
+        Output: 1, 2, 1 -> 4
+
+        def candy(self, ratings):
+            if not ratings:
+                return 0
+
+            n = len(ratings)
+            candy = [1] * n
+            for i in range(1, n):
+                if ratings[i] > ratings[i - 1]:
+                    candy[i] = candy[i - 1] + 1
+                
+            for i in range(n - 2, -1, -1):
+                if ratings[i] > ratings[i + 1] and candy[i] <= candy[i + 1]:
+                    candy[i] = candy[i + 1] + 1
+
+            return sum(candy)
+
+        You can also solve with constant space by looking at rising and falling slopes
+        class Solution:
+            def candy(self, ratings):
+                if not ratings:
+                    return 0
+
+                count = up = down = 1
+
+                for i in range(1, len(ratings)):
+                    if ratings[i] >= ratings[i - 1]:
+                        if down > 1:
+                            count -= min(down, up) - 1
+                            up, down = 1, 1
+                        up = ratings[i] == ratings[i - 1] or up + 1
+                        count += up
+                    else:
+                        down += 1
+                        count += down
+
+                if down > 1:
+                    count -= min(down, up) - 1
+
+                return count
+
+-17.8)  BE SMART ABOUT GRAPH ROOT FINDING, AND ITERATING:
+        
+        128. Longest Consecutive Sequence
+        
+        Given an unsorted array of integers, find the length of the 
+        longest consecutive elements sequence.
+        Your algorithm should run in O(n) complexity.
+
+
+        def longestConsecutive(self, nums):
+            nums = set(nums)
+            best = 0
+            for x in nums:
+                if x - 1 not in nums:
+                    y = x + 1
+                    while y in nums:
+                        y += 1
+                    best = max(best, y - x)
+            return best
+
 -17.5) IMPLEMENTED QUICK SORT FOR LINKED LISTS:
             
     # USE MORE DUMMY NODES TO SEPERATE CONCERNS, AND REDUCE MISTAKES
