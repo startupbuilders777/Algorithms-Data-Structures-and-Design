@@ -72,7 +72,7 @@ TOPICS TO UNDERSTAND:
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
--19) Hill finding part 1: Best time to buy and sell stock I
+-20) Hill finding part 1: Best time to buy and sell stock I
     def maxProfit(self, prices: List[int]) -> int:
         if not prices:
             return 0
@@ -97,6 +97,72 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         }
         return maxSoFar;
     }
+
+
+-19)VISULIZING PROBLEMS, GET GEOMETRIC UNDERSTANDING OF TEST CASES, AND DO NOT 
+    RUSHING THE ALGORITHM DESIGN PHASE. TEST YOUR ALGO ON TEST CASES BEFORE WRITING. 
+    ESP IF YOU ARE UNSURE!!
+
+    BEST TIME TO BUY AND SELL STOCK 2
+    ALWAYS TRY TO TEST YOUR ALGORITHM AGAINST TEST CASES!!!! for UNDERSTANDING
+    before coding out!! YOUR ALGORITHM WILL BE INCORRECT SOMETIMES. 
+    ALSO think of invarients that should be true, and dont break invarients you invent. 
+     
+    When you design an algo, make sure you understand 
+    all the details of algo before you code it out. It may look like a hill finder, 
+    but is actually a RIEMAN SUM INTEGRAL algorithm!! 
+    Like with this qustion which you
+    messed up the first time, doing. correct soln under it. 
+
+    Say you have an array prices for which the ith element is the price of a given stock on day i.
+    Design an algorithm to find the maximum profit. You may complete as many transactions as you like
+
+    class Solution:
+        def maxProfitWRONG(self, prices: List[int]) -> int:
+            '''
+            IF YOU WERE SMART, YOU WOULD realized you have to consider 
+            every peak and valley to create a profit value. And this realization
+            comes from playing around with test cases and writing out problem ideas,
+            and then testing problem ideas. 
+            '''
+
+            i = 0
+            buyPrice = None
+            sellPrice = None            
+            profit = 0
+
+            while i < len(prices):
+                if buyPrice is None:
+                    buyPrice = prices[i]
+                elif prices[i] < buyPrice:
+                    if sellPrice:
+                        profit += (sellPrice - buyPrice)                    
+                    buyPrice = prices[i]
+                    sellPrice = None
+                else:
+                    if not sellPrice:
+                        sellPrice = prices[i]
+                    elif sellPrice < prices[i]:
+                        sellPrice = prices[i]
+                i += 1
+            if buyPrice and sellPrice:
+                profit += (sellPrice - buyPrice)
+            return profit
+        
+        def maxProfit(self, prices: List[int]) -> int:
+                # CORRECT WAY WITH INTEGRAL SUM INSTEAD OF HILL FINDING
+                profit = 0
+                prev = prices[0]
+                for i in range(1, len(prices)):
+                    if prices[i] > prev:
+                        profit += (prices[i] - prev)
+                    prev = prices[i]
+                return profit
+
+
+
+
+
 
 
 -18) Sorting algorithms and true space complexity. 

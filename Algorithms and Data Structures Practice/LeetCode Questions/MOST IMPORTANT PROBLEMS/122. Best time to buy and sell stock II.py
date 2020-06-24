@@ -29,7 +29,22 @@ Explanation: In this case, no transaction is done, i.e. max profit = 0.
 
 
 class Solution(object):
-    def maxProfitSolution1(self, prices):
+    
+    # EASY WAY TO DO IT
+    def maxProfitSolution1(self, prices: List[int]) -> int:
+        # actually we just need differences, 
+        # so that we can do an integral
+        # that captures the profit. 
+        profit = 0
+        prev = prices[0]
+        for i in range(1, len(prices)):
+            if prices[i] > prev:
+                profit += (prices[i] - prev)
+            prev = prices[i]
+        return profit
+    
+    # SECOND WAY TO DO IT
+    def maxProfitSolution2(self, prices):
         """
         :type prices: List[int]
         :rtype: int
@@ -83,7 +98,7 @@ class Solution(object):
         The graph corresponding to this array is:
         
         class Solution {
-    public int maxProfit(int[] prices) {
+            public int maxProfit(int[] prices) {
                 int maxprofit = 0;
                 for (int i = 1; i < prices.length; i++) {
                     if (prices[i] > prices[i - 1])

@@ -21,6 +21,48 @@ Explanation: The answer is "wke", with the length of 3.
 Seen this question in a real interview before?  YesNo
 
 '''
+# My OTHER ACCEPTED SOLUTION
+from collections import defaultdict
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        # sliding window,      
+        d = defaultdict(int)
+        
+        i = 0
+        j = 0
+        
+        m = 0
+        expand = True
+        removeChar = None
+        
+        while j < len(s):        
+            if expand:     
+                c = s[j]            
+                if d[c] == 0:
+                    d[c] = 1
+                    m = max(m, len(d))
+                    j += 1
+                else:
+                    # we broke it 
+                    expand = False 
+                    removeChar = c # char we have to find and remove
+                    # dont increment j bc we havent processed.                 
+            elif i <= j: 
+                c = s[i]
+                d[c] -= 1
+                
+                # Delete key so we can take len(d) in our max!
+                if d[c] == 0:
+                    del d[c]
+                    
+                if c == removeChar:
+                    expand = True
+                i += 1
+                
+            else:
+                expand = True
+        return m
+        
 
 # My accepted solution
 
@@ -31,7 +73,8 @@ class Solution:
         :rtype: int
         """
         
-        # ok go from left to right, start adding characters, and keeping a set of all character currently in the substring => actually a map
+        # ok go from left to right, start adding characters, and 
+        # keeping a set of all character currently in the substring => actually a map
         # from character to index location in string. 
         # if you find a character that is in the current substring, delete characters from the front until that character is gone. 
         # determing how many to remove using the map, and the index of the found character.
