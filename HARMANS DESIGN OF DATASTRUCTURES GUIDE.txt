@@ -22,6 +22,125 @@ Block Cut Trees
 Fenwick Tree
 
 
+LOOOK AT CS240 DATASTRUCTURES NOTES IN FOLDER AND WRITE NOTES HERE FOR 
+HASHING
+AVL Trees
+B TREES
+TRIES, COMPRESSED TRIES (PATRICIA TRIES)
+
+
+##################################################################################
+Trie Implementation
+
+This data structure is pretty useful for storing large databases of words. 
+It provides linear time search and linear time insertion into the pool of words.
+
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.leaf = False
+        
+class Trie(object):
+ 
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = TrieNode()
+         
+ 
+    def insert(self, word):
+        """
+        Inserts a word into the trie.
+        :type word: str
+        :rtype: void
+        """
+        root = self.root
+        for c in word:
+            if c not in root.children:
+                root.children[c] = TrieNode()
+            root = root.children[c]
+        root.leaf = True
+
+    def search(self, word):
+        """
+        Returns if the word is in the trie.
+        :type word: str
+        :rtype: bool
+        """
+        root = self.root
+        for c in word:
+            if c not in root.children:
+                return False
+            root = root.children[c]
+        return root.leaf
+         
+ 
+    def startsWith(self, prefix):
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        :type prefix: str
+        :rtype: bool
+        """
+        root = self.root
+        for c in prefix:
+            if c not in root.children:
+                return False
+            root = root.children[c]
+        return True
+
+##############################################################################
+
+TODO IMPLEMENT IN PYTHON
+COMPRESSED TRIES (PATRICIA TRIES)
+
+Compressed Tries (Patricia Tries)
+Patricia: Practical Algorithm To Retrieve Information Coded in
+Alphanumeric
+Introduced by Morrison (1968)
+Reduces storage requirement: eliminate unflagged nodes with only
+one child
+Every path of one-child unflagged nodes is compressed to a single
+edge
+Each node stores an index indicating the next bit to be tested during
+a search (index= 0 for the first bit, index= 1 for the second bit, etc)
+A compressed trie storing n keys always has at most n − 1 internal
+(non-leaf) node
+
+Each node stores an index indicating the next bit to be tested during
+a search (Look at CS240 note for visualization) AND a key, which is the completed word for that node 
+from the dictionary of words the trie is generated from 
+
+
+Search(x):
+    Follow the proper path from the root down in the tree to a leaf
+    If search ends in an unflagged node, it is unsuccessful
+    If search ends in a flagged node, we need to check if the key stored is
+    indeed x (because we are skipping checks, and checking random indexes, so we store 
+    in each node of the trie, the complete word for that leaf.)
+
+Delete(x):
+    Perform Search(x)
+    if search ends in an internal node, then
+        if the node has two children, then unflag the node and delete the key
+        else delete the node and make his only child, the child of its parent
+    if search ends in a leaf, then delete the leaf and
+    if its parent is unflagged, then delete the parent
+
+Insert(x):
+    Perform Search(x)
+    -> If the search ends at a leaf L with key y , compare x against y .
+    ->If y is a prefix of x, add a child to y containing x.
+    ->Else, determine the first index i where they disagree and create a new
+        node N with index i.
+        Insert N along the path from the root to L so that the parent of N has
+        index < i and one child of N is either L or an existing node on the path
+        from the root to L that has index > i.
+        The other child of N will be a new leaf node containing x.
+    ->If the search ends at an internal node, we find the key corresponding to
+    that internal node and proceed in a similar way to the previous case.
+
+
 ##################################################################################
 ##################################################################################
 ##################################################################################
@@ -929,79 +1048,6 @@ COOL NOTES: Z ALGORITHM FOR STRINGS:
 
 
 
-
-
-
-
-
-    
-
-
-
-
-
-
-##################################################################################
-Trie Implementation
-
-This data structure is pretty useful for storing large databases of words. 
-It provides linear time search and linear time insertion into the pool of words.
-
-class TrieNode:
-    def __init__(self):
-        self.children = {}
-        self.leaf = False
-        
-class Trie(object):
- 
-    def __init__(self):
-        """
-        Initialize your data structure here.
-        """
-        self.root = TrieNode()
-         
- 
-    def insert(self, word):
-        """
-        Inserts a word into the trie.
-        :type word: str
-        :rtype: void
-        """
-        root = self.root
-        for c in word:
-            if c not in root.children:
-                root.children[c] = TrieNode()
-            root = root.children[c]
-        root.leaf = True
-
-    def search(self, word):
-        """
-        Returns if the word is in the trie.
-        :type word: str
-        :rtype: bool
-        """
-        root = self.root
-        for c in word:
-            if c not in root.children:
-                return False
-            root = root.children[c]
-        return root.leaf
-         
- 
-    def startsWith(self, prefix):
-        """
-        Returns if there is any word in the trie that starts with the given prefix.
-        :type prefix: str
-        :rtype: bool
-        """
-        root = self.root
-        for c in prefix:
-            if c not in root.children:
-                return False
-            root = root.children[c]
-        return True
-
-
 ###################################################################################################
 Segment trees are soooo cool. 
 
@@ -1691,7 +1737,6 @@ How to handle Collisions?
 There are mainly two methods to handle collision:
 1) Separate Chaining
 2) Open Addressing
-
 
 Seperate Chaining >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
 
