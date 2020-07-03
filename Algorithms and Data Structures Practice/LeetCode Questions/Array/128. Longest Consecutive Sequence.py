@@ -94,7 +94,7 @@ class Solution:
         return longest_streak
 
 # BEST SOLUTION
-# WALK THE STREAK:
+# WALK THE STREAK: BUT IT DOESNT WALK FROM ROOTS!
 
 def longestConsecutive(self, nums):
     nums = set(nums)

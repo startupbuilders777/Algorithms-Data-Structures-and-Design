@@ -9,6 +9,12 @@ Scale each component in HLD depending on NFR - 10 mins
 Verify your design / Discuss trade-offs of your design with interviewer (important) - 5 mins
 Make your own notes on below items which you can refer to the day before each interview as a quick reference.
 
+ALSO READ: https://github.com/donnemartin/system-design-primer#system-design-topics-start-here
+
+Virual onsite 5: System Design - Usual system design for Google scale image storage. 
+But expect to go deep with numbers (throughput, latency, storage...). 
+The interviewer went very deep with how to decide the number of servers, 
+database throughput capacity, cache memory and so on. A lot of discussion on tradeoffs.
 
 ###########################################
 From https://github.com/jwasham/coding-interview-university#data-structures

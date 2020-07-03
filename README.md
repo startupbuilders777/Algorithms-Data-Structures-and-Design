@@ -72,6 +72,80 @@ TOPICS TO UNDERSTAND:
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
+-21) Using 3 pointers Algorithm  + Abusing LOOP invariants 
+     THE DUTCH PARTITIONING ALGORITHM WITH 3 POINTERS. 
+    The trick is to move the MIDDLE POINTER FROM LEFT TO RIGHT AND 
+    use the left and right pointers to delimit the correctly processed sequence!
+
+    Otherwise, try moving the left pointer right to left or the left pointer, 
+    or try adding another pointer. Add as many pointers until the problem seems simple 
+    and we have untangled all the SEPERATE CONCERNS. 
+
+    Given an array with n objects colored red, white or blue, 
+    sort them in-place so that objects of the same color 
+    are adjacent, with the colors in the order red, white and blue.
+
+    Here, we will use the integers 0, 1, and 2 to represent the 
+    color red, white, and blue respectively.
+
+    Note: One pass algorithm with constant space only. 
+
+    Example:
+    Input: [2,0,2,1,1,0]
+    Output: [0,0,1,1,2,2]    
+
+
+    def sortColors(self, nums: List[int]) -> None:
+        i = 0
+        l = 0         
+        j = len(nums) - 1
+        
+        while l != len(nums):
+            if nums[l] == 1:
+                l += 1
+            elif nums[l] == 0 and i == l:
+                l += 1
+            elif nums[l] == 0:
+                nums[l], nums[i] = nums[i], nums[l]
+                i += 1 
+            elif nums[l] == 2 and l >= j:
+                l += 1
+            elif nums[l] == 2:
+                nums[l], nums[j] = nums[j], nums[l]
+                j -= 1
+        return nums
+
+
+    INVARIANTS ABUSE FOR SIMPLIFICATION: 
+
+    nums[0:red] = 0, nums[red:white] = 1, nums[white:blue + 1] = unclassified, 
+    nums[blue + 1:] = 2.
+    The code is written so that either 
+    (red < white and nums[red] == 1) or (red == white) at all times.
+    Think about the first time when white separates from red. 
+    That only happens when nums[white] == 1, 
+    so after the white += 1, 
+    we have nums[red] == 1, and notice that nums[red] 
+    will continue to be 1 as long as 
+    red != white. This is because red only gets 
+    incremented in the first case 
+    (nums[white] == 0), so we know that we are swapping nums[red] == 1 with nums[white] == 0.
+
+ 
+    def sortColors(self, nums):
+        red, white, blue = 0, 0, len(nums)-1
+        while white <= blue:
+            if nums[white] == 0:
+                nums[red], nums[white] = nums[white], nums[red]
+                white += 1
+                red += 1
+            elif nums[white] == 1:
+                white += 1
+            else:
+                nums[white], nums[blue] = nums[blue], nums[white]
+                blue -= 1
+
+
 -20) Hill finding part 1: Best time to buy and sell stock I
     def maxProfit(self, prices: List[int]) -> int:
         if not prices:
@@ -100,7 +174,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
 -19)VISULIZING PROBLEMS, GET GEOMETRIC UNDERSTANDING OF TEST CASES, AND DO NOT 
-    RUSHING THE ALGORITHM DESIGN PHASE. TEST YOUR ALGO ON TEST CASES BEFORE WRITING. 
+    RUSH THE ALGORITHM DESIGN PHASE. TEST YOUR ALGO ON TEST CASES BEFORE WRITING. 
     ESP IF YOU ARE UNSURE!!
 
     BEST TIME TO BUY AND SELL STOCK 2
@@ -161,10 +235,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
 
-
-
-
-
 -18) Sorting algorithms and true space complexity. 
 
     Quicksort: For quicksort, your intuition about recursion requiring O(log(n)) space is correct. 
@@ -191,9 +261,11 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         ALSO try to understand the problem before you start:
         review it in most important problems.
         
-        There are N children standing in a line. Each child is assigned a rating value.
+        There are N children standing in a line. 
+        Each child is assigned a rating value.
 
-        You are giving candies to these children subjected to the following requirements:
+        You are giving candies to these children 
+        subjected to the following requirements:
 
         Each child must have at least one candy.
         Children with a higher rating get more candies than their neighbors.
@@ -219,7 +291,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
             return sum(candy)
 
-        You can also solve with constant space by looking at rising and falling slopes
+        You can also solve with constant space by 
+        looking at rising and falling slopes
+        
         class Solution:
             def candy(self, ratings):
                 if not ratings:
@@ -421,10 +495,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     as arr[i] = arr[i] + arr[j]*maxval. Now arr[i]%maxval 
     will give the original value of arr[i] and arr[i]/maxval 
     will give the value of arr[j].
-
-
-
-
 
 
 -16) Modified Bin Search: Find Minimum in Rotated Sorted Array
@@ -4207,227 +4277,8 @@ COOL Notes PART 1.5: DP with bitmasking example:
         //final answer
         System.out.println(dp[(1 << n) -1]);
 
-################################################################
-############################################################
-########################################################
 
-COOL NOTES PART 1.6 => DIGIT DP
-
-    How many numbers x are there in the range a to b, where the digit d occurs exactly k times in x? 
-    (can solve with combinatorics too.)
-
-
-    Building a sequence of digits
-        Let’s consider the number as a sequence of digits. Let’s name the sequence sq. 
-        Initially sq is empty. We’ll try to add new digits from left to right to build the sequence. 
-        n each recursive call we’ll place a digit in our current position and 
-        will call recursively to add a digit in the next position. 
-
-    Information we need to place a digit at the current position
-        Let’s say during the building of the sequence, currently we are at position pos.
-        We have already placed some digits in position from 1 to pos-1. So now we are trying to 
-        place a digit at current position pos. If we knew the whole sequence 
-        we have build so far till position pos-1 then we could 
-        easily find out which digits we can place now. But how?
-
-        You can see that, in the sequence sq the left most digit is actually the most significant digit. 
-        And the significance get decreased from left to right. So if 
-        there exist any position t (1<=t<pos) where sq[t] < b[t] then we can 
-        place any digit in our current position. Because the sequence has 
-        already become smaller than b no matter which digit we place in the later positions. 
-        Note, b[t] means the digit at position t at number b.
-
-        But if there was no t that satisfy that condition then at position pos, 
-        we can’t place any digit greater than b[pos]. 
-        Because then the number will become larger than b.
-        
-        using an extra parameter f1(true/false) in our function we can handle that. 
-        Whenever we place a digit at position t which is smaller than b[t] 
-        we can make f1 = 1 for the next recursive call. So whenever we are at any position later, 
-        we don’t actually need the whole sequence. Using the value of f1 
-        we can know if the sequence have already become smaller than b.
-
-    Extra condition
-        digit d will have to occur exactly k times in sequence sq. We need another parameter cnt. 
-        cnt is basically the number of times we have placed digit d so far in 
-        our sequence sq. Whenever we place digit d in our sequence sq we just 
-        increment cnt in our next recursive call.
-
-        In the base case when we have built the whole sequence we just need to check if 
-        cnt is equal to k. If it is then we return 1, 
-        otherwise we return 0.
-
-    Final DP States
-        If we have understood everything so far then it's easy to see that we need 
-        total three states for DP memoization. At which position we are, 
-        if the number has already become smaller than b and the frequency of digit d till now.
-
-    Solve for range (a to b)
-        Using the above approach we can find the total valid numbers in the range 0 to b. 
-        But in the original problem the range was actually a to b. How to handle that? 
-        Well, first we can find the result for range 0 to b and then just 
-        remove the result for range 0 to a-1. Then what we 
-        are left off is actually the result from range a to b.
-
-    How to solve for range a to b in a single recursion?
-        In the above approach we used an extra parameter f1 which helped us to make sure 
-        the sequence is not getting larger than b. Can’t we do the similar thing so that 
-        the sequence does not become smaller than a? Yes of course. For that, 
-        we need to maintain an extra parameter f2 which will say if there 
-        exist a position t such that sq[t] > a[t]. Depending on the value of 
-        f2 we can select the digits in our current position so that the sequence 
-        does not become smaller than a. Note: We also have to 
-        maintain the condition for f1 parallely so that the sequence remains valid.
-
-        #include <bits/stdc++.h>
-        using namespace std;
-
-        vector<int> num;
-        int a, b, d, k;
-        int DP[12][12][2];
-        /// DP[p][c][f] = Number of valid numbers <= b from this state
-        /// p = current position from left side (zero based)
-        /// c = number of times we have placed the digit d so far
-        /// f = the number we are building has already become smaller than b? [0 = no, 1 = yes]
-
-        int call(int pos, int cnt, int f){
-            if(cnt > k) return 0;
-
-            if(pos == num.size()){
-                if(cnt == k) return 1;
-                return 0;
-            }
-
-            if(DP[pos][cnt][f] != -1) return DP[pos][cnt][f];
-            int res = 0;
-
-            int LMT;
-
-            if(f == 0){
-                /// Digits we placed so far matches with the prefix of b
-                /// So if we place any digit > num[pos] in the current position, then the number will become greater than b
-                LMT = num[pos];
-            } else {
-                /// The number has already become smaller than b. We can place any digit now.
-                LMT = 9;
-            }
-
-            /// Try to place all the valid digits such that the number doesn't exceed b
-            for(int dgt = 0; dgt<=LMT; dgt++){
-                int nf = f;
-                int ncnt = cnt;
-                if(f == 0 && dgt < LMT) nf = 1; /// The number is getting smaller at this position
-                if(dgt == d) ncnt++;
-                if(ncnt <= k) res += call(pos+1, ncnt, nf);
-            }
-
-            return DP[pos][cnt][f] = res;
-        }
-
-        int solve(int b){
-            num.clear();
-            while(b>0){
-                num.push_back(b%10);
-                b/=10;
-            }
-            reverse(num.begin(), num.end());
-            /// Stored all the digits of b in num for simplicity
-
-            memset(DP, -1, sizeof(DP));
-            int res = call(0, 0, 0);
-            return res;
-        }
-
-        int main () {
-
-            cin >> a >> b >> d >> k;
-            int res = solve(b) - solve(a-1);
-            cout << res << endl;
-
-            return 0;
-        }
-
-
-
-#####################################################################################
-####################################################################################3#3
-COOL NOTES PART 2: DYANMIC PROGRAMMING WITH DP, CONVEX HULLS, KNUTH OPTIMIZATION
-
-
-10.6) Divide and Conquer DP:
-
-        Divide and Conquer is a dynamic programming optimization.
-
-        Preconditions
-        Some dynamic programming problems have a recurrence of this form:
-        dp(i,j) = min k≤j {dp(i−1,k)+C(k,j)}
-        where C(k,j) is some cost function.
-
-        Say 1≤i≤n and 1≤j≤m, and evaluating C takes O(1) time. 
-        
-        Straightforward evaluation of the above recurrence is O(nm^2). 
-        
-        There are n×m states, and m transitions for each state.
-
-        Let opt(i,j) be the value of k that minimizes the above expression. 
-        If opt(i,j) ≤ opt(i,j+1) for all i,j, then we can apply divide-and-conquer DP. 
-        This known as the monotonicity condition. 
-        The optimal "splitting point" for a fixed i increases as j increases.
-
-        This lets us solve for all states more efficiently. 
-        Say we compute opt(i,j) for some fixed i and j. Then for any j′<j we 
-        know that opt(i,j′) ≤ opt(i,j). 
-
-        This means when computing opt(i,j′), we don't have to consider as many splitting points!
-
-        To minimize the runtime, we apply the idea behind divide and conquer. 
-        First, compute opt(i,n/2). Then, compute opt(i,n/4), knowing that it is less 
-        than or equal to opt(i,n/2) and opt(i,3n/4) knowing that it is greater than or 
-        equal to opt(i,n/2). By recursively keeping track of the lower and upper bounds on opt, 
-        we reach a O(mnlogn) runtime. Each possible value of opt(i,j) only appears in logn different nodes.
-
-        Note that it doesn't matter how "balanced" opt(i,j) is. Across a fixed level,
-        each value of k is used at most twice, and there are at most logn levels.
-
-        Generic implementation
-        Even though implementation varies based on problem, here's a fairly generic template. 
-        The function compute computes one row i of states dp_cur, given the previous row i−1 of states dp_before. 
-        It has to be called with compute(0, n-1, 0, n-1).
-
-        int n;
-        long long C(int i, int j);
-        vector<long long> dp_before(n), dp_cur(n);
-
-        // compute dp_cur[l], ... dp_cur[r] (inclusive)
-        void compute(int l, int r, int optl, int optr)
-        {
-            if (l > r)
-                return;
-            int mid = (l + r) >> 1;
-
-            pair<long long, int> best = {INF, -1};
-
-            for (int k = optl; k <= min(mid, optr); k++) {
-                best = min(best, {dp_before[k] + C(k, mid), k});
-            }
-
-            dp_cur[mid] = best.first;
-            int opt = best.second;
-
-            compute(l, mid - 1, optl, opt);
-            compute(mid + 1, r, opt, optr);
-        }
-
-        Things to look out for
-        The greatest difficulty with Divide and Conquer DP problems is proving the monotonicity of opt. 
-        Many Divide and Conquer DP problems can also be solved with the Convex Hull 
-        trick or vice-versa. It is useful to know and understand both!
-
-
-
-
-
-#############################################################################
+#######################################################
 #######################################################
 COOL NOTES PART -4: Graph Algorithms
 
@@ -4663,14 +4514,11 @@ COOL NOTES PART -2: HOW TO USE HEAP DICTIONARIES WITH DECREASE KEY USING HEAPQ!
 
 
 #################################################################################3
-
-
-
 #######################################################################################
 #######################################################################################
 COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
   
-    BINARY SEARCH
+    BINARY SEARCH and TERNARY SEARCH
         #Recursive
         def binarySearch (arr, l, r, x): 
         
@@ -5123,136 +4971,65 @@ COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
                     k += 1
             return x 
 
+    QUICK SELECT IMPLEMENTATION:
 
-    MEDIAN OF MEDIANS (THIS IS ALSO KNOWN AS QUICK SELECT, finds the ith smallest element in A):  
-
-        The median-of-medians algorithm is a deterministic linear-time selection algorithm. 
-        The algorithm works by dividing a list into sublists and then determines 
-        the approximate median in each of the sublists. Then, it takes those medians 
-        and puts them into a list and finds the median of that list. It uses that median 
-        value as a pivot and compares other elements of the list against the pivot. 
-        If an element is less than the pivot value, the element is placed to the left 
-        of the pivot, and if the element has a value greater than the pivot, it is 
-        placed to the right. The algorithm recurses on the list, honing in on the value it is looking for.
-
-        PYTHON CODE:
-
-        def median_of_medians(A, i):
-
-            #divide A into sublists of len 5
-            sublists = [A[j:j+5] for j in range(0, len(A), 5)]
-            medians = [sorted(sublist)[len(sublist)/2] for sublist in sublists]
-            if len(medians) <= 5:
-                pivot = sorted(medians)[len(medians)/2]
-            else:
-                #the pivot is the median of the medians
-                pivot = median_of_medians(medians, len(medians)/2)
-
-            #partitioning step
-            low = [j for j in A if j < pivot]
-            high = [j for j in A if j > pivot]
-
-            k = len(low)
-            if i < k:
-                return median_of_medians(low,i)
-            elif i > k:
-                return median_of_medians(high,i-k-1)
-            else: #pivot = k
-                return pivot
-
-
-    MEDIAN OF MEDIANS(QUICKSELECT),  with constant space PARTITION FUNCTION.:
-
-        function partition(list, left, right, pivotIndex)
-            pivotValue := list[pivotIndex]
-            swap list[pivotIndex] and list[right]  // Move pivot to end
-            storeIndex := left
-            for i from left to right-1
-                if list[i] < pivotValue
-                    swap list[storeIndex] and list[i]
-                    increment storeIndex
-            swap list[right] and list[storeIndex]  // Move pivot to its final place
-            return storeIndex
-
-        // Returns the k-th smallest element of list within left..right inclusive
-        // (i.e. left <= k <= right).
-        // The search space within the array is changing for each round - but the list
-        // is still the same size. Thus, k does not need to be updated with each round.
-        function select(list, left, right, k)
-            if left = right        // If the list contains only one element,
-                return list[left]  // return that element
-            pivotIndex  := ...     // select a pivotIndex between left and right,
-                                    // e.g., left + floor(rand() % (right - left + 1))
-            pivotIndex  := partition(list, left, right, pivotIndex)
-            // The pivot is in its final sorted position
-            if k = pivotIndex
-                return list[k]
-            else if k < pivotIndex
-                return select(list, left, pivotIndex - 1, k)
-            else
-                return select(list, pivotIndex + 1, right, k)
+        # Python3 program of Quick Select 
+    
+        # Standard partition process of QuickSort().  
+        # It considers the last element as pivot  
+        # and moves all smaller element to left of  
+        # it and greater elements to right 
+        def partition(arr, l, r): 
+            
+            x = arr[r] 
+            i = l 
+            for j in range(l, r): 
+                
+                if arr[j] <= x: 
+                    arr[i], arr[j] = arr[j], arr[i] 
+                    i += 1
+                    
+            arr[i], arr[r] = arr[r], arr[i] 
+            return i 
         
-    MEDIAN OF MEDIANS 2 (FULL Implementation)
-
-        def median_of_medians(arr):
-            if len(arr) < 6:
-                arr = sorted(arr)
-                n = len(arr)
-                return arr[n/2]
-            else:
-                list_of_lists = []
-                for i in range(0,len(arr), 5):
-                    if i + 5 <= len(arr):
-                        list_of_lists.append(arr[i:i+5])
-                    else:
-                        list_of_lists.append(arr[i:])
-                medians = []
-                for l in list_of_lists:
-                    medians.append(sorted(l)[len(l)/2])
-                return select_k_smallest(medians, len(medians)/2)
+        # finds the kth position (of the sorted array)  
+        # in a given unsorted array i.e this function  
+        # can be used to find both kth largest and  
+        # kth smallest element in the array.  
+        # ASSUMPTION: all elements in arr[] are distinct 
+        def kthSmallest(arr, l, r, k): 
         
-        def median_partition(arr, left, right, num):
-            random_index = arr.index(num)
-            arr[left], arr[random_index] = arr[random_index], arr[left]
-            pivot = arr[left]
-            orig_left = left
-            left += 1
-            # Do the switching that is required.
-            while True:
-                while left <= right and arr[left] <= pivot:
-                    left += 1
-                while right >= left and arr[right] >= pivot:
-                    right -= 1
-                if right <= left:
-                    break
-                arr[left], arr[right] = arr[right], arr[left]
-            arr[orig_left], arr[right] = arr[right], arr[orig_left]
-            return right
+            # if k is smaller than number of 
+            # elements in array 
+            if (k > 0 and k <= r - l + 1): 
         
-        def select_k_smallest(arr, k):
-            if k > len(arr):
-                return None
-            mid = median_of_medians(arr)
-            index = median_partition(arr, 0, len(arr) - 1, mid)
-            if index == k - 1:
-                return mid
-            elif index > k - 1:
-                return select_k_smallest(arr[:index], k)
-            else:
-                return select_k_smallest(arr[index + 1:], k - (index + 1))
+                # Partition the array around last 
+                # element and get position of pivot 
+                # element in sorted array 
+                index = partition(arr, l, r) 
         
-        def select_k_largest(arr, k):
-            if k > len(arr):
-                return None
-            mid = median_of_medians(arr)
-            index = median_partition(arr, 0, len(arr) - 1, mid)
-            if index == len(arr) - k:
-                return mid
-            elif index > len(arr) - k:
-                return select_k_largest(arr[:index], k - (len(arr) - index))
-            else:
-                return select_k_largest(arr[index + 1:], k)
-
+                # if position is same as k 
+                if (index - l == k - 1): 
+                    return arr[index] 
+        
+                # If position is more, recur  
+                # for left subarray  
+                if (index - l > k - 1): 
+                    return kthSmallest(arr, l, index - 1, k) 
+        
+                # Else recur for right subarray  
+                return kthSmallest(arr, index + 1, r,  
+                                    k - index + l - 1) 
+            return INT_MAX 
+        
+        # Driver Code 
+        arr = [ 10, 4, 5, 8, 6, 11, 26 ] 
+        n = len(arr) 
+        k = 3
+        print("K-th smallest element is ", end = "") 
+        print(kthSmallest(arr, 0, n - 1, k)) 
+        
+        # This code is contributed by Muskan Kalra. 
 
 
 #################################################################################
@@ -5511,523 +5288,9 @@ GRAPH TRAVERSAL ALL TYPES:
         For the recursive version, replace the call to recursive_helper(node) with a loop 
         that calls the helper function on every node in the graph if it's not yet in seen.
 
-#########################################################################
-########################################################################3
-Z algorithm (https://www.hackerearth.com/practice/algorithms/string-algorithm/z-algorithm/tutorial/)
 
-COOL NOTES: Z ALGORITHM FOR STRINGS:
-
-
-    The Z-function for a string S of length N is an array of length N 
-    where the i th element is equal to the greatest number of 
-    characters starting from the position i 
-    that coincide with the first characters of S.
-
-    In other words, z[i] is the length 
-    of the longest common prefix between S 
-    and the suffix of S starting at i. We assume 0-based indexes; 
-    that is, the first character of S has index 0 and the last one has index N-1.
-
-    The first element of Z-functions, z[0], is generally not 
-    well-defined. In this article we will assume it is zero.
-
-    z [ 0 ] = 0
-
-    This article presents an algorithm for calculating the Z-function 
-    in O(N) time, as well as various of its applications.
-
-
-    Examples
-
-    For example, here are the values of the Z-function computed for different strings:
-
-    s = 'aaaaa'
-    Z[0]	Z[1]	Z[2]	Z[3]	Z[4]
-    0	      4	      3	      2	      1
-
-    s = 'aaabaab'
-    Z[0]	Z[1]	Z[2]	Z[3]	Z[4]	Z[5]	Z[6]
-    0	      2	      1	      0	      2	      1	      0
-
-    s = 'abacaba'
-    Z[0]	Z[1]	Z[2]	Z[3]	Z[4]	Z[5]	Z[6]
-    0	      0	      1	      0	      3       0	      1
-
-    Trivial algorithm
-
-    The formal definition can be represented in the following elementary implementation.
-
-    vector<int> z_function_trivial(string s) 
-    {
-        int n = (int) s.length();
-        vector<int> z(n);
-        for (int i = 1; i < n; ++i)
-            while (i + z[i] < n && s[z[i]] == s[i + z[i]])
-                ++z[i];
-        return z;
-    }
-
-    We just iterate through every position and update for each one of them, 
-    starting from and incrementing it as long as we do not 
-    find a mismatch (and as long as we do not reach the end of the line).
-
-    Efficient algorithm
-
-    The idea is to maintain an interval [L, R] which is the interval with max R
-    such that [L,R] is prefix substring (substring which is also prefix). 
-
-    Steps for maintaining this interval are as follows – 
-
-    1) If i > R then there is no prefix substring that starts before i and 
-    ends after i, so we reset L and R and compute new [L,R] by comparing 
-    str[0..] to str[i..] and get Z[i] (= R-L+1).
-
-    2) If i <= R then let K = i-L,  now Z[i] >= min(Z[K], R-i+1)  because 
-    str[i..] matches with str[K..] for atleast R-i+1 characters (they are in
-    [L,R] interval which we know is a prefix substring).     
-    Now two sub cases arise – 
-        a) If Z[K] < R-i+1  then there is no prefix substring starting at 
-            str[i] (otherwise Z[K] would be larger)  so  Z[i] = Z[K]  and 
-            interval [L,R] remains same.
-        b) If Z[K] >= R-i+1 then it is possible to extend the [L,R] interval
-            thus we will set L as i and start matching from str[R]  onwards  and
-            get new R then we will update interval [L,R] and calculate Z[i] (=R-L+1).
-
-            
-    Implementation
-    // returns array z[] where z[i] is z-function of s[i]
-    int[] zFucntion(String s) {
-        int n = s.length();
-        int z[] = new int[n];
-        int R = 0;
-        int L = 0;
-        for(int i = 1; i < n; i++) {
-            z[i] = 0;
-            if (R > i) {
-                z[i] = Math.min(R - i, z[i - L]);
-            }
-            while (i + z[i] < n && s.charAt(i+z[i]) == s.charAt(z[i])) {
-                z[i]++;
-            }
-            if (i + z[i] > R) {
-                L = i;
-                R = i + z[i];
-            }
-        }
-        z[0] = n;
-        return z;
-    }
-
-    Complexity
-    Worst case time complexity: Θ(N)
-    Average case time complexity: Θ(N)
-    Best case time complexity: Θ(N)
-    Space complexity: Θ(log N)
-
-    Applications
-
-    Applications of Z algorithms are as follows:
-    Finding all occurrences of the pattern P inside the text T in O(length(T) + length(P))
-    Counting the number of distinct substrings of a string S in O(1)
-    Finding a string T of shortest length such that S can be represented as a concatenation of one or more copies of T
-
-#################################################################################
-#################################################################################
-STRING ALGORITHMS:
-    PLEASE COVER:
-        Boyer moore good character heuristic/bad char heuristic
-        Aho-Corasick Algorithm for Pattern Searching
-        Suffix Tree/Suffix Array
-        Manachars algorithm (https://www.hackerearth.com/practice/algorithms/string-algorithm/manachars-algorithm/tutorial/)
-
-    Rabin Karp
-        So Rabin Karp algorithm needs to calculate 
-        hash values for following strings.
-        1) Pattern itself.
-        2) All the substrings of text of length m.
-
-        Since we need to efficiently calculate hash values for all the substrings 
-        of size m of text, we must have a hash function which has following property.
-        Hash at the next shift must be efficiently computable from the current hash 
-        value and next character in text or we can say hash(txt[s+1 .. s+m]) must 
-        be efficiently computable from hash(txt[s .. s+m-1]) and txt[s+m] i.e., 
-        hash(txt[s+1 .. s+m])= rehash(txt[s+m], hash(txt[s .. s+m-1])) and rehash must be O(1) operation.
-        
-        To do rehashing, we need to take off the most significant digit
-        and add the new least significant digit for in hash value. Rehashing is done using the following formula.
-
-        hash( txt[s+1 .. s+m] ) = ( d ( hash( txt[s .. s+m-1]) – txt[s]*h ) + txt[s + m] ) mod q
-
-        hash( txt[s .. s+m-1] ) : Hash value at shift s.
-        hash( txt[s+1 .. s+m] ) : Hash value at next shift (or shift s+1)
-        d: Number of characters in the alphabet
-        q: A prime number
-        h: d^(m-1)
-
-        How does above expression work?
-
-        This is simple mathematics, we compute decimal value of current window from previous window.
-        For example pattern length is 3 and string is “23456”
-        You compute the value of first window (which is “234”) as 234.
-        How how will you compute value of next window “345”? You will do (234 – 2*100)*10 + 5 and get 345.
-
-
-        # Rabin Karp Algorithm given in CLRS book 
-        # d is the number of characters in the input alphabet 
-        d = 256
-        
-        # pat  -> pattern 
-        # txt  -> text 
-        # q    -> A prime number 
-        
-        def search(pat, txt, q): 
-            M = len(pat) 
-            N = len(txt) 
-            i = 0
-            j = 0
-            p = 0    # hash value for pattern 
-            t = 0    # hash value for txt 
-            h = 1
-        
-            # The value of h would be "pow(d, M-1)%q" 
-            for i in xrange(M-1): 
-                h = (h*d)%q 
-        
-            # Calculate the hash value of pattern and first window 
-            # of text 
-            for i in xrange(M): 
-                p = (d*p + ord(pat[i]))%q 
-                t = (d*t + ord(txt[i]))%q 
-        
-            # Slide the pattern over text one by one 
-            for i in xrange(N-M+1): 
-                # Check the hash values of current window of text and 
-                # pattern if the hash values match then only check 
-                # for characters on by one 
-                if p==t: 
-                    # Check for characters one by one 
-                    for j in xrange(M): 
-                        if txt[i+j] != pat[j]: 
-                            break
-        
-                    j+=1
-                    # if p == t and pat[0...M-1] = txt[i, i+1, ...i+M-1] 
-                    if j==M: 
-                        print "Pattern found at index " + str(i) 
-        
-                # Calculate hash value for next window of text: Remove 
-                # leading digit, add trailing digit 
-                if i < N-M: 
-                    t = (d*(t-ord(txt[i])*h) + ord(txt[i+M]))%q 
-        
-                    # We might get negative values of t, converting it to 
-                    # positive 
-                    if t < 0: 
-                        t = t+q 
-        
-        # Driver program to test the above function 
-        txt = "GEEKS FOR GEEKS"
-        pat = "GEEK"
-        q = 101 # A prime number 
-        search(pat,txt,q) 
-        
-        # This code is contributed by Bhavya Jain 
-
-
-
-    -> Code regex
-
-    isSubstring(), KMP Algorithm
-        
-        A linear time (!) algorithm that solves the string matching
-        problem by preprocessing P in Θ(m) time
-        – Main idea is to skip some comparisons by using the previous
-        comparison result
-        
-        LPS[] that will hold the longest prefix suffix  
-        
-        Uses an auxiliary array π that is defined as the following:
-        – π[i] is the largest integer smaller than i such that P 1 . . . P π[i] is
-        a suffix of P 1 . . . P i
-
-        Examples:
-
-        Pattern: a a a a a
-        LSP    : 0 1 2 3 4
-
-        Pattern: a b a b a b
-        LSP    : 0 0 1 2 3 4
-
-        Pattern: a b a c a b a b
-        LSP    : 0 0 1 0 1 2 3 2
-
-        Pattern: a a a b a a a a a b
-        LSP    : 0 1 2 0 1 2 3 3 3 4
-
-        txt[] = "AAAAABAAABA" 
-        pat[] = "AAAA"
-        lps[] = {0, 1, 2, 3} 
-
-        i = 0, j = 0
-        txt[] = "AAAAABAAABA" 
-        pat[] = "AAAA"
-        txt[i] and pat[j] match, do i++, j++
-
-        i = 1, j = 1
-        txt[] = "AAAAABAAABA" 
-        pat[] = "AAAA"
-        txt[i] and pat[j] match, do i++, j++
-
-        i = 2, j = 2
-        txt[] = "AAAAABAAABA" 
-        pat[] = "AAAA"
-        pat[i] and pat[j] match, do i++, j++
-
-        i = 3, j = 3
-        txt[] = "AAAAABAAABA" 
-        pat[] = "AAAA"
-        txt[i] and pat[j] match, do i++, j++
-
-        i = 4, j = 4
-        Since j == M, print pattern found and reset j,
-        j = lps[j-1] = lps[3] = 3
-
-        Here unlike Naive algorithm, we do not match first three 
-        characters of this window. Value of lps[j-1] (in above 
-        step) gave us index of next character to match.
-        i = 4, j = 3
-        txt[] = "AAAAABAAABA" 
-        pat[] =  "AAAA"
-        txt[i] and pat[j] match, do i++, j++
-
-        i = 5, j = 4
-        Since j == M, print pattern found and reset j,
-        j = lps[j-1] = lps[3] = 3
-
-        Again unlike Naive algorithm, we do not match first three 
-        characters of this window. Value of lps[j-1] (in above 
-        step) gave us index of next character to match.
-        i = 5, j = 3
-        txt[] = "AAAAABAAABA" 
-        pat[] =   "AAAA"
-        txt[i] and pat[j] do NOT match and j > 0, change only j
-        j = lps[j-1] = lps[2] = 2
-
-        i = 5, j = 2
-        txt[] = "AAAAABAAABA" 
-        pat[] =    "AAAA"
-        txt[i] and pat[j] do NOT match and j > 0, change only j
-        j = lps[j-1] = lps[1] = 1 
-
-        i = 5, j = 1
-        txt[] = "AAAAABAAABA" 
-        pat[] =     "AAAA"
-        txt[i] and pat[j] do NOT match and j > 0, change only j
-        j = lps[j-1] = lps[0] = 0
-
-        i = 5, j = 0
-        txt[] = "AAAAABAAABA" 
-        pat[] =      "AAAA"
-        txt[i] and pat[j] do NOT match and j is 0, we do i++.
-
-        i = 6, j = 0
-        txt[] = "AAAAABAAABA" 
-        pat[] =       "AAAA"
-        txt[i] and pat[j] match, do i++ and j++
-
-        i = 7, j = 1
-        txt[] = "AAAAABAAABA" 
-        pat[] =       "AAAA"
-        txt[i] and pat[j] match, do i++ and j++
-
-        We continue this way...
-
-        def KMPSearch(pat, txt): 
-            M = len(pat) 
-            N = len(txt) 
-        
-            # create lps[] that will hold the longest prefix suffix  
-            # values for pattern 
-            lps = [0]*M 
-            j = 0 # index for pat[] 
-        
-            # Preprocess the pattern (calculate lps[] array) 
-            computeLPSArray(pat, M, lps) 
-        
-            i = 0 # index for txt[] 
-            while i < N: 
-                if pat[j] == txt[i]: 
-                    i += 1
-                    j += 1
-        
-                if j == M: 
-                    print "Found pattern at index " + str(i-j) 
-                    j = lps[j-1] 
-        
-                # mismatch after j matches 
-                elif i < N and pat[j] != txt[i]: 
-                    # Do not match lps[0..lps[j-1]] characters, 
-                    # they will match anyway 
-                    if j != 0: 
-                        j = lps[j-1] 
-                    else: 
-                        i += 1
-        
-        def computeLPSArray(pat, M, lps): 
-            len = 0 # length of the previous longest prefix suffix 
-        
-            lps[0] # lps[0] is always 0 
-            i = 1
-        
-            # the loop calculates lps[i] for i = 1 to M-1 
-            while i < M: 
-                if pat[i]== pat[len]: 
-                    len += 1
-                    lps[i] = len
-                    i += 1
-                else: 
-                    # This is tricky. Consider the example. 
-                    # AAACAAAA and i = 7. The idea is similar  
-                    # to search step. 
-                    if len != 0: 
-                        len = lps[len-1] 
-        
-                        # Also, note that we do not increment i here 
-                    else: 
-                        lps[i] = 0
-                        i += 1
-        
-        txt = "ABABDABACDABABCABAB"
-        pat = "ABABCABAB"
-        KMPSearch(pat, txt) 
-
-
-
-##########################################
-COOL NOTES PART -3: NETWORK FLOW Tutorial: maxflow and mincut
-    COMPUTING MAX FLOW:
-        Given directed graph, each edge e assocaited with 
-        its capacity c(e) > 0. Two special nodes source s and sink t. 
-
-        Problem: Maximize total amount of flow from s to t subject to 2 constraints:
-
-        1) Flow on edge e doesnt exceed c(e)
-        2) For every node other than s,t, incoming flow is equal to outgoing.
-
-        Alternate formulation: we want to remove some edges from
-        graph such that after removing the edges, there is no path from
-        s to t. 
-        The cost of removing e is equal to its capacity, c(e)
-        The min cut problem is to find a cut with minimum total cost.
-
-        THRM: MAXIMUM FLOW = MINIMUM CUT
-
-        Flow decomposition: any valid flow can be decomposed into flow 
-        paths and circulations.
-
-        Ford-Fulkerson Algorithm: Max flow algo. 
-        Main idea: find valid flow paths until there is none left, and 
-        add them up.
-
-            The intuition goes like this: as long as there is a path from the 
-            source to the sink that can take some flow the entire way, we send it. 
-            This path is called an augmenting path. We keep doing this until there 
-            are no more augmenting paths. In the image above, we could start by 
-            sending 2 cars along the topmost path (because only 2 cars can get 
-            through the last portion). Then we might send 3 cars along the bottom 
-            path for a total of 5 cars. Finally, we can send 2 more cars along the 
-            top path for two edges, send them down to bottom path and through to the 
-            sink. The total number of cars sent is now 7, and it is the maximum flow.
-
-            Simplest algo:
-
-            Set f total = 0
-            Repeat until there is no path from s to t:
-                Run DFS from s to find a flow path to t
-                Let f be the minimum capacity value on the path
-                Add f to f total
-                For each edge u → v on the path:
-                    Decrease c(u → v) by f
-                    Increase c(v → u) by f
-
-            SIMPLIFLIED ALGO:
-                initialize flow to 0
-                path = findAugmentingPath(G, s, t)
-                while path exists:
-                    augment flow along path                 #This is purposefully ambiguous for now
-                    G_f = createResidualGraph()
-                    path = findAugmentingPath(G_f, s, t)
-                return flow
-            
-            More Explained version:
-                flow = 0
-                for each edge (u, v) in G:
-                    flow(u, v) = 0
-                while there is a path, p, from s -> t in residual network G_f:
-                    residual_capacity(p) = min(residual_capacity(u, v) : for (u, v) in p)
-                    flow = flow + residual_capacity(p)
-                    for each edge (u, v) in p:
-                        if (u, v) is a forward edge:
-                            flow(u, v) = flow(u, v) + residual_capacity(p)
-                        else:
-                            flow(u, v) = flow(u, v) - residual_capacity(p)
-                return flow
-
-        Residual graphs are an important middle step in calculating the maximum flow. 
-        As noted in the pseudo-code, they are calculated at every step 
-        so that augmenting paths can be found from the source to the sink.
-
-        When a residual graph, G_f is created, edges can be created 
-        that go in the opposite direction when compared to the original graph. 
-        An edge is a 'forward edge' if the edge existed in the original graph, G. 
-        If it is a reversal of an original edge, it is called a 'backwards edge.'
-
-        Residual capacity is defined as the new capacity after a given flow has been taken away. 
-        In other words, for a given edge (u, v), the residual capacity, c_f is defined as
-        1) c_f(u, v) = c(u,v) - f(u, v)
-
-        However, there must also be a residual capacity for the reverse edge as well. 
-        The max-flow min-cut theorem states that flow must be preserved 
-        in a network. So, the following equality always holds:
-        2) f(u, v) = -f(v, u)
-
-        residual capacities are used to make a residual network, G_f
-        1) and 2) allow you to operate on residual graph.
-
-        In the forward direction, the edges now have a residual capacity 
-        equal to c_f(u, v) = c(u, v) - f(u, v)
-        The flow is equal to 2, so the residual capacity of (S, A) and (A, B) is reduced to 2, 
-        while the edge (B, T) has a residual capacity of 0.
-
-        In the backward direction, the edges now have a residual capacity equal to 
-        c_f(v, u) = c(v, u) - f(v, u) 
-        Because of flow preservation, this can be written as c_f(v, u) = c(v, u) + f(u, v)
-
-        And since the capacity of those backward edges was initially 0, 
-        all of the backward edges (T, B), (B, A), and (A, S) 
-        now have a residual capacity of 2.
-
-        When a new residual graph is constructed with these new edges, 
-        any edges with a residual capacity of 0—like (B, T)—are not included. 
-        Add all the backward edges to the residual graph! update all the forward edges!
-        keep adding augmenting paths until. There are not more paths from the 
-        source to the sink, so there can be no more augmenting paths. 
-
-    COMPUTING MIN CUT:
-
-        1) Run Ford-Fulkerson algorithm and consider the final residual graph.
-
-        2) Find the set of vertices that are reachable 
-        from the source in the residual graph.
-
-        3) All edges which are from a reachable vertex 
-        to non-reachable vertex are minimum cut edges. Print all such edges.
-
-
-
-    
-
-###################################################################################################################
+###########################################################
+########################################################
 
 COOL NOTES PART 6: UNION FIND PYTHON RECIPEE
 

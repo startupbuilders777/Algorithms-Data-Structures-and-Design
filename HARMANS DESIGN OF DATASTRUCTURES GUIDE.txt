@@ -23,6 +23,925 @@ Fenwick Tree
 
 
 ##################################################################################
+##################################################################################
+##################################################################################
+STRING SEARCH ALGORITHMS:
+        KMP string searching
+        Manacher’s Algorithm
+        Aho–Corasick string matching algorithm;
+        Z ALGORITHM
+
+###########################################################################
+#############################################################################
+
+Here are some typical thoughts on search types:
+
+Boyer-Moore: works by pre-analyzing the pattern and comparing from right-to-left. 
+If a mismatch occurs, the initial analysis is used to determine how far the pattern can 
+be shifted w.r.t. the text being searched. This works particularly well for long search 
+patterns. In particular, it can be sub-linear, as you do not need to read 
+every single character of your text.
+
+Knuth-Morris-Pratt: also pre-analyzes the pattern, but tries to re-use whatever 
+was already matched in the initial part of the pattern to avoid having to rematch that. 
+This can work quite well, if your alphabet is small (f.ex. DNA bases), as you get a 
+higher chance that your search patterns contain reuseable subpatterns.
+
+Aho-Corasick: Needs a lot of preprocessing, but does so for a number of patterns. 
+If you know you will be looking for the same search patterns over and over again, 
+then this is much better than the other, because you need to 
+analyse patterns only once, not once per search.
+
+Space Usage favors Rabin-Karp
+One major advantage of Rabin-Karp is that it uses O(1) auxiliary storage space, 
+which is great if the pattern string you're looking for is very large. 
+For example, if you're looking for all occurrences of a string of length 107 
+in a longer string of length 109, not having to allocate a table of 107 
+machine words for a failure function or shift table is a major win. 
+Both Boyer-Moore and KMP use Ω(n) memory on a pattern string of 
+length n, so Rabin-Karp would be a clear win here.
+
+Worst-Case Single-Match Efficiency Favors Boyer-Moore or KMP
+Rabin-Karp suffers from two potential worst cases. First, 
+if the particular prime numbers used by Rabin-Karp are 
+known to a malicious adversary, that adversary could
+potentially craft an input that causes the rolling hash to match the 
+hash of a pattern string at each point in time, causing the algorithm's 
+performance to degrade to Ω((m - n + 1)n) on a string of length m and 
+pattern of length n. If you're taking untrusted strings as input, this 
+could potentially be an issue. Neither Boyer-Moore 
+nor KMP have these weaknesses.
+
+Worst-Case Multiple-Match Efficiency favors KMP.
+Similarly, Rabin-Karp is slow in the case where you want to find all matches of a 
+pattern string in the case where that pattern appears a large number of times. 
+For example, if you're looking for a string of 105 copies of the letter a 
+in text string consisting of 109copies of the letter a with Rabin-Karp, 
+then there will be lots of spots where the pattern string appears, 
+and each will require a linear scan. This can also lead 
+to a runtime of Ω((m + n - 1)n).
+
+Many Boyer-Moore implementations suffer from this second rule, but will not 
+have bad runtimes in the first case. 
+And KMP has no pathological worst-cases like these.
+
+Best-Case Performance favors Boyer-Moore
+One advantage of the Boyer-Moore algorithm is that it doesn't necessarily 
+have to scan all the characters of the input string. Specifically, 
+the Bad Character Rule can be used to skip over huge regions of 
+the input string in the event of a mismatch. More specifically, 
+the best-case runtime for Boyer-Moore is O(m / n), which is much 
+faster than what Rabin-Karp or KMP can provide.
+
+Generalizations to Multiple Strings favor KMP
+Suppose you have a fixed set of multiple text strings that you want to 
+search for, rather than just one. You could, if you wanted to, run multiple passes 
+of Rabin-Karp, KMP, or Boyer-Moore across the strings to find all the matches. 
+However, the runtime of this approach isn't great, as it scales linearly 
+with the number of strings to search for. On the other hand, KMP generalizes 
+nicely to the Aho-Corasick string-matching algorithm, which runs in time
+O(m + n + z), where z is the number of matches found and n is the 
+combined length of the pattern strings. Notice that there's no dependence 
+here on the number of different pattern strings being searched for!
+
+#################################################################################
+STRING ALGORITHM: RABIN KARP
+
+    Rabin Karp
+        So Rabin Karp algorithm needs to calculate 
+        hash values for following strings.
+        1) Pattern itself.
+        2) All the substrings of text of length m.
+
+        Since we need to efficiently calculate hash values for all the substrings 
+        of size m of text, we must have a hash function which has following property.
+        Hash at the next shift must be efficiently computable from the current hash 
+        value and next character in text or we can say hash(txt[s+1 .. s+m]) must 
+        be efficiently computable from hash(txt[s .. s+m-1]) and txt[s+m] i.e., 
+        hash(txt[s+1 .. s+m])= rehash(txt[s+m], hash(txt[s .. s+m-1])) and rehash must be O(1) operation.
+        
+        To do rehashing, we need to take off the most significant digit
+        and add the new least significant digit for in hash value. 
+        Rehashing is done using the following formula.
+        
+        prevHash = hash( txt[s .. s+m-1])
+        hash( txt[s+1 .. s+m] ) = ( d * ( prevHash – txt[s]*h ) + txt[s + m] ) mod q
+
+        hash( txt[s .. s+m-1] ) : Hash value at shift s.
+        hash( txt[s+1 .. s+m] ) : Hash value at next shift (or shift s+1)
+        d: Number of characters in the alphabet
+        q: A prime number
+        h: d^(m-1)
+
+        How does above expression work?
+        This is simple mathematics, we compute decimal value of current window from previous window.
+        For example pattern length is 3 and string is “23456”
+        You compute the value of first window (which is “234”) as 234.
+        How how will you compute value of next window “345”? You will do (234 – 2*100)*10 + 5 and get 345.
+
+        # Rabin Karp Algorithm given in CLRS book 
+        # d is the number of characters in the input alphabet 
+        d = 256
+
+        # pat  -> pattern 
+        # txt  -> text 
+        # q    -> A prime number 
+        
+        def search(pat, txt, q): 
+            M = len(pat) 
+            N = len(txt) 
+            i = 0
+            j = 0
+            p = 0    # hash value for pattern 
+            t = 0    # hash value for txt 
+            h = 1
+        
+            # The value of h would be "pow(d, M-1)%q" 
+            for i in xrange(M-1): 
+                h = (h*d)%q 
+        
+            # Calculate the hash value of pattern and first window 
+            # of text 
+            for i in xrange(M): 
+                p = (d*p + ord(pat[i]))%q 
+                t = (d*t + ord(txt[i]))%q 
+        
+            # Slide the pattern over text one by one 
+            for i in xrange(N-M+1): 
+                # Check the hash values of current window of text and 
+                # pattern if the hash values match then only check 
+                # for characters on by one 
+                if p==t: 
+                    # Check for characters one by one 
+                    for j in xrange(M): 
+                        if txt[i+j] != pat[j]: 
+                            break
+        
+                    j+=1
+                    # if p == t and pat[0...M-1] = txt[i, i+1, ...i+M-1] 
+                    if j==M: 
+                        print "Pattern found at index " + str(i) 
+        
+                # Calculate hash value for next window of text: Remove 
+                # leading digit, add trailing digit 
+                if i < N-M: 
+                    t = (d*(t-ord(txt[i])*h) + ord(txt[i+M]))%q 
+        
+                    # We might get negative values of t, converting it to 
+                    # positive 
+                    if t < 0: 
+                        t = t+q 
+        
+        # Driver program to test the above function 
+        txt = "GEEKS FOR GEEKS"
+        pat = "GEEK"
+        q = 101 # A prime number 
+        search(pat,txt,q) 
+        
+        # This code is contributed by Bhavya Jain 
+
+
+#################################################################################
+STRING ALGORITHM: FINITE AUTOMATA (Basically KMP)
+
+The basic idea is to build a automaton in which
+• Each character in the pattern has a state.
+• Each match sends the automaton into a new state.
+• If all the characters in the pattern has been
+matched, the automaton enters the accepting state.
+• Otherwise, the automaton will return to a suitable
+state according to the current state and the input
+character such that this returned state reflects the
+maximum advantage we can take from the
+previous matching.
+• the matching takes O(n) time since each character
+is examined once.
+
+
+
+The construction of the stringmatching automaton is based on
+the given pattern. The time of this
+construction may be O(m3
+|S|)
+
+A finite automaton M is a 5-tuple (Q,q0
+,A,S,d),
+where
+• Q is a finite set of states.
+• q0 in Q is the start state.
+• A in Q is a distinguish set of accepting states.
+• S is a finite input alphabet
+• d is a function from Q × S into Q, called the
+transition function of M.
+
+Construction of the FA is the main tricky part of this algorithm. 
+Once the FA is built, the searching is simple. In search, we simply 
+need to start from the first state of the automata and the first 
+character of the text. At every step, we consider next character of 
+text, look for the next state in the built FA and move to a new state. 
+If we reach the final state, then the pattern is found in the text. 
+The time complexity of the search process is O(n).
+
+Matching time on a text string of length n is Θ(n)
+This does not include the preprocessing time required to compute the
+transition function δ. There exists an algorithm with O(m|Σ|)
+preprocessing time.
+Altogether, we can find all occurrences of a length-m pattern in a
+length-n text over a finite alphabet Σ with O(m|Σ|) preprocessing
+time and Θ(n) matching time.
+
+    # Python program for Finite Automata  
+    # Pattern searching Algorithm 
+    
+    NO_OF_CHARS = 256
+    
+    def getNextState(pat, M, state, x): 
+        ''' 
+        calculate the next state  
+        '''
+        # If the character c is same as next character  
+        # in pattern, then simply increment state 
+
+        if state < M and x == ord(pat[state]): 
+            return state+1
+
+        i=0
+        # ns stores the result which is next state 
+        # ns finally contains the longest prefix  
+        # which is also suffix in "pat[0..state-1]c" 
+    
+        # Start from the largest possible value and  
+        # stop when you find a prefix which is also suffix 
+        for ns in range(state,0,-1): 
+            if ord(pat[ns-1]) == x: 
+                while(i<ns-1): 
+                    if pat[i] != pat[state-ns+1+i]: 
+                        break
+                    i+=1
+                if i == ns-1: 
+                    return ns  
+        return 0
+    
+    def computeTF(pat, M): 
+        ''' 
+        This function builds the TF table which  
+        represents Finite Automata for a given pattern 
+        '''
+        global NO_OF_CHARS 
+    
+        TF = [[0 for i in range(NO_OF_CHARS)]\ 
+            for _ in range(M+1)] 
+    
+        for state in range(M+1): 
+            for x in range(NO_OF_CHARS): 
+                z = getNextState(pat, M, state, x) 
+                TF[state][x] = z 
+    
+        return TF 
+    
+    def search(pat, txt): 
+        ''' 
+        Prints all occurrences of pat in txt 
+        '''
+        global NO_OF_CHARS 
+        M = len(pat) 
+        N = len(txt) 
+        TF = computeTF(pat, M)     
+    
+        # Process txt over FA. 
+        state=0
+        for i in range(N): 
+            state = TF[state][ord(txt[i])] 
+            if state == M: 
+                print("Pattern found at index: {}".\ 
+                    format(i-M+1)) 
+    
+    # Driver program to test above function             
+    def main(): 
+        txt = "AABAACAADAABAAABAA"
+        pat = "AABA"
+        search(pat, txt) 
+    
+    if __name__ == '__main__': 
+        main() 
+
+#################################################################################
+STRING ALGORITHM: KMP
+
+Compares the pattern to the text in left-to-right
+Shifts the pattern more intelligently than the brute-force algorithm
+When a mismatch occurs, how much can we shift the pattern
+(reusing knowledge from previous matches)?
+
+KMP Answer: this depends on the largest prefix of P[0..j] that is a
+suffix of P[1..j]
+
+Prefix of P[0..j]: starts from index 0 of P and builds to right 
+Suffix of P[1..j]: starts from P[j] and grows by building left, and you cant include P[0] (because its P[1..j])
+
+
+    isSubstring(), KMP Algorithm
+        
+        A linear time (!) algorithm that solves the string matching
+        problem by preprocessing P in Θ(m) time
+        – Main idea is to skip some comparisons by using the previous
+        comparison result
+        
+        LPS[] that will hold the longest prefix suffix  
+        
+        Uses an auxiliary array π that is defined as the following:
+        – π[i] is the largest integer smaller than i such that P 1 . . . P π[i] is
+        a suffix of P 1 . . . P i
+
+        Examples:
+
+        Pattern: a a a a a
+        LSP    : 0 1 2 3 4
+
+        Pattern: a b a b a b
+        LSP    : 0 0 1 2 3 4
+
+        Pattern: a b a c a b a b
+        LSP    : 0 0 1 0 1 2 3 2
+
+        Pattern: a a a b a a a a a b
+        LSP    : 0 1 2 0 1 2 3 3 3 4
+
+        txt[] = "AAAAABAAABA" 
+        pat[] = "AAAA"
+        lps[] = {0, 1, 2, 3} 
+
+        i = 0, j = 0
+        txt[] = "AAAAABAAABA" 
+        pat[] = "AAAA"
+        txt[i] and pat[j] match, do i++, j++
+
+        i = 1, j = 1
+        txt[] = "AAAAABAAABA" 
+        pat[] = "AAAA"
+        txt[i] and pat[j] match, do i++, j++
+
+        i = 2, j = 2
+        txt[] = "AAAAABAAABA" 
+        pat[] = "AAAA"
+        pat[i] and pat[j] match, do i++, j++
+
+        i = 3, j = 3
+        txt[] = "AAAAABAAABA" 
+        pat[] = "AAAA"
+        txt[i] and pat[j] match, do i++, j++
+
+        i = 4, j = 4
+        Since j == M, print pattern found and reset j,
+        j = lps[j-1] = lps[3] = 3
+
+        Here unlike Naive algorithm, we do not match first three 
+        characters of this window. Value of lps[j-1] (in above 
+        step) gave us index of next character to match.
+        i = 4, j = 3
+        txt[] = "AAAAABAAABA" 
+        pat[] =  "AAAA"
+        txt[i] and pat[j] match, do i++, j++
+
+        i = 5, j = 4
+        Since j == M, print pattern found and reset j,
+        j = lps[j-1] = lps[3] = 3
+
+        Again unlike Naive algorithm, we do not match first three 
+        characters of this window. Value of lps[j-1] (in above 
+        step) gave us index of next character to match.
+        i = 5, j = 3
+        txt[] = "AAAAABAAABA" 
+        pat[] =   "AAAA"
+        txt[i] and pat[j] do NOT match and j > 0, change only j
+        j = lps[j-1] = lps[2] = 2
+
+        i = 5, j = 2
+        txt[] = "AAAAABAAABA" 
+        pat[] =    "AAAA"
+        txt[i] and pat[j] do NOT match and j > 0, change only j
+        j = lps[j-1] = lps[1] = 1 
+
+        i = 5, j = 1
+        txt[] = "AAAAABAAABA" 
+        pat[] =     "AAAA"
+        txt[i] and pat[j] do NOT match and j > 0, change only j
+        j = lps[j-1] = lps[0] = 0
+
+        i = 5, j = 0
+        txt[] = "AAAAABAAABA" 
+        pat[] =      "AAAA"
+        txt[i] and pat[j] do NOT match and j is 0, we do i++.
+
+        i = 6, j = 0
+        txt[] = "AAAAABAAABA" 
+        pat[] =       "AAAA"
+        txt[i] and pat[j] match, do i++ and j++
+
+        i = 7, j = 1
+        txt[] = "AAAAABAAABA" 
+        pat[] =       "AAAA"
+        txt[i] and pat[j] match, do i++ and j++
+
+        We continue this way...
+
+        def KMPSearch(pat, txt): 
+            M = len(pat) 
+            N = len(txt) 
+        
+            # create lps[] that will hold the longest prefix suffix  
+            # values for pattern 
+            lps = [0]*M 
+            j = 0 # index for pat[] 
+        
+            # Preprocess the pattern (calculate lps[] array) 
+            computeLPSArray(pat, M, lps) 
+        
+            i = 0 # index for txt[] 
+            while i < N: 
+                if pat[j] == txt[i]: 
+                    i += 1
+                    j += 1
+        
+                if j == M: 
+                    print "Found pattern at index " + str(i-j) 
+                    j = lps[j-1] 
+        
+                # mismatch after j matches 
+                elif i < N and pat[j] != txt[i]: 
+                    # Do not match lps[0..lps[j-1]] characters, 
+                    # they will match anyway 
+                    if j != 0: 
+                        j = lps[j-1] 
+                    else: 
+                        # couldnt match any j, skip this i, its bad. 
+                        i += 1
+        
+        def computeLPSArray(pat, M, lps): 
+            len = 0 # length of the previous longest prefix suffix 
+        
+            lps[0] # lps[0] is always 0 
+            i = 1
+        
+            # the loop calculates lps[i] for i = 1 to M-1 
+            while i < M: 
+                if pat[i]== pat[len]: 
+                    len += 1
+                    lps[i] = len
+                    i += 1
+                else: 
+                    # This is tricky. Consider the example. 
+                    # AAACAAAA and i = 7. The idea is similar  
+                    # to search step. 
+                    if len != 0: 
+                        len = lps[len-1] 
+        
+                        # Also, note that we do not increment i here 
+                    else: 
+                        lps[i] = 0
+                        i += 1
+        
+        txt = "ABABDABACDABABCABAB"
+        pat = "ABABCABAB"
+        KMPSearch(pat, txt) 
+#################################################################################
+STRING ALGORITHM: BOYER MOORE WALKTHROUGH:
+
+PART A:
+    Based on three key ideas:
+        Reverse-order searching: Compare P with a subsequence of T moving
+        backwards
+
+        Bad character jumps: When a mismatch occurs at T [i] = c
+            If P contains c, we can shift P to align the last occurrence of c in P
+            with T [i]
+            Otherwise, we can shift P to align P[0] with T [i + 1]
+        
+        Good suffix jumps: If we have already matched a suffix of P, then get
+            a mismatch, we can shift P forward to align with the previous
+            occurence of that suffix (with a mismatch from the suffix we read). If
+            none exists, look for the longest prefix of P that is a suffix of what we
+            read. Similar to failure array in KMP.
+
+        Can skip large parts of T
+
+    Boyer Moore is a combination of following two approaches.
+    1) Bad Character Heuristic
+    2) Good Suffix Heuristic
+
+    Both of the above heuristics can also be used independently to search a 
+    pattern in a text. Let us first understand how two independent 
+    approaches work together in the Boyer Moore algorithm. If we 
+    take a look at the Naive algorithm, it slides the pattern over 
+    the text one by one. KMP algorithm does preprocessing over the 
+    pattern so that the pattern can be shifted by more than one. 
+    The Boyer Moore algorithm does preprocessing for the same reason. 
+    It processes the pattern and creates different arrays for both 
+    heuristics. At every step, it slides the pattern by the max of the 
+    slides suggested by the two heuristics. So it uses best 
+    of the two heuristics at every step.
+
+    Unlike the previous pattern searching algorithms, Boyer Moore algorithm 
+    starts matching from the last character of the pattern.
+
+PART B:
+    The insight behind Boyer-Moore is that if you start searching for a 
+    pattern in a string starting with the last character in the pattern, 
+    you can jump your search forward multiple characters when you hit a mismatch.
+
+    Let's say our pattern p is the sequence of characters 
+    p1, p2, ..., pn and we are searching a 
+    string s, currently with p aligned so that pn is at index i in s.
+
+    E.g.:
+
+    s = WHICH FINALLY HALTS.  AT THAT POINT...
+    p = AT THAT
+    i =       ^
+    The B-M paper makes the following observations:
+    (1) if we try matching a character that is not in p then we can jump forward n characters:
+
+    'F' is not in p, hence we advance n characters:
+
+    s = WHICH FINALLY HALTS.  AT THAT POINT...
+    p =        AT THAT
+    i =              ^
+
+    (2) if we try matching a character whose last position is 
+    k from the end of p then we can jump forward k characters:
+
+    ' 's last position in p is 4 from the end, hence we advance 4 characters:
+
+    s = WHICH FINALLY HALTS.  AT THAT POINT...
+    p =            AT THAT
+    i =                  ^
+
+    Now we scan backwards from i until we either succeed or we hit a mismatch. 
+    (3a) if the mismatch occurs k characters from the start of p and the 
+    mismatched character is not in p, then we can advance (at least) k characters.
+
+    'L' is not in p and the mismatch occurred against p6, hence we can advance (at least) 6 characters:
+
+    s = WHICH FINALLY HALTS.  AT THAT POINT...
+    p =                  AT THAT
+    i =                        ^
+    However, we can actually do better than this. (3b) since we know that 
+    at the old i we'd already matched some characters (1 in this case). If 
+    the matched characters don't match the start of p, then we can actually 
+    jump forward a little more (this extra distance is called 'delta2' in the paper):
+
+    s = WHICH FINALLY HALTS.  AT THAT POINT...
+    p =                   AT THAT
+    i =                         ^
+    At this point, observation (2) applies again, giving
+
+    s = WHICH FINALLY HALTS.  AT THAT POINT...
+    p =                       AT THAT
+    i =                             ^
+    and bingo! We're done.
+
+PART C:
+
+    Now that said, the algorithm is based on a simple principle. Suppose that I'm trying 
+    to match a substring of length m. I'm going to first look at character at index m.
+    If that character is not in my string, I know that the substring 
+    I want can't start in characters at indices 1, 2, ... , m.
+
+    If that character is in my string, I'll assume that it is at the last place in my 
+    string that it can be. I'll then jump back and start trying to match my string 
+    from that possible starting place. This piece of information is my first table.
+
+    Once I start matching from the beginning of the substring, when I find a mismatch, 
+    I can't just start from scratch. I could be partially through a match starting 
+    at a different point. For instance if I'm trying to match anand in ananand successfully 
+    match, anan, realize that the following a is not a d, but I've just matched an, and so 
+    I should jump back to trying to match my third character in my substring. This, "If I fail 
+    after matching x characters, I could be on the y'th character of a match" 
+    information is stored in the second table.
+
+    Note that when I fail to match the second table knows how far along in a match I might 
+    be based on what I just matched. The first table knows how far back I might be based 
+    on the character that I just saw which I failed to match. You want to use 
+    the more pessimistic of those two pieces of information.
+
+    With this in mind the algorithm works like this:
+
+    start at beginning of string
+    start at beginning of match
+    while not at the end of the string:
+        if match_position is 0:
+            Jump ahead m characters
+            Look at character, jump back based on table 1
+            If match the first character:
+                advance match position
+            advance string position
+        else if I match:
+            if I reached the end of the match:
+            FOUND MATCH - return
+            else:
+            advance string position and match position.
+        else:
+            pos1 = table1[ character I failed to match ]
+            pos2 = table2[ how far into the match I am ]
+            if pos1 < pos2:
+                jump back pos1 in string
+                set match position at beginning
+            else:
+                set match position to pos2
+    FAILED TO MATCH
+
+
+
+#################################################################################
+STRING ALGORITHM: BOYER Moore BAD CHARACTER HEURISTIC
+
+Boyer-Moore Algorithm
+
+In this post, we will discuss bad character heuristic, 
+and discuss Good Suffix heuristic in the next post.
+
+The idea of bad character heuristic is simple. 
+The character of the text which doesn’t match with the current 
+character of the pattern is called the Bad Character.
+Upon mismatch, we shift the pattern until –
+1) The mismatch becomes a match
+2) Pattern P move past the mismatched character.
+
+Case 1 – Mismatch become match
+We will lookup the position of last occurrence of mismatching character 
+in pattern and if mismatching character exist in pattern then we’ll shift 
+the pattern such that it get aligned to the mismatching character in text T.
+
+Case 2 – Pattern move past the mismatch character
+We’ll lookup the position of last occurrence of mismatching character 
+in pattern and if character does not exist we will 
+shift pattern past the mismatching character.
+
+NO_OF_CHARS = 256
+  
+def badCharHeuristic(string, size): 
+    ''' 
+    The preprocessing function for 
+    Boyer Moore's bad character heuristic 
+    '''
+  
+    # Initialize all occurrence as -1 
+    badChar = [-1]*NO_OF_CHARS 
+  
+    # Fill the actual value of last occurrence 
+    for i in range(size): 
+        badChar[ord(string[i])] = i; 
+  
+    # retun initialized list 
+    return badChar 
+  
+def search(txt, pat): 
+    ''' 
+    A pattern searching function that uses Bad Character 
+    Heuristic of Boyer Moore Algorithm 
+    '''
+    m = len(pat) 
+    n = len(txt) 
+  
+    # create the bad character list by calling  
+    # the preprocessing function badCharHeuristic() 
+    # for given pattern 
+    badChar = badCharHeuristic(pat, m)  
+  
+    # s is shift of the pattern with respect to text 
+    s = 0
+    while(s <= n-m): 
+        j = m-1
+  
+        # Keep reducing index j of pattern while  
+        # characters of pattern and text are matching 
+        # at this shift s 
+        while j>=0 and pat[j] == txt[s+j]: 
+            j -= 1
+  
+        # If the pattern is present at current shift,  
+        # then index j will become -1 after the above loop 
+        if j<0: 
+            print("Pattern occur at shift = {}".format(s)) 
+  
+            '''     
+                Shift the pattern so that the next character in text 
+                      aligns with the last occurrence of it in pattern. 
+                The condition s+m < n is necessary for the case when 
+                   pattern occurs at the end of text 
+               '''
+            s += (m-badChar[ord(txt[s+m])] if s+m<n else 1) 
+        else: 
+            ''' 
+               Shift the pattern so that the bad character in text 
+               aligns with the last occurrence of it in pattern. The 
+               max function is used to make sure that we get a positive 
+               shift. We may get a negative shift if the last occurrence 
+               of bad character in pattern is on the right side of the 
+               current character. 
+            '''
+            s += max(1, j-badChar[ord(txt[s+j])]) 
+  
+  
+# Driver program to test above function 
+def main(): 
+    txt = "ABAAABCD"
+    pat = "ABC"
+    search(txt, pat) 
+  
+if __name__ == '__main__': 
+    main() 
+  
+#################################################################################
+STRING ALGORITHM: BOYER Moore GOOD CHARACTER HEURISTIC
+
+https://www.geeksforgeeks.org/boyer-moore-algorithm-good-suffix-heuristic/
+
+#################################################################################
+STRING ALGORITHM: BOYER Moore COMBINED
+
+COMPLETE THIS THANK YOU!!
+
+#################################################################################
+STRING ALGORITHM: Suffix Tries and Suffix Trees
+
+What if we want to search for many patterns P within the same fixed
+text T ?
+
+Idea: Preprocess the text T rather than the pattern P
+Observation: P is a substring of T if and only if P is a prefix of some
+suffix of T .
+We will call a trie that stores all suffixes of a text T a suffix trie, and the
+compressed suffix trie of T a suffix tree.
+
+Build the suffix trie, i.e. the trie containing all the suffixes of the text
+Build the suffix tree by compressing the trie above (like in Patricia
+trees)
+Store two indexes l, r on each node v (both internal nodes and
+leaves) where node v corresponds to substring T [l..r ]
+
+T = bananaban
+SUFFIXES: {bananaban$, ananaban$, nanaban$, anaban$, naban$, aban$, ban$, an$, n$}
+
+Use $ to indicate end of suffixes in trie
+CREATE TRIE!
+then create compressed trie aka suffix tree (and each node contains 2 indexes l,r )
+
+
+Suffix Trees: Pattern Matching
+    To search for pattern P of length m:
+    Similar to Search in compressed trie with the difference that we are
+    looking for a prefix match rather than a complete match
+    If we reach a leaf with a corresponding string length less than m, then
+    search is unsuccessful
+    Otherwise, we reach a node v (leaf or internal) with a corresponding
+    string length of at least m
+    It only suffices to check the first m characters against the substring of
+    the text between indices of the node, to see if there indeed is a match
+    We can then visit all children of the node to report all matches
+
+
+#########################################################################
+########################################################################3
+Z algorithm (https://www.hackerearth.com/practice/algorithms/string-algorithm/z-algorithm/tutorial/)
+
+COOL NOTES: Z ALGORITHM FOR STRINGS:
+
+
+    The Z-function for a string S of length N is an array of length N 
+    where the i th element is equal to the greatest number of 
+    characters starting from the position i 
+    that coincide with the first characters of S.
+
+    In other words, z[i] is the length 
+    of the longest common prefix between S 
+    and the suffix of S starting at i. We assume 0-based indexes; 
+    that is, the first character of S has index 0 and the last one has index N-1.
+
+    The first element of Z-functions, z[0], is generally not 
+    well-defined. In this article we will assume it is zero.
+
+    z [ 0 ] = 0
+
+    This article presents an algorithm for calculating the Z-function 
+    in O(N) time, as well as various of its applications.
+
+
+    Examples
+
+    For example, here are the values of the Z-function computed for different strings:
+
+    s = 'aaaaa'
+    Z[0]	Z[1]	Z[2]	Z[3]	Z[4]
+    0	      4	      3	      2	      1
+
+    s = 'aaabaab'
+    Z[0]	Z[1]	Z[2]	Z[3]	Z[4]	Z[5]	Z[6]
+    0	      2	      1	      0	      2	      1	      0
+
+    s = 'abacaba'
+    Z[0]	Z[1]	Z[2]	Z[3]	Z[4]	Z[5]	Z[6]
+    0	      0	      1	      0	      3       0	      1
+
+    Trivial algorithm
+
+    The formal definition can be represented in the following elementary implementation.
+
+    vector<int> z_function_trivial(string s) 
+    {
+        int n = (int) s.length();
+        vector<int> z(n);
+        for (int i = 1; i < n; ++i)
+            while (i + z[i] < n && s[z[i]] == s[i + z[i]])
+                ++z[i];
+        return z;
+    }
+
+    We just iterate through every position and update for each one of them, 
+    starting from and incrementing it as long as we do not 
+    find a mismatch (and as long as we do not reach the end of the line).
+
+    Efficient algorithm
+
+    The idea is to maintain an interval [L, R] which is the interval with max R
+    such that [L,R] is prefix substring (substring which is also prefix). 
+
+    Steps for maintaining this interval are as follows – 
+
+    1) If i > R then there is no prefix substring that starts before i and 
+    ends after i, so we reset L and R and compute new [L,R] by comparing 
+    str[0..] to str[i..] and get Z[i] (= R-L+1).
+
+    2) If i <= R then let K = i-L,  now Z[i] >= min(Z[K], R-i+1)  because 
+    str[i..] matches with str[K..] for atleast R-i+1 characters (they are in
+    [L,R] interval which we know is a prefix substring).     
+    Now two sub cases arise – 
+        a) If Z[K] < R-i+1  then there is no prefix substring starting at 
+            str[i] (otherwise Z[K] would be larger)  so  Z[i] = Z[K]  and 
+            interval [L,R] remains same.
+        b) If Z[K] >= R-i+1 then it is possible to extend the [L,R] interval
+            thus we will set L as i and start matching from str[R]  onwards  and
+            get new R then we will update interval [L,R] and calculate Z[i] (=R-L+1).
+
+            
+    Implementation
+    // returns array z[] where z[i] is z-function of s[i]
+    int[] zFucntion(String s) {
+        int n = s.length();
+        int z[] = new int[n];
+        int R = 0;
+        int L = 0;
+        for(int i = 1; i < n; i++) {
+            z[i] = 0;
+            if (R > i) {
+                z[i] = Math.min(R - i, z[i - L]);
+            }
+            while (i + z[i] < n && s.charAt(i+z[i]) == s.charAt(z[i])) {
+                z[i]++;
+            }
+            if (i + z[i] > R) {
+                L = i;
+                R = i + z[i];
+            }
+        }
+        z[0] = n;
+        return z;
+    }
+
+    Complexity
+    Worst case time complexity: Θ(N)
+    Average case time complexity: Θ(N)
+    Best case time complexity: Θ(N)
+    Space complexity: Θ(log N)
+
+    Applications
+    PLEASE COVER:
+        Boyer moore good character heuristic/bad char heuristic
+        Aho-Corasick Algorithm for Pattern Searching
+        Suffix Tree/Suffix Array
+        Manachars algorithm (https://www.hackerearth.com/practice/algorithms/string-algorithm/manachars-algorithm/tutorial/)
+
+    Applications of Z algorithms are as follows:
+    Finding all occurrences of the pattern P inside the text T in O(length(T) + length(P))
+    Counting the number of distinct substrings of a string S in O(1)
+    Finding a string T of shortest length such that S can be represented as a concatenation of one or more copies of T
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+##################################################################################
 Trie Implementation
 
 This data structure is pretty useful for storing large databases of words. 
