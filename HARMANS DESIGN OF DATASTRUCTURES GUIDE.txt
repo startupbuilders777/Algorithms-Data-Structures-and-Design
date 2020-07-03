@@ -1733,12 +1733,95 @@ Binary Indexed tree - O(n(logn)^d) preprocessing time, O((logn)^d) query time, O
 
 ########################## HASH MAP AND HASH SET NOTES ###############################3
 
+Hashing vs. Balanced Search Trees
+Advantages of Balanced Search Trees
+O(log n) worst-case operation cost
+Does not require any assumptions, special functions,
+or known properties of input distribution
+No wasted space
+Never need to rebuild the entire structure
+
+
+Advantages of Hash Tables
+O(1) cost, but only on average
+Flexible load factor parameters
+Cuckoo hashing achieves O(1) worst-case for search & delete
+
 How to handle Collisions?
 There are mainly two methods to handle collision:
 1) Separate Chaining
 2) Open Addressing
 
+Collision Resolution
+Even the best hash function may have collisions:
+when we want to insert (k, v ) into the table,
+but T [h(k)] is already occupied.
+Two basic strategies:
+Allow multiple items at each table location (buckets)
+Allow each item to go into multiple locations (open addressing)
+
+We will examine the average cost of search, insert, delete,
+in terms of n, M, and/or the load factor α = n/M.
+
+n is number of items in hash table, M is number of spots 
+Requirement: For a given M ∈ N,
+every key k is an integer with 0 ≤ k < M.
+
+We probably want to rebuild the whole hash table and change
+the value of M when the load factor gets too large or too small.
+This is called rehashing , and should cost roughly Θ(M + n).
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+SEPERATE CHAINING VS OPEN ADDRESSING PERFORMACNE
+
+Separate Chaining
+Keys are stored inside the hash table as well as outside the hash table.	
+The number of keys to be stored in the hash table can even exceed the size of the hash table.	
+Deletion is easier.	
+Extra space is required for the pointers to store the keys outside the hash table.	
+Cache performance is poor. This is because of linked lists which store the keys outside the hash table.
+Some buckets of the hash table are never used which leads to wastage of space.
+
+Open Addressing
+All the keys are stored only inside the hash table.
+No key is present outside the hash table.
+The number of keys to be stored in the hash table can never exceed the size of the hash table.
+Deletion is difficult.
+No extra space is required.
+Cache performance is better.This is because here no linked lists are used.
+Buckets may be used even if no key maps to those particular buckets.
+
+Separate Chaining-
+Separate Chaining is advantageous when it is required to perform
+all the following operations on the keys stored in the hash table-
+Insertion Operation
+Deletion Operation
+Searching Operation
+NOTE-
+Deletion is easier in separate chaining.
+This is because deleting a key from the hash table does not affect the other keys stored in the hash table.
+ 
+Open Addressing-
+Open addressing is advantageous when it is required to perform only 
+the following operations on the keys stored in the hash table-
+Insertion Operation
+Searching Operation
+NOTE-
+Deletion is difficult in open addressing.
+This is because deleting a key from the hash table requires some extra efforts.
+After deleting a key, certain keys have to be rearranged.
+
+
 Seperate Chaining >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
+
+Each table entry is a bucket containing 0 or more KVPs.
+This could be implemented by any dictionary (even another hash table!).
+The simplest approach is to use an unsorted linked list in each bucket.
+This is called collision resolution by chaining .
+
+search(k): Look for key k in the list at T [h(k)].
+insert(k, v ): Add (k, v ) to the front of the list at T [h(k)].
+delete(k): Perform a search, then delete from the linked list.
 
 The bucket chains are often searched sequentially using the order 
 the entries were added to the bucket. If the load factor is large 
@@ -1768,8 +1851,49 @@ node of Linked List has the address of both, the next and the previous node. Thi
 will speed up the process of adding and removing elements from the list, hence the 
 time complexity will be reduced drastically.
 
+Some chaining implementations store the first record of each chain in the 
+slot array itself.[4] The number of pointer traversals is decreased 
+by one for most cases. The purpose is to 
+increase cache efficiency of hash table access.
+
+
+
+
+Recall the load balance α = n/M.
+Assuming uniform hashing, average bucket size is exactly α.
+Analysis of operations:
+search Θ(1 + α) average-case, Θ(n) worst-case
+insert O(1) worst-case, since we always insert in front.
+delete Same cost as search: Θ(1 + α) average, Θ(n) worst-case
+If we maintain M ∈ Θ(n), then average costs are all O(1).
+This is typically accomplished by rehashing whenever n < c 1 M or n > c 2 M,
+for some constants c 1 , c 2 with 0 < c 1 < c 2 .
+
 
 Open addressing >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.:
+
+Main idea: Each hash table entry holds only one item,
+but any key k can go in multiple locations.
+search and insert follow a probe sequence of possible locations for key k:
+<h(k, 0), h(k, 1), h(k, 2), . . .>
+
+delete becomes problematic; we must distinguish between
+empty and deleted locations.
+
+
+Simplest idea: linear probing
+h(k, i) = (h(k) + i) mod M, for some hash function h.
+
+SO BASICALLY, when you see a collision in hash keys, just put it in the first empty array spot that you
+identify by probing linearly, increase the index by 1 each time. If we linear probe until the end of the array
+wrap around and start probing from index 0 of the array. This is done when you mod it by M above to search for 
+empty array spot.
+
+When you delete something, MARK THAT ARRAY SPOT AS DELETED SO IT THE FOLLOWING REMAINS TRUE:
+    During insertion, the buckets marked as “deleted” are treated like any other empty bucket.
+    During searching, the search is not terminated on encountering the bucket marked as “deleted”.
+    The search terminates only after the required key or an empty bucket is found.
+
 Well-known probe sequences include:
 Linear probing, in which the interval between probes is fixed (usually 1)
 
@@ -1789,18 +1913,86 @@ is size of hash table.
 (We repeat by increasing i when collision occurs)
 First hash function is typically hash1(key) = key % TABLE_SIZE
 
-A popular second hash function is : hash2(key) = PRIME – (key % PRIME) where PRIME is a prime smaller than the TABLE_SIZE.
+A popular second hash function is : hash2(key) = PRIME – (key % PRIME) 
+where PRIME is a prime smaller than the TABLE_SIZE.
 
 A good second Hash function is:
     - It must never evaluate to zero
     - Must make sure that all cells can be probed
+
+Uniform Hashing Assumption: Each hash function value is equally likely.
+Proving is usually impossible, as it requires knowledge of
+the input distribution and the hash function distribution.
+We can get good performance by following a few rules.
+A good hash function should:
+    be very efficient to compute
+    be unrelated to any possible patterns in the data
+    depend on all parts of the key
+If all keys are integers (or can be mapped to integers),
+the following two approaches tend to work well:
+Division method: h(k) = k mod M.
+We should choose M to be a prime.
+
+Multiplication method: h(k) = floor(M(kA − floor(kAc)),
+for some constant floating-point
+number A with 0 < A < 1. -> Knuth suggests A = 0.618
+
+What if the keys are multi-dimensional, such as strings?
+Standard approach is to flatten string w to integer f (w ) ∈ N, e.g.
+A · P · P · L · E
+→ 65 · 80 · 80 · 76 · 69
+
+→ 65R^4 + 80R^3 + 80R^2 + 76R^1 + 68R^0
+(for some radix R, e.g. R = 255)
+We combine this with a standard hash function
+h : N → {0, 1, 2, . . . , M − 1}.
+With h(f (k)) as the hash values, we then use any standard hash table.
+Note: computing each h(f(k)) takes Ω(length of w) time
+
+So, under uniform hashing, we assume the probability that a key k
+has h1(k) = a and h2(k) = b, for any particular a and b, is 1/(M^2)
+For double hashing , define h(k, i) = h1(k) + i · h2(k) mod M.
+search, insert, delete work just like for linear probing,
+but with this different probe sequence.
+
+
+1. Linear Probing-
+In linear probing,
+When collision occurs, we linearly probe for the next bucket.
+We keep probing until an empty bucket is found.
+Advantage-
+It is easy to compute.
+Disadvantage-
+The main problem with linear probing is clustering.
+Many consecutive elements form groups.
+Then, it takes time to search an element or to find an empty bucket.
+ 
+Time Complexity-
+Worst time to search an element in linear probing is O (table size).
+This is because-
+Even if there is only one element present and all other elements are deleted.
+Then, “deleted” markers present in the hash table makes search the entire table.
+ 
+2. Quadratic Probing-
+In quadratic probing,
+When collision occurs, we probe for i2‘th bucket in ith iteration.
+We keep probing until an empty bucket is found.
+ 
+3. Double Hashing-
+In double hashing,
+We use another hash function hash2(x) and look for i * hash2(x) bucket in ith iteration.
+It requires more computation time as two hash functions need to be computed.
+
+Linear Probing has the best cache performance but suffers from clustering.
+Quadratic probing lies between the two in terms of cache performance and clustering.
+Double caching has poor cache performance but no clustering.
+
 
 A drawback of all these open addressing schemes is that the number of stored entries cannot 
 exceed the number of slots in the bucket array. In fact, even with good hash functions, 
 their performance dramatically degrades when the load factor grows beyond 0.7 or so. 
 For many applications, these restrictions mandate the use of dynamic resizing, 
 with its attendant costs.
-
 
 Open addressing schemes also put more stringent requirements on the hash function: 
 besides distributing the keys more uniformly over the buckets, the function must also 
@@ -1830,12 +2022,51 @@ is wasted on large empty table slots. If the open addressing table only stores r
 elements (external storage), it uses space comparable to chaining even for large records 
 but loses its speed advantage.[citation needed]
 
+Generally speaking, open addressing is better used for hash tables with small 
+records that can be stored within the table (internal storage) and fit in a cache line. 
+They are particularly suitable for elements of one word or less. If the table is expected 
+to have a high load factor, the records are large, or the data is variable-sized, 
+chained hash tables often perform as well or better.
+
 >>>>>>>>>>>>>>(TODO) talk about Coalesced hashing
+
+A hybrid of chaining and open addressing, coalesced hashing links together 
+chains of nodes within the table itself.[18] Like open addressing, 
+it achieves space usage and (somewhat diminished) cache advantages over 
+chaining. Like chaining, it does not exhibit clustering effects; 
+in fact, the table can be efficiently filled to a high density. 
+Unlike chaining, it cannot have more elements than table slots.
 
 >>>>>>>>>>>>>>>>>>> CUCKOO HASHING
 
->>>>>>>>>>>>>>> HOPSCOTCH HASHING
+This is a relatively new idea from Pagh and Rodler in 2001.
+Again, we use two independent hash functions h1 , h2.
+The idea is to always insert a new item into h1(k).
 
+This might “kick out” another item, which we then attempt to re-insert
+into its alternate position.
+
+Insertion might not be possible if there is a loop.
+
+In this case, we have to rehash with a larger M.
+
+The big advantage is that an element with key k
+can only be in T [h1(k)] or T[h2(k)]. (WORST CASE O(1) LOOKUP!!)
+
+cuckoo-insert(T,x)
+T : hash table, x: new item to insert
+1.  y ← x, i ← h1(x.key)
+2.  do at most n times:
+3.      swap(y , T [i])
+4.      if y is “empty” then return “success”
+5.      if i = h1(y.key) then i ← h2 (y.key)
+6.      else i ← h 1 (y .key )
+7.  return “failure”
+
+ By combining multiple hash functions with multiple cells per bucket, very high space utilization can be achieved.
+
+>>>>>>>>>>>>>>> HOPSCOTCH HASHING
+(TODO FINISH THIS: https://en.wikipedia.org/wiki/Hash_table#Separate_chaining_with_list_head_cells)
 
 >>>>>>>>>>>>>>>> ROBIN HOOD HASHING
 
@@ -1849,8 +2080,98 @@ contains fewer objects (with the default being the h1(x) table location if there
 is equality in bucket size). 2-choice hashing employs the principle of 
 the power of two choices.[25]
 
-######################## LOAD FACTOR AND REHASHING #################################
 
+>>>>>>>>>>>>>>>> HASH TABLE CACHE PERFORMANCE EXPLAINED;
+
+So my questions are:
+What causes chaining to have a bad cache performance?
+
+Where is the cache being used?
+
+Why would open addressing provide better cache performance as 
+
+I cannot see how the cache comes into this?
+
+Also what considerations what you take into account when deciding 
+between chaining and linear probed open addressing 
+and quadratic probed open addressing?
+
+Sorry, due to quite wide questions, the answers also will be 
+quite generic with some links for more detailed information.
+
+It is better to start with the question:
+
+Where is the cache being used?
+
+On modern CPUs, cache is used everywhere: to read program instructions 
+and read/write data in memory. On most CPUs cache is transparent, i.e. 
+there is no need to explicitly manage the cache.
+
+Cache is much faster than the main memory (DRAM). Just to give 
+you a perspective, accessing data in Level 1 cache is ~4 CPU cycles, 
+while accessing the DRAM on the same CPU is ~200 CPU cycles, 
+i.e. 50 times faster.
+
+Cache operate on small blocks called cache lines, 
+which are usually 64 bytes long.
+
+More info: https://en.wikipedia.org/wiki/CPU_cache
+
+What causes chaining to have a bad cache performance?
+
+Basically, chaining is not cache friendly. It is not only 
+about this case in the hash tables, 
+same issue with "classical" lists.
+
+Hash keys (or list nodes) are far away from each other, 
+so each key access generates a "cache miss", i.e. 
+slow DRAM access. So checking 10 keys in a chain takes 
+10 DRAM accesses, i.e. 200 x 10 = 2000 cycles for our generic CPU.
+
+The address of the next key is not known until a next pointer is 
+read in the current key, so there is not much room for an optimization...
+
+Why would open addressing provide better cache performance 
+as I cannot see how the cache comes into this?
+
+Linear probing is cache friendly. Keys are "clustered" together, 
+so once we accessed the first key (slow DRAM access), most probably the 
+next key will be already in cache, since the cache line is 64 bytes. 
+So accessing the same 10 keys with open addressing takes 1 DRAM access 
+and 9 cache accesses, i.e. 200 x 1 + 9 x 4 = 236 cycles for our generic CPU. 
+It is much faster than 2000 cycles for chained keys.
+
+Also, since we access the memory in predictable manner, there 
+is a room for optimizations like cache prefetching: 
+https://en.wikipedia.org/wiki/Cache_prefetching
+
+Also what considerations what you take into account when deciding 
+between chaining and linear probed open addressing and 
+quadratic probed open addressing?
+
+Chaining or linear probing is not a good sign anyway. 
+So the first thing I would consider is to make sure the probability 
+of collisions is at minimum by using a good hash function and reasonable hash size.
+
+The second thing I would consider is a ready to use solution. 
+Sure, there are still might be some rare 
+cases when you need your own implementation...
+
+Not sure about the language, but here is blazingly fast hash 
+table implementation with BSD license: http://dpdk.org/browse/dpdk/tree/lib/librte_hash/rte_cuckoo_hash.h
+
+So, if you still need your own hash table implementation and 
+you do care about performance, the next quite easy thing to 
+implement would be to use cache aligned buckets instead 
+of plain hash elements. It will waste few bytes per each element 
+(i.e. each hash table element will be 64 bytes long), but in case 
+of a collision there will be some fast storage for at least few keys. 
+The code to manage those buckets will be also a bit more complicated, 
+so it is a thing to consider if it is worth for you to bother...
+
+
+########################%#################################
+HASHMAPS:  LOAD FACTOR AND REHASHING
 How hashing works:
 
 For insertion of a key(K) – value(V) pair into a hash map, 2 steps are required:
@@ -1905,7 +2226,8 @@ Rehashing can be done as follows:
 For each addition of a new entry to the map, check the load factor.
 If it’s greater than its pre-defined value (or default value of 0.75 if not given), then Rehash.
 For Rehash, make a new array of double the previous size and make it the new bucketarray.
-Then traverse to each element in the old bucketArray and call the insert() for each so as to insert it into the new larger bucket array.
+Then traverse to each element in the old bucketArray and call the insert() 
+for each so as to insert it into the new larger bucket array.
 
 ########################### HASH SET ################### (OPEN ADDRESSING SOLUTION)
 
@@ -1997,7 +2319,6 @@ class MyHashSet(object):
                 return
             h = (5*h+1)%self.capacity
         
-
     def contains(self, key):
         """
         Returns true if this set contains the specified element
@@ -2070,8 +2391,6 @@ class MyHashMap:
                 cur = cur.next
         return -1
             
-        
-
     def remove(self, key):
         """
         Removes the mapping of the specified value key if this map contains a mapping for the key
