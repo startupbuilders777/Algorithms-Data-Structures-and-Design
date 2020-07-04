@@ -72,6 +72,15 @@ TOPICS TO UNDERSTAND:
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
+-22) Flatten binary tree to linked list. 
+     Given a binary tree, flatten it to a linked list in-place.
+     Use right nodes when creating linked list. 
+     CAN DO THIS WITH O(1) SPACE LIKE SO:
+
+     
+
+
+
 -21) Using 3 pointers Algorithm  + Abusing LOOP invariants 
      THE DUTCH PARTITIONING ALGORITHM WITH 3 POINTERS. 
     The trick is to move the MIDDLE POINTER FROM LEFT TO RIGHT AND 
