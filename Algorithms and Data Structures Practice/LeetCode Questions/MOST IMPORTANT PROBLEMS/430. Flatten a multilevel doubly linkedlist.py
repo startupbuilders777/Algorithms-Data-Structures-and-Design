@@ -39,48 +39,36 @@ class Node:
         self.next = next
         self.child = child
 """
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val, prev, next, child):
+        self.val = val
+        self.prev = prev
+        self.next = next
+        self.child = child
+"""
 class Solution:
-    
-    def print_list(self, node, result=[]):
-        if(node is None):
-            print("nodes are: ", result)
-        else:
-            result.append(node.val)
-            self.print_list(node.next, result)
-
     def flatten(self, head: 'Node') -> 'Node':
-        
-        
-        
         def flat(node, rest):
-            if(node is None and rest is not None):
-                # print("REST WAS NOT USED, AND NODE BECAME NONE!")
-                return None
             
             if(node is None):
                 return None
             
             if(node.next is None and rest):
-                flat_rest = flat(rest, None)
-                
+                flat_rest = flat(rest, None)      
                 node.next = flat_rest
                 flat_rest.prev = node
                 return node
-                    
 
             if(node.child):
-                # print("NODE v HAS CHILD, children are: ", node.val)
-                # self.print_list(node.child)
                 flat_child = flat(node.child, node.next)
                 node.child = None
                 node.next = flat_child 
                 flat_child.prev = node
-                return flat(node, rest)
+                return flat(node, rest)     
             
             node.next =  flat(node.next, rest)
-            # node.next = flatten_next
-            # flat.prev = node
-            
             return node
         
         return flat(head, None)

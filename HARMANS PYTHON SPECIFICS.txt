@@ -1,3 +1,58 @@
+##################################################################################
+
+SHORT CIRCUITING TO GET VALUES TRICK:
+
+For any one else having the same question:
+simple or statements:
+
+The statement x or y returns x if x evaluates to True, otherwise it 
+returns y (even if both are False), let us look at a few examples:
+
+1 or 2 returns 1, because 1 evaluates to True
+0 or 1 returns 1
+0 or '' returns ''
+
+simple and statements:
+The statement x and y returns x if x evaluates to False, otherwise it returns y (even if both are True), 
+
+let us look at a few examples:
+1 and 2 returns 2
+1 and 0 returns 0
+0 and 2 returns 0
+So we can see that intuitively the above statements are evaluated in a "short circuit" manner, 
+i.e. the statement is evaluated from left to right and whichever variable determines 
+the value of the boolean expression first is returned.
+
+Now let us have a look at some complicated examples with the above intuition:
+Continuous or statements
+The variable which first evaluates to True is returned else the last variable is returned.
+Examples:
+1 or 2 or 3 or 4 returns 1
+'' or {} or [] or 4 returns 4
+'' or {} or [] returns []
+Continuous and statements
+The variable which first evaluates to False is returned else the last variable is returned
+Examples:
+1 and 2 and 3 returns 3
+1 and '' and 4 returns ''
+0 and '' and 4 returns 0
+
+More complex statements:
+What if compound statements mixed with and and or are used?
+In such cases we have to remember that and has a higher precedence than 
+or and the order of evaluation of the expression is always from left to right, 
+and lastly remember the 'short circuit' intuition.
+
+Let us have a look at some statements:
+1 and 2 or 4 returns 2, why?
+1 and 2 or 4 is evaluated as (1 and 2) or (4), (1 and 2) evaluates to True, 
+so the or statement returns 1 and 2 which further returns 2
+
+Infact the ternary condition x if condition else y can be rewritten as
+condition and x or y ! (prove it to yourself) , although it is not recommended for readability purposes.
+
+
+
 ################################################################################33
 PRIORITY QUEUE:
 HEAPQ IS A MIN HEAP BY DEFAULT.
@@ -9,7 +64,6 @@ Multiply the values by -1
 There you go. All the highest numbers are now the lowest and vice versa.
 Just remember that when you pop an element to multiply it with -1 
 in order to get the original value again.
-
 
 
 HEAPQ API:

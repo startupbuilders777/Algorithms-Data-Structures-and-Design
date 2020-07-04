@@ -337,7 +337,130 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                     best = max(best, y - x)
             return best
 
--17.5) IMPLEMENTED QUICK SORT FOR LINKED LISTS:
+
+-17.7) Intersection of 2 linked lists. 
+    Write a program to find the node at which the 
+    intersection of two singly linked lists begins.
+    (Constant space)
+
+    Find the different in 2 lists, then traverse longer one 
+    shifted by difference, and other, one node at a time.
+    When nodes are equal that is the intersection node. 
+
+    Other soln:
+        def getIntersectionNode(self, headA, headB):
+            if headA is None or headB is None:
+                return None
+
+            pa = headA # 2 pointers
+            pb = headB
+
+            while pa is not pb:
+                # if either pointer hits the end, 
+                # switch head and continue the second traversal, 
+                # if not hit the end, just move on to next
+                pa = headB if pa is None else pa.next
+                pb = headA if pb is None else pb.next
+
+            return pa 
+            # only 2 ways to get out of the loop, 
+            # they meet or the both hit the end=None
+
+    the idea is if you switch head, the possible difference 
+    between length would be countered. On the second traversal, 
+    they either hit or miss. if they meet, pa or pb would 
+    be the node we are looking for, 
+    if they didn't meet, they will hit the end at 
+    the same iteration, pa == pb == None, 
+    return either one of them is the same,None
+
+
+
+
+
+
+
+-17.6) Copy list with random pointer 
+       (associate input structure with output structure)
+       then recover both after trick. 
+    
+    A linked list is given such that each node contains an 
+    additional random pointer which could point to any node in the list or null.
+
+    Return a deep copy of the list.
+
+    We need a hash map here to map to random nodes in 
+    our new linked list. This requires O(n) space
+
+    We can use constant space (if we do not consider space
+    for output)
+    
+    The idea is to associate the original node with its 
+    copy node in a single linked list. In this way, 
+    we don't need extra space to keep track of the new nodes.
+
+    The algorithm is composed of the follow three steps which are also 3 iteration rounds.
+
+    Iterate the original list and duplicate each node. The duplicate
+    of each node follows its original immediately.
+    Iterate the new list and assign the random pointer for each
+    duplicated node.
+    Restore the original list and extract the duplicated nodes.
+
+    def copyRandomList(self, head):
+
+        # Insert each node's copy right after it, already copy .label
+        node = head
+        while node:
+            copy = RandomListNode(node.label)
+            copy.next = node.next
+            node.next = copy
+            node = copy.next
+
+        # Set each copy's .random
+        node = head
+        while node:
+            node.next.random = node.random and node.random.next
+            node = node.next.next
+
+        # Separate the copied list from the original, (re)setting every .next
+        node = head
+        copy = head_copy = head and head.next
+        while node:
+            node.next = node = copy.next
+            copy.next = copy = node and node.next
+
+        return head_copy
+
+
+    @DrFirestream OMG is that a mindfuck :-). But a nice thing is that the original 
+    list's next structure is never changed, so I can write a helper generator to 
+    visit the original list with a nice for loop encapsulating the while loop 
+    and making the loop bodies a little simpler:
+
+    '''
+    def copyRandomList(self, head: 'Node') -> 'Node':
+        def nodes():
+            node = head
+            while node:
+                yield node
+                node = node.next
+        # create new nodes
+        for node in nodes():
+            node.random = Node(node.val, node.random, None)
+        # populate random field of the new node
+        for node in nodes():
+            node.random.random = node.random.next and node.random.next.random
+        # restore original list and build new list
+        head_copy = head and head.random
+        for node in nodes():
+            node.random.next, node.random = node.next and node.next.random, node.random.next
+        return head_copy
+
+-17.5)
+
+
+-17.4) IMPLEMENTED QUICK SORT FOR LINKED LISTS:
             
     # USE MORE DUMMY NODES TO SEPERATE CONCERNS, AND REDUCE MISTAKES
     # I HAD A PROBLEM WITH CYCLES BECAUSE I WAS REUSING NODES.
@@ -424,7 +547,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         return quicksort(head, 0, l)
 
 
--17.9 Bottom Up Merge Sort for Linked List (O(1) space )
+-17.3 Bottom Up Merge Sort for Linked List (O(1) space )
     class Solution {
     public:
         ListNode *sortList(ListNode *head) {
