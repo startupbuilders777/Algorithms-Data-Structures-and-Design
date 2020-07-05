@@ -76,8 +76,32 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
      Given a binary tree, flatten it to a linked list in-place.
      Use right nodes when creating linked list. 
      CAN DO THIS WITH O(1) SPACE LIKE SO:
-
+  
+     So what this solution is basically doing is putting the 
+     right subtree next to the rightmost node on the left subtree 
+     and then making the left subtree the right subtree and 
+     then making the left one null. Neat!
      
+    class Solution:
+        # @param root, a tree node
+        # @return nothing, do it in place
+        def flatten(self, root):
+            if not root:
+                return
+            
+            # using Morris Traversal of BT
+            node=root
+            
+            while node:
+                if node.left:
+                    pre=node.left
+                    while pre.right:
+                        pre=pre.right
+                    pre.right=node.right
+                    node.right=node.left
+                    node.left=None
+                node=node.right
+
 
 
 
@@ -328,7 +352,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 -17.8)  BE SMART ABOUT GRAPH ROOT FINDING, AND ITERATING:
         
-        128. Longest Consecutive Sequence
+        1.   Longest Consecutive Sequence
         
         Given an unsorted array of integers, find the length of the 
         longest consecutive elements sequence.
@@ -466,7 +490,45 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
             node.random.next, node.random = node.next and node.next.random, node.random.next
         return head_copy
 
--17.5)
+-17.5) AVOID LINKED LIST LOOPS IN YOUR CODE. ALWAYS 
+       NULLIFY YOUR POINTERS IF YOU ARE REUSING THE 
+       DATASTRUCTURE/ DOING THINGS IN PLACE!!!!!!
+       SUCH AS HERE by saving nxt pointer as tmp
+
+       328. Odd Even Linked List
+       Given a singly linked list, group all odd nodes 
+       together followed    by the even nodes. 
+   
+       You should try to do it in place. The program should run in O(1)    
+       space complexity and O(nodes) time complexity.
+
+        def oddEvenList(self, head: ListNode) -> ListNode:
+            oddH = ListNode(0)
+            evenH = ListNode(0)
+            
+            odd = oddH
+            even = evenH
+            
+            isOdd = True
+            node = head
+            
+            while node:
+                nxt = node.next
+                node.next = None # STOP THE LOOPS
+                if isOdd:
+                    odd.next = node
+                    odd = odd.next
+                    isOdd = False
+                else:
+                    even.next = node
+                    even = even.next
+                    isOdd = True
+                node = nxt
+            
+            odd.next = evenH.next
+            return oddH.next
+
+
 
 
 -17.4) IMPLEMENTED QUICK SORT FOR LINKED LISTS:
@@ -1291,7 +1353,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         (or a blue node red), then we've reached a conflict.
 
 
-0)  For problems like parenthesis matching. You can use a stack to solve the matching. But you can also
+1)  For problems like parenthesis matching. You can use a stack to solve the matching. But you can also
     do matching by incrementing and decrementing an integer variable. Or you can use colors or 
     other types of INDICATOR VARIABLE TYPE SOLUTIONS that contain meta information on the problem. 
     Also remember that as you see each element, you can push multiple times to stack, not just once
