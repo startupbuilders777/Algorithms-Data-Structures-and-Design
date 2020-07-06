@@ -72,6 +72,104 @@ TOPICS TO UNDERSTAND:
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
+-25) Check cycle in directed graph (REMEMBER TO PUSH AND POP OFF THE RUNNING
+     RECURISIVE STACK/VISITED SET TO BE ABLE TO REPROCESS NODES ON DIFFERNT PATHS IN GRAPH):
+     (TREASURY PRIME QUIZ)
+
+    def isThereCycle(self, node, visited=set()):        
+        visited.add(node)          
+        kids = self.graph.get(node)
+        if kids: 
+            for kid in kids:
+                # print("For parent, examining child", (node, kid))
+                if kid in visited:
+                    return True
+                else:
+                    result = self.isThereCycle(kid, visited)
+                    if result == True:
+                        return True 
+        visited.remove(node)
+        return False
+
+
+
+-24) Different ways to backtrack:
+    1) Use colors, either 2 with visited set, or 3 when you need to record times in DFS, 
+    2) 3 colors is also similar to pushing and popping off a recursive stack to reprocess elements 
+       you saw. This is used when you want to get all paths from source to target, so you need to
+       reuse nodes/detect all cycles for instance.  
+
+    ALL Paths from source to target:
+    Given a directed, acyclic graph of N nodes.  
+    Find all possible paths from node 0 to node N-1, and return them in any order.
+    
+    # DYNAMIC PROGRAMMING SOLUTION TOP-DOWN!! BY USING @lru_cache(maxsize=None)
+    # THIS SOLUTION IS BAD BECAUSE WE ARE NOT USING DEQUE AND APPENDLEFT, 
+    # LIST MERGING AND INSERTION TO FRONT IS O(N)!!!
+    
+    #The two approach might have the same asymptotic time 
+    #complexity. However, in practice the DP approach is 
+    #slower than the backtracking approach, since we copy the intermediate paths over and over.
+
+    #Note that, the performance would be degraded further, 
+    #if we did not adopt the memoization technique here.
+
+    class Solution:
+        def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:
+            
+            # apply the memoization
+            @lru_cache(maxsize=None)
+            def dfs(node):
+                
+                if node == len(graph) - 1:
+                    return [[len(graph) - 1]]
+                
+                kids  = graph[node]
+                
+                # all paths from node to target. 
+                paths = []
+                
+                for kid in graph[node]:
+                    res = dfs(kid)
+                    # add node to front of each result!
+                    for result in res:
+                        paths.append([node] + result)
+                
+                return paths
+            return dfs(0)
+
+    # BETTER, ALSO USES A DIFF APPROACH OF PUSHING AND POPPING EACH PATH PIECE IN FOR LOOP
+    class Solution:
+        def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:
+
+            target = len(graph) - 1
+            results = []
+
+            def backtrack(currNode, path):
+                # if we reach the target, no need to explore further.
+                if currNode == target:
+                    results.append(list(path))
+                    return
+                # explore the neighbor nodes one after another.
+                for nextNode in graph[currNode]:
+                    path.append(nextNode)
+                    backtrack(nextNode, path)
+                    path.pop()
+            # kick of the backtracking, starting from the source node (0).
+            path = deque([0])
+            backtrack(0, path)
+
+            return results
+
+
+
+-23) Work with differences and gradients instead of RAW VALUES!!
+    It helps to solve the problem. Simplify problems by allocating 
+    everything to one group, then pulling the correct ones to the other group. 
+    Use slopes, intercepts, and think of problems geometrically when 
+    preprocessing AKA two city scheduling
+
+
 -22) Flatten binary tree to linked list. 
      Given a binary tree, flatten it to a linked list in-place.
      Use right nodes when creating linked list. 
@@ -410,9 +508,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
 
-
-
-
 -17.6) Copy list with random pointer 
        (associate input structure with output structure)
        then recover both after trick. 
@@ -495,7 +590,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
        DATASTRUCTURE/ DOING THINGS IN PLACE!!!!!!
        SUCH AS HERE by saving nxt pointer as tmp
 
-       328. Odd Even Linked List
+       1.   Odd Even Linked List
        Given a singly linked list, group all odd nodes 
        together followed    by the even nodes. 
    
