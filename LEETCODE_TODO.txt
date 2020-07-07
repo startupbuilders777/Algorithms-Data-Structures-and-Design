@@ -1,7 +1,11 @@
 PLEASE LOOK AT 652. Find Duplicate Subtrees, and find/analyse discussion by stefan and other mans
 
+Record knowledge for 88. Merge Sorted Array
 
 PLEASE TAKE NOTES ON THE SOLUTIONS OF find median from datastream. 
+
+
+TAKES NOTES ON 73.  SET MATRIX ZEROS. 
 
 
 

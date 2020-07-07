@@ -8,7 +8,6 @@ Bloomberg
 390	Elimination Game	44.00%
 
 
-
 33	Search in Rotated Sorted Array	33.40%
 81	Search in Rotated Sorted Array II	32.80%
 105	Construct Binary Tree from Preorder and Inorder Traversal	44.40%
@@ -19,11 +18,11 @@ Bloomberg
 
 31	Next Permutation	31.40%
 
-611	Valid Triangle Number	46.80%
-116	Populating Next Right Pointers in Each Node	40.40%
-380	Insert Delete GetRandom O(1)	44.50%
-1223	Dice Roll Simulation	42.40%
-399	Evaluate Division	49.30%
+611	  Valid Triangle Number	46.80%
+116	  Populating Next Right Pointers in Each Node	40.40%
+380	  Insert Delete GetRandom O(1)	44.50%
+1223  Dice Roll Simulation	42.40%
+399	  Evaluate Division	49.30%
 
 
 2	Add Two Numbers	32.30%
@@ -37,7 +36,7 @@ Bloomberg
 
 978	Longest Turbulent Subarray	46.00%
 139	Word Break	37.40%
-155	Min Stack	39.80%
+
 
 1060	Missing Element in Sorted Array	52.90%
 

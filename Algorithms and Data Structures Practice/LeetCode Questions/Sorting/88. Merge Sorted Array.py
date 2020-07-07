@@ -94,5 +94,4 @@ class Solution:
                 nums1[l], nums1[inPtr] = nums1[inPtr], nums1[l]
                 l += 1
             inPtr += 1
-        
-
+            
