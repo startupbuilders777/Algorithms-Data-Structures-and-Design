@@ -46,6 +46,7 @@ Review Data structures readme, and do design skip list.
 ########################################
 PROBLEMS TO WORK ON: 
 
+DO CALCULATOR PROBLEMS
 
 all rotation problems
 

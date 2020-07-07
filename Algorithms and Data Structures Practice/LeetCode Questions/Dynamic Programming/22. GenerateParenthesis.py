@@ -14,10 +14,34 @@ For example, given n = 3, a solution set is:
 ]
 
 '''
+# ITERATIVE SOLUTION:
+
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        # create all !
+        
+        '''
+        ok so 3 n//2 open, 
+        and n//2 closed.
+        
+        once you run out of open, you have to put closed. 
+        '''
+        
+        result = []
+        stack = [(0, 0, "")]
+        
+        while stack:
+            o, c, piece = stack.pop()
+            if o == n and c == n:
+                result.append(piece)  
+            if c < o:
+                stack.append((o, c+1, piece + ")"))
+            if o < n:
+                stack.append((o+1, c, piece + "("))
+        return result
+
 
 # MY SOLUTION
-
-
 class Solution:
     def generateParenthesis(self, n):
         """

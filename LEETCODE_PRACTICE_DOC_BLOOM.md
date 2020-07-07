@@ -12,10 +12,12 @@ Bloomberg
 33	Search in Rotated Sorted Array	33.40%
 81	Search in Rotated Sorted Array II	32.80%
 105	Construct Binary Tree from Preorder and Inorder Traversal	44.40%
-295	Find Median from Data Stream	39.90%
-232	Implement Queue using Stacks	45.90%
+3	Longest Substring Without Repeating Characters	29.20%
+44	Wildcard Matching	23.70%
 
+301	Remove Invalid Parentheses	41.00%
 
+31	Next Permutation	31.40%
 
 611	Valid Triangle Number	46.80%
 116	Populating Next Right Pointers in Each Node	40.40%
@@ -59,7 +61,7 @@ Bloomberg
 199	Binary Tree Right Side View	50.50%
 22	Generate Parentheses	58.30%
 140	Word Break II	28.90%
-3	Longest Substring Without Repeating Characters	29.20%
+
 716	Max Stack	41.50%
 993	Cousins in Binary Tree	51.90%
 532	K-diff Pairs in an Array	30.60%
@@ -78,11 +80,9 @@ Bloomberg
 8	String to Integer (atoi)	14.90%
 
 
-301	Remove Invalid Parentheses	41.00%
 
-31	Next Permutation	31.40%
 332	Reconstruct Itinerary	33.30%
-44	Wildcard Matching	23.70%
+
 
 437	Path Sum III	44.30%
 5	Longest Palindromic Substring	28.40%
@@ -98,7 +98,6 @@ Bloomberg
 69	Sqrt(x)	32.50%
 127	Word Ladder	26.50%
 
-543	Diameter of Binary Tree	47.80%
 560	Subarray Sum Equals K	43.20%
 236	Lowest Common Ancestor of a Binary Tree	41.10%
 
