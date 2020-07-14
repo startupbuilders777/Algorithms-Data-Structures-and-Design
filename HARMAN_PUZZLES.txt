@@ -1,0 +1,67 @@
+http://www.a2zinterviews.com/Puzzles/logical-puzzles/logical-puzzles-games_2.php
+https://puzzlefry.com/top-50-common-interview-puzzles-with-answers/
+https://www.analyticsvidhya.com/blog/2016/07/20-challenging-job-interview-puzzles-which-every-analyst-solve-atleast/
+
+https://medium.com/@codingfreak/top-25-programming-puzzles-and-brain-teasers-dac17b41e94a
+
+BRAIN TEASERS -> https://assets.thalia.media/doc/24/d3/24d372a2-1702-4eb4-82ed-453a9946f2d2.pdf
+
+https://careersidekick.com/brain-teaser-job-interview-questions-facebook-google-apple/
+
+http://www-cs-students.stanford.edu/~hdwang/puzzle.html
+
+https://leetcode.com/tag/brainteaser/
+
+interview-bit/brainteasers
+
+
+
+
+SPIDER AND TRIANGLE PROBLEM
+
+Three spiders are sitting at the corners of an equilateral triangle. 
+Every spider begins randomly, picks a direction and begins to move along 
+the edge of the triangle. What is the probability that none of the spiders collide each other?
+
+all ants choose right, or all ants choose left. 
+
+
+
+
+
+
+
+BURNING ROPE PROBLEM
+
+A man has two ropes of differing thickness. Each rope burns in an hour. 
+He really needs to gauge 45 mins. How might he measure 45 mins utilizing 
+just these two ropes? He can't slice the one rope down the middle because 
+the ropes are non-homogeneous and he can't be sure how long it will burn.
+
+Burn one rope on both sides, and burn one rope from one side,
+when ROPE A is done burning, burn the other side of rope B to get 15 minutes. 
+
+
+
+MISLABELED JAR PUZZLE
+
+You have 3 jars that are generally mislabeled. One container contains Apple, 
+another contains Oranges and the third container contains a blend of both 
+Apple and Oranges. You are permitted to pick the as many numbers of fruits 
+you need from each container to fix the names on the containers. What is 
+the minimum number of fruits that you need to pick and from which containers to effectively mark them?
+
+
+
+
+
+
+FISHERMAN AND FISHES
+
+Six fishermen can catch six fishes in six minutes. How many 
+fishermen are needed to catch sixty fishes in sixty minutes?
+
+Six fisherman!!!
+
+If you offer them 10 times as much as time, 
+they will surely catch 10 times as much as fishes as well
