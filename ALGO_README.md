@@ -71,30 +71,33 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+
+-28) REMOVE BIDIRECTIONAL BFS PYTHON SOLUTION FOR Open the Lock in important questions. 
+
 -27) 2 Pointers to delimit sequence ranges, and enforce loop invariants: 
      Use pointers to delimit correct and incorrect regions in sequences, and swap elements/process
      to correct the incorrect sequence
 
-    MOVE ZEROS:
-    Given an array nums, write a function to move all 0's to the end of it while 
-    maintaining the relative order of the non-zero elements.
-    OPTIMAL:
-    
-    the code will maintain the following invariant:
-    All elements before the slow pointer (lastNonZeroFoundAt) are non-zeroes.
-    All elements between the current and slow pointer are zeroes.
-
-    Therefore, when we encounter a non-zero element, we need to swap elements 
-    pointed by current and slow pointer, then advance both pointers. 
-    If it's zero element, we just advance current pointer.
-
-    void moveZeroes(vector<int>& nums) {
-        for (int lastNonZeroFoundAt = 0, cur = 0; cur < nums.size(); cur++) {
-            if (nums[cur] != 0) {
-                swap(nums[lastNonZeroFoundAt++], nums[cur]);
-            }
-        }
-    }
+     MOVE ZEROS:
+     Given an array nums, write a function to move all 0's to the end of it while 
+     maintaining the relative order of the non-zero elements.
+     OPTIMAL:
+     
+     the code will maintain the following invariant:
+     All elements before the slow pointer (lastNonZeroFoundAt) are non-zeroes.
+     All elements between the current and slow pointer are zeroes.
+ 
+     Therefore, when we encounter a non-zero element, we need to swap elements 
+     pointed by current and slow pointer, then advance both pointers. 
+     If it's zero element, we just advance current pointer.
+ 
+     void moveZeroes(vector<int>& nums) {
+         for (int lastNonZeroFoundAt = 0, cur = 0; cur < nums.size(); cur++) {
+             if (nums[cur] != 0) {
+                 swap(nums[lastNonZeroFoundAt++], nums[cur]);
+             }
+         }
+     }
                 
 
 -26) LINKED LIST CHANGE VALUES INSTEAD OF NODE RELATIONSHIPS STRATEGY 
