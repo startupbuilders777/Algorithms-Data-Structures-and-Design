@@ -71,8 +71,32 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+-31) When bottom up DP isnt working, you are usually missing a case in your recurrence!
 
--28) REMOVE BIDIRECTIONAL BFS PYTHON SOLUTION FOR Open the Lock in important questions. 
+
+-30) To create bottom up -> think of recursive solution. The parameters it needs!
+     Start bottom up with these parameter dimensions. Now we have to build 
+     forward from base case. So figure out base case and direction.  
+
+     Then create recurrence/thinking of the grid 
+     Then code. 
+     Then space optimize? 
+     Does greater space optimization mean more performance or same performance because
+     its still the same amount of cache hits either way? 
+
+    
+
+
+-29) 3 POINTER PERFORMANCE OPTIMIZATION FOR O(N^2)
+
+     3SUM LEETCODE QUESTION/TRIANGLE NUMBERS LEETCODE 
+    -> You can use 3 pointers, with middle pointer iterating through array, 
+       and other 2 pointers moving left and right to find different numbers
+       to GET AN O(N^2) SOLUTION INSTEAD OF AN O(N^3) SOLUTION.
+                
+
+
+-28) REVIEW BIDIRECTIONAL BFS PYTHON SOLUTION FOR Open the Lock in important questions. 
 
 -27) 2 Pointers to delimit sequence ranges, and enforce loop invariants: 
      Use pointers to delimit correct and incorrect regions in sequences, and swap elements/process
