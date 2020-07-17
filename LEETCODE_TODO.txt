@@ -43,3 +43,5 @@ Take notes on 978. Longest Turbulent Subarray -> easy task
 
 Take quick notes on 1458. Max Dot Product of 2 subsequences in algo readme / how to write clean dp solns. 
 
+TAKE QUICK NOTES ON 1155. Number of dice rolls with target sum. 
+
