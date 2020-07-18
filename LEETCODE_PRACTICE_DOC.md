@@ -150,21 +150,21 @@ Subsequence LIS : LC 300 354
 Math: LC 279 343 204
 
 EASY:
-256. Paint House
+256.  Paint House
 
 MEDIUM:
-63. Unique Paths II
-64. Minimum Path Sum
-91. Decode Ways
-139. Word Break
-221. Maximal Square
-300. Longest Increasing Subsequence
-322. Coin Change
-464. Can I Win
-474. Ones and Zeroes
-516. Longest Palindromic Subsequence
-698. Partition to K Equal Sum Subsets
-787. Cheapest Flights Within K Stops
+63.   Unique Paths II
+64.   Minimum Path Sum
+91.   Decode Ways
+139.  Word Break
+221.  Maximal Square
+300.  Longest Increasing Subsequence
+322.  Coin Change
+464.  Can I Win
+474.  Ones and Zeroes
+516.  Longest Palindromic Subsequence
+698.  Partition to K Equal Sum Subsets
+787.  Cheapest Flights Within K Stops
 1027. Longest Arithmetic Sequence
 1049. Last Stone Weight II
 1105. Filling Bookcase Shelves
@@ -172,13 +172,15 @@ MEDIUM:
 1155. Dice Roll Sum
 
 HARD:
-32. Longest Valid Parantheses
-44. Wildcard Matching
-72. Edit Distance
-123. Best Time to Buy and Sell Stock III
-312. Burst Balloons
+32.   Longest Valid Parantheses
+44.   Wildcard Matching
+72.   Edit Distance
+123.  Best Time to Buy and Sell Stock III
+312.  Burst Balloons
 1000. Minimum Cost to Merge Stones
 1335. Minimum Difficulty of a Job Schedule
+
+
 
 
 ============================================================================================
