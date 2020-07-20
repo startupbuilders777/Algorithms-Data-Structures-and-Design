@@ -185,6 +185,27 @@ HARD:
 
 ============================================================================================
 
+DO ALL THE GEOMETRY PROBLEMS TAGGED:
+https://leetcode.com/tag/geometry/
+https://leetcode.com/tag/math/
+
+#################################################
+
+Useful links:
+Blind Curated 75 list: https://leetcode.com/list/x48lon06
+Google top list: https://leetcode.com/list/xy8qu5y1
+DP list: https://leetcode.com/list/xcgwht16
+Graph list: https://leetcode.com/list/x17aij9c
+Greedy list: https://leetcode.com/list/xymh9jnj
+Sliding Window list: https://leetcode.com/list/xyxjuxwc
+Tree list: https://leetcode.com/list/x172xave
+https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
+System design course I bought: [gr0kking the system design interview] (I cannot paste this course link here, LC doesn't like it)
+Free system design docs: https://github.com/donnemartin/system-design-primer#how-to-approach-a-system-design-interview-question
+https://leetcode.com/discuss/interview-question/344650/Amazon-Online-Assessment-Questions
+https://leetcode.com/problems/sum-of-two-integers/discuss/84278/A-summary%3A-how-to-use-bit-manipulation-to-solve-problems-easily-and-efficiently
+https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/#
+
 
 
 ############################# GREEDY PROBLEM PRACTICE:

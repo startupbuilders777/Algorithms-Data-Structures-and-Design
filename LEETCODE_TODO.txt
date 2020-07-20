@@ -13,12 +13,7 @@ PLEASE TAKE NOTES ON THE SOLUTIONS OF find median from datastream.
 TAKES NOTES ON 73.  SET MATRIX ZEROS. 
 
 
-
 For generate parenthesis can you do DP? GET NOTES FOR THIS. 
-
-
-
-
 
 RESAARCH RESULTS FOR 33. Search in Rotated Sorted Array 
         
@@ -44,4 +39,8 @@ Take notes on 978. Longest Turbulent Subarray -> easy task
 Take quick notes on 1458. Max Dot Product of 2 subsequences in algo readme / how to write clean dp solns. 
 
 TAKE QUICK NOTES ON 1155. Number of dice rolls with target sum. 
+TAKE QUICK NOTES AND REVIEW DISCUSSION FOR  1223. Dice Roll Simulation
+
+
+
 
