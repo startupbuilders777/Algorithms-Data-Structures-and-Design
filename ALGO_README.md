@@ -71,18 +71,75 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
--31) When bottom up DP isnt working, you are usually missing a case in your recurrence!
+-31) FINITE STATE MACHINES PROCESSING, AND BOTTOM UP DP TECHNIQUE. 
+     309. Best Time to Buy and Sell Stock with Cool Down
+     Thinking about the problem as a finite state machine can be helpful
+     to figure out:
+        -> STATES 
+        -> HOW THE TRANSITION FUNCTION WORKS. MAKE SURE YOU GET ALL THE TRANSITIONS IN!
+        -> THE RECURENCE FOR THE PROBLEM OR MULTIPLE RECURRENCES FOR EACH STATE. 
+
+     You need to figure out how many possible states there are for the DP, 
+     and create a grid for each state. 
+     
+    TO BUY OR SELL STOCK WITH COOLDOWN DP THOUGHT PROCESS O(1) SPACE:
+
+    Design an algorithm to find the maximum profit. You may
+    complete as many transactions as you like (ie, buy one and 
+    sell one share of the stockmultiple times) 
+    After you sell your stock, you cannot buy stock on next day. (ie, cooldown 1 day)
+    Example:
+    Input: [1,2,3,0,2]
+    Output: 3 
+    Explanation: transactions = [buy, sell, cooldown, buy, sell]
+     
+     In STOCK COOLDOWN problem (LEET 309), 
+     you tried to solve the DP with 2 states -> IS Cooldown/Not Cooldown.
+     
+     There is a solution where you create 3 Grids -> BUY/SELL/REST GRID. 
+     The grid comes from the fact that there are 3 states if you look 
+     at the finite state machine. 
+
+    3 GRID SOLUTION -> O(1) SPACE:
+
+    def maxProfit(self, prices):
+        free = 0
+        have = cool = float('-inf')
+        for p in prices:
+            free, have, cool = max(free, cool), max(have, free - p), have + p
+        return max(free, cool)
+    
+    '''
+    free is the maximum profit I can have while being free to buy.
+    have is the maximum profit I can have while having stock.
+    cool is the maximum profit I can have while cooling down.
+
+    free = max(free, cool)
+    have = max(have, free - p)  # if we were free last round and just bought, 
+                                # then our profit(in balance) need to 
+                                # adjust because buying cost money
+                        
+    cool = have + p # to be in cool-down, 
+                    # we just sold in last round (realizing profit), 
+                    # then profit would increase by the current price
+        
+    '''
 
 
 -30) To create bottom up -> think of recursive solution. The parameters it needs!
      Start bottom up with these parameter dimensions. Now we have to build 
      forward from base case. So figure out base case and direction.  
+     
+     When bottom up DP isnt working, you are usually missing a case in your recurrence!
 
      Then create recurrence/thinking of the grid 
-     Then code. 
-     Then space optimize? 
      Does greater space optimization mean more performance or same performance because
-     its still the same amount of cache hits either way? 
+     its still the same amount of cache hits either way?  
+     
+     -> Greater space optimization may lead to higher performance, if there are fewer steps in 
+        the algorithm. 
+     -> An easy space optimization is using only the previous/next rather than saving all the states 
+        because the recurrence formula may only require the previous versions of all the states. 
 
     
 
@@ -263,8 +320,8 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
 
--21) Using 3 pointers Algorithm  + Abusing LOOP invariants 
-     THE DUTCH PARTITIONING ALGORITHM WITH 3 POINTERS. 
+-21) THE DUTCH PARTITIONING ALGORITHM WITH 3 POINTERS. 
+    Using 3 pointers Algorithm  + Abusing LOOP invariants 
     The trick is to move the MIDDLE POINTER FROM LEFT TO RIGHT AND 
     use the left and right pointers to delimit the correctly processed sequence!
 
