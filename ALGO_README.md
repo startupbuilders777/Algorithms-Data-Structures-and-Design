@@ -71,8 +71,19 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+
+
+
+
+
+
+
+
+
+
+
 -31) FINITE STATE MACHINES PROCESSING, AND BOTTOM UP DP TECHNIQUE. 
-     309. Best Time to Buy and Sell Stock with Cool Down
+     1.   Best Time to Buy and Sell Stock with Cool Down
      Thinking about the problem as a finite state machine can be helpful
      to figure out:
         -> STATES 
@@ -2943,6 +2954,13 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 10.7) Memorize 0-1 Knapsack and strategy
       and space efficiency strategy:
     
+    -> LEARN HOW TO USE A PARENTS {} MAP TO REVISIT THE OPTIMIZED DP STATES!
+        -> And return the optimized solution
+    -> Learn how to seperate concerns when creating DP GRIDS. 
+    -> LEARN how to space optimize with PREV/NEXT Rolling optimizer,
+        -> Learn how to also JUST have PREV without Next space optimization
+           by being smart about how you iterate over data
+
     # n is number of items. 
     def knapSack(W, wt, val, n): 
         K = [[0 for x in range(W + 1)] for x in range(n + 1)] 
@@ -2993,10 +3011,10 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         return best_value[capacity], taken
 
 
-11) Know how to write BFS with a deque, and DFS explicitely with a list. 
+1)  Know how to write BFS with a deque, and DFS explicitely with a list. 
     Keep tracking of function arguments in tuple for list. 
 
-12) If you need a priority queue, use heapq. Need it for djikistras. 
+2)  If you need a priority queue, use heapq. Need it for djikistras. 
     Djikstras is general BFS for graphs with different sized edges. 
 
 12.5) Know expand around center to find/count palindroms in a string:
@@ -4490,10 +4508,423 @@ COOL NOTES PART 0.90: DYNAMIC PROGRAMMING PATTERNS, ILLUSTRATIONS, AND EXAMPLES:
     123. Best Time to Buy and Sell Stock III Hard
     188. Best Time to Buy and Sell Stock IV Hard
 
+###########################################################################################
+############################################################################################
+COOL NOTES 0.95 CODEFORCES DP 1
+
+    MEMOIZATION VS FORWARD STYLE DP VS BACKWARD STYLE DP AND RECOVERING THE DP SOLUTION
+
+    Memoization vs DP:
+
+    The memoization approach does not spend time on unnecessary states — 
+    it is a lazy algorithm. Only the states which influence the 
+    final answer are processed. Here are the pros and cons of memoization 
+    over 
+    DP: 1[+]. Sometimes easier to code. 
+    2[+]. Does not require to specify order on states explicitly. 
+    3[+]. Processes only necessary states. 
+    4[-]. Works only in the backward-style DP. 
+    5[-]. Works a bit slower than DP (by constant).
+
+    Forward vs backward DP style
+    backward style. The schema is: iterate through all the states 
+    and for each of them calculate the result by looking backward 
+    and using the already known DP results of previous states. 
+    This style can also be called recurrent since it uses recurrent 
+    equations directly for calculation. The relations for backward-style 
+    DP are obtained by examining the best solution for the state 
+    and trying to decompose it to lesser states. 
+    (YOU HAVE SEEN BACKWARD STYLE PLENTY OF TIMES!)
+
+    There is also forward-style DP. Surprisingly it is often more 
+    convenient to use. The paradigm of this style is to iterate 
+    through all the DP states and from each state perform some transitions 
+    leading forward to other states. Each transition modifies the currently 
+    stored result for some unprocessed states. When the state is considered, 
+    its result is already determined completely. The forward formulation does 
+    not use recurrent equations, so it is more complex to prove the correctness 
+    of solution strictly mathematically. The recurrent relations used in forward-style 
+    DP are obtained by considering one partial solution for the state and trying to 
+    continue it to larger states. To perform forward-style DP it is necessary to 
+    fill the DP results with neutral values before starting the calculation
+    
+    Problem 1:
+    Given a list of n coins, their weights W1, W2, ..., Wn; and the total sum S. 
+    Find the minimum number of coins the overall weight of which is 
+    S (we can use as many coins of each type as we want)
+
+    FOWARD STYLE DP (IT USES RELAXTION LIKE DJIKSTRA/BELLMAN FORD):
+
+    The first example will be combinatoric coins problem. 
+    Suppose that you have a partial solution with P overall weight. 
+    Then you can add arbitrary coin with weight Wi and get overall weight P+Wi. 
+    So you get a transition from state (P) to state (P+Wi). When 
+    this transition is considered, the result for state (P) is added to 
+    the result of state (P+Wi) which means that all the ways to get P weight 
+    can be continued to the ways to get P+Wi weight by adding i-th coin. 
+    Here is the code.
+
+    /* Recurrent relations (transitions) of DP:
+    {k[0] = 1;
+    {(P)->k ===> (P+Wi)->nk    add k to nk
+    */
+    //res array is automatically filled with zeroes
+    res[0] = 1;                                 //DP base is the same
+    for (int p = 0; p<s; p++)                   //iterate through DP states
+        for (int i = 0; i<n; i++) {               //iterate through coin to add
+        int np = p + wgt[i];                    //the new state is (np)
+        if (np > s) continue;                   //so the transition is (p) ==> (np)
+        res[np] += res[p];                      //add the DP result of (p) to DP result of (np)
+        }
+    int answer = res[s];                        //problem answer is the same
+
+    PROBLEM 2: LCS
+    The second example is longest common subsequence problem. 
+    It is of maximization-type, so we have to fill the results array 
+    with negative infinities before calculation. The DP base is state (0,0)->0 
+    which represents the pair of empty prefixes. When we consider partial 
+    solution (i,j)->L we try to continue it by three ways: 
+    1. Add the next letter of first word to the prefix, do not change subsequence. 
+    2. Add the next letter of the second word to the prefix, do not change subsequence. 
+    3. Only if the next letters of words are the same: add next letter 
+        to both prefixes and include it in the subsequence. 
+    
+    For each transition we perform so-called relaxation of the larger DP state result. 
+    We look at the currently stored value in that state: if it is 
+    worse that the proposed one, then it is replaced with the proposed one, 
+    otherwise it is not changed. The implementation code and compact 
+    representation of DP relations are given below.
+
+    /* Recurrent relations (transitions) of DP:
+    {L[0,0] = 0;
+    |          /> (i+1,j)->relax(L)
+    {(i,j)->L ==> (i,j+1)->relax(L)
+                \> (i+1,j+1)->relax(L+1)  (only if next symbols are equal)
+    */
+    void relax(int &a, int b) {                   //relaxation routine
+    if (a < b) a = b;
+    }
+    
+    memset(lcs, -63, sizeof(lcs));              //fill the DP results array with negative infinity
+    lcs[0][0] = 0;                              //set DP base: (0,0)->0
+    for (int i = 0; i<=n1; i++)
+        for (int j = 0; j<=n2; j++) {             //iterate through all states
+        int tres = lcs[i][j];
+        // Improve the next states from the current state, and what we see rn. 
+        // Djikstra relax style!
+        relax(lcs[i+1][j], tres);               //try transition of type 1
+        relax(lcs[i][j+1], tres);               //try transition of type 2
+        if (str1[i] == str2[j])                 //and if next symbols are the same
+            relax(lcs[i+1][j+1], tres + 1);       //then try transition of type 3
+        }
+    int answer = lcs[n1][n2];
+
+    Recovering the best solution for optimization problems
+
+    DP finds only the goal function value itself. 
+    It does not produce the best solution along 
+    with the numerical answer. 
+
+    There are two ways to get the solution path.
+    METHOD 1: REVERSE DP
+    The first way is to recalculate the DP from the end to the start. 
+    First we choose the final state (f) we want to trace the path from. 
+    Then we process the (f) state just like we did it in the DP: 
+    iterate through all the variants to get it. Each variant originates 
+    in a previous state (p). If the variant produces the result equal 
+    to DP result of state (f), then the variant if possible. There is 
+    always at least one possible variant to produce the DP result for 
+    the state, though there can be many of them. If the variant 
+    originating from (p) state is possible, then there is at least 
+    one best solution path going through state (p). Therefore we can
+    move to state (p) and search the path from starting state to 
+    state (p) now. We can end path tracing when we reach the starting state.
+
+    METHOD 2: BACKLINKS
+
+    Another way is to store back-links along with the DP result. 
+    For each state (s) we save the parameters of the previous state (u) 
+    that was continued. When we perform a transition (u) ==> (s) which 
+    produces better result than the currently stored in (s) then we set 
+    the back-link to (s) to the state (u). To trace the DP solution path 
+    we need simply to repeatedly move to back-linked state until the 
+    starting state is met. Note that you can store any additional 
+    info about the way the DP result was obtained to simplify 
+    solution reconstruction.
+
+    Use first method if memory is a problem. Otherwise use method 2. 
+
+    EXAMPLE OF RECOVERING THE SOLUTION PATH:
+
+    /* Consider the input data: S=11, n=3, W = {1,3,5}
+    The DP results + back-links table is:
+    P  = 0 |1 |2 |3 |4 |5 |6 |7 |8 |9 |10|11
+    -------+--+--+--+--+--+--+--+--+--+--+--
+    mink = 0 |1 |2 |1 |2 |1 |2 |3 |2 |3 |2 |3
+    prev = ? |S0|S1|S0|S1|S0|S1|S2|S3|S4|S5|S6
+    item = ? |I0|I0|I1|I1|I2|I2|I2|I2|I2|I2|I2
+    */
+    
+    int mink[MAXW];                       //the DP result array
+    int prev[MAXW], item[MAXW];           //prev &mdash; array for back-links to previous state
+    int k;                                //item &mdash; stores the last item index
+    int sol[MAXW];                        //sol[0,1,2,...,k-1] would be the desired solution
+    
+    memset(mink, 63, sizeof(mink));     //fill the DP results with positive infinity
+    mink[0] = 0;                        //set DP base (0)->0
+    for (int p = 0; p<s; p++)           //iterate through all states
+        for (int i = 0; i<n; i++) {       //try to add one item
+        int np = p + wgt[i];            //from (P)->k we get
+        int nres = mink[p] + 1;         //to (P+Wi)->k+1
+        if (mink[np] > nres) {          //DP results relaxation
+            mink[np] = nres;              //in case of success
+            prev[np] = p;                 //save the previous state
+            item[np] = i;                 //and the used last item
+        }
+        }
+    
+    int answer = mink[s];
+    int cp = s;                         //start from current state S
+    while (cp != 0) {                   //until current state is zero
+        int pp = prev[cp];                //get the previous state from back-link
+        sol[k++] = item[cp];              //add the known item to solution array
+        cp = pp;                          //move to the previous state
+    }
+
+
+###########################################################################################
+############################################################################################
+COOL NOTES 0.98 CODEFORCES DP 2 
+    OPTIMIZING DP
+
+    -> Consolidate equivalent states
+
+        Consider TSP problem as an example. The bruteforce recursive 
+        solution searches over all simple paths from city 0 recursively. 
+        State of this solution is any simple path which starts from city 0. 
+        In this way a state domain is defined and the recursive relations 
+        for them are obvious. But then we can notice that states (0,A,B,L) 
+        and (0,B,A,L) are equivalent. It does not matter in what order the 
+        internal cities were visited — only the set of visited cities and the 
+        last city matter. It means that our state domain is redundant, so let's 
+        merge the groups of equivalent states. We will get state domain (S,L)->R 
+        where S is set of visited states, L is the last city in the path and R is the 
+        minimal possible length of such path. The recursive solution with O((N-1)!) 
+        states is turned into DP over subsets with O(2^N*N) states.
+
+    -> Prune impossible states
+        The state is impossible if its result is always equal to 
+        zero(combinatorial) / infinity(minimization). Deleting such a state is a 
+        good idea since it does not change problem answer for sure. 
+        The impossible states can come from several sources:
+       
+       1. Explicit parameter dependence. The state domain is (A,B) and we know that for all 
+          possible states B = f(A) where f is some function (usually analytic and simple). In 
+          such a case B parameter means some unnecessary information and can be deleted from 
+          state description. The state domain will be just (A). If we ever need parameter B to 
+          perform a transition, we can calculate it as f(A). As the result the size of 
+          state domain is decreased dramatically.
+
+       2. Implicit parameter dependence. This case is worse. We have state domain (A,B) 
+          where A represents some parameters and we know that for any possible state f(A,B) = 0. 
+          In other words, for each possible state some property holds. The best idea is of course 
+          to express one of parameters as explicitly dependent on the others. Then we can go to 
+          case 1 and be happy=) Also if we know that B is either f1(A) or f2(A) or f3(A) or ... or fk(A) 
+          then we can change state domain from (A,B) to (A,i) where i=1..k is a number of equation 
+          B variant. If nothing helps, we can always use approach 4.
+
+       3. Inequalities on parameters. The common way to exploit inequalities 
+          for parameters is to set tight loop bounds. For example, if state domain 
+          is (i,j) and i<j then we can write for(i=0;i<N;i++) for(j=i+1;j<N;j++) 
+          or for(j=0;j<N;j++) for(i=0;i<j;i++). In this case we avoid processing impossible 
+          states and average speedup is x(2). If there are k parameters which are 
+          non-decreasing, speedup will raise to x(k!).
+
+       4. No-thinking ways. Even if it is difficult to determine 
+           which states are impossible, the fact of their existence 
+           itself can be exploited. There are several ways:
+
+            A. Discard impossible states and do not process them. Just add 
+            something like "if (res[i][j]==0) continue;" inside loop which iterates over 
+            DP states and you are done. This optimization should be always used because 
+            overhead is tiny but speedup can be substantial. It does not decrease size of 
+            state domain but saves time from state processing.
+
+            B. Use recursive search with memoization. It will behave very similar to DP 
+            but will process only possible states. The decision to use it must be made before 
+            coding starts because the code differs from DP code a lot.
+
+            C. Store state results in a map. This way impossible states do not eat memory and time at all. 
+            Unfortunately, you'll have to pay a lot of time complexity for this technique: O(log(N)) with 
+            ordered map and slow O(1) with unordered map. And a big part of code must 
+            be rewritten to implement it.>
+
+    -> Store results only for two layers of DP state domain
+
+        The usual case is when result for state (i,A) is dependent only on 
+        results for states (i-1,*). In such a DP only two neighbouring layers 
+        can be stored in memory. Results for each layer are discarded after 
+        the next one is calculated. The memory is then reused for the next layer and so on.
+
+
+        Memory contains two layers only. One of them is current layer and another one is previous layer 
+        (in case of forward DP one layer is current and another is next). After current layer is fully processed, 
+        layers are swapped. There is no need to swap their contents, just swap their pointers/references. 
+        Perhaps the easiest approach is to always store even-numbered layers in one memory buffer(index 0) 
+        and odd-numbered layers in another buffer(index 1). To rewrite complete and working 
+        DP solution to use this optimization you need to do only: 
+        1. In DP results array definition, change the first size of array to two. 
+        2. Change indexation [i] to [i&1] in all accesses to this array. (i&1 is equal to i modulo 2). 
+        3. In forward DP clear the next layer contents immediately after loop over layer 
+              index i. Here is the code example of layered forward-style minimization DP: 
+              int res[2][MAXK]; //note that first dimension is only 2 
+              for (int i = 0; i<N; i++) 
+              { 
+                  memset(res[(i+1)&1], 63, sizeof(res[0])); //clear the contents of next layer (set to infinity) 
+                  for (int j = 0; j<=K; j++) { //iterate through all states as usual 
+                    int ni = i + 1; //layer index of transition destination is fixed 
+                    int nj, nres = DPTransition(res[i&1][j], ???); //get additional parameters and results somehow 
+                    if (res[ni&1][nj] > nres) //relax destination result 
+                        res[ni&1][nj] = nres; //note &1 in first index 
+                  } 
+            }
+
+        This technique reduces memory requirement in O(N) times which is 
+        often necessary to achieve desired space complexity. If sizeof(res) 
+        reduces to no more than several megabytes, then speed performance 
+        can increase due to cache-friendly memory accesses.
+
+        Sometimes you have to store more than two layers. If DP transition relations 
+        use not more that k subsequent layers, then you can store only k layers in memory. 
+        Use modulo k operation to get the array index 
+        for certain layer just like &1 is used in the example.
+
+        There is one problem though. In optimization problem there is no simple way 
+        to recover the path(solution) of DP. You will get the goal function of best solution, 
+        but you won't get the solution itself. To recover solution in usual 
+        way you have to store all the intermediate results.
+
+        There is a general trick which allows to recover path 
+        without storing all the DP results. The path can be recovered using divide and conquer method. 
+        Divide layers into approximately two halves and choose the middle layer with index m in 
+        between. Now expand the result of DP from (i,A)->R to (i,A)->R,mA where mA is the "middle state". 
+        It is value of additional parameter A of the state that lies both on the path and in the middle layer. 
+        Now let's see the following: 
+        1. After DP is over, problem answer is determined as minimal result in final layer (with certain properties maybe). 
+        2. Let this result be R,mA. Then (m,mA) is the state in the middle of the path we want to recover.
+        3. The results mA can be calculated via DP. Now we know the final and the middle states of the desired path. 
+        4. Divide layers into two halves and launch the same DP for each part recursively. 
+        5. Choose final state as answer for the right half and middle state as answer for the left half. 
+        6. Retrieve two states in the middle of these halves and continue recursively.
+        7.  This technique requires additional O(log(N)) time complexity because result for each layer 
+        8.  is recalculated approximately log(N) times.
+        9.  If some additional DP parameter is monotonous (for each transition (i,A) — (i+1,B) inequality A<=B holds) 
+            then domain of this parameter can also be divided into two halves by the middle point. 
+            In such a case asymptotic time complexity does not increase at all.
+
+
+    -> Precalculate
+
+        Often DP solution can benefit from precalculating something. 
+        Very often the precalculation is simple DP itself.
+
+        A lot of combinatorial problems require precalculation of binomial coefficients. 
+        You can precalculate prefix sums of an array so that you can calculate sum of 
+        elements in segment in O(1) time. Sometimes it is beneficial to 
+        precalculate first k powers of a number.
+
+        Although the term precalculation refers to the calculations which are going 
+        before the DP, a very similar thing can be done in the DP process. 
+        For example, if you have state domain (a,b)->R you may find it useful to create 
+        another domain (a,k)->S where S is sum of all R(a,b) with b<k. 
+        It is not precisely precalculation since it expands the DP state domain, 
+        but it serves the same goal: spend some additional 
+        time for the ability to perform a particular operation quickly.>
+
+    -> Rotate the optimization problem
+
+
+        There is a DP solution with state domain (W,A)->R for maximization problem, 
+        where W is weight of partial solution, A is some additional parameter 
+        and R is maximal value of partial solution that can be achieved. 
+        The simple problem unbounded knapsack problem will serve as an example for DP rotation.
+
+        Let's place additional requirement on the DP: if we increase weight W of partial 
+        solution without changing other parameters including result the solution worsens. 
+        Worsens means that the solution with increased weight can be discarded if the initial 
+        solution is present because the initial solution leads to better problem answer 
+        than the modified one. Notice that the similar statement must true for result R in 
+        any DP: if we increase the result R of partial solution the solution improves. 
+        In case of knapsack problem the requirement is true: we have some partial solution; 
+        if another solution has more weight and less value, then it is surely worse t
+        han the current one and it is not necessary to process it any further. 
+        The requirement may be different in sense of sign (minimum/maximum. worsens/improves).
+
+        This property allows us to state another "rotated" DP: (R,A)->W where R is the value of partial solution, 
+        A is the same additional parameter, and W is the minimal possible weight for such a partial solution. 
+        In case of knapsack we try to take items of exactly R overall value with the least overall 
+        weight possible. The transition for rotated DP is performed the same way. 
+        The answer for the problem is obtained as usual: iterate through all 
+        states (R,A)->W with desired property and choose solution with maximal value.
+
+        To understand the name of the trick better imagine a grid on the plane 
+        with coordinates (W,R) where W is row index and R is column index. 
+        As we see, the DP stores only the result for rightmost(max-index) cell in each row. 
+        The rotated DP will store only the uppermost(min-index) cell in each column. 
+        Note the DP rotation will be incorrect if the requirement stated above does not hold.
+
+        The rotation is useful only if the range of possible values R is much less than the 
+        range of possible weights W. The state domain will take O(RA) memory instead of O(WA) 
+        which can help sometimes. For example consider the 0-1 knapsack problem with arbitrary 
+        positive real weights and values. DP is not directly applicable in this case. 
+        But rotated DP can be used to create fully polynomial approximation scheme which 
+        can approximate the correct answer with relative error not more than arbitrary threshold. 
+        The idea is to divide all values by small eps and round to the nearest integer. 
+        Then solve DP with state domain (k,R)->W where k is number of already processed items, 
+        R is overall integer value of items and W is minimal possible overall weight. Note that 
+        you cannot round weights in knapsack problem because the optimal solution you obtain 
+        this way can violate the knapsack size constraint.
+
+
+    -> Calculate matrix power by squaring
+
+        This technique deals with layered combinatorial DP solution with transition independent 
+        of layer index. Two-layered DP has state domain (i,A)->R and recurrent rules 
+        in form R(i+1,A) = sum(R(i,B)*C(B)) over all B parameter values. It is important that 
+        recurrent rules does not depend on the layer index.
+
+        Let's create a vector V(i) = (R(i,A1), R(i,A2), ..., R(i,Ak)) where Aj iterates through 
+        all possible values of A parameter. This vector contains all the results on i-th layer. 
+        Then the transition rule can be formulated as matrix multiplication: V(i+1) = M * V(i) 
+        where M is transition matrix. The answer for the problem is usually determined by the 
+        results of last layer, so we need to calculate V(N) = M^N * V(0).
+
+        The DP solution is to get V(0) and then multiply it by M matrix N times. It requires 
+        O(N * A^2) time complexity, or more precisely it requires O(N * Z) time where Z is 
+        number of non-zero elements of matrix M. Instead of one-by-one matrix multiplication, 
+        exponentiation by squaring can be used. It calculates M^N using O(log(N)) matrix multiplications. 
+        After the matrix power is available, we multiply vector V(0) by it and instantly get the results 
+        for last layer. The overall time complexity is O(A^3 * log(N)). This trick is necessary when A is 
+        rather small (say 200) and N is very large (say 10^9).
+
+    -> Use complex data structures and algorithms
+
+        Sometimes tough DP solutions can be accelerated by using complex acceleration 
+        structures or algorithms. Binary search, segment trees (range minimum/sum query), 
+        binary search tree (map) are good at accelerating particular operations. If you 
+        are desperate at inventing DP solution of Div1 1000 problem with 
+        proper time complexity, it may be a good idea to recall these things.
+
+        For example, longest increasing subsequence problem DP solution can be accelerated to 
+        O(N log(N)) with dynamic range minimum query data structure 
+        or with binary search depending on the chosen state domain.
+    
+
 #####################################################################################################################
 #####################################################################################################################
 
 COOL NOTES PART 1: DYNAMIC PROGRAMMING RECURRENCES EXAMPLES: 
+(In the code ->  &mdash; means minus sign. The html was parsed wrong)
 (For dp, define subproblem, then recurrence, then base cases, then implement)
 
 1) Given n, find number of diff ways to write n as sum of 1, 3, 4
