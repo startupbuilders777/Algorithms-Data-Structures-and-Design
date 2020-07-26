@@ -8,7 +8,6 @@ latency numbers every programmer needs to know
 Behavioral STAR matrix
 
 
-
 ###########################################
 
 ONSITE PRACTICE: 

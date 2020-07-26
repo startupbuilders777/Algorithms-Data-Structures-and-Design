@@ -4841,7 +4841,7 @@ COOL NOTES 0.98 CODEFORCES DP 2
         but it serves the same goal: spend some additional 
         time for the ability to perform a particular operation quickly.>
 
-    -> Rotate the optimization problem
+    -> Rotate the optimization problem (ROTATION TECHNIQUE DONE IN ConnectTheCities.py in Competition folder)
 
 
         There is a DP solution with state domain (W,A)->R for maximization problem, 
@@ -4884,7 +4884,6 @@ COOL NOTES 0.98 CODEFORCES DP 2
         R is overall integer value of items and W is minimal possible overall weight. Note that 
         you cannot round weights in knapsack problem because the optimal solution you obtain 
         this way can violate the knapsack size constraint.
-
 
     -> Calculate matrix power by squaring
 
