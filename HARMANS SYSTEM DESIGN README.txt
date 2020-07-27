@@ -1,3 +1,5 @@
+
+
 My approach for solving system design in an interview:
 
 Functional Requirements / Use Cases - Spend max of 5 mins here. 
@@ -35,7 +37,8 @@ database throughput capacity, cache memory and so on. A lot of discussion on tra
 
 
 
-
+########################################
+READ THIS -> https://systemsthatscale.org/
 
 ###########################################
 From https://github.com/jwasham/coding-interview-university#data-structures

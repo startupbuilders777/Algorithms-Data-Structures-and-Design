@@ -153,6 +153,8 @@ on (k,f,r,m)-tuple remains the exactly same. When we calculate the problem answe
 we do the same things but also we check that the number of moves 
 does not exceed the limit. The rotated DP is O(N * D^3) in time and can be 
 done in O(D^2) space complexity if "store two layers" optimization is used.
+So basically the O(N * D^2 * M) became O(N * D^2 * D), and this is efficient if D < M. 
+
 
 int n, d;                                           //number of transmitters and distance between cities
 int res[2][MAXD][MAXD];                             //state domain results: (k,f,r)->m
@@ -160,13 +162,13 @@ int res[2][MAXD][MAXD];                             //state domain results: (k,f
     sort(xarr.begin(), xarr.end());                 //do not forget to sort the transmitter positions!
     memset(res, 63, sizeof(res));
     res[0][0][0] = 0;                               //DP base: all zeros possible, others impossible
-    for (int k = 0; k<n; k++) {                     //iterate k &mdash; number of transmitters places so far
+    for (int k = 0; k<n; k++) {                     //iterate k  -  number of transmitters places so far
       memset(res[(k+1)&1], 63, sizeof(res[0]));
-      for (int f = 0; f<=d; f++)                    //iterate f &mdash; position of foremost(and last) transmitter
-        for (int r = 0; r<=d; r++) {                //iterate r &mdash; required transmission range
+      for (int f = 0; f<=d; f++)                    //iterate f  -  position of foremost(and last) transmitter
+        for (int r = 0; r<=d; r++) {                //iterate r  -  required transmission range
           int m = res[k&1][f][r];                   //get minimal number of moves required
           if (m > maxmoves) continue;               //discard state if it is impossible or number of moves exceeds the limit
-          for (int p = f; p<=d; p++)                //iterate p &mdash; possible position of k-th transmitter
+          for (int p = f; p<=d; p++)                //iterate p  -  possible position of k-th transmitter
             relax(res[(k+1)&1][p][max(r,p-f)], m + abs(p-xarr[k])); //try transition
         }
     }

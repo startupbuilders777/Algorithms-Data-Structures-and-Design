@@ -4666,8 +4666,8 @@ COOL NOTES 0.95 CODEFORCES DP 1
     */
     
     int mink[MAXW];                       //the DP result array
-    int prev[MAXW], item[MAXW];           //prev &mdash; array for back-links to previous state
-    int k;                                //item &mdash; stores the last item index
+    int prev[MAXW], item[MAXW];           //prev  -  array for back-links to previous state
+    int k;                                //item  -  stores the last item index
     int sol[MAXW];                        //sol[0,1,2,...,k-1] would be the desired solution
     
     memset(mink, 63, sizeof(mink));     //fill the DP results with positive infinity
@@ -4917,7 +4917,392 @@ COOL NOTES 0.98 CODEFORCES DP 2
         For example, longest increasing subsequence problem DP solution can be accelerated to 
         O(N log(N)) with dynamic range minimum query data structure 
         or with binary search depending on the chosen state domain.
+
+#######################################################################################################
+#######################################################################################################
+
+CODEFORCES DP 3 - STATE TRANSITIONS, AND STATES, AND RECURRENT RELATIONSHIPS
+
+-> Overview 
+    Solution Code of DP solution usually contains an array representing 
+    subresults on the state domain. For example, classic knapsack problem solution will be like (FORWARD DP):
+
+    int maxcost[items+1][space+1];
+    memset(maxcost, -63, sizeof(maxcost));   //fill with negative infinity
+    maxcost[0][0] = 0;                       //base of DP
+    for (int i = 0; i<items; i++)            //iterations over states in proper order
+        for (int j = 0; j<=space; j++) {
+        int mc = maxcost[i][j];              //we handle two types forward transitions
+        int ni, nj, nmc;                     //from state (i,j)->mc to state (ni,nj)->nmc
     
+        ni = i + 1;                          //forward transition: do not add i-th item
+        nj = j;
+        nmc = mc;      
+        if (maxcost[ni][nj] < nmc)           //relaxing result for new state
+            maxcost[ni][nj] = nmc;
+    
+        ni = i + 1;                          //forward transition: add i-th item
+        nj = j + size[i];
+        nmc = mc + cost[i];
+        if (nj <= space && maxcost[ni][nj] < nmc)
+            maxcost[ni][nj] = nmc;
+        }
+    int answer = -1000000000;                //getting answer from state results
+    for (j = 0; j<=space; j++)
+        if (maxcost[items][j] > answer)
+        answer = maxcost[items][j];
+    return answer;
+
+    Here (i,j) is state of DP with result equal to maxcost[i][j]. 
+    The result here means the maximal cost of items we can get by taking some of first i items with 
+    overall size of exactly j. So the set of (i,j) pairs and concept of maxcost[i][j] here 
+    comprise a state domain. The forward transition is adding or not adding the i-th item to 
+    the set of items we have already chosen.
+
+    The order of iterations through all DP states is important. The code above 
+    iterates through states with pairs (i,j) sorted lexicographically. It is correct 
+    since any transition goes from set (i,*) to set (i+1,*), so we see that i is increasing 
+    by one. Speaking in backward (recurrent) style, the result for each state (i,j) directly 
+    depends only on the results for the states (i-1,*).
+
+    To determine order or iteration through states we have to define order on state domain. 
+    We say that state (i1,j1) is greater than state (i2,j2) if (i1,j1) directly or indirectly 
+    (i.e. through several other states) depends on (i2,j2). This is definition of order on the 
+    state domain used. In DP solution any state must be considered after all the lesser states. 
+    Else the solution would give incorrect result.
+
+-> Multidimensional array 
+    The knapsack DP solution described above is an example of multidimensional array state domain (with 2 
+    dimensions). A lot of other problems have similar state domains. Generally 
+    speaking, in this category states are represented by k   parameters: (i1, i2, i3, ..., ik). 
+    So in the code we define a multidimensional array for state results like: 
+    int Result[N1][N2][N3]...    [Nk]. Of course there are some transition rules 
+    (recurrent relations). These rules themselves can be complex, but the order of states   
+    is usually simple.
+
+    In most cases the states can be iterated through in lexicographical order. 
+    To do this you have to ensure that if I = (i1, i2, i3, ...,  ik) directly 
+    depends on J = (j1, j2, j3, ..., jk) then I is lexicographically greater that J. 
+    This can be achieved by permuting  parameters (like using (j,i) instead of (i,j)) 
+    or reversing them. But it is usually easier to change the order and direction of nested   
+    loops. Here is general code of lexicographical traversion:
+
+      for (int i1 = 0; i1<N1; i1++)
+        for (int i2 = 0; i2<N1; i2++)
+          ...
+            for (int ik = 0; ik<Nk; ik++) {
+              //get some states (j1, j2, j3, ..., jk) -> jres by performing transitions
+              //and handle them
+            }
+    Note: changing order of DP parameters in array and order of nested loops 
+    can noticably affect performance on modern computers due to    
+    CPU cache behavior.
+
+    This type of state domain is the easiest to understand and implement, that's why 
+    most DP tutorials show problems of this type. But it   is not the most 
+    frequently used type of state domain in SRMs. DP over subsets is much more popular.
+
+->  Subsets of a given set
+
+    The problems of this type has some set X. The number of elements in this set is small: 
+    less than 20. The idea of DP solution is to  consider all subsets of X as 
+    state domain. Often there are additional parameters. So generally we 
+    have state domain in form (s,a) where  s is a subset of X and "a" represents additional parameters.
+
+    Consider TSP problem as an example. The set of cities X={0, 1, 2, ..., N-1} 
+    is used here. State domain will have two parameters: s and  a. 
+    The state (s,a)->R means that R is the shortest path from city 0 to 
+    city "a" which goes through all the vertices from subset s    
+    exactly once. The transition is simply adding one city v to the 
+    end of path: (s,a)->R turns into (s+{v},v)->R + M[a,v]. Here M[i,j] 
+    is     distance between i-th and j-th city. Any hamiltonian cycle is a 
+    path which goes through each vertex exactly once plus the edge which    
+    closes the cycle, so the answer for TSP problem can be computed as min(R[X,a]+M[a,0]) among all vertices "a".
+
+    It is very convenient to encode subsets with binary numbers. 
+    Look recipe "Representing sets with bitfields" for detailed explanation.
+
+    The state domain of DP over subsets is usually ordered by set 
+    inclusion. Each forward transition adds some elements to the current  
+    subset, but does not subtract any. So result for each state (s,a) depends 
+    only on the results of states (t,b) where t is subset of s.    
+    If state domain is ordered like this, then we can iterate through subsets 
+    in lexicographical order of binary masks. Since subsets are  
+    usually represented with binary integers, we can iterate through 
+    all subsets by iterating through all integers from 0 to 2^N — 1. For    
+    example in TSP problem solution looks like:
+
+      int res[1<<N][N];
+      memset(res, 63, sizeof(res));       //filling results with positive infinity
+      res[1<<0][0] = 0;                   //DP base
+    
+      for (int s = 0; s < (1<<N); s++)    //iterating through all subsets in lexicographical order
+        for (int a = 0; a < N; a++) {
+          int r = res[s][a];
+          for (int v = 0; v < N; v++) {   //looking through all transitions (cities to visit next)
+            if (s & (1<<v)) continue;     //we cannot visit cities that are already visited
+            int ns = s | (1<<v);          //perform transition
+            int na = v;
+            int nr = r + matr[a][v];      //by adding edge (a &mdash; v) distance
+            if (res[ns][na] > nr)         //relax result for state (ns,na) with nr
+              res[ns][na] = nr;
+          }
+        }
+      int answer = 1000000000;            //get TSP answer
+      for (int a = 0; a < N; a++)
+        answer = min(answer, res[(1<<N)-1][a] + matr[a][0]);
+
+    Often in DP over subsets you have to iterate through all subsets or 
+    supersets of a given set s. The bruteforce implementation will  
+    require O(4^N) time for the whole DP, but it can be easily optimized to 
+    take O(3^N). Please read recipe "Iterating Over All Subsets of a Set".
+
+
+-> Substrings of a given string
+
+    There is a fixed string or a fixed segment. According to the problem 
+    definition, it can be broken into two pieces, then each of pieces  
+    can be again divided into two pieces and so forth until we get unit-length strings. 
+    And by doing this we need to achieve some goal.
+
+    Classical example of DP over substrings is context-free grammar parsing algorithm. 
+    Problems which involve putting parentheses to    
+    arithmetic expression and problems that ask to optimize the overall 
+    cost of recursive breaking are often solved by DP over substrings.     
+    In this case there are two special parameters L and R which represent indices of left 
+    and right borders of a given substring. There can     
+    be some additional parameters, we denote them as "a". So each 
+    state is defined by (L,R,a). To calculate answer for each state, 
+    all the  ways to divide substring into two pieces are considered. 
+    Because of it, states must be iterated through in order or non-decreasing   
+    length. Here is the scheme of DP over substrings (without additional parameters):
+
+      res[N+1][N+1];                          //first: L, second: R
+      for (int s = 0; s<=N; s++)              //iterate size(length) of substring
+        for (int L = 0; L+s<=N; L++) {        //iterate left border index
+          int R = L + s;                      //right border index is clear
+          if (s <= 1) {                       
+            res[L][R] = DPBase(L, R);         //base of DP &mdash; no division
+            continue;
+          }
+          tres = ???;                          
+          for (int M = L+1; M<=R-1; M++)      //iterate through all divisions
+            tres = DPInduction(tres, res[L][M], res[M][R]);
+          res[L][R] = tres;
+        }
+      answer = DPAnswer(res[0][N]);
+
+-> Subtrees(vertices) of a given rooted tree
+
+    The problem involves a rooted tree. Sometimes a graph is given 
+    and its DFS search tree is used. Some sort of result can be calculated   
+    for each subtree. Since each subtree is uniquely identified by its root, 
+    we can treat DP over subtrees as DP over vertices. The result    
+    for each non-leaf vertex is determined by the results of its immediate children.
+
+    The DP over subtree has a state domain in form (v,a) where v is a root of 
+    subtree and "a" may be some additional parameters. states are     
+    ordered naturally be tree order on vertices. Therefore the easiest way to 
+    iterate through states in correct order is to launch DFS from     
+    the root of tree. When DFS exits from a vertex, its result must 
+    be finally computed and stored in global memory. 
+    The code generally     looks like:
+
+      bool vis[N];                                  //visited mark for DFS
+      res[N];                                       //DP result array
+    
+      void DFS(int v) {                             //visit v-rooted subtree recursively
+        vis[v] = true;                              //mark vertex as visited
+        res[v] = ???;                               //initial result, which is final result in case v is leaf
+        for (int i = 0; i<nbr[v].size(); i++) {     //iterate through all sons s
+          int s = nbr[v][i];                        
+          if (!vis[s]) {                            //if vertex is not visited yet, then it's a son in DFS tree
+            DFS(s);                                 //visit it recursively
+            res[v] = DPInduction(res[v], res[s]);   //recalculate result for current vertex
+          }
+        }
+      }
+      ...
+      memset(vis, false, sizeof(vis));              //mark all vertices as not visited
+      DFS(0);                                       //run DFS from the root = vertex 0
+      answer = DPAnswer(res[0]);                    //get problem answer from result of root
+
+    Sometimes the graph of problem is not connected (e.g. a forest). 
+    In this case run a series of DFS over the whole graph. The results for     
+    roots of individual trees are then combined in some way. 
+    Usually simple summation/maximum or a simple formula is enough 
+    but in tough cases this "merging problem" can turn out to require 
+    another DP solution.
+
+    The DPInduction is very simple in case when there are no additional parameters. 
+    But very often state domain includes the additional     
+    parameters and becomes complicated. DPInduction turns out to be 
+    another(internal) DP in this case. Its state domain is (k,a) where k is     
+    number of sons of vertex considered so far and "a" is additional info. 
+    Be careful about the storage of results of this internal DP. 
+    If  you are solving optimization problem and you are required to 
+    recover the solution (not only answer) then you have to save results of     
+    this DP for solution recovering. In this case you'll have an array 
+    globalres[v,a] and an array internalres[v,k,a]. Topcoder problems    r
+    arely require solution, so storage of internal DP results is not necessary. 
+    It is easier not to store them globally. In the code below    
+    internal results for a vertex are initialized after all the sons 
+    are traversed recursively and are discarded after DFS exits a vertex.     
+    This case is represented in the code below:
+
+      bool vis[N];
+      gres[N][A];
+      intres[N+1][A];
+    
+      void DFS(int v) {
+        vis[v] = true;
+    
+        vector<int> sons;
+        for (int i = 0; i<nbr[v].size(); i++) {    //first pass: visit all sons and store their indices
+          int s = nbr[v][i];
+          if (!vis[s]) {
+            DFS(s);
+            sons.push_back(s);
+          }
+        }
+    
+        int SK = sons.size();                      //clear the internal results array
+        for (int k = 0; k<=SK; k++)
+          memset(intres[k], ?, sizeof(intres[k]));
+    
+        for (int a = 0; a<A; a++)                  //second pass: run internal DP over array of sons
+          intres[0][a] = InternalDPBase(v, a);
+        for (int k = 0; k<SK; k++)                 //k = number of sons considered so far
+          for (int a = 0; a<A; a++)                //a = additional parameter for them
+            for (int b = 0; b<A; b++) {            //b = additional parameter for the son being added
+              int na = DPTransition(v, a, b);
+              int nres = DPInduction(intres[k][a], gres[sons[k]][b]);
+              intres[k+1][na] = DPMerge(intres[k+1][na], nres);
+            }
+        for (int a = 0; a<A; a++)                  //copy answer of internal DP to result for vertex
+          gres[v][a] = intres[SK][a];
+      }
+      ...
+      memset(vis, false, sizeof(vis));              //series of DFS
+      for (int v = 0; v<N; v++) if (!vis[v]) {
+        DFS(v);
+        ???                                         //handle results for connected component
+      }
+      ???                                           //get the answer in some way
+
+    It is very important to understand how time/space complexity is calculated 
+    for DP over subtrees. For example, the code just above   
+    requires O(N*A^2) time. Though dumb analysis says it 
+    is O(N^2*A^2): {N vertices} x {SK<=N sons for each} x A x A. 
+    Let Ki denote number    of sons of vertex i. Though each Ki may 
+    be as large as N-1, their sum is always equal to N-1 in a rooted tree. 
+    This fact is the key to     
+    further analysis. Suppose that DFS code for i-th vertex runs in not 
+    more than Ki*t time. Since DFS is applied only once to each vertex,     
+    the overall time will be TC(N) = sum(Ki*t) <= N*t. Consider t=A^2 for the case 
+    above and you'll get O(N*A^2) time complexity. To    benefit from this acceleration, 
+    be sure not to iterate through all vertices of graph in DFS. For example above, 
+    running memset for the     whole intres array in DFS will raise the time complexity. 
+    Time of individual DFS run will become O(N*A + Ki*A^2) instead of O(Ki*A^2).  
+    The overall time complexity will become O(N^2*A + N*A^2) which is great regress 
+    in case if A is much smaller that N. Using the same  approach you may achieve 
+    O(N*A) space complexity in case you are asked to recover solution. We have already 
+    said that to recover     solution you have to store globally the array 
+    internalres[v,k,a]. If you allocate memory for this array dynamically, then 
+    you can   ignore completely states with k>Ki. Since the sum of all Ki is N, 
+    you will get O(N*A) space.
+
+-> Layer count + layer profile
+
+    This is the toughest type of DP state domain. It is usually used in 
+    tiling or covering problems on special graphs. The classic examples     
+    are: calculate number of ways to tile the rectangular board with dominoes 
+    (certain cells cannot be used); or put as many chess figures  
+    on the chessboard as you can so that they do not hit each other (again, some cells may be restricted).
+
+    Generally speaking, all these problems can be solved with DP over subsets 
+    (use set of all cells of board). DP with profiles is an   
+    optimization which exploits special structure in this set. The board we have 
+    to cover/tile is represented as an array of layers. We try   
+    to consider layers one by one and store partial solutions after each layer. 
+    In simple rectangular board case layer is one row of the  board. 
+    The profile is a subset of cells in current row which are already tiled.
+
+    The state domain has form (k,p) where k is number of fully processed layers 
+    and p is so-called profile of solution. Profile is the  necessary information 
+    about solution in layers that are not fully processed yet. 
+    The transitions go from (k,p) to (k+1,q) where q is     
+    some new profile. The number of transitions for each state is usually large, 
+    so they all are iterated through by recursive search,  
+    sometimes with pruning. The search has to find all the ways to 
+    increase the partial solution up to the next layer.
+
+    The example code below calculates the number of way to fully 
+    cover empty cells on the given rectangular board with dominoes.
+
+    int res[M+1][1<<N];                     
+                                            //k = number of fully tiled rows               
+    int k, p, q;                            //p = profile of k-th row = subset of tiled cells
+    bool get(int i) {                       //q = profile of the next row (in search)        
+      return matr[k][i] == '#'              
+          || (p & (1<<i));                  //check whether i-th cell in current row is not free
+    }
+    void Search(int i) {                    //i = number of processed cells in current row
+      if (i == N) {
+        add(res[k+1][q], res[k][p]);        //the current row processed, make transition
+        return;
+      }
+    
+      if (get(i)) {                         //if current cell is not free, skip it
+        Search(i+1);
+        return;
+      }
+    
+      if (i+1<N && !get(i+1))               //try putting (k,i)-(k,i+1) domino
+        Search(i+2);
+    
+      if (k+1<M && matr[k+1][i] != '#') {   //try putting (k,i)-(k+1,i) domino
+        q ^= (1<<i);                        //note that the profile of next row is changed
+        Search(i+1);
+        q ^= (1<<i);
+      }
+    }
+    ...
+    res[0][0] = 1;                          //base of DP
+    for (k = 0; k<M; k++)                   //iterate over number of processed layers
+      for (p = 0; p<(1<<N); p++) {          //iterate over profiles
+        q = 0;                              //initialize the new profile
+        Search(0);                          //start the search for all transitions
+      }
+    int answer = res[M][0];                 //all rows covered with empty profile = answer
+
+    The asymptotic time complexity is not easy to calculate exactly. 
+    Since search for i performs one call to i+1 and one call to i+2, the   
+    complexity of individual search is not more than N-th Fibonacci number = fib(N). 
+    Moreover, if profile p has only F free cells it will     
+    require O(fib(F)) time due to pruning. If we sum C(N,F) fib(F) for all F we'll 
+    get something like (1+phi)^N, where phi is golden ratio.  
+    The overall time complexity is O(M * (1+phi)^N). Empirically it is even lower.
+
+    The code is not optimal. Almost all DP over profiles should use "storing two layers" 
+    space optimization. Look "Optimizing DP solution"  recipe. Moreover DP over 
+    broken profiles can be used. In this DP state domain (k,p,i) is used, 
+    where i is number of processed cells in   a row. No recursive search is 
+    launched since it is converted to the part of DP. The time 
+    complexity is even lower with this solution.
+
+    The hard DP over profiles examples can include extensions like: 
+    1. Profile consists of more than one layer. 
+       For example to cover the    grid with three-length tiles you need to store 
+       two layers in the profile. 
+    2. Profile has complex structure. For example to find optimal    
+       in some sense hamiltonian cycle on the rectangular board you have 
+       to use matched parentheses strings as profiles. 
+    3. Distinct profile  structure. Set of profiles may be different for each layer. 
+       You can store profiles in map in this case.
+
+
+
 
 #####################################################################################################################
 #####################################################################################################################
