@@ -1,18 +1,13 @@
-PLEASE LOOK AT 652. Find Duplicate Subtrees, and find/analyse discussion by stefan and other mans
-
-
-
 Record knowledge for 88. Merge Sorted Array
-
 
 
 PLEASE TAKE NOTES ON THE SOLUTIONS OF find median from datastream. 
 
 
-
 TAKES NOTES ON 73.  SET MATRIX ZEROS. 
 
 For generate parenthesis can you do DP? GET NOTES FOR THIS. 
+
 
 RESAARCH RESULTS FOR 33. Search in Rotated Sorted Array 
         
@@ -27,6 +22,7 @@ RESAARCH RESULTS FOR 33. Search in Rotated Sorted Array
         -> Also try DOING a circular array using mod! and finding the pivot!
         -> getting key things like the pivot make the problem easier!
         soemtimes easier to break the problem up and do it that way. 
+
 
 COMPLETED 105. Construct Binary Tree from Preorder and Inorder Traversal
     REVIEW IT, -> IMPROVE IT  -> MAKE FASTER -> LOOK AT DISCUSSION 

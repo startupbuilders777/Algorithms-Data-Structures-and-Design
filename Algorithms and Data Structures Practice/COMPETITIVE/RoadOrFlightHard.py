@@ -3,7 +3,7 @@
 
 
 Problem Statement
-    	The king has been out to work for a long time and he wants to go back to 
+     The king has been out to work for a long time and he wants to go back to 
      his queen as fast as possible. The king is in city 0 and the queen is in city N. 
      There are roads and flights connecting city i to city (i+1) for all i between 
      0 and N-1, inclusive.
@@ -24,8 +24,6 @@ However, taking a flight risks the life of the king during takeoffs
 due to the technological limitations in the kingdom. Hence the queen 
 has asked him to ensure that the total number of takeoffs during his 
 entire journey does not exceed K.
-
-
 
 To minimize the number of takeoffs, the king may choose to take a direct 
 flight from city i to city i+j instead of separate flights from city i to 
@@ -120,6 +118,23 @@ prior written consent of TopCoder, Inc. is strictly prohibited. (c)2010,
 TopCoder, Inc. All rights reserved.
 
 '''
+
+'''
+Harmans answer:
+
+
+roads
+flights
+
+DP(i, k) -> totalTime
+
+i processes the town/road we on!
+
+roadArray -> create from the mod thing above
+flightArray -> create from mod thing above
+
+'''
+
 
 '''
 In this problem we are asked to find minimal distance between two points 

@@ -13,6 +13,36 @@ Special thanks to @ifanchu for adding this problem and creating all test cases. 
 additional test cases.
 '''
 
+# MY DP SOLUTION
+class Solution:
+    def rob(self, nums: List[int]) -> int:      
+        '''
+        Transition function: 
+        
+        FREE state + ROB action -> FROZEN 
+        Free state + DONT ROB -> Free State
+        FROZEN state + Dont Rob -> Free State.  
+        '''
+        
+        COUNT = len(nums)
+        
+        FROZEN = 0
+        FREE = 0 
+        
+        NXT_FROZEN = 0
+        NXT_FREE = 0
+        
+        for val in nums:
+            # Rob
+            # OPT[i+1] = max(OPT[i+1], OPT[i] + nums[i]) 
+            NXT_FROZEN = FREE  + val
+            NXT_FREE = max(FREE, FROZEN)
+            
+            FROZEN = NXT_FROZEN
+            FREE = NXT_FREE
+        
+        return max(FREE, FROZEN)
+
 
 class Solution(object):
     def rob(self, nums):

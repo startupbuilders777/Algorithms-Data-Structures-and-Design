@@ -234,3 +234,92 @@ bisect.insort_right(a, x, lo=0, hi=len(a))
 bisect.insort(a, x, lo=0, hi=len(a))
 Similar to insort_left(), but inserting x in a after any existing entries of x.
 
+##############################################################################
+
+FROZEN SETS, AND HASHING PERFORMANCE:
+
+    652. Find Duplicate Subtrees
+    Medium
+    1261
+    198
+
+    Given a binary tree, return all duplicate subtrees. 
+    For each kind of duplicate subtrees, you only need to 
+    return the root node of any one of them.
+
+    STEFANS SOLUTION: 
+
+    First the basic version, which is O(n2) 
+    time and gets accepted in about 150 ms:
+
+    def findDuplicateSubtrees(self, root):
+        def tuplify(root):
+            if root:
+                tuple = root.val, tuplify(root.left), tuplify(root.right)
+                trees[tuple].append(root)
+                return tuple
+        trees = collections.defaultdict(list)
+        tuplify(root)
+        return [roots[0] for roots in trees.values() if roots[1:]]
+
+    I convert the entire tree of nested TreeNodes to a tree of nested tuples. 
+    Those have the advantage that they already support hashing and deep 
+    comparison (for the very unlikely cases of hash collisions). So 
+    then I can just use each subtree's tuple version as a key in my 
+    dictionary. And equal subtrees have the same key and thus get 
+    collected in the same list.
+
+    Overall this costs only O(n) memory (where n is the number of 
+    nodes in the given tree). The string serialization I've seen 
+    in other posted solutions costs O(n^2) memory (and thus also at least that much time).
+
+
+    So far only O(n2) time
+    Unfortunately, tuples don't cache their own hash value 
+    (see this for a reason). So if I use a tuple as key and thus 
+    it gets asked for its hash value, it will compute it again. 
+    Which entails asking its content elements for their hashes. 
+    And if they're tuples, then they'll do the same and ask 
+    their elements for their hashes. And so on. So asking a 
+    tuple tree root for its hash traverses the entire tree. 
+    Which makes the above solution only O(n^2) time, as the 
+    following test demonstrates. It tests linear trees, and 
+    doubling the height quadruples the run time, exactly 
+    what's expected from a quadratic time algorithm.
+
+    The code:
+
+    from timeit import timeit
+    import sys
+    sys.setrecursionlimit(5000)
+
+    def tree(height):
+        if height:
+            root = TreeNode(0)
+            root.right = tree(height - 1)
+            return root
+
+    solution = Solution().findDuplicateSubtrees
+    for e in range(5, 12):
+        root = tree(2**e)
+        print(timeit(lambda: solution(root), number=1000))
+    
+    Caching hashes
+    There's an easy way to add caching, though. 
+    Simply wrap each tuple in a frozenset, which 
+    does cache its hash value:
+
+    def findDuplicateSubtrees(self, root):
+        def convert(root):
+            if root:
+                result = frozenset([(root.val, convert(root.left), convert(root.right))])
+                trees[result].append(root)
+                return result
+        trees = collections.defaultdict(list)
+        convert(root)
+        return [roots[0] for roots in trees.values() if roots[1:]]
+    
+    Running the above test again now shows O(n) behaviour as 
+    expected, doubling of size causing doubling of run time:
+
+    There is an O(N) solution check the question file. 

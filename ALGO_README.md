@@ -73,12 +73,123 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
 
+-35) Find duplicate subtrees, Caching trees with UNIQUE IDS
+    Given a binary tree, return all duplicate subtrees. 
+    For each kind of duplicate subtrees, you only need to 
+    return the root node of any one of them.
+    
+    Normal soln -> create merkel hash with strings and postorder/preorder trav O(N^2)
+    This soln -> dont create those long strings. 
+    O(N) time and space. 
+
+    def findDuplicateSubtrees(self, root):
+        self.type_id_gen = 0
+        duplicated_subtrees = []
+        type_to_freq = defaultdict(int)
+        type_to_id = {}
+        
+        def dfs(node):
+            if not node:
+                return -1
+            type_id_left, type_id_right = (dfs(ch) for ch in (node.left, node.right))
+            tree_type = (node.val, type_id_left, type_id_right)
+            freq = type_to_freq[tree_type]
+            if freq == 0:
+                type_id = self.type_id_gen
+                self.type_id_gen += 1
+                type_to_id[tree_type] = type_id
+            elif freq == 1:
+                type_id = type_to_id[tree_type]
+                duplicated_subtrees.append(node)
+            else:
+                type_id = type_to_id[tree_type] 
+            type_to_freq[tree_type] += 1
+            return type_id
+            
+        dfs(root)
+        return duplicated_subtrees 
+    
+    Stefans version:
+
+
+    def findDuplicateSubtrees(self, root, heights=[]):
+        def getid(root):
+            if root:
+                # get the id of tree and if there isnt one, assign it with a default value 
+                id = treeid[root.val, getid(root.left), getid(root.right)] 
+                trees[id].append(root) 
+                return id
+
+        trees = collections.defaultdict(list)
+        treeid = collections.defaultdict()
+        treeid.default_factory = treeid.__len__
+        getid(root)
+        return [roots[0] for roots in trees.values() if roots[1:]]
+
+    The idea is the same as Danile's: Identify trees by numbering them. 
+    The first unique subtree gets id 0, the next unique subtree gets 
+    id 1, the next gets 2, etc. Now the dictionary keys aren't deep 
+    nested structures anymore but just ints and triples of ints.
+
+
+
+-34) How to do transition functions and states for DP: 
+     Think of all the states, and transition functions you need
+     if its hard to precalculate a state, add another state!
+     
+     Also if you cant do backward DP, try Forward DP and relaxing states!
+
+     METHOD 1: Think in terms of Finite state machines!!
+     METHOD 2: The states may seem wierd BECAUSE YOU NEED TO CONSIDER MORE PREVIOUS LAYERS 
+               of i to come up with the solution, not just the last layer like usual DP.
+
+     198. House Robber
+     def rob(self, nums: List[int]) -> int:      
+         '''
+         Transition function: 
+         FREE state + ROB action -> FROZEN 
+         Free state + DONT ROB -> Free State
+         FROZEN state + Dont Rob -> Free State.  
+         '''
+         
+         COUNT = len(nums)
+         
+         FROZEN = 0
+         FREE = 0 
+         
+         NXT_FROZEN = 0
+         NXT_FREE = 0
+         
+         for val in nums:
+             NXT_FROZEN = FREE  + val
+             NXT_FREE = max(FREE, FROZEN)
+             
+             FROZEN = NXT_FROZEN
+             FREE = NXT_FREE
+         
+         return max(FREE, FROZEN)
+
+    The other way you can think of this, is we are dealing 
+    with 3 layers at a time given the following recurrent relation:
+    rob(i) = Math.max( rob(i - 2) + currentHouseValue, rob(i - 1) )
+    States are: i, i-1, i-2
+    
+
+    Understanding the number of layers you are dealing with tell you
+    how many states you will need to compute the current state!
 
 
 
 
+-33) For some grid problems that require mapping numbers to new numbers while 
+    keeping order with right neighbor, down neighbor, up neighbor and left neighbor 
+    (Abiscus interview).And you have to use as few numbers for the mapping as possible
+    Remember that to maintain multiple orderings in different directions
+    you should be using a GRAPH!! and do BFS to generate those new numbers (and not 
+    try to do grid DP like what i did in that interview). 
 
-
+-32) An example of both forward and backward DP is 
+    -> 931. Minimum Falling Path Sum. Check it out! 
 
 
 
@@ -5218,7 +5329,8 @@ CODEFORCES DP 3 - STATE TRANSITIONS, AND STATES, AND RECURRENT RELATIONSHIPS
     tiling or covering problems on special graphs. The classic examples     
     are: calculate number of ways to tile the rectangular board with dominoes 
     (certain cells cannot be used); or put as many chess figures  
-    on the chessboard as you can so that they do not hit each other (again, some cells may be restricted).
+    on the chessboard as you can so that they do not hit each other 
+    (again, some cells may be restricted).
 
     Generally speaking, all these problems can be solved with DP over subsets 
     (use set of all cells of board). DP with profiles is an   
@@ -5301,8 +5413,8 @@ CODEFORCES DP 3 - STATE TRANSITIONS, AND STATES, AND RECURRENT RELATIONSHIPS
     3. Distinct profile  structure. Set of profiles may be different for each layer. 
        You can store profiles in map in this case.
 
-
-
+DONE READING -> GO TO COMPETITIVE/PROBLEMS to see all the usages of above techniques. 
+https://codeforces.com/blog/entry/43256
 
 #####################################################################################################################
 #####################################################################################################################

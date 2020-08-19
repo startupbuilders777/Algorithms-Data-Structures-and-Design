@@ -1,5 +1,7 @@
 
 
+WRITE NOTES FOR THIS -> https://hakibenita.com/sql-tricks-application-dba
+
 My approach for solving system design in an interview:
 
 Functional Requirements / Use Cases - Spend max of 5 mins here. 
