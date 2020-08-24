@@ -170,7 +170,9 @@ The time complexity is now O(N^2 * K).
 The next optimization is not that easy. The best result in case king arrives to 
 city v by some plane is D(v,t) = min_u(D(u,t-1) + S(v) — S(u)) where u takes values 
 
-from 0 to v-1. Transform the equation: D(v,t) = min_u(D(u,t-1) — S(u) + S(v)) = min_u(D(u,t-1) — S(u)) + S(v). 
+from 0 to v-1. Transform the equation: 
+
+D(v,t) = min_u(D(u,t-1) — S(u) + S(v)) = min_u(D(u,t-1) — S(u)) + S(v). 
 
 Notice that the expression inside the minimum does not depend on v anymore. 
 Let's denote the whole minimum as A(v-1,t-1). The A array is added to state domain 

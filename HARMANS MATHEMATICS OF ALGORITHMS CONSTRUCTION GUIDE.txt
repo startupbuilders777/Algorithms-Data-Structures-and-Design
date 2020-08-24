@@ -188,6 +188,40 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
         There are many more algorithms for primality test like 
         Fermat's little theorem, Miller-Rabin test, Solovay-Strassen 
 
+3.5) Lemma 1: The sum of the digits of any number N to base 10 is equal to N minus some multiple of 9.
+             N = Σi=0 ai*10i
+             M = Σi=0 ai*10i − Σi=0 ai
+             M = Σi=0 ai*(10i−1)
+            M = Σi=0 ai*(99…9)
+            M = Σi=0 ai*9(11…1)
+            N − S(N) = 9K1
+            and hence
+            S(N) = N − 9K1
+    Lemma 2: The digit sum (the iterative sum of the digits) of any N to base 10 is 
+    equal to N minus the highest multiple of 9 that leaves a single digit.
+
+    N − 9K1 − 9K2 = S(S(N))
+    The procedure can be continued until the sum of digits is a single digit.
+    N − 9Σj=1Kj = S(…S(N)) = D(N)
+
+
+    The righthand side (RHS) is a single digit. The lefthand side (LHS) must 
+    also be a single digit. The definition of a remainder upon division by p 
+    is the single digit less than p in value. The LHS of the above expression 
+    is not quite the remainder of N divided by 9. It could be equal to 9. But 9 
+    may be considered equivalent to zero as a remainder upon division by 9. 
+    (A digit sum of zero occurs only for the number zero.)
+
+    A Generalization
+    The previous material generalizes for numbers expressed to any integral base 
+    k. The digit sum of any number base k is equivalent to its remainder upon 
+    division by (k-1). For binary numbers, number expressed to base 2, the 
+    proposition is true but rather bizarre. The digit sum of any binary number 
+    except zero is one and the remainder of any number upon division by one is 
+    zero. However as a remainder one is equivalent to zero for division by one.
+
+    
+
 4) Sieve of Eratosthenes
 
         In mathematics, the Sieve of Eratosthenes is a very 
