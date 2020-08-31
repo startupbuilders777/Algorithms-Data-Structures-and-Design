@@ -71,6 +71,200 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+-37) Dynamic programming and figuring out states:
+
+    For a given array A of N integers and a sequence S of N integers 
+    from the set {−1, 1}, we define val(A, S) as follows:
+
+    val(A, S) = |sum{ A[i]*S[i] for i = 0..N−1 }|
+
+    (Assume that the sum of zero elements equals zero.)
+
+    For a given array A, we are looking for such a sequence S that minimizes val(A,S).
+
+    Write a function:
+    def solution(A)
+
+    that, given an array A of N integers, computes the minimum value of val(A,S) 
+    from all possible values of val(A,S) for all 
+    possible sequences S of N integers from the set {−1, 1}.
+
+    For example, given array:
+
+    A[0] =  1
+    A[1] =  5
+    A[2] =  2
+    A[3] = -2
+    
+    your function should return 0, since for S = [−1, 1, −1, 1], 
+    val(A, S) = 0, which is the minimum possible value.
+
+    def solution(A):
+        # THIS FAILS DUE TO MAX RECURSION DEPTH REACHED!
+        # BUT IT IS 100% CORRECT
+        @lru_cache(None)
+        def recurseB(i,s):
+            
+            if len(A) == i:
+                return s
+                
+            add = recurseB(i+1, s + A[i])
+            sub = recurseB(i+1, s - A[i])
+            print("CORRECT ADD AND SUB FOR I IS", i, add, sub)
+
+            # print("ADD and sub are", add, sub)
+            if abs(add) < abs(sub):
+                return add
+            else:
+                return sub
+        
+        correct_val = abs(recurseB(0, 0))
+        print("CORRECT VALU IS", correct_val)
+        
+        # BELOW WAY IS WRONG!
+        # DO YOU KNOW WHY?
+        # IT GENERATES DIFF ANSWERS FROM ABOVE. 
+        # BECAUSE IN THE RECURSIVE CALLS CLOSE TO THE 
+        # BASE CASE, WE ARENT ABLE TO FINE TUNE THE SOLUTION
+        # TO THE INCOMING SUM, BECAUSE YOU NEVER SEE THE INCOMING
+        # SUM LIKE ABOVE. 
+        # SO INSTEAD, YOU GREEDILY CHOOSE 
+        # IN THE ABOVE RECURSION, HELPER SEES INCOMING SUM, 
+        # AND THEN RETURNS AN OPTIMIZED SUM BASED ON THE INCOMING SUM!
+        # THERE IS COMMUNICATION!
+        def recurseA(i):
+            if len(A) == i:
+                return 0
+                
+            add = A[i] + recurseA(i+1)
+            sub = -A[i] + recurseA(i+1)
+            print("INC ADD AND SUB FOR I IS", i, add, sub)
+            # print("ADD and sub are", add, sub)
+            if abs(add) < abs(sub):
+                return add
+            else:
+                return sub
+
+        incorrect_val = abs(recurseA(0))
+        return correct_val
+
+
+    def solution(A):
+    # write your code in Python 3.6
+  
+    '''
+    For bottom up, determine states 
+    through mem soln. 
+    Also think about what you need!
+    
+    You are choosing between 
+
+    for loop through all sums:
+            
+        choiceA = OPT[i-1, sum] + A[i]
+        choiceB = OPT[i-1, sum] - A[i]
+            
+        if abs(choiceA) < abs(choiceB):
+            OPT[i, sum] =  choiceA
+        else:
+            OPT[i, sum] = choiceB
+
+    
+    ## CORRECT DP SOLUTION THAT NEEDS TO BE COMPLETED
+    '''
+    # get the max sum. 
+    # BUT WHAT ABOUT NEGATIVE SUMS???
+    # Optimal choice is based on context, so iterating over
+    # all sum values provides the context. 
+    # it should not deviate by more than the largest value in array!
+    # so we dont need to iterate over that many sums
+    SUMS = max(A)
+    
+    N = len(A)
+    
+    # Base case is, we have A[0] as vals in the sums grid!
+
+    # actually its prlly better to have a map,
+    # enumerate the best sums we have so far in the map after processing i-1
+    # create new best sums after after processing i
+    # fewer vals to iterate tbh?
+    # couldnt we just iterate keys of map, rather than range(-SUMS, SUMS+1, 1)
+    prev_i_sums = {}
+    prev_i[A[0]] = 1
+    prev_i[-A[0]] = 1
+    
+    # replace grid with new grid, once we process an element. 
+    print("curr", curr)
+    
+    for i in range(1, N):
+        curr_i =  [0 for i in range(-SUMS, SUM+1, 1)]
+        val = A[i]
+        
+        for s in range(-SUMS, SUMS+1, 1):
+            if prev_i[s] == 1:
+                # ok so now we have to choose new locaito
+                if s +   
+                    
+
+
+
+-36) DO COMPLEX SET MEMOIZATION ON GRID VS DJIKSTRA.  
+
+    You have a grid, and you can go up down, left or right. 
+     Find min cost to go from top left to bottom right: 
+        board = [[42, 51, 22, 10,  0 ],
+                [2,  50, 7,  6,   15],
+                [4,  36, 8,  30,  20],
+                [0,  40, 10, 100, 1 ]]
+
+    # Below uses DP but its not fast enough. 
+    # Need to use Djikstra to pass the TLE test cases
+    def orienteeringGame(board):
+        '''
+        COMPLEX SET MEMOIZATION GRID PROBLEM: 
+        THIS IS A DP PROBLEM
+        SINCE WE CAN GO UP AND LEFT AS WELL AS DOWN AND RIGHT, 
+        IN OUR MEM TABLE, WE HAVE TO SAVE THE SET OF NODES
+        WE TRAVERSED SO FAR. 
+        SO ITS LIKE TRAVELLING SALESMAN PROBLEM DP.
+        RMBR WHEN YOU HAVE TO MEM IT!
+        '''
+        
+        R = len(board)
+        C = len(board[0])
+        
+        visited = set()
+        m = {}
+        
+        # Using a cumulative sum is a way to hash the nodes traversed so far in the 
+        # path which is important for the cache table.
+        @lru_cache(None)
+        def dfs(i, j, cum_sum):
+            if(i == R-1 and j == C-1):
+                return cum_sum # board[R-1][C-1]    
+            
+            visited.add((i,j))
+            
+            val = board[i][j]
+            cost = float("inf")
+
+            if i + 1 < R and (i+1, j) not in visited:
+                cost = min(cost, dfs(i + 1, j, cum_sum + val))            
+        
+            if j+1 < C and (i, j+1) not in visited:
+                cost = min(cost, dfs(i, j+1, cum_sum + val))  
+
+            if i - 1 >=0 and (i-1, j) not in visited:
+                cost = min(cost, dfs(i - 1, j, cum_sum + val))      
+
+            if j-1 >= 0 and (i, j-1) not in visited:
+                cost = min(cost, dfs(i, j-1, cum_sum + val))     
+                    
+            visited.remove((i,j))    
+            return cost
+        
+        return dfs(0,0, 0) 
+
 
 
 -35) Find duplicate subtrees, Caching trees with UNIQUE IDS
@@ -143,7 +337,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
      METHOD 2: The states may seem wierd BECAUSE YOU NEED TO CONSIDER MORE PREVIOUS LAYERS 
                of i to come up with the solution, not just the last layer like usual DP.
 
-     198. House Robber
+     1.   House Robber
      def rob(self, nums: List[int]) -> int:      
          '''
          Transition function: 
@@ -3248,34 +3442,62 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 22.5) CYCLIC SORT EXAMPLE:
 
-        class Solution(object):
-            def rotate(self, nums, k):
+    class Solution(object):
+        def rotate(self, nums, k):
+            
+            start = 0
+            val = nums[start]
+            
+            i = start
+            N = len(nums)
+            swaps = 0
+            
+            while True:
+                pivot = i + k
+                pivot %= N
                 
-                start = 0
-                val = nums[start]
+                temp = nums[pivot]
+                nums[pivot] = val
+                val = temp
+                i = pivot
                 
-                i = start
-                N = len(nums)
-                swaps = 0
-                
-                while True:
-                    pivot = i + k
-                    pivot %= N
-                    
-                    temp = nums[pivot]
-                    nums[pivot] = val
-                    val = temp
-                    i = pivot
-                    
-                    swaps += 1
-                    if(swaps == N):
-                        return 
-                    if pivot == start:
-                        i = start + 1             
-                        val = nums[start + 1]
-                        start += 1        
-                return nums
+                swaps += 1
+                if(swaps == N):
+                    return 
+                if pivot == start:
+                    i = start + 1             
+                    val = nums[start + 1]
+                    start += 1        
+            return nums
+            
+    Another Solution:
+    def solution(A, K):
+        N = len(A)
         
+        if N == 0:
+            return []
+        
+        i = 0
+        nxtVal = A[0]
+        swaps = 0
+        lastLoc = 0
+
+        while True:
+            A[(i + K) % N], nxtVal = nxtVal, A[(i + K) % N]
+            i = (i + K) % N
+            
+            swaps += 1
+            if swaps == N:
+                break 
+            if i == lastLoc:
+                lastLoc += 1
+                i += 1
+                nxtVal = A[i]
+                # did we do all swaps?
+        return A
+
+
+
 
 22.6) Know in-place reverse linked list (MEMORIZE)
         # Function to reverse the linked list 
@@ -3352,7 +3574,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
 
-23) TREE DFS:
+1)  TREE DFS:
     Decide whether to process the current node now (pre-order), 
     or between processing two children (in-order) 
     or after processing both children (post-order).

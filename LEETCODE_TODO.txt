@@ -42,3 +42,13 @@ WRITE BOTTOM UP SOLUTION FOR BEST TIME TO BUY AND SELL STOCK III, IV, COOLDOWN, 
 
     
 
+Write notes about 3D surface area? 
+
+
+Fix all topolical sort -> the error is you are assuming that you can fill the visited set with the nodes of the first 
+path in all paths but actually each path in all paths can be different, so you have to deal with at the individual level. 
+
+
+TODO: 
+WRITE notes on arithmetic, geometric sequences, useful sums formulas of consecvutive numbers, and modular arithmetic with powers, 
+and prime factorization, how to count them. 

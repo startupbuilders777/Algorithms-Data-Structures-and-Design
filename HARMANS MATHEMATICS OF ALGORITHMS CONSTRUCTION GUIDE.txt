@@ -9,6 +9,15 @@ https://cp-algorithms.com/
 
 WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
 
+-1) -> LOOK AT QUESTION: Consecutive Numbers Hard in important problems to see how to do hard 
+     math programming leets, with factors, primes, and creating equations from theories!
+      
+    Also learn to write out sums as arithmetic and geometric sequences to create useful formulas, 
+    or figure out that once something is factorized, one side has to be odd, and the other has to be 
+    even.
+
+    Take advatange of all the different tricks is what you see in that problem. 
+
 
 0) Counting number of binary digits that are 1 in number:
     class Solution:
@@ -115,17 +124,234 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
 
 
 
+0.80) Simplify a rational number 
+
+        For numerator = 3 and denominator = 6, the output should be
+        simplifyRational(numerator, denominator) = [1, 2].
+
+
+        def gcdWorksOnlyWithPositives(a, b):
+            if a == 0:
+                return b
+            if b == 0:
+                return a
+            
+            if a == b:
+                return a
+            elif a < b:
+                return gcd(b-a, a)
+            else:
+                return gcd(b, a-b)
+            
+        def gcd(a, b):
+            while b != 0:
+                t = b
+                b = a % b
+                a = t
+            return a
+
+        def simplifyRational(numerator, denominator):
+            
+            # FIND GCD Of numerator, and denominator,
+            # THEN divide it from both!
+            # yeah
+            
+            if numerator < 0 and denominator < 0:
+                numerator *= -1
+                denominator *= -1
+            elif denominator <0:
+                numerator *= -1
+                denominator *= -1
+                
+            gcda = gcd(numerator, denominator)
+            return [numerator/gcda, denominator/gcda]
 
 
 
 
 
+0.90) What is the fastest integer factorization algorithm?
+
+    In your algo -> 
+    Don't forget to check whether the number is a true square. If it is, and you don't 
+    take it into account, you'll be adding the square root to the sum twice 
+    (as both i AND n/i). Take a look at Project Euler - there's all 
+    sorts of things on there covering this type of optimisation.
+
+    Less than 2^16 or so: Lookup table.
+    Less than 2^70 or so: Richard Brent's modification of Pollard's rho algorithm.
+    Less than 10^50: Lenstra elliptic curve factorization
+    Less than 10^100: Quadratic Sieve
+    More than 10^100: General Number Field Sieve
+
+0.91) Trial Division technique: 
+
+    We divide by each possible divisor d. We can notice, 
+    that it is impossible that all prime factors of a composite 
+    number n are bigger than sqrt(n). Therefore, we only need to test 
+    the divisors 2≤ d ≤ sqrt(n) , which gives us the prime factorization in O(√n).
+
+    The smallest divisor has to be a prime number. We remove the factor 
+    from the number, and repeat the process. If we cannot find any divisor 
+    in the range [2;√n], then the number itself has to be prime.
+
+
+    vector<long long> trial_division1(long long n) {
+        vector<long long> factorization;
+        for (long long d = 2; d * d <= n; d++) {
+            while (n % d == 0) {
+                factorization.push_back(d);
+                n /= d;
+            }
+        }
+        if (n > 1)
+            factorization.push_back(n);
+        return factorization;
+    }
+
+0.92) Wheel factorization
+
+        This is an optimization of the trial division. 
+        The idea is the following. Once we know that the number is not 
+        divisible by 2, we don't need to check every other even number. 
+        This leaves us with only 50% of the numbers to check. After 
+        checking 2, we can simply start with 3 and skip every other number.
+
+        vector<long long> trial_division2(long long n) {
+            vector<long long> factorization;
+            while (n % 2 == 0) {
+                factorization.push_back(2);
+                n /= 2;
+            }
+            for (long long d = 3; d * d <= n; d += 2) {
+                while (n % d == 0) {
+                    factorization.push_back(d);
+                    n /= d;
+                }
+            }
+            if (n > 1)
+                factorization.push_back(n);
+            return factorization;
+        }
+
+        This method can be extended. If the number is not divisible by 3, 
+        we can also ignore all other multiples of 3 in the future 
+        computations. So we only need to check the numbers 5,7,11,13,17,19,23,…. 
+        
+        We can observe a pattern of these remaining numbers. We need to check 
+        all numbers with dmod6=1 and dmod6=5. So this leaves us with 
+        only 33.3% percent of the numbers to check. We can implement 
+        this by checking the primes 2 and 3 first, and then start 
+        checking with 5 and alternatively skip 1 or 3 numbers.
+
+        We can extend this even further. Here is an implementation 
+        for the prime number 2, 3 and 5. It's convenient to use an 
+        array to store how much we have to skip.
+
+
+        vector<long long> trial_division3(long long n) {
+            vector<long long> factorization;
+            for (int d : {2, 3, 5}) {
+                while (n % d == 0) {
+                    factorization.push_back(d);
+                    n /= d;
+                }
+            }
+            static array<int, 8> increments = {4, 2, 4, 2, 4, 6, 2, 6};
+            int i = 0;
+            for (long long d = 7; d * d <= n; d += increments[i++]) {
+                while (n % d == 0) {
+                    factorization.push_back(d);
+                    n /= d;
+                }
+                if (i == 8)
+                    i = 0;
+            }
+            if (n > 1)
+                factorization.push_back(n);
+            return factorization;
+        }
+
+        If we extend this further with more primes, we can even 
+        reach better percentages. However, also the skip lists will get a lot bigger.
+
+0.93) Precomputed primes
+      Extending the wheel factorization with more and more primes will 
+      leave exactly the primes to check. So a good way of checking is just to 
+      precompute all prime numbers with the Sieve of Eratosthenes 
+      until √n and test them individually.
+
+    vector<long long> primes;
+
+    vector<long long> trial_division4(long long n) {
+        vector<long long> factorization;
+        for (long long d : primes) {
+            if (d * d > n)
+                break;
+            while (n % d == 0) {
+                factorization.push_back(d);
+                n /= d;
+            }
+        }
+        if (n > 1)
+            factorization.push_back(n);
+        return factorization;
+    }
+
+0.94) CONTINUE WRITING INTEGER FACTORIZATION NOTES FROM: 
+      https://cp-algorithms.com/algebra/factorization.html
+
+      
 
 
 
 
 
-1) Greatest Common Divisor and Least Common Multiple
+1.3)  PLEASE IMPROVE THESE NOTES WITH PRACTICAL USE CASE OF 2'S COMPLIMENT IN PYTHON. 
+
+        Decimal	Signed Magnitude	Signed One’s Complement	Signed Two’s Complement
+        +7	    0111	            0111	                0111
+        +6	    0110	            0110	                0110
+        +5	    0101	            0101	                0101
+        +4	    0100	            0100	                0100
+        +3	    0011	            0011	                0011
+        +2	    0010	            0010	                0010
+        +1	    0001	            0001	                0001
+        +0	    0000	            0000	                0000
+        -0	    1000	            1111	                –
+        -1	    1001	            1110	                1111
+        -2	    1010	            1101	                1110
+        -3	    1011	            1100	                1101
+        -4	    1100	            1011	                1100
+        -5	    1101	            1010	                1011
+        -6	    1110	            1001	                1010
+        -7	    1111	            1000	                1001
+
+        The internal representation of numbers on most computers is now informally 
+        standardized on two's complement integers based on 8-bit bytes and real 
+        numbers based on the "IEEE Standard for Floating Point Arithmetic", ANAI/IEEE std 754-1985, 
+        IEEE, NY 1985. However, many other internal representations have been used in the based, 
+        and some of them are still supported on various computers.
+
+
+    Two's Complement Signed Integers
+
+    The most commonly used representation of signed integers on modern computers 
+    is as two' complement numbers. The high order bit is reserved for a sign bit. 
+    If a negative number is desired, each bit is "complemented", i.e. each 0 is 
+    changed to a 1 and each 1 in change to a 0. Finally, 1 is added to the result.
+    This is the same result we would have obtained if we had subtracted 
+    the magnitude of the number from a number one larger than the range.
+
+    Surprisingly, the negation operation is symmetric. It is not quite as simple 
+    as the negation of the one's complement representation, 
+    but addition is simpler, using an end-off carry.
+
+
+
+
+
+1.4) Greatest Common Divisor and Least Common Multiple
 
         The GCD (Greatest Common Divisor) of two numbers is defined 
         as the largest integers 
@@ -146,6 +372,69 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
         gcd(a, b) = gcd(a, b - a)
         gcd(a, 0) = a
         gcd(a, b) is the smallest positive number in {ax + by | x, y in integers}
+
+
+1.5) GCD IMPLEMENTATION: 
+
+
+    Implementations of the algorithm may be expressed in pseudocode. 
+    For example, the division-based version may be programmed as[19]
+
+    BELOW VERSION WORKS FOR BOTH POSIOTIVE INTEGERS AND NEGATIVE INTEGERS!!
+    BUT TO USE OTHER VERSIONS, JUST TAKE GCD OF THE ABSOLUTE VALUE VERSIONS. 
+
+    function gcd(a, b)
+        while b ≠ 0
+            t := b
+            b := a mod b
+            a := t
+        return a
+
+    At the beginning of the kth iteration, the variable b holds the latest 
+    remainder rk−1, whereas the variable a holds its predecessor, rk−2. The 
+    step b := a mod b is equivalent to the above recursion formula rk ≡ rk−2 mod rk−1. 
+
+    The temporary variable t holds the value of rk−1 while the next remainder rk is 
+    being calculated. At the end of the loop iteration, the variable b holds the 
+    remainder rk, whereas the variable a holds its predecessor, rk−1.
+
+    In the subtraction-based version which was Euclid's original version, the 
+    remainder calculation (b := a mod b) is replaced by repeated subtraction.[20] 
+    Contrary to the division-based version, which works with arbitrary integers 
+    as input, the subtraction-based version supposes that the input consists of 
+    positive integers and stops when a = b:
+
+    function gcd(a, b)
+        while a ≠ b 
+            if a > b
+                a := a − b
+            else
+                b := b − a
+        return a
+
+    The variables a and b alternate holding the previous remainders rk−1 and rk−2. 
+    Assume that a is larger than b at the beginning of an iteration; then a equals rk−2, 
+    since rk−2 > rk−1. During the loop iteration, a is reduced by multiples of the previous 
+    remainder b until a is smaller than b. Then a is the next remainder rk. Then b is reduced 
+    by multiples of a until it is again smaller than a, giving the next remainder rk+1, and so on.
+
+    The recursive version[21] is based on the equality of the GCDs of successive 
+    remainders and the stopping condition gcd(rN−1, 0) = rN−1.
+
+    function gcd(a, b)
+        if b = 0
+            return a
+        else
+            return gcd(b, a mod b)
+
+    For illustration, the gcd(1071, 462) is calculated from the 
+    equivalent gcd(462, 1071 mod 462) = gcd(462, 147). The latter GCD is 
+    calculated from the gcd(147, 462 mod 147) = gcd(147, 21), which in turn 
+    is calculated from the gcd(21, 147 mod 21) = gcd(21, 0) = 21.
+
+
+
+
 
 2) Euclids algo to get GCD and LCM
     A simple implementation of Euclid's GCD algorithm in C++ would be,
@@ -605,7 +894,8 @@ COOL Notes PART 2: Bit Magic
 
 0.5) Inverting every bit of a number/1’s complement (this is how to get 1s complement):
         If we want to invert every bit of a number i.e change bit ‘0’ to ‘1’ and bit ‘1’ to ‘0’.
-        We can do this with the help of ‘~’ operator. For example : if number is num=00101100 (binary representation) 
+        We can do this with the help of ‘~’ operator. 
+        For example : if number is num=00101100 (binary representation) 
         so ‘~num’ will be ‘11010011’.
 
 0.6) Get twos complement: complement of a number is 1’s complement + 1.
@@ -619,6 +909,11 @@ COOL Notes PART 2: Bit Magic
             cout << "This is also two's complement " << (~num+1) << endl; 
             return 0; 
         } 
+    
+    This is because negative numbers are represented as 2's complement rite!
+
+
+
 
 0.7) Stripping off the lowest set bit: 
 

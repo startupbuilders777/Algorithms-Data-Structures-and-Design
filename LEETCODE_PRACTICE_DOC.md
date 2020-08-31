@@ -59,6 +59,15 @@ https://www.geeksforgeeks.org/must-coding-questions-company-wise/
 
 INTERVIEW DOGO: https://docs.google.com/spreadsheets/d/1pvgE9Tyqb80L3tlegJqjfmzWyGApanHsS8owe4mmwig/edit?usp=drive_web&ouid=112328876402233278219
 
+################################################
+
+GO THROUGH CODILITYS REVIEW: https://app.codility.com/programmers/lessons/1-iterations/
+
+PRACTICE NUMBER THEORY ON PROJECT EULER. 
+
+
+
+
 Review Data structures readme, and do design skip list. 
 ###########################################################################
 ##############################################################################
