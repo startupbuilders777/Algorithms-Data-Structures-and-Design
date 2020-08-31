@@ -19,6 +19,94 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
     Take advatange of all the different tricks is what you see in that problem. 
 
 
+-0.5) Counting the number of  divisors of a number -> O(sqrt(N))
+
+    If number n is of the form k2, then the symmetric divisor of k is also k. 
+    This divisor should be counted just once.
+
+    1 def divisors(n):
+    2   i = 1
+    3   result = 0
+    4   while (i * i < n):
+    5       if (n % i == 0):
+    6           result += 2
+    7       i += 1
+    8   if (i * i == n):
+    9       result += 1
+    10  return result
+
+-0.6) Primality Test:
+    We assume that 1 is neither a prime nor a composite number, so the below algorithm works
+    only for n >= 2.
+    
+    1 def primality(n):
+    2   i = 2
+    3   while (i * i <= n):
+    4       if (n % i == 0):
+    5           return False
+    6       i += 1
+    7   return True
+
+-0.65) Reversing Coins problem:
+    Problem: Consider n coins aligned in a row. 
+    Each coin is showing heads at the beginning. 
+    1 2 3 4 5 6 7 8 9 10
+    Then, n people turn over corresponding coins as follows. 
+    Person i reverses coins with numbers
+    that are multiples of i. That is, person i flips coins i, 2 · i, 3 · i, . . . 
+    until no more appropriate coins remain. 
+    The goal is to count the number of coins showing tails
+
+    Solution O(log n): Notice that each coin will be turned over exactly as many times as the
+    number of its divisors. The coins that are reversed an odd number of times show tails, meaning
+    that it is sufficient to find the coins with an odd number of divisors.
+    We know that almost every number has a symmetric divisor (apart from divisors of the
+    form √n). Thus, every number of the form k^2 has an odd number of divisors. There are
+    exactly √n such numbers between 1 and n. Finding the value of √n takes logarithmic
+    time (or constant time if we use operations on floating point numbers).
+
+
+-0.70) Fibonnaci and using input limits to your advantage. 
+    Problem: For all the given numbers x0, x1, . . . , xn−1, such that 1 <= xi <= m <= 1 000 000,
+    check whether they may be presented as the sum of two Fibonacci numbers.
+    Solution: Notice that only a few tens of Fibonacci numbers are smaller than the maximal
+    m (exactly 31). We consider all the pairs. If some of them sum to k <= m, then we mark
+    index k in the array to denote that the value k can be presented as the sum of two Fibonacci
+    numbers.
+    In summary, for each number xi we can answer whether it is the sum of two Fibonacci
+    numbers in constant time. The total time complexity is O(n + m).
+
+-0.75) Fast Fib:
+
+    Phi = (sqrt(5) + 1)/2
+    Fib(n) = [Phi^n - (-Phi)^(-n)]/sqrt(5) 
+
+-0.80) Sequences and Series: 
+
+    Arithmetic: a, a+d, a+2d, ...
+    kth term: a + (k-1)*d
+    Sum of n terms = (n/2) * (2a + (n-1)*d) 
+
+    Sum of first n ints -> (n/2)*(n+1)
+
+    Sum of the squares of the first n integers: 
+    1^2 + 2^2 + ... n^2
+    -> (1/6)*n*(n+1)*(2n+1)
+
+    Geometric progression: a, ar, ar^2
+    r-> common ratio, a-> first term
+    kth term: ar^(k-1)
+
+    Sum of n terms:   S = a*(1-r^n)/(1-r), r!= 1
+    
+    Sum of infinite geometric series:   S = a/(1-r), -1<r<1
+
+
+
+
+
+
+
 0) Counting number of binary digits that are 1 in number:
     class Solution:
         #Slow way

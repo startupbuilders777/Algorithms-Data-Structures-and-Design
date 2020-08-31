@@ -71,7 +71,7 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
--37) Dynamic programming and figuring out states:
+-37) Reasoning about hard states in DP: MinAbsSum
 
     For a given array A of N integers and a sequence S of N integers 
     from the set {−1, 1}, we define val(A, S) as follows:
@@ -79,7 +79,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     val(A, S) = |sum{ A[i]*S[i] for i = 0..N−1 }|
 
     (Assume that the sum of zero elements equals zero.)
-
     For a given array A, we are looking for such a sequence S that minimizes val(A,S).
 
     Write a function:
@@ -148,63 +147,103 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         incorrect_val = abs(recurseA(0))
         return correct_val
 
+-36.5) Coming up with bottom up solution with MinAbsSum by rephrasing problem.
+    Question above. 
 
-    def solution(A):
-    # write your code in Python 3.6
-  
-    '''
-    For bottom up, determine states 
-    through mem soln. 
-    Also think about what you need!
-    
-    You are choosing between 
+    Since we can arbitrarily choose to take the element or its negative, we can simplify the
+    problem and replace each number with its absolute value. Then the problem becomes dividing
+    the numbers into two groups and making the difference between the sums of the two groups
+    as small as possible. It is a classic dynamic programming problem.
+    Assume the sum of absolute values of all the numbers is S. We want to choose some of
+    the numbers (absolute values) to make their 
+    sum as large as possible without exceeding S/2.
 
-    for loop through all sums:
-            
-        choiceA = OPT[i-1, sum] + A[i]
-        choiceB = OPT[i-1, sum] - A[i]
-            
-        if abs(choiceA) < abs(choiceB):
-            OPT[i, sum] =  choiceA
-        else:
-            OPT[i, sum] = choiceB
+    Let M be the maximal element in the given array A. We create an array dp of size S.
+    
+    Slow DP:
+    Let dpi equal 1 if it is possible to achieve the 
+    sum of i using elements of A, and 0 otherwise.
+    Initially dpi = 0 for all of i (except dp0 = 1). 
+    For every successive element in A we update the
+    array taking this element into account. We simply go through all the 
+    cells, starting from the
+    top, and if dpi = 1 then we also set dpi+Aj
+    to 1. The direction in which array dp is processed
+    is important, since each element of A can be used only once. 
+    After computing the array dp, P is the largest index such that P <= S/2
+    and dpP = 1.
 
-    
-    ## CORRECT DP SOLUTION THAT NEEDS TO BE COMPLETED
-    '''
-    # get the max sum. 
-    # BUT WHAT ABOUT NEGATIVE SUMS???
-    # Optimal choice is based on context, so iterating over
-    # all sum values provides the context. 
-    # it should not deviate by more than the largest value in array!
-    # so we dont need to iterate over that many sums
-    SUMS = max(A)
-    
-    N = len(A)
-    
-    # Base case is, we have A[0] as vals in the sums grid!
+    The time complexity of the above solution is O(N^2· M), since S = O(N · M).
 
-    # actually its prlly better to have a map,
-    # enumerate the best sums we have so far in the map after processing i-1
-    # create new best sums after after processing i
-    # fewer vals to iterate tbh?
-    # couldnt we just iterate keys of map, rather than range(-SUMS, SUMS+1, 1)
-    prev_i_sums = {}
-    prev_i[A[0]] = 1
-    prev_i[-A[0]] = 1
+    1 def slow_min_abs_sum(A):
+    2   N = len(A)
+    3   M = 0
+    4   for i in xrange(N):
+    5       A[i] = abs(A[i])
+    6       M = max(A[i], M)
+    7   S = sum(A)
+    8   dp = [0] * (S + 1)
+    9   dp[0] = 1
+    10  for j in xrange(N):
+    11      for i in xrange(S, -1, -1):
+    12          if (dp[i] == 1) and (i + A[j] <= S):
+    13              dp[i + A[j]] = 1
+    14  result = S    
+    15  for i in xrange(S // 2 + 1):
+    16      if dp[i] == 1:
+    17          result = min(result, S - 2 * i)
+    18  return result
+
+
+    Notice that the range of numbers is quite small (maximum 100). 
+    Hence, there must be a lot of duplicated numbers. 
+    Let count[i] denote the number of occurrences of the value i. 
+    We can process all occurrences of the same value at once. 
+    First we calculate values count[i] Then we create array dp such that:
+
+    dp[j] = −1 if we cannot get the sum j,
+    dp[j] >= ­ 0 if we can get sum j.
+    Initially, dp[j] = -1 for all of j (except dp[0] = 0). Then we scan 
+    through all the values a appearing in A; we consider all a such that 
+    count[a]>0. For every such a we update dp that dp[j] denotes 
+    how many values a remain (maximally) after achieving sum j. 
+    Note that if the previous value at dp[j] >= 0 then we can 
+    set dp[j] = count[a] as no value a is needed to obtain the sum j. 
     
-    # replace grid with new grid, once we process an element. 
-    print("curr", curr)
+    Otherwise we must obtain sum j-a first and then use a 
+    number a to get sum j. In such a situation 
+    dp[j] = dp[j-a]-1. Using this algorithm, we can mark all the 
+    sum values and choose the best one (closest to half of S, the sum of abs of A).
+
+    def MinAbsSum(A):
+        N = len(A)
+        M = 0
+        for i in range(N):
+            A[i] = abs(A[i])
+            M = max(A[i], M)
+        S = sum(A)
+        count = [0] * (M + 1)
+        for i in range(N):
+            count[A[i]] += 1
+        dp = [-1] * (S + 1)
+        dp[0] = 0
+        for a in range(1, M + 1):
+            if count[a] > 0:
+                for j in range(S):
+                    if dp[j] >= 0:
+                        dp[j] = count[a]
+                    elif (j >= a and dp[j - a] > 0):
+                        dp[j] = dp[j - a] - 1
+        result = S
+        for i in range(S // 2 + 1):
+            if dp[i] >= 0:
+                result = min(result, S - 2 * i)
+        return result
     
-    for i in range(1, N):
-        curr_i =  [0 for i in range(-SUMS, SUM+1, 1)]
-        val = A[i]
-        
-        for s in range(-SUMS, SUMS+1, 1):
-            if prev_i[s] == 1:
-                # ok so now we have to choose new locaito
-                if s +   
-                    
+    The time complexity of the above solution is O(N · M^2), 
+    where M is the maximal element,
+    since S = O(N · M) and there are at most M different values in A.
+
 
 
 
@@ -3740,10 +3779,95 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
 29) Questions you can solve with XOR can also probably be done with other operators such as +, -, *, /. Make
     sure you check for integer overflow. thats why xor method is always better.
 
-30) Use loop invarients when doing 2 pointer solutions, greedy solutions, etc. to think about, and help
+29.5)  You are given an array A of n - 2 integers 
+    which are in the range between 1 and n. All numbers 
+    appear exactly once, except two numbers, which are 
+    missing. Find these two missing numbers.
+
+    Ok so go through range of numbers between 1 and n.
+    XOR all those numbers,
+    ex:
+
+    def soln(ans):
+        val = 0
+        for i in range(0, N):
+            val ^= (i+1)
+
+        # then xor with ever number in ans. 
+        for i in A:
+            val ^= i
+
+        # ok now val is   a ^ b where both a and b are different 
+        # how to extract a, and b?
+        '''
+
+        you could run  a ^ b and try to xor it with 
+        a number between 1 and n -> the result would be the other number, 
+        b. 
+
+        then check if the other number is between 1 and N and if it is,
+        keep it. -> could you also check if the a and b you found is 
+        also the same as the sum of the 2 missing numbers, which you can 
+        get by subtracting N(n+1)/2 - sum(A). 
+        so if it passes both tests then its more likely to be that rite!!
+        but could 2 seperate 'a, 'b pairs still pass both sum and xor test?
+        
+        ABOVE SOLUTION IS HACKY!!
+        '''
+
+        BETTER SOLUTION: 
+        # ok now val is   a ^ b where both a and b are different 
+        # how to extract a, and b?
+        '''
+        well if the value is 10001. 
+
+        The 0 means they were both either 0 bit, or both 1 bit.
+        if its 1, then either the a has a 1 bit and b has 0 bit or 
+        vice versa. 
+
+        Partitioning based on inspecting u ^ v
+        Luckily, we can figure out what to do by using what we 
+        already stated earlier. Let’s think about this:
+
+        If the two bits XOR takes as input are the same, the result is 0, otherwise it is 1.
+
+        If we analyze the individual bits in u ^ v, then every 0 means that the 
+        bit had the same value in both u and v. Every 1 means that the bits differed.
+
+        Using this, we find the first 1 in u ^ v, i.e. the first position i where u and v 
+        have to differ. Then we partition A as well as the numbers from 1 to n according to that bit.
+        We end up with two partitions, each of which contains two sets:
+
+        Partition 0
+        The set of all values from 1 to n where the i-th bit is 0
+        The set of all values from A where the i-th bit is 0
+        Partition 1
+        The set of all values from 1 to n where the i-th bit is 1
+        The set of all values from A where the i-th bit is 1
+        Since u and v differ in position i, we know that they have to be in different partitions.
+
+        Reducing the problem
+        Next, we can use another insight described earlier:
+
+        While we worked on integers from 1 to n so far, this is not required. In fact, the 
+        previous algorithm works in any situation where there is (1) some set of potential 
+        elements and (2) a set of elements actually appearing. The sets may only differ 
+        in the one missing (or duplicated) element.
+
+        These two sets correspond exactly to the sets we have in each partition. 
+        We can thus search for u by applying this idea to one of the partitions 
+        and finding the missing element, and then find v by applying it to the other partition.
+
+        This is actually a pretty nice way of solving it: We effectively 
+        reduce this new problem to the more general version of the problem we solved earlier.
+
+
+
+
+1)  Use loop invarients when doing 2 pointer solutions, greedy solutions, etc. to think about, and help
     interviewer realize that your solution works!!!
 
-31) Derieive mathematical relationships between numbers in array, and solve for a solution. Since
+2)  Derieive mathematical relationships between numbers in array, and solve for a solution. Since
     there was a mathematical relationship, xor can prolly be used for speedup. 
     For instance: Find the element that appears once
 
@@ -3756,17 +3880,17 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         How do we add each number once though? we cant use a set. 
         XOr? wtf?
 
-32) DP is like traversing a DAG. it can have a parents array, dist, and visited set. SOmetimes you need to backtrack
+3)  DP is like traversing a DAG. it can have a parents array, dist, and visited set. SOmetimes you need to backtrack
     to retrieve parents so remember how to do that!!!!. 
 
-33) Do bidirectional BFS search if you know S and T and you are finding the path! 
+4)  Do bidirectional BFS search if you know S and T and you are finding the path! 
     (i think its good for early termination in case there is no path)
 
-34) For linked list questions, draw it out. Dont think about it. Then figur eout how you are rearranging the ptrs.
+5)  For linked list questions, draw it out. Dont think about it. Then figur eout how you are rearranging the ptrs.
     and how many new variables you need. ALSO USE DUMMY POINTERS to not deal with modifying head pointer case. 
 
 
-35) Linear Algorithms:
+6)  Linear Algorithms:
     Bracket Matching => Use stack
     Postfix Calculator and Conversion
         Prefix calculator => 2 + 6 * 3 => this needs binary tree to do i think! with extra mem
@@ -3792,7 +3916,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
             ……b) Else ignore it.
             // The step 2 is O((n-k)*logk)
 
-            3) Finally, root of the MH is the kth smallest element.
+            1) Finally, root of the MH is the kth smallest element.
 
             Time complexity of this solution is O(k + (n-k)*Logk)
         METHOD 4(BEST METHOD QUICK SELECT): -> DO MEDIAN OF MEDIANS TO GET O(N) NOT WORST AVERAGE CASE? worst time!!!
@@ -3818,7 +3942,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
 
 
 
-36) Heapify is cool. Python heapify implementation that is O(N) implemented below: 
+7)  Heapify is cool. Python heapify implementation that is O(N) implemented below: 
     UNDERSTAND IT.
         # Single slash is simple division in python. 2 slashes is floor division in python
         # only the root of the heap actually has depth log2(len(a)). Down at the nodes one above a leaf - 
@@ -3839,7 +3963,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
                     A[child], A[(child-1)//2] = A[(child-1)//2], A[child]
                     child = child *2 + 1
 
-37) Understand counting sort, radix sort.
+8)  Understand counting sort, radix sort.
         Counting sort is a linear time sorting algorithm that sort in O(n+k) 
         time when elements are in range from 1 to k.        
         What if the elements are in range from 1 to n2? 
@@ -3851,7 +3975,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         Look at section below for impls.
 
 
-38) To do post order traversal or inorder traversal 
+9)  To do post order traversal or inorder traversal 
     on a binary tree iteratively (or doing any dfs, where you want to vist root node last). 
     you need to USE A FLAG!! (LOOK at morris traversal for cool funs!)
 
@@ -3898,7 +4022,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
             return ret
 
 
-39) When you need to keep a set of running values such as mins, and prev mins, 
+10) When you need to keep a set of running values such as mins, and prev mins, 
     you can keep all the runnign mins in a datastructre and as your algorithm traverses the datastructure, 
     update the datastructure for the running value as well in the same way to maintaing consistency!
     For instance, min stack: 
@@ -3913,7 +4037,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     maintain the running min.
 
 
-40) In some questions you can 
+11) In some questions you can 
     do DFS or BFS from a root node to a specific 
     child node and you end up traversing a tree, 
     either the DFS tree or BFS Tree. 
