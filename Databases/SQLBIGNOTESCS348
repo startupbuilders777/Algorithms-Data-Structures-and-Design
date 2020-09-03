@@ -33,7 +33,152 @@ CREATE TABLE mark ( snum      integer not null, deptcode  char(2) not null,  cnu
 
 
 
+ 
+COURSERA QUESTION::
 
+SELECT a.student_id, MIN(a.course_id), a.grade
+from enrollments a
+where not exists(  select * 
+                    from enrollments as b 
+                    where b.student_id = a.student_id and
+                    b.grade > a.grade )
+GROUP BY a.student_id, a.grade
+ORDER BY a.student_id
+
+
+
+SELECT a.day as 'day', SUM(b.value) as 'cumulative_value' 
+FROM registrations a, registrations b
+WHERE a.day >= b.day
+GROUP BY a.day
+ORDER BY a.day
+
+
+
+
+I am converting all my SQL Server queries to MySQL and my queries that have WITH in them are all failing. Here's an example:
+
+WITH t1 AS
+(
+     SELECT article.*, userinfo.*, category.*
+     FROM question
+     INNER JOIN userinfo ON userinfo.user_userid = article.article_ownerid
+     INNER JOIN category ON article.article_categoryid = category.catid
+     WHERE article.article_isdeleted = 0
+)
+SELECT t1.*
+FROM t1
+ORDER BY t1.article_date DESC
+LIMIT 1, 3
+
+COOL TRICKS:
+Create temporary tables to help do harder queries: 
+
+
+Mysql Developers Team announced that version 8.0 will have Common 
+Table Expressions in MySQL (CTEs). 
+So it will be possible to write queries like this:
+
+WITH RECURSIVE my_cte AS
+(
+  SELECT 1 AS n
+  UNION ALL
+  SELECT 1+n FROM my_cte WHERE n<10
+)
+SELECT * FROM my_cte;
++------+
+| n    |
++------+
+|    1 |
+|    2 |
+|    3 |
+|    4 |
+|    5 |
+|    6 |
+|    7 |
+|    8 |
+|    9 |
+|   10 |
++------+
+10 rows in set (0,00 sec)
+
+
+MySQL prior to version 8.0 doesn't support the WITH clause 
+(CTE in SQL Server parlance; Subquery Factoring in Oracle), 
+so you are left with using:
+
+TEMPORARY tables
+DERIVED tables
+inline views (effectively what the WITH clause represents - they are interchangeable)
+The request for the feature dates back to 2006.
+
+As mentioned, you provided a poor example - there's no need to perform a subselect if you aren't altering the output of the columns in any way:
+
+  SELECT * 
+    FROM ARTICLE t
+    JOIN USERINFO ui ON ui.user_userid = t.article_ownerid
+    JOIN CATEGORY c ON c.catid =  t.article_categoryid
+   WHERE t.published_ind = 0
+ORDER BY t.article_date DESC 
+   LIMIT 1, 3
+Here's a better example:
+
+SELECT t.name,
+       t.num
+  FROM TABLE t
+  JOIN (SELECT c.id
+               COUNT(*) 'num'
+          FROM TABLE c
+         WHERE c.column = 'a'
+      GROUP BY c.id) ta ON ta.id = t.id
+
+This should mention that CTE typically supports recursion -- which you can't do with a sub-query
+
+
+#################################################################3
+There are different types of joins available in SQL:
+
+INNER JOIN: returns rows when there is a match in both tables.
+
+LEFT JOIN: returns all rows from the left table, even if there are no matches in the right table.
+
+RIGHT JOIN: returns all rows from the right table, even if there are no matches in the left table.
+
+FULL JOIN: It combines the results of both left and right outer joins.
+
+The joined table will contain all records from both the tables and fill in NULLs for missing matches on either side.
+
+SELF JOIN: is used to join a table to itself as if the table were two tables, temporarily renaming at least one table in the SQL statement.
+
+CARTESIAN JOIN: returns the Cartesian product of the sets of records from the two or more joined tables.
+
+
+
+ALSO YOU CANNOT SIMULATE A WHERE CLAUSE WITH where statement:
+
+INNER JOIN is ANSI syntax which you should use.
+It is generally considered more readable, 
+especially when you join lots of tables.
+
+It can also be easily replaced with an OUTER JOIN whenever a need arises.
+
+The WHERE syntax is more relational model oriented.
+A result of two tables JOINed is a cartesian product of the tables 
+to which a filter is applied which selects only those rows with joining columns matching.
+
+It's easier to see this with the WHERE syntax.
+
+As for your example, in MySQL (and in SQL generally) these two queries are synonyms.
+
+Also note that MySQL also has a STRAIGHT_JOIN clause.
+
+Using this clause, you can control the JOIN order: which 
+table is scanned in the outer loop and which one is in the inner loop.
+
+You cannot control this in MySQL using WHERE syntax.
+
+
+#################################################################3
 
 
 */
@@ -828,7 +973,11 @@ with 2 classes, and 1 course with 5 classes scheduled in the curent term.
 (NOTE: IT IS THE CURRENT TERM!!!)
 */
  
- 
+
+
+
+
+
 
  
 select COUNT(*) as NumberOfCourses, courseWithCount.classCount as NumberOfClassesForTheCourse

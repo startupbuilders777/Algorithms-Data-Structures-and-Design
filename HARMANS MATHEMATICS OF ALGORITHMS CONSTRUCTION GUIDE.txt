@@ -5,6 +5,29 @@ SCRAPE AND WRITE NOTES FOR FOLLOWING: https://medium.com/algorithms-and-leetcode
 REVIEW MATHEMATICS/GEOMETRY ALGORITHMS FROM CP ALGORITHMS:
 https://cp-algorithms.com/
 
+Convex hull: Given a set of points, find the smallest convex polyhedron/polygon containing all the points.
+Line segment intersection: Find the intersections between a given set of line segments.
+Delaunay triangulation
+Voronoi diagram: Given a set of points, partition the space according to which points are closest to the given points.
+Linear programming
+Closest pair of points: Given a set of points, find the two with the smallest distance from each other.
+Largest empty circle: Given a set of points, find a largest circle with its center inside of their convex hull and enclosing none of them.
+Euclidean shortest path: Connect two points in a Euclidean space (with polyhedral obstacles) by a shortest path.
+Polygon triangulation: Given a polygon, partition its interior into triangles
+Mesh generation
+Boolean operations on polygons
+The computational complexity for this class of problems is estimated by the time and space (computer memory) required to solve a given problem instance.
+
+Geometric query problems
+In geometric query problems, commonly known as geometric search problems, the input consists of two parts: the search space part and the query part, which varies over the problem instances. The search space typically needs to be preprocessed, in a way that multiple queries can be answered efficiently.
+
+Some fundamental geometric query problems are:
+
+Range searching: Preprocess a set of points, in order to efficiently count the number of points inside a query region.
+Point location: Given a partitioning of the space into cells, produce a data structure that efficiently tells in which cell a query point is located.
+Nearest neighbor: Preprocess a set of points, in order to efficiently find which point is closest to a query point.
+Ray tracing: Given a set of objects in space, produce a data structure that efficiently tells which object a query ray intersects first.
+
 
 
 WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
@@ -392,7 +415,49 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
       
 
 
+0.95) Read up on https://en.wikipedia.org/wiki/Centered_polygonal_number
 
+    You're having a big party and you're serving a pizza as a main dish. 
+    You got really tired of cutting the pizza, so you decided to do it as 
+    efficiently as possible by using no more than n cuts.
+
+    Each cut is required to be a straight line, and there is no 
+    requirement that the pizza pieces be the same size.
+
+    Given n, the number of straight cuts you're willing to make, 
+    find the maximum number of pieces you can cut the pizza into.
+
+    def lazyCutter(n):
+    #PATTERN: 2, 4, 7, 11, 16 
+    #N INPUT: 1  2  3   4,  5
+    if n == 0:
+        return 1
+        
+    count = 2
+    diff = 2
+    for i in range(n-1):
+        count += diff 
+        diff += 1
+        
+    
+    return count 
+    
+    Central polygonal numbers (the Lazy Caterer's sequence): n(n+1)/2 + 1; 
+    or, maximal number of pieces formed when slicing a pancake with n cuts.
+    (Formerly M1041 N0391)		366
+    1, 2, 4, 7, 11, 16, 22, 29, 37, 46, 56, 67, 79, 92, 106, 121, 137, 154, 
+    172, 191, 211, 232, 254, 277, 301, 326, 352, 379, 407, 436, 466, 497, 
+    529, 562, 596, 631, 667, 704, 742, 781, 821, 862, 904, 947, 991, 1036, 
+    1082, 1129, 1177, 1226, 1276, 1327, 1379 (list; graph; refs; listen; history; text; internal format)
+    OFFSET	
+    0,2
+
+    COMMENTS	
+    These are Hogben's central polygonal numbers with the (two-dimensional) symbol
+    The first line cuts the pancake into 2 pieces. For n > 1, the n-th line crosses every 
+    earlier line (avoids parallelism) and also avoids every previous line intersection, 
+    thus increasing the number of pieces by n. For 16 lines, for example, the number of 
+    pieces is 2 + 2 + 3 + 4 + 5 + ... + 16 = 137. These are the triangular numbers plus 1 (cf. A000217).
 
 
 1.3)  PLEASE IMPROVE THESE NOTES WITH PRACTICAL USE CASE OF 2'S COMPLIMENT IN PYTHON. 
@@ -434,6 +499,70 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
     Surprisingly, the negation operation is symmetric. It is not quite as simple 
     as the negation of the one's complement representation, 
     but addition is simpler, using an end-off carry.
+
+
+1.35) GCD by dividing 
+
+1 def gcd(a, b):
+2   if a % b == 0:
+3       return b
+4   else:
+5       return gcd(b, a % b)
+
+
+1.37) Binary Euclidean Algorithm:
+
+    The following function calculate gcd(a, b, res) = gcd(a, b, 1) · res. 
+    So to calculate gcd(a, b) it suffices to call gcd(a, b, 1) = gcd(a, b).
+
+    1 def gcd(a, b, res):
+    2   if a == b:
+    3       return res * a
+    4   elif (a % 2 == 0) and (b % 2 == 0):
+    5       return gcd(a // 2, b // 2, 2 * res)
+    6   elif (a % 2 == 0):
+    7       return gcd(a // 2, b, res)
+    8   elif (b % 2 == 0):
+    9       return gcd(a, b // 2, res)
+    10  elif a > b:
+    11      return gcd(a - b, b, res)
+    12  else:
+    13      return gcd(a, b - a, res)
+
+    This algorithm is superior to the previous one for very large integers when it cannot be
+    assumed that all the arithmetic operations used here can be done in a constant time. Due
+    to the binary representation, operations are performed in linear time based on the length of
+    the binary representation, even for very big integers. On the other hand, modulo applied in
+    algorithm 10.2 has worse time complexity. It exceeds O(log n · log log n), where n = a + b.
+    Denote by (ai, bi) pairs of values a and b, for which the above algorithm performs i steps.
+    We have ai+1 >= ai, bi+1 >= bi, b1 = a1 > 0. 
+    In the first three cases, ai+1 · bi+1 >= 2 · ai · bi. In the
+    fourth case, ai+1 · bi+1 >= 2 · ai−1 · bi−1, because a difference of two odd numbers is an even
+    number. By induction we get:
+    ai · bi >= 2^((i−1)/2) (12.2)
+    Thus, the time complexity is O(log(a · b)) = O(log a + b) = O(log n). And for very large
+    integers, O((log n)2), since each arithmetic operation can be done in O(log n) time.
+
+
+
+1.37) LCM: 
+    The least common multiple (lcm) of two integers a and b is the 
+    smallest positive integer that
+    is divisible by both a and b. There is the following relation:
+    lcm(a, b) = a·b
+    gcd(a,b)
+
+
+    Problem: Michael, Mark and Matthew collect coins of consecutive face values a, b and c
+    (each boy has only one kind of coins). The boys have to find the minimum amount of money
+    that each of them may spend by using only their own coins.
+    Solution: It is easy to note that we want to find the least common multiple of the three
+    integers, i.e. lcm(a, b, c). The problem can be generalized for the lcm of exactly n integers.
+    There is the following relation:
+    lcm(a1, a2, . . . , an) = lcm(a1, lcm(a2, a3, . . . , an))
+    We simply find the lcm n times, and each step works in logarithmic time.
+
+
 
 
 
@@ -597,9 +726,75 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
     except zero is one and the remainder of any number upon division by one is 
     zero. However as a remainder one is equivalent to zero for division by one.
 
-    
+3.7) Sieve of Eeraosthenes Part 1
+    Initially, we have the set of all the numbers {2, 3, . . . , n}. At each step we choose the
+    smallest number in the set and remove all its multiples
 
-4) Sieve of Eratosthenes
+    Notice that every composite number
+    has a divisor of at most √n. In particular, it has a divisor which is a prime number. It
+    is sufficient to remove only multiples of prime numbers not exceeding √n
+
+    1 def sieve(n):
+    2   sieve = [True] * (n + 1)
+    3   sieve[0] = sieve[1] = False
+    4   i = 2
+    5   while (i * i <= n):
+    6       if (sieve[i]):
+    7           k = i * i
+    8           while (k <= n):
+    9               sieve[k] = False
+    10              k += i
+    11      i += 1
+    12 return sieve
+
+    Time complexity -> O(nloglogn)
+
+3.8) Factorization: 
+    Factorization is the process of decomposition into prime factors. More precisely, for a given
+    number x we want to find primes p1, p2, . . . , pk whose product equals x.
+    Use of the sieve enables fast factorization. Let’s modify the sieve algorithm slightly. For
+    every crossed number we will remember the smallest prime that divides this number.
+
+    1 def arrayF(n):
+    2   F = [0] * (n + 1)
+    3   i = 2
+    4   while (i * i <= n):
+    5       if (F[i] == 0):
+    6           k = i * i
+    7           while (k <= n):
+    8               if (F[k] == 0):
+    9                   F[k] = i;
+    10              k += i
+    11      i += 1
+    12  return F
+
+
+    0 0 2 0 2 0 2 3 2  0   2  0  2  3  2  0  2  0  2
+    2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+
+
+    With this approach we can factorize numbers very quickly. If we know that one of the prime
+    factors of x is p, then all the prime factors of x are p plus the decomposition of x/p 
+
+    11.3: Factorization of x — O(log x).
+    1   def factorization(x, F):
+    2       primeFactors = []
+    3       while (F[x] > 0):
+    4           primeFactors += [F[x]]
+    5           x /= F[x]
+    6       primeFactors += [x]
+    7       return primeFactors    
+
+    Number x cannot have more than log x prime factors, because every prime factor is � 2.
+    Factorization by the above method works in O(log x) time complexity. Note that consecutive
+    factors will be presented in non-decreasing order.
+
+
+
+
+
+
+4) Sieve of Eratosthenes Part 2
 
         In mathematics, the Sieve of Eratosthenes is a very 
         simple algorithm of finding all prime numbers upto a given limit.

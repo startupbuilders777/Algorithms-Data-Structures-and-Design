@@ -242,7 +242,7 @@ Stack/Queues/Monotonic Queues
 503. Next Greater Element II (Medium)
 901. Online Stock Span (Medium)
 581. Shortest Unsorted Continuous Subarray (Easy)
-42. Trapping Rain Water (Hard)
+42.  Trapping Rain Water (Hard)
 907. Sum of Subarray Minimums (Medium)
 891. Sum of Subsequence Widths (Hard)
 828. Count Unique Characters of All Substrings of a Given String (Hard)

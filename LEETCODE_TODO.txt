@@ -52,3 +52,6 @@ path in all paths but actually each path in all paths can be different, so you h
 TODO: 
 WRITE notes on arithmetic, geometric sequences, useful sums formulas of consecvutive numbers, and modular arithmetic with powers, 
 and prime factorization, how to count them. 
+
+
+

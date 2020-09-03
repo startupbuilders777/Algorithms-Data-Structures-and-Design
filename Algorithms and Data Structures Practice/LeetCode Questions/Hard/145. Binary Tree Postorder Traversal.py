@@ -15,7 +15,8 @@ Follow up: Recursive solution is trivial, could you do it iteratively?
 
 '''
 
-# TO DO IT, ITERATIVELY, YOU NEED A FLAG THAT MAKES YOUR VISIT YOUR CHILDREN FIRST BEFORE YOURSELF:
+# TO DO IT, ITERATIVELY, YOU NEED A FLAG THAT MAKES 
+# YOUR VISIT YOUR CHILDREN FIRST BEFORE YOURSELF:
 
 class Solution:
     # @param {TreeNode} root

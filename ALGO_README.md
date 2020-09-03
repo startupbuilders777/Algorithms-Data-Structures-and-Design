@@ -71,7 +71,217 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
--37) Reasoning about hard states in DP: MinAbsSum
+
+
+-41) Insert interval into a sorted set of intervals using 2 binary searches:
+    Binary search the start time on the end times (bisect_right), 
+    and the end time on the start times (bisect_left)
+    if same value you can insert, otherwise cant
+    Works on open close start end intervals. 
+    Review BookingTimes in Most important problems. 
+
+
+
+-40) CIRCULAR BUFFERS: Implementation Stack and Queue 
+     Declare an array with enough space!
+     
+    7.1: Push / pop function — O(1).
+    1   stack = [0] * N
+    2   size = 0
+    3   def push(x):
+    4       global size
+    5       stack[size] = x
+    6       size += 1
+    7   def pop():
+    8       global size
+    9       size -= 1
+    10      return stack[size]
+
+    7.2: Push / pop / size / empty function — O(1).
+    1   queue = [0] * N
+    2   head, tail = 0, 0
+    3   def push(x):
+    4       global tail
+    5       tail = (tail + 1) % N
+    6       queue[tail] = x
+    7   def pop():
+    8       global head
+    9       head = (head + 1) % N
+    10      return queue[head]
+    11  def size():
+    12      return (tail - head + N) % N
+    13  def empty():
+    14      return head == tail
+
+
+
+-39) LEADER ALGORITHM: 
+    Let us consider a sequence a0, a1, . . . , an−1. The leader of this sequence is the element whose
+    value occurs more than n/2 times.
+
+    Notice that if the sequence a0, a1, . . . , an−1 
+    contains a leader, then after removing a pair of
+    elements of different values, the remaining sequence 
+    still has the same leader. Indeed, if we
+    remove two different elements then only one of them 
+    could be the leader. The leader in the
+    new sequence occurs more than (n/2) − 1 = (n−2)/2 times. 
+    Consequently, it is still the leader of the new sequence of n − 2 elements.
+
+    1 def goldenLeader(A):
+    2   n = len(A)
+    3   size = 0
+    4   for k in xrange(n):
+    5       if (size == 0):
+    6           size += 1
+    7           value = A[k]
+    8       else:
+    9           if (value != A[k]):
+    10              size -= 1
+    11          else:
+    12              size += 1
+    13  candidate = -1
+    14  if (size > 0):
+    15      candidate = value
+    16  leader = -1
+    17  count = 0
+    18  for k in xrange(n):
+    19      if (A[k] == candidate):
+    20          count += 1
+    21  if (count > n // 2):
+    22      leader = candidate
+    23  return leader
+
+
+    After removing all pairs of different
+    elements, we end up with a sequence containing all the same values. 
+    This value is not necessarily the leader; it is only a candidate for the leader. 
+    Finally, we should iterate through all
+    the elements and count the occurrences of the candidate; 
+    if it is greater than n/2 then we have
+    found the leader; otherwise the sequence does not contain a leader.
+
+
+
+-38) A comparison of Forward and Backward DP illustrated:
+
+
+    A game for one player is played on a board consisting of N consecutive squares, 
+    numbered from 0 to N − 1. There is a number written on each square. 
+    A non-empty array A of N integers contains the numbers written on the squares. 
+    Moreover, some squares can be marked during the game.
+
+    At the beginning of the game, there is a pebble on square number 0 and this 
+    is the only square on the board which is marked. The goal of the game is to
+    move the pebble to square number N − 1.
+
+    During each turn we throw a six-sided die, with numbers from 1 to 6 on 
+    its faces, and consider the number K, which shows on the upper face after 
+    the die comes to rest. Then we move the pebble standing on square number 
+    I to square number I + K, providing that square number I + K exists. If 
+    square number I + K does not exist, we throw the die again until we obtain 
+    a valid move. Finally, we mark square number I + K.
+
+    After the game finishes (when the pebble is standing on square number N − 1), 
+    we calculate the result. The result of the game is the sum of the numbers 
+    written on all marked squares.
+
+    For example, given the following array:
+
+        A[0] = 1
+        A[1] = -2
+        A[2] = 0
+        A[3] = 9
+        A[4] = -1
+        A[5] = -2
+
+    The marked squares are 0, 3 and 5, so the result of the 
+    game is 1 + 9 + (−2) = 8. This is the maximal possible result 
+    that can be achieved on this board.
+
+    Write a function:
+
+    def solution(A)
+
+    that, given a non-empty array A of N integers, returns the 
+    maximal result that can be achieved on the board represented by array A.
+    
+    SOLUTION:
+    from collections import deque
+
+    def backwardDP(A):
+        '''
+        Backward dp.
+            
+        Start with idx 0
+        update with max value, by using 6 behind you!
+            
+        OPT[i] = A[i] + max(OPT[i-1], OPT[i-2],..., OPT[i-5])
+            
+        do we ever double add...
+        nah
+        Just need array of size 6; to space optimize
+        '''
+        # the states represent the last 6 updated states. 
+        states = deque([float("-inf"),
+                        float("-inf"),
+                        float("-inf"),
+                        float("-inf"),
+                        float("-inf"),
+                        0])
+        
+        for i in range(1, len(A)):
+            
+            # We are always guranteed a link to something before us
+            # because we always sum in max states, unlike forward dp, 
+            # where you have to force it to use previous states, by 
+            # setting your own state to something really shitty, so
+            # relaxation forces you to pick up a state
+            maxVal = A[i] + max(states)
+            states.popleft()
+            states.append(maxVal)
+            # latestVal = maxVal
+        
+        # WE HAVE TO ALWAYS INCLUDE A[0] because its marked. 
+        return maxVal + A[0]
+    
+    '''
+    Forward DP 
+    Do 6 RELAXATIONS FORWARD. 
+        
+    OPT[i+1] -> max(OPT[i+1], A[i+1] + OPT[i])?
+    OPT[i+2] -> A[i+2] + A[i]?
+    '''
+    def forwardDP(A):
+        N = len(A)
+        OPT = [float("-inf") for i in range(N)]
+        
+        # YOU ALSO HAVE TO ENSURE THAT THE PIECES THAT ARE FURTHER THAN 
+        # 6 AWAY HAVE ACCESS TO SOMETHING that was used to reach it. 
+        # so FIRST 6 ARE ACCESSIBLE!
+        
+        # In other words, set the first 6 to the value of A[i]
+        OPT[0] = 0
+        
+        for i in range(N):
+            for k in range(1, 7):
+                if i + k < len(A):
+                    OPT[i+k] = max(OPT[i] + A[i+k], OPT[i+k]) 
+        
+        # WE HAVE TO ALWAYS INCLUDE A[0] because its marked. 
+        return OPT[-1] + A[0]
+        
+    def solution(A):
+        # FORWARD DP WORKS 100%
+        # return forwardDP(A)
+        return backwardDP(A)
+        
+
+
+
+
+-37) MAKING SURE YOUR DFS IS CORRECT! And the DP is being resolved 
+     in the DFS tree properly. 
 
     For a given array A of N integers and a sequence S of N integers 
     from the set {−1, 1}, we define val(A, S) as follows:
@@ -147,8 +357,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         incorrect_val = abs(recurseA(0))
         return correct_val
 
--36.5) Coming up with bottom up solution with MinAbsSum by rephrasing problem.
-    Question above. 
+-36.5) Reasoning about hard states in DP: MinAbsSum
+       Coming up with bottom up solution with MinAbsSum by rephrasing problem.
+       Question above. 
 
     Since we can arbitrarily choose to take the element or its negative, we can simplify the
     problem and replace each number with its absolute value. Then the problem becomes dividing
@@ -1480,6 +1691,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
 
+
+
+
 -12) SIMULATE BINARY SEARCH INSERTION POINT FINDER 
      AKA bisect.bisect_left(arr, val, lo=0, hi=len(arr)) 
     # Locate the insertion point for x in a to maintain sorted order.
@@ -1598,10 +1812,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
             if s:
                 return f"#{s.val} {self.traverse_tree(s.left)} {self.traverse_tree(s.right)}"
             return None
-
-
-
-
 
 
 
