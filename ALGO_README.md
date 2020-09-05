@@ -72,6 +72,344 @@ TOPICS TO UNDERSTAND:
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
+-47) GREEDY ALGORITHM INTERVAL DEADLINES C++
+    
+    It is required to create such a schedule to accomplish the biggest number of jobs.
+
+    struct Job {
+        int deadline, duration, idx;
+
+        bool operator<(Job o) const {
+            return deadline < o.deadline;
+        }
+    };
+
+    vector<int> compute_schedule(vector<Job> jobs) {
+        sort(jobs.begin(), jobs.end());
+
+        set<pair<int,int>> s;
+        vector<int> schedule;
+        for (int i = jobs.size()-1; i >= 0; i--) {
+            int t = jobs[i].deadline - (i ? jobs[i-1].deadline : 0);
+            s.insert(make_pair(jobs[i].duration, jobs[i].idx));
+            while (t && !s.empty()) {
+                auto it = s.begin();
+                if (it->first <= t) {
+                    t -= it->first;
+                    schedule.push_back(it->second);
+                } else {
+                    s.insert(make_pair(it->first - t, it->second));
+                    t = 0;
+                }
+                s.erase(it);
+            }
+        }
+        return schedule;
+    }
+
+
+
+
+
+
+-44) ONLINE KADANES ALGORITHM -> Max possible arithmetic mean. 
+
+    The condition of the problem is as follows: given an array of n numbers, 
+    and a number L. There are queries of the form (l,r), and in response to each 
+    query, it is required to find a subarray of the segment [l,r] of length not 
+    less than L with the maximum possible arithmetic mean.
+
+Yes, in linear time it is possible with a stack. Namely, we will calculate the partial sums of two types. Let L be the minimum length of the segment of interest to us. Then S1 (i) = a (0) + ... + a (i), and S2 (i) = a (0) + ... + a (i - L). Note, then, that for a segment with ends at i and j (i> = j), the arithmetic mean will be X = (S1 (i) - S2 (j + L - 1)) / (i - j + 1) ... We make the change t = j + L - 1, then we get: X = (S1 (i) - S2 (t)) / (i - t + L). We need to maximize X. Now we no longer have a restriction on the minimum length of the segment, but we no longer count the arithmetic mean.
+
+Multiplying both sides by the denominator, we have: S1 (i) - X * (i + L) = S2 (t) - X * t (*).
+
+On the left and on the right, there are equations of lines, where X is an independent variable. For a fixed i, we need to find a t such that the intersection point, respectively. straight lines lies as far to the right as possible. It can be noted that both slopes are negative, and the straight line on the left side has a strictly smaller value than that of the straight line on the right side. This means that if we store the lower envelope of the set of lines on the left (lower envelope), then the optimal intersection point will be reached when the line S1 (i) - X * (i + L) intersects with one of the lines belonging to this set. Keeping all the lines on the stack, it is possible in O (H) to calculate this intersection point for each of the lines. It is enough to know that the problem of finding the lower envelope of a set of lines of the form y = kx + l is equivalent to finding the lower chain of the convex hull of points of the form (k, l).
+
+
+This method is generalized for such a task: an array of N numbers is given, as well as a number L. There are requests of the form: "Given a segment of numbers from this array, it is required to issue a subsegment of this segment online, of length not less than L, with the maximum arithmetic mean value" ... To generalize the algorithm, you need to make several observations:
+
+1. As mentioned above, if we fix the right end of the segment and remember the lower envelope of the set of all straight lines from the right side of equality (*), corresponding to the numbers that lie to the left of the right end, then to find the optimal segment with this right end, it is enough to intersect, respectively. the straight line from the left side of equality (*) with this lower envelope set.
+2. Similarly for the case when the left end of the segment is fixed and there is the upper envelope set of all lines from the left side of the equality (*), resp. numbers to the right of this end.
+3. If the segment is divided into 2 parts, for the left one find the lower envelope of the set of straight lines from the right side (*), and for the right ones - the upper envelope of the set of straight lines from the left side (*), and also assume that the right end lies in the right half, and the left one is on the left, then the optimal ends can be found by intersecting these 2 sets of lines. The intersecting lines and will correspond to the ends of the optimal segment. It can be shown that there will always be one intersection point.
+
+It is possible to intersect such sets in O (log ^ 2 (N)) by doing 2 nested binary searches: one by x, and the second by number, respectively. segment or ray in each of the sets.
+
+Let's go back to the original problem. Before we start answering queries, let's build 2 segment trees: one will store the lines from the left side of the equality (*), the second - from the right. Both of them will take O (NlogN) memory. It will take the same amount of time to build. For each vertex of these DOs, we find the optimal segment lying in them.
+
+When answering the request, we will divide the given segment into O (logN) subsegments, which correspond to the vertices in the segment trees. To begin with, let's find the best segment that lies entirely within one of these segments. Then, you can cross all pairs of segments from different trees using the method described above, and compare the answer with the one already found.
+
+The last stage takes O (log ^ 4 (N)) time. But if, instead of intersecting all pairs, we fix one subsegment, and then sequentially go from it to the right and merge all the envelopes of the set into one (it can be implicitly), then the total will be O (log ^ 3 (N)) time.
+
+The algorithm came out pretty complicated. I gave almost the same problem for the summer training camp in Petrozavodsk 2011, so if something is not clear, you can look at it in analysis.
+
+
+
+-43.5) Kadanes Algo - Search for a subarray with a maximum/minimum avg: 
+    
+    This problem lies in finding such a segment a[l,r], such that the average value is maximal:
+
+    Of course, if no other conditions are imposed on the required segment [l,r], 
+    then the solution will always be a segment of length 1 at the maximum element 
+    of the array. The problem only makes sense, if there are additional restrictions 
+    (for example, the length of the desired segment is bounded below).
+
+    In this case, we apply the standard technique when working with the problems 
+    of the average value: we will select the desired maximum average value by binary search.
+
+    To do this, we need to learn how to solve the following subproblem: given the 
+    number x, and we need to check whether there is a subarray of array a[] (of course, 
+    satisfying all additional constraints of the problem), where the average value is greater than x.
+
+    To solve this subproblem, subtract x from each element of array a[]. Then our 
+    subproblem actually turns into this one: whether or not there are positive sum 
+    subarrays in this array. And we already know how to solve this problem.
+
+    Thus, we obtained the solution for the asymptotic O(T(n)logW), where W is the 
+    required accuracy, T(n) is the time of solving the subtask for an array of length 
+    n (which may vary depending on the specific additional restrictions imposed).
+
+
+    EXPLAINED AGAIN: 
+
+    first we do a binary search on the average and let it be x
+    we decrease x from all of the array elements and if there exists a 
+    sub array with lengh more than k whose sum is more than zero then we can 
+    say that we have such a sub array whose average is more than x other wise 
+    we can say that there doesnt exist any such sub array
+
+    how to find out if there is a sub array whose sum is more than zero and its 
+    length is more than k? we can say that a sub array [l, r) equals sum[1, r) — sum[1, l) 
+    so if we get the partial sums and fix the r of the sub array we just need an l 
+    which sum[1, r) >= sum[1, l) and l <= r — k this can 
+    be done with partial minimum of the partial sums
+
+
+
+-43) Maximum Slice problem, Kadane's algorithm and extensions
+
+    Now we give a full version of the solution, 
+    which additionally also finds the boundaries of the desired segment:
+
+    int ans = a[0], ans_l = 0, ans_r = 0;
+    int sum = 0, min_sum = 0, min_pos = -1;
+
+    for (int r = 0; r < n; ++r) {
+        sum += a[r];
+        int cur = sum - min_sum;
+        if (cur > ans) {
+            ans = cur;
+            ans_l = min_pos + 1;
+            ans_r = r;
+        }
+        if (sum < min_sum) {
+            min_sum = sum;
+            min_pos = r;
+        }
+    }
+
+
+
+-42.5) 2D Kadanes Algorithm: 
+
+
+    Two-dimensional case of the problem: search for maximum/minimum submatrix
+
+    Kadane’s algorithm for 1D array can be used to reduce the time complexity to O(n^3). 
+    The idea is to fix the left and right columns one by one and find the maximum 
+    sum contiguous rows for every left and right column pair. We basically find top and bottom 
+    row numbers (which have maximum sum) for every fixed left and right column pair. 
+    To find the top and bottom row numbers, calculate sun of elements in every row from left 
+    to right and store these sums in an array say temp[]. So temp[i] indicates sum of elements 
+    from left to right in row i. If we apply Kadane’s 1D algorithm on temp[], 
+    and get the maximum sum subarray of temp, this maximum sum would be the maximum possible 
+    sum with left and right as boundary columns. To get the overall maximum sum, we compare 
+    this sum with the maximum sum so far.
+
+    def kadane(arr, start, finish, n): 
+        
+        # initialize sum, maxSum and  
+        Sum = 0
+        maxSum = -999999999999
+        i = None
+    
+        # Just some initial value to check 
+        # for all negative values case  
+        finish[0] = -1
+    
+        # local variable  
+        local_start = 0
+        
+        for i in range(n): 
+            Sum += arr[i]  
+            if Sum < 0: 
+                Sum = 0
+                local_start = i + 1
+            elif Sum > maxSum: 
+                maxSum = Sum
+                start[0] = local_start  
+                finish[0] = i 
+    
+        # There is at-least one 
+        # non-negative number  
+        if finish[0] != -1:  
+            return maxSum  
+    
+        # Special Case: When all numbers  
+        # in arr[] are negative  
+        maxSum = arr[0]  
+        start[0] = finish[0] = 0
+    
+        # Find the maximum element in array 
+        for i in range(1, n): 
+            if arr[i] > maxSum: 
+                maxSum = arr[i]  
+                start[0] = finish[0] = i 
+        return maxSum 
+    
+    # The main function that finds maximum 
+    # sum rectangle in M[][]  
+    def findMaxSum(M): 
+        global ROW, COL 
+        
+        # Variables to store the final output  
+        maxSum, finalLeft = -999999999999, None
+        finalRight, finalTop, finalBottom = None, None, None
+        left, right, i = None, None, None
+        
+        temp = [None] * ROW 
+        Sum = 0
+        start = [0] 
+        finish = [0]  
+    
+        # Set the left column  
+        for left in range(COL): 
+            
+            # Initialize all elements of temp as 0  
+            temp = [0] * ROW  
+    
+            # Set the right column for the left  
+            # column set by outer loop  
+            for right in range(left, COL): 
+                
+                # Calculate sum between current left  
+                # and right for every row 'i' 
+                for i in range(ROW): 
+                    temp[i] += M[i][right]  
+    
+                # Find the maximum sum subarray in  
+                # temp[]. The kadane() function also  
+                # sets values of start and finish.  
+                # So 'sum' is sum of rectangle between   
+                # (start, left) and (finish, right) which  
+                # is the maximum sum with boundary columns  
+                # strictly as left and right.  
+                Sum = kadane(temp, start, finish, ROW)  
+    
+                # Compare sum with maximum sum so far.  
+                # If sum is more, then update maxSum  
+                # and other output values  
+                if Sum > maxSum: 
+                    maxSum = Sum
+                    finalLeft = left  
+                    finalRight = right  
+                    finalTop = start[0]  
+                    finalBottom = finish[0] 
+    
+        # Prfinal values  
+        print("(Top, Left)", "(", finalTop,  
+                                finalLeft, ")")  
+        print("(Bottom, Right)", "(", finalBottom,  
+                                    finalRight, ")")  
+        print("Max sum is:", maxSum) 
+    
+    # Driver Code 
+    ROW = 4
+    COL = 5
+    M = [[1, 2, -1, -4, -20], 
+        [-8, -3, 4, 2, 1],  
+        [3, 8, 10, 1, 3],  
+        [-4, -1, 1, 7, -6]]  
+    
+    findMaxSum(M) 
+
+
+-42) RMQs and processing array index and value at same time using 
+     a monotonic queue philosophy + Divide and conquer trick with dealing with all ranges. 
+     Sometimes you have to deal with 2 constraints at the same time. 
+
+    Problem: 
+    You have an array and a set 
+         1. 1. 2. 3. 4
+    a = [4, 2, 1, 6, 3]
+    S = {0, 1,  3, 4}
+
+    for each pair in the set, find the minimum value in that range,
+    then return sum of all minimum values as answer:
+    
+    0-1 => a[0:2] => [4, 2] => min([4, 2]) = 2
+    0-3 => [4, 2, 1, 6] => 1
+    1-3 => [2, 1, 6] => 1
+    Therefore the answer is ->  2 + 1 + 1 = 4 <-
+
+    To do this question, you have to satisfy both the range condition 
+    and the find minimum value condition. 
+
+    My proposed garbage solution was precomputing all running minimum values 
+    for every (i, j) range like so: (This soln is in LunchclubIORMQ in most important problems)
+    [
+        [4, 2, 1,1,1]
+        [2, 1,1, 1]
+        [1,1, 1]
+        [6, 3]
+        [3]
+    ]
+    Then enumerate every set in O(n^2)
+
+    CAN ALSO SOLVE WITH DP LIKE BELOW -----------------------------
+    Another way was solving the problem for all set ranges, was to compute the mins 
+    between you and the next element to you. THen to compute the min for ranges that 
+    are longer than that, just do the min of those precomputed solutions DP style.
+
+    So compute [0,1], [1,3], [3,4] Then to compute [0, 3], and [1, 4] don't look at a, 
+    just take the min of the ranges that make up the bigger ranges!!
+
+    THE BEST WAY TO SOLVE BELOW -----------------------------
+    Better way was to think of ways to split the sets using array a. 
+    We can create a binary tree where it splits on minimum values with a, 
+    and query each subset range rite! The lca, is the min. 
+
+    This ideation leads to another solution. 
+    Lets sort A: and keep track of the index as well. 
+    Since we sorted on the A[i], WE have to do the second order processing 
+    on the index, i. We sorted on A[i] so that we can linearly process it
+    and in a convenient way that respects the first constraint. 
+
+
+    A = [(1, 2), (2,1 ), (3, 4), (4, 0), (6, 3)]
+    The trick in this problem is to binary search the index to satisfy the second
+    constraint, and do a divide and conquer technique on the problem. 
+
+    So process (1,2). its the smallest and it splits the set S in 2:
+    S = {0, 1, 3, 4, }
+              ^
+    All ranges that cross the binary insertion point have 1 as a minimum value!
+    So ranges 0-3, 0-4, 1-3, and 1-4 all have index 2 in the middle, and all 
+    will have the min value 1. 
+
+    Then we process next element in A, but we do not want to count the same ranges twice in 
+    our final resulting answer. You can fix this by using a visited set.
+    The smarter way is to divide and conquer S:
+    Split S in two: 
+    S1 = {0, 1}, and S2 = {3, 4}
+    Then binary search in the smaller subsets so that you do not see repeat ranges from 
+    having split it already on (A[1], 1)
+
+    Search with index 1 on S1 because S2 does not contain index 1.
+    You will process [0, 1] -> give min value 2. 
+    Then finally compute answer like so. 
+
+
+
 
 -41) Insert interval into a sorted set of intervals using 2 binary searches:
     Binary search the start time on the end times (bisect_right), 

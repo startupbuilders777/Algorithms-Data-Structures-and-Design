@@ -72,6 +72,9 @@ Review Data structures readme, and do design skip list.
 ###########################################################################
 ##############################################################################
 
+ANOTHER LEETCODE LIST TO PRACTICE TRELLO LEETS:
+https://trello.com/b/JuklKVMn/leetcode-preparation-plan
+
 PATTERNS TO PRACTICE:
 
 Array
