@@ -72,6 +72,7 @@ TOPICS TO UNDERSTAND:
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
+
 -47) GREEDY ALGORITHM INTERVAL DEADLINES C++
     
     It is required to create such a schedule to accomplish the biggest number of jobs.
@@ -108,80 +109,114 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     }
 
 
+-43.5) USE BINARY SEARCH EVEN WHEN YOU DONT THINK YOU NEED IT.
+       USE IT WHEN YOU CAN MAP HALF THE VALUES TO TRUE AND THE OTHER HALF TO FALSE SOMEHOW
+       COME UP WITH MAPPING THEN UTILIZE BINSEARH!
 
+        
+        LC:  644-maximum-average-subarray-ii
+        Given an array consisting of n integers, find the contiguous 
+        subarray whose length is greater than or equal to k 
+        that has the maximum average value. 
+        And you need to output the maximum average value.
+        Input: [1,12,-5,-6,50,3], k = 4
+        Output: 12.75
+        Explanation:
+        when length is 5, maximum average value is 10.8,
+        when length is 6, maximum average value is 9.16667.
+        Thus return 12.75.
 
+        
+        Method 1: Use Binary Search
 
+            first we do a binary search on the average and let it be x
+            we decrease x from all of the array elements and if there exists a 
+            sub array with lengh more than k whose sum is more than zero then we can 
+            say that we have such a sub array whose average is more than x other wise 
+            we can say that there doesnt exist any such sub array
 
--44) ONLINE KADANES ALGORITHM -> Max possible arithmetic mean. 
+            how to find out if there is a sub array whose sum is more than zero and its 
+            length is more than k? we can say that a sub array [l, r) equals sum[1, r) — sum[1, l) 
+            so if we get the partial sums and fix the r of the sub array we just need an l 
+            which sum[1, r) >= sum[1, l) and l <= r — k this can 
+            be done with partial minimum of the partial sums
 
-    The condition of the problem is as follows: given an array of n numbers, 
-    and a number L. There are queries of the form (l,r), and in response to each 
-    query, it is required to find a subarray of the segment [l,r] of length not 
-    less than L with the maximum possible arithmetic mean.
+        Method 2: Use a diff bin search
+            Goal: Find the maximum average of continuous subarray of 
+            length greater than or equal to k.
 
-Yes, in linear time it is possible with a stack. Namely, we will calculate the partial sums of two types. Let L be the minimum length of the segment of interest to us. Then S1 (i) = a (0) + ... + a (i), and S2 (i) = a (0) + ... + a (i - L). Note, then, that for a segment with ends at i and j (i> = j), the arithmetic mean will be X = (S1 (i) - S2 (j + L - 1)) / (i - j + 1) ... We make the change t = j + L - 1, then we get: X = (S1 (i) - S2 (t)) / (i - t + L). We need to maximize X. Now we no longer have a restriction on the minimum length of the segment, but we no longer count the arithmetic mean.
+            Assumption: The answer is between the maximum value 
+            and the minimum value in the array.
 
-Multiplying both sides by the denominator, we have: S1 (i) - X * (i + L) = S2 (t) - X * t (*).
+            As a result, we can do a binary search for the answer, 
+            while using the minimum value and the maximum value as left and right boundary (inclusive).
 
-On the left and on the right, there are equations of lines, where X is an independent variable. For a fixed i, we need to find a t such that the intersection point, respectively. straight lines lies as far to the right as possible. It can be noted that both slopes are negative, and the straight line on the left side has a strictly smaller value than that of the straight line on the right side. This means that if we store the lower envelope of the set of lines on the left (lower envelope), then the optimal intersection point will be reached when the line S1 (i) - X * (i + L) intersects with one of the lines belonging to this set. Keeping all the lines on the stack, it is possible in O (H) to calculate this intersection point for each of the lines. It is enough to know that the problem of finding the lower envelope of a set of lines of the form y = kx + l is equivalent to finding the lower chain of the convex hull of points of the form (k, l).
+            Given the initial value of left and right boundary, we can 
+            compute the mid value. The problem is how we decide where the
+            answer lies, in [left, mid) or [mid, right].
 
+            If and only if there exists a subarray whose length is at least k, 
+            and its average value is greater than or equal mid, 
+            then the answer lies in [mid, right].
 
-This method is generalized for such a task: an array of N numbers is given, as well as a number L. There are requests of the form: "Given a segment of numbers from this array, it is required to issue a subsegment of this segment online, of length not less than L, with the maximum arithmetic mean value" ... To generalize the algorithm, you need to make several observations:
+            The problem becomes: Decide if there exists a subarray 
+            whose length is at least k, and its average value is greater than mid.
 
-1. As mentioned above, if we fix the right end of the segment and remember the lower envelope of the set of all straight lines from the right side of equality (*), corresponding to the numbers that lie to the left of the right end, then to find the optimal segment with this right end, it is enough to intersect, respectively. the straight line from the left side of equality (*) with this lower envelope set.
-2. Similarly for the case when the left end of the segment is fixed and there is the upper envelope set of all lines from the left side of the equality (*), resp. numbers to the right of this end.
-3. If the segment is divided into 2 parts, for the left one find the lower envelope of the set of straight lines from the right side (*), and for the right ones - the upper envelope of the set of straight lines from the left side (*), and also assume that the right end lies in the right half, and the left one is on the left, then the optimal ends can be found by intersecting these 2 sets of lines. The intersecting lines and will correspond to the ends of the optimal segment. It can be shown that there will always be one intersection point.
+            Consider such scenario: The average of A[1..n] >= mid is the same 
+            as the average of B[1..n] >= 0 where B[i] = A[i] - mid.
 
-It is possible to intersect such sets in O (log ^ 2 (N)) by doing 2 nested binary searches: one by x, and the second by number, respectively. segment or ray in each of the sets.
+            If we construct the new array B[] based on the given array A[], 
+            the problem becomes: Decides if there's a subarray whose length 
+            is at least k, and its sum is greater than 0,
 
-Let's go back to the original problem. Before we start answering queries, let's build 2 segment trees: one will store the lines from the left side of the equality (*), the second - from the right. Both of them will take O (NlogN) memory. It will take the same amount of time to build. For each vertex of these DOs, we find the optimal segment lying in them.
+            which is the same as finds the maximum subarray sum where 
+            the length of the subarray needs to be at least k.
 
-When answering the request, we will divide the given segment into O (logN) subsegments, which correspond to the vertices in the segment trees. To begin with, let's find the best segment that lies entirely within one of these segments. Then, you can cross all pairs of segments from different trees using the method described above, and compare the answer with the one already found.
+            When it comes to the maximum subarray sum, it is natural to 
+            think of the classic solution: "keep adding each integer to the 
+            sequence until the sum drops below 0. If sum is negative, reset the sequence."
 
-The last stage takes O (log ^ 4 (N)) time. But if, instead of intersecting all pairs, we fix one subsegment, and then sequentially go from it to the right and merge all the envelopes of the set into one (it can be implicitly), then the total will be O (log ^ 3 (N)) time.
+            However, it cannot work for our case, as we have requirement for the subarray length.
 
-The algorithm came out pretty complicated. I gave almost the same problem for the summer training camp in Petrozavodsk 2011, so if something is not clear, you can look at it in analysis.
+            Another simple way to find the maximum subarray is dynamic programming. 
+            If we can use DP to calculate the presum of the array (every subarray 
+            with start from the first element), we only need to find the maximum 
+            increase in the presum array.
 
+            We can slightly modify this approach to solve our problem. 
+            When finding the maximum increase, we no longer record the smallest 
+            element appeared before, but record the smallest element appeared k positions before.
 
+            You should easily see that this will cover the case where the 
+            length of the subarray is greater than k.
+            
+            Time complexity O(nlog(max-min))
+            Space complexity O(1)
 
--43.5) Kadanes Algo - Search for a subarray with a maximum/minimum avg: 
-    
-    This problem lies in finding such a segment a[l,r], such that the average value is maximal:
+            class Solution {
+            public :
+                double findMaxAverage(vector< int >& nums, int k) {
+                    int n = nums.size();
+                    vector < double > sums(n + 1 , 0 );
+                    double left = * min_element(nums.begin(), nums.end());
+                    double right = * max_element(nums.begin(), nums.end()) ;
+                    while (right-left> 1e- 5 ) {
+                        double minSum = 0 , mid = left + (right-left) / 2 ;
+                        bool check = false ;
+                        for ( int i = 1 ; i <= n; ++ i) {
+                            sums[i] = sums[i- 1 ] + nums[i- 1 ] -mid;
+                            if (i >= k) {
+                                minSum = min(minSum, sums[i- k]);
+                            }
+                            if (i >= k && sums[i]> minSum) {check = true ; break ;}
+                        }
+                        if (check) left = mid;
+                        else right = mid;
+                    }
+                    return left;
+                }
+            };
 
-    Of course, if no other conditions are imposed on the required segment [l,r], 
-    then the solution will always be a segment of length 1 at the maximum element 
-    of the array. The problem only makes sense, if there are additional restrictions 
-    (for example, the length of the desired segment is bounded below).
-
-    In this case, we apply the standard technique when working with the problems 
-    of the average value: we will select the desired maximum average value by binary search.
-
-    To do this, we need to learn how to solve the following subproblem: given the 
-    number x, and we need to check whether there is a subarray of array a[] (of course, 
-    satisfying all additional constraints of the problem), where the average value is greater than x.
-
-    To solve this subproblem, subtract x from each element of array a[]. Then our 
-    subproblem actually turns into this one: whether or not there are positive sum 
-    subarrays in this array. And we already know how to solve this problem.
-
-    Thus, we obtained the solution for the asymptotic O(T(n)logW), where W is the 
-    required accuracy, T(n) is the time of solving the subtask for an array of length 
-    n (which may vary depending on the specific additional restrictions imposed).
-
-
-    EXPLAINED AGAIN: 
-
-    first we do a binary search on the average and let it be x
-    we decrease x from all of the array elements and if there exists a 
-    sub array with lengh more than k whose sum is more than zero then we can 
-    say that we have such a sub array whose average is more than x other wise 
-    we can say that there doesnt exist any such sub array
-
-    how to find out if there is a sub array whose sum is more than zero and its 
-    length is more than k? we can say that a sub array [l, r) equals sum[1, r) — sum[1, l) 
-    so if we get the partial sums and fix the r of the sub array we just need an l 
-    which sum[1, r) >= sum[1, l) and l <= r — k this can 
-    be done with partial minimum of the partial sums
 
 
 
@@ -211,14 +246,13 @@ The algorithm came out pretty complicated. I gave almost the same problem for th
 
 -42.5) 2D Kadanes Algorithm: 
 
-
     Two-dimensional case of the problem: search for maximum/minimum submatrix
 
     Kadane’s algorithm for 1D array can be used to reduce the time complexity to O(n^3). 
     The idea is to fix the left and right columns one by one and find the maximum 
     sum contiguous rows for every left and right column pair. We basically find top and bottom 
     row numbers (which have maximum sum) for every fixed left and right column pair. 
-    To find the top and bottom row numbers, calculate sun of elements in every row from left 
+    To find the top and bottom row numbers, calculate sum of elements in every row from left 
     to right and store these sums in an array say temp[]. So temp[i] indicates sum of elements 
     from left to right in row i. If we apply Kadane’s 1D algorithm on temp[], 
     and get the maximum sum subarray of temp, this maximum sum would be the maximum possible 

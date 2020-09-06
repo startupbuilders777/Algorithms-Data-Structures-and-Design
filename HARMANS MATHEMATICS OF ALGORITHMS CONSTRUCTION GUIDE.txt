@@ -32,6 +32,169 @@ Ray tracing: Given a set of objects in space, produce a data structure that effi
 
 WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
 
+-5) Write about binomial coefficients:
+    https://cp-algorithms.com/combinatorics/binomial-coefficients.html
+
+-4) Stars and Bars Combinatorics
+    (https://cp-algorithms.com/combinatorics/stars_and_bars.html)
+
+    The number of ways to put n identical objects into k labelled boxes is 
+    (n + k - 1) choose n
+
+
+    The proof involves turning the objects into stars and separating the 
+    boxes using bars (therefore the name). E.g. we can represent with ★|★★| |★★ 
+    the following situation: in the first box is one object, in the second box 
+    are two objects, the third one is empty and in the last box are two objects. 
+    This is one way of dividing 5 objects into 4 boxes.
+
+    It should be pretty obvious, that every partition can be represented using 
+    n stars and k−1 bars and every stars and bars permutation using 
+    n stars and k−1 bars represents one partition. Therefore the number of 
+    ways to divide n identical objects into k labeled boxes is the same number 
+    as there are permutations of n stars and k−1 bars. 
+    The Binomial Coefficient gives us the desired formula.
+
+    Number of non-negative integer sums
+    This problem is a direct application of the theorem.
+
+    You want to count the number of solution of the equation
+    x1+x2+⋯+xk=n
+    with xi≥0.
+
+    Again we can represent a solution using stars and bars. E.g. 
+    the solution 1+3+0=4 for n=4, k=3 can be represented using ★|★★★|.
+    It is easy to see, that this is exactly the stars an bars theorem. 
+    Therefore the solution is (n+k−1 choose n).
+
+    Number of lower-bound integer sums
+    This can easily be extended to integer sums with different 
+    lower bounds. I.e. we want to count the number of solutions for the equation
+    x1+x2+⋯+xk=n
+    with xi≥ai.
+
+    After substituting x′i:=xi−ai we receive the modified equation
+    (x′1 + ai) + (x′2 + ai) +⋯+ (x′k+ak) = n
+    ⇔  x′1 + x′2 +⋯+ x′k =(n−a1−a2−⋯−ak)
+    with x′i≥0. So we have reduced the problem to the 
+    simpler case with x′i≥0 and again can apply the stars and bars theorem.
+
+
+
+
+
+
+
+-3) Integration by Simpson's formula
+    WRITE NOTES FROM HERE -> https://cp-algorithms.com/num_methods/simpson-integration.html
+
+
+
+
+
+
+-2) NUMERICAL Computation -> Newtons method for finding roots: 
+    (https://cp-algorithms.com/num_methods/roots_newton.html)
+    Find roots of f(x) = 0
+
+    We want to solve the equation. More precisely, we want to find one of its roots 
+    (it is assumed that the root exists). It is assumed that f(x) is 
+    continuous and differentiable on an interval [a,b].
+
+    Algorithm
+    The input parameters of the algorithm consist of not only the function f(x) 
+    but also the initial approximation - some x0, with which the algorithm starts.
+
+    Suppose we have already calculated xi, calculate xi+1 as follows. 
+    Draw the tangent to the graph of the function f(x) at the point x=xi, 
+    and find the point of intersection of this tangent with the x-axis. xi+1 is set equal to 
+    the x-coordinate of the point found, and we repeat the whole process from the beginning.
+
+    It is not difficult to obtain the following formula:
+
+    x(i+1) = xi − f(xi)/f′(xi)
+
+    It is intuitively clear that if the function f(x) is "good" (smooth), and xi is 
+    close enough to the root, then xi+1 will be even closer to the desired root.
+    The rate of convergence is quadratic, which, conditionally speaking, means 
+    that the number of exact digits in the approximate value xi doubles with each iteration.
+
+    Let's use the calculation of square root as an example of Newton's method.
+
+    If we substitute f(x)=x^2−n, then after simplifying the expression, we get:
+
+    x(i+1)= (xi + n/xi) / 2
+    
+    The first typical variant of the problem is when a rational number n is 
+    given, and its root must be calculated with some accuracy eps:
+
+    double sqrt_newton(double n) {
+        const double eps = 1E-15;
+        double x = 1;
+        for (;;) {
+            double nx = (x + n / x) / 2;
+            if (abs(x - nx) < eps)
+                break;
+            x = nx;
+        }
+        return x;
+    }
+
+    Another common variant of the problem is when we need to calculate the 
+    integer root (for the given n find the largest x such that x^2≤n). 
+    
+    Here it is necessary to slightly change the termination condition of the algorithm, 
+    since it may happen that x will start to "jump" near the answer. 
+    Therefore, we add a condition that if the value x has decreased 
+    in the previous step, and it tries to increase at the current step, 
+    then the algorithm must be stopped.
+
+    int isqrt_newton(int n) {
+        int x = 1;
+        bool decreased = false;
+        for (;;) {
+            int nx = (x + n / x) >> 1;
+            if (x == nx || nx > x && decreased)
+                break;
+            decreased = nx < x;
+            x = nx;
+        }
+        return x;
+    }
+
+    Finally, we are given the third variant - for the case of bignum arithmetic. 
+    Since the number n can be large enough, it makes sense to 
+    pay attention to the initial approximation. 
+    
+    Obviously, the closer it is to the root, the faster 
+    the result will be achieved. It is simple enough 
+    and effective to take the initial approximation as 
+    the number 2^(bits/2), where bits is the number of bits in the number n. 
+    
+    Here is the Java code that demonstrates this variant:
+
+
+    public static BigInteger isqrtNewton(BigInteger n) {
+        BigInteger a = BigInteger.ONE.shiftLeft(n.bitLength() / 2);
+        boolean p_dec = false;
+        for (;;) {
+            BigInteger b = n.divide(a).add(a).shiftRight(1);
+            if (a.compareTo(b) == 0 || a.compareTo(b) < 0 && p_dec)
+                break;
+            p_dec = a.compareTo(b) > 0;
+            a = b;
+        }
+        return a;
+    }
+
+    For example, this code is executed in 60 milliseconds for n=101000, 
+    and if we remove the improved selection of the initial 
+    approximation (just starting with 1), then it will be 
+    executed in about 120 milliseconds.
+
+    Try problem: UVa 10428 - The Roots
+
+
 -1) -> LOOK AT QUESTION: Consecutive Numbers Hard in important problems to see how to do hard 
      math programming leets, with factors, primes, and creating equations from theories!
       
@@ -563,11 +726,6 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
     We simply find the lcm n times, and each step works in logarithmic time.
 
 
-
-
-
-
-
 1.4) Greatest Common Divisor and Least Common Multiple
 
         The GCD (Greatest Common Divisor) of two numbers is defined 
@@ -695,9 +853,9 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
         Fermat's little theorem, Miller-Rabin test, Solovay-Strassen 
 
 3.5) Lemma 1: The sum of the digits of any number N to base 10 is equal to N minus some multiple of 9.
-             N = Σi=0 ai*10i
-             M = Σi=0 ai*10i − Σi=0 ai
-             M = Σi=0 ai*(10i−1)
+            N = Σi=0 ai*10i
+            M = Σi=0 ai*10i − Σi=0 ai
+            M = Σi=0 ai*(10i−1)
             M = Σi=0 ai*(99…9)
             M = Σi=0 ai*9(11…1)
             N − S(N) = 9K1
@@ -842,9 +1000,9 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
     
 5.1) Modulo Multiplicative inverse:
 
-    x^-1 is the inverse of x mod n if x*x?^-1  = 1 (mod n)
+    x^-1 is the inverse of x mod n if x*(x^-1)  = 1 (mod n)
 
-    5^-1 = 3 ( mod 7) because 5*3 = 15 = 1 (mod 7)
+    (5^-1) = 3 ( mod 7) because 5*3 = 15 = 1 (mod 7)
     May not exist => inverse of 2 mod 4
     Exists iff gcd(x, n) = 1
 
@@ -855,6 +1013,125 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
     - Taking modulo n gives ax = 1 (mod n)
     -> We are done finding multiplicative inverse if we can find
         such x and y
+
+
+5.15) Extended Euclidean Algorithm:     
+    (https://cp-algorithms.com/algebra/extended-euclid-algorithm.html)
+
+    While the Euclidean algorithm calculates only the greatest common divisor (GCD) 
+    of two integers a and b, the extended version also finds a way to 
+    represent GCD in terms of a and b, i.e. coefficients x and y for which:
+
+    a⋅x + b⋅y = gcd(a,b)
+
+    It's important to note, that we can always find such a representation, 
+    for instance gcd(55,80)=5 therefore we can represent 5 as a 
+    linear combination with the terms 55 and 80: 55⋅3 + 80⋅(−2)=5
+    A more general form of that problem is discussed in the article 
+    about Linear Diophantine Equations. It will build upon this algorithm.
+
+    Algorithm: 
+
+    We will denote the GCD of a and b with g in this section.
+
+    The changes to the original algorithm are very simple. 
+    If we recall the algorithm, we can see that the algorithm 
+    ends with b=0 and a=g. For these parameters 
+    we can easily find coefficients, namely g⋅1+0⋅0=g.
+
+    Starting from these coefficients (x,y)=(1,0), we can go 
+    backwards up the recursive calls. All we need to do 
+    is to figure out how the coefficients x and y 
+    change during the transition from (a,b) to (b,a mod b).
+
+    Let us assume we found the coefficients (x1, y1) for (b, amodb):
+
+    b⋅x1 + (amodb)⋅y1 = g
+    and we want to find the pair (x,y) for (a,b):
+
+    a⋅x+b⋅y=g
+
+    We can represent a mod b as:
+    amodb=a−⌊a/b⌋⋅b
+
+    Substituting this expression in the coefficient equation of (x1,y1) gives:
+
+    g= b⋅x1 + (amodb)⋅y1 = b⋅x1 + (a−⌊a/b⌋⋅b)⋅y1
+    and after rearranging the terms:
+
+    g=a⋅y1+b⋅(x1−y1⋅⌊a/b⌋)
+    We found the values of x and y:
+
+    {
+     x=y1   
+     y=x1−y1⋅⌊a/b⌋
+    }
+
+    int gcd(int a, int b, int& x, int& y) {
+        if (b == 0) {
+            x = 1;
+            y = 0;
+            return a;
+        }
+        int x1, y1;
+        int d = gcd(b, a % b, x1, y1);
+        x = y1;
+        y = x1 - y1 * (a / b);
+        return d;
+    }
+
+    The recursive function above returns the GCD and the values of 
+    coefficients to x and y (which are passed by reference to the function).
+
+    This implementation of extended Euclidean algorithm produces 
+    correct results for negative integers as well.
+
+    Iterative version
+
+    It's also possible to write the Extended Euclidean algorithm in an 
+    iterative way. Because it avoids recursion, the code will run a 
+    little bit faster than the recursive one.
+
+    int gcd(int a, int b, int& x, int& y) {
+        x = 1, y = 0;
+        int x1 = 0, y1 = 1, a1 = a, b1 = b;
+        while (b1) {
+            int q = a1 / b1;
+            tie(x, x1) = make_tuple(x1, x - q * x1);
+            tie(y, y1) = make_tuple(y1, y - q * y1);
+            tie(a1, b1) = make_tuple(b1, a1 - q * b1);
+        }
+        return a1;
+    }
+
+    If you look closely at the variable a1 and b1, you can notice 
+    that they taking exactly the same values as in the iterative 
+    version of the normal Euclidean algorithm. 
+    So the algorithm will at least compute the correct GCD.
+
+    To see why the algorithm also computes the correct coefficients, 
+    you can check that the following invariants will hold at any time 
+    (before the while loop, and at the end of each iteration): x⋅a+y⋅b=a1 
+    and x1⋅a+y1⋅b=b1. It's trivial to see, that these two equations are 
+    satisfied at the beginning. And you can check that the update in the 
+    loop iteration will still keep those equalities valid.
+
+    At the end we know that a1 contains the GCD, so x⋅a+y⋅b=g. Which means 
+    that we have found the required coefficients.
+
+    You can even optimize the code more, and remove the variable a1 and b1 
+    from the code, and just reuse a and b. However if you do so, you loose 
+    the ability to argue about the invariants.
+
+
+
+5.17) Write about Linear diophantine equations (https://cp-algorithms.com/algebra/linear-diophantine-equation.html)
+
+5.18) Write  about fib numbers (https://cp-algorithms.com/algebra/fibonacci-numbers.html)
+
+5.19) Write about multiplicative inverses (Theire is a cp algorithms link to this)
+
+
 
 5.2) Extended Euclidean Algorithm:
     ax + by = gcd(a, b) => Bezout's identity
@@ -876,6 +1153,71 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
         output "greatest common divisor:", old_r
         output "quotients by the gcd:", (t, s)
 
+5.21) Solving a Linear Congruence Equation:
+
+    This equation is of the form:
+
+    a⋅x = b(modn),
+    where a, b and n are given integers and x is an unknown integer.
+
+    It is required to find the value x from the interval [0,n−1] 
+    (clearly, on the entire number line there can be infinitely many 
+    solutions that will differ from each other in n⋅k , where k is any integer). 
+    If the solution is not unique, then we will consider how to get all the solutions.
+
+
+    Solution by finding the inverse element
+    Let us first consider a simpler case where a and n are coprime (gcd(a,n)=1). 
+    Then one can find the inverse of a, and multiplying both sides of 
+    the equation with the inverse, and we can get a unique solution.
+
+    x= b⋅a^−1 (modn)
+    
+    Now consider the case where a and n are not coprime (gcd(a,n)≠1). 
+    Then the solution will not always exist (for example 2⋅x=1(mod4) has no solution).
+
+    Let g=gcd(a,n), i.e. the greatest common divisor of a and n (which in this case is greater than one).
+
+    Then, if b is not divisible by g, there is no solution. 
+    In fact, for any x the left side of the equation a⋅x(modn) , 
+    is always divisible by g, while the right-hand side is not divisible by it, 
+    hence it follows that there are no solutions.
+
+    If g divides b, then by dividing both sides of the equation by g 
+    (i.e. dividing a, b and n by g), we receive a new equation:
+
+    a′⋅x=b′(modn′)
+
+    in which a′ and n′ are already relatively prime, 
+    and we have already learned how to handle such an equation. 
+    We get x′ as solution for x.
+
+    It is clear that this x′ will also be a solution of the original equation. 
+    However it will not be the only solution. It can be shown that 
+    the original equation has exactly g solutions, and they will look like this:
+
+    xi=(x′+i⋅n′)(modn)for i=0…g−1
+    Summarizing, we can say that the number of solutions of 
+    the linear congruence equation is equal to either g=gcd(a,n) or to zero.
+
+    Solution with the Extended Euclidean Algorithm
+    We can rewrite the linear congruence to the following Diophantine equation:
+
+    a⋅x+n⋅k=b,
+    where x and k are unknown integers.
+
+    The method of solving this equation is described in the corresponding article 
+    Linear Diophantine equations and it consists of applying the Extended Euclidean Algorithm.
+
+    It also describes the method of obtaining all solutions of this equation from 
+    one found solution, and incidentally this method, when carefully considered, 
+    is absolutely equivalent to the method described in the previous section.
+
+
+5.22) Write notes on Chinese remainder theorem(https://cp-algorithms.com/algebra/chinese-remainder-theorem.html)
+
+
+
 5.3) Chinese remainder thrm:
         Given a, b, m, n with gcd(m, n) = 1
         Find x with x = a (mod m) and x = b (mod n)
@@ -890,6 +1232,8 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
      Same as the coefficient of 
      (x^k)*(y^n-k) in the expansion of (x + y)^n
     -> Use pascals triangle
+
+
 5.45) MATRIX MULTIPLCATION IS ROW OF FIRST MAT * COL OF SECOND MAT
 
 5.5) Fibonnaci closed form: (Any linear recurrence closed form)
@@ -978,12 +1322,218 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
         head.next = remove(head.next)
         return head.next if isprime(head.val) else head
 
+10.5) Rotation matrices. To rotate a vector: 
+    R = [cos(x), -sin(x)
+          sin(x),  cos(x)]
+
+    v = [a, b]
+    Rv  = [acos(x) - bsin(x),  asin(x) + bcos(x)]
+
+
+
 11) SUM OF POWERS TECHNIQUE
 
     Sum of numbers from 1 to n -> (1/2) * n * (n+1)
     Sum of squares from 1 to n inclusive -> (1/6) * n * (n+1) * (2n + 1)
     Sum of cubes from 1 to n inclusive -> 
         (Sum of numbers from 1 to N) ^ 2 == ( (1/2)* n * (n+1)) ^ 2
+
+
+11.5) Binary Exponentiation: (https://cp-algorithms.com/algebra/binary-exp.html)
+
+    Binary exponentiation (also known as exponentiation by squaring) 
+    is a trick which allows to calculate an using only O(logn) multiplications 
+    (instead of O(n) multiplications required by the naive approach).
+
+    It also has important applications in many tasks unrelated to arithmetic, 
+    since it can be used with any operations that have the property of associativity:
+
+    (X⋅Y)⋅Z=X⋅(Y⋅Z)
+    Most obviously this applies to modular multiplication, to multiplication of
+    matrices and to other problems which we will discuss below.
+
+    Algorithm
+    Raising a to the power of n is expressed naively as multiplication by a 
+    done n−1 times: an=a⋅a⋅…⋅a. However, this approach is not practical for large a or n.
+
+    a^(b+c)=a^b⋅a^c and a^(2b)=a^b⋅a^b=(a^b)^2.
+
+    The idea of binary exponentiation is, that we split the work 
+    using the binary representation of the exponent.
+
+    Let's write n in base 2, for example:
+    3^(13)=3^(1101)= 3^8⋅3^4⋅3^1
+    Since the number n has exactly ⌊log2n⌋+1 digits in base 2, 
+    we only need to perform O(logn) multiplications, 
+    if we know the powers a^1,a^2,a^4,a^8,…,a^⌊logn⌋.
+
+    So we only need to know a fast way to compute those. Luckily this 
+    is very easy, since an element in the sequence is 
+    just the square of the previous element.
+
+    3^1 = 3
+    3^2 = 9
+    3^4 = 81
+    3^8=6561
+    So to get the final answer for 3^13, we only need to multiply three of 
+    them (skipping 32 because the corresponding bit in n is not set): 
+    3^(13)=6561⋅81⋅3=1594323
+
+    The final complexity of this algorithm is O(logn): 
+    we have to compute logn powers of a, and then have to 
+    do at most logn multiplications to get the final answer from them.
+
+    The following recursive approach expresses the same idea:
+
+    long long binpow(long long a, long long b) {
+        if (b == 0)
+            return 1;
+        long long res = binpow(a, b / 2);
+        if (b % 2)
+            return res * res * a;
+        else
+            return res * res;
+    }
+
+    The second approach accomplishes the same task without recursion. 
+    It computes all the powers in a loop, and multiplies the ones with the 
+    corresponding set bit in n. Although the complexity of both approaches 
+    is identical, this approach will be faster in practice since we 
+    have the overhead of the recursive calls.
+
+    long long binpow(long long a, long long b) {
+        long long res = 1;
+        while (b > 0) {
+            if (b & 1)
+                res = res * a;
+            a = a * a;
+            b >>= 1;
+        }
+        return res;
+    }
+
+11.6) Binary Exponentiation Applications:
+    (https://cp-algorithms.com/algebra/binary-exp.html)
+
+    Applications
+    Effective computation of large exponents modulo a number
+    Problem: Compute x^n mod m. This is a very common operation. 
+    For instance it is used in computing the modular multiplicative inverse.
+
+    Solution: Since we know that the module operator doesn't 
+    interfere with multiplications (a⋅b≡(a mod m)⋅(b mod m) (modm) ) , 
+    we can directly use the same code, and just replace 
+    every multiplication with a modular multiplication:
+
+    long long binpow(long long a, long long b, long long m) {
+        a %= m;
+        long long res = 1;
+        while (b > 0) {
+            if (b & 1)
+                res = res * a % m;
+            a = a * a % m;
+            b >>= 1;
+        }
+        return res;
+    }
+
+    Note: If m is a prime number we can speed up a bit this algorithm 
+    by calculating x^(n mod(m−1)) instead of x^n. 
+    This follows directly from Fermat's little theorem.
+
+
+    Effective computation of Fibonacci numbers
+    Problem: Compute n-th Fibonacci number Fn.
+
+    Solution: For more details, see the Fibonacci Number article. 
+    We will only go through an overview of the algorithm. 
+    To compute the next Fibonacci number, only the two 
+    previous ones are needed, as Fn=Fn−1+Fn−2. We can 
+    build a 2×2 matrix that describes this transformation: 
+    the transition from Fi and Fi+1 to Fi+1 and Fi+2. 
+    For example, applying this transformation to the pair F0 and F1 
+    would change it into F1 and F2. Therefore, we can raise this 
+    transformation matrix to the n-th power to find 
+    Fn in time complexity O(logn).
+
+    Applying a permutation k times
+    Problem: You are given a sequence of length n. 
+    Apply to it a given permutation k times.
+
+    Solution: Simply raise the permutation to k-th power 
+    using binary exponentiation, and then apply it to the sequence. 
+    This will give you a time complexity of O(nlogk).
+
+    Note: This task can be solved more efficiently in linear 
+    time by building the permutation graph and considering each 
+    cycle independently. You could then compute k modulo the size of 
+    the cycle and find the final position for 
+    each number which is part of this cycle.
+
+    Number of paths of length k in a graph
+    Problem: Given a directed unweighted graph of n vertices, 
+    find the number of paths of length k from any vertex u to any other vertex v.
+
+    Solution: This problem is considered in more detail in a separate article. 
+    The algorithm consists of raising the adjacency matrix M 
+    of the graph (a matrix where mij=1 if there is an edge from i to j, or 
+    0 otherwise) to the k-th power. Now mij will be the number of paths 
+    of length k from i to j. The time complexity of this solution is O(n^3(logk)).
+
+    Note: In that same article, another variation of this problem is considered: 
+    when the edges are weighted and it is required to find the minimum 
+    weight path containing exactly k edges. As shown in that article, 
+    this problem is also solved by exponentiation of the adjacency matrix. 
+    The matrix would have the weight of the edge from i to j, or ∞ if there 
+    is no such edge. Instead of the usual operation of multiplying two matrices, 
+    a modified one should be used: instead of multiplication, 
+    both values are added, and instead of a summation, 
+    a minimum is taken. That is: result(ij) = min1 ≤ k ≤ n(a(ik)+b(kj)).
+
+    Variation of binary exponentiation: multiplying two numbers modulo m
+    Problem: Multiply two numbers a and b modulo m. 
+    a and b fit in the built-in data types, but their product 
+    is too big to fit in a 64-bit integer. 
+    The idea is to compute a⋅b(modm) without using bignum arithmetics.
+
+    Solution: We simply apply the binary construction 
+    algorithm described above, only performing 
+    additions instead of multiplications. 
+    In other words, we have "expanded" the multiplication 
+    of two numbers to O(logm) operations of addition 
+    and multiplication by two (which, in essence, is an addition).
+
+    a⋅b= 0                  if a = 0
+    a⋅b= 2⋅(a/2)⋅b          if a > 0 and a even
+    a⋅b= 2⋅(a-1)⋅b/2  + b   if a > 0 and a odd
+    
+    Note: You can solve this task in a different way by using 
+    floating-point operations. First compute the expression (a⋅b)/m using 
+    floating-point numbers and cast it to an unsigned integer q. 
+    Subtract q⋅m from a⋅b using unsigned integer arithmetics 
+    and take it modulo m to find the answer. This s
+    olution looks rather unreliable, but it is very fast, 
+    and very easy to implement. See here for more information.
+
+    Practice Problems
+    UVa 1230 - MODEX
+    UVa 374 - Big Mod
+    UVa 11029 - Leading and Trailing
+    Codeforces - Parking Lot
+    SPOJ - The last digit
+    SPOJ - Locker
+    LA - 3722 Jewel-eating Monsters
+    SPOJ - Just add it
+
+
+
+
+
+    
+
+
+
+
 
 12) FAST EXPONENTIATION TECHNIQUE:
 
@@ -996,6 +1546,8 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
 13) Linear algebra:
     -> Solve system, invert a matrix, find the rank of matrix, compute determinant,
     -> all the above can be done with gaussian elimination
+
+
 
 14) Cross Product Use Cases:
 
@@ -1098,7 +1650,7 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
 17) Intersecting Half Planes:
     Representing a half-plane: ax + by + c <= 0
     The intersection of half-places is a convex area
-        - if the intersection is bounder, it gives a convex polygon
+        - if the intersection is bounded, it gives a convex polygon
     
     Give n half-planes, how do we compute the intersection of them?
         - i.e. Find the vertices of the convex area
@@ -1134,6 +1686,267 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
             - m1 = s + (e-s)/3, m2 = e - (e-s)/3
             - If f(m1) <= f(m2), set e = m2
             - otherwise: set s = m1
+
+20) Oriented Area of Triangle 
+    (https://cp-algorithms.com/geometry/oriented-triangle-area.html)
+
+    Given three points p1, p2 and p3, calculate an oriented (signed) area of a 
+    triangle formed by them. The sign of the area is determined in the following
+    way: imagine you are standing in the plane at point p1 and are facing p2. 
+    You go to p2 and if p3 is to your right (then we say the three vectors turn "clockwise"), 
+    the sign of the area is positive, otherwise it is negative. 
+    If the three points are collinear, the area is zero.
+
+    Using this signed area, we can both get the regular unsigned area 
+    (as the absolute value of the signed area) and determine 
+    if the points lie clockwise or counterclockwise in their 
+    specified order (which is useful, for example, 
+    in convex hull algorithms).
+
+    Calculation
+    We can use the fact that a determinant of a 2×2 matrix is 
+    equal to the signed area of a parallelogram spanned by column 
+    (or row) vectors of the matrix. This is analog to the definition 
+    of the cross product in 2D (see Basic Geometry). By dividing 
+    this area by two we get the area of a triangle that we are 
+    interested in. We will use segment p1p2 and segment p2p3 as the column 
+    vectors and calculate a 2×2 determinant:  (, breaks colums, and ; breaks rows)
+     
+    2S=∣∣∣x2−x1, x3-x2 ; y2−y1, y3−y2∣∣∣=(x2−x1)(y3−y2)−(x3−x2)(y2−y1)
+
+    int signed_area_parallelogram(point2d p1, point2d p2, point2d p3) {
+        return cross(p2 - p1, p3 - p2);
+    }
+
+    double triangle_area(point2d p1, point2d p2, point2d p3) {
+        return abs(signed_area_parallelogram(p1, p2, p3)) / 2.0;
+    }
+
+    bool clockwise(point2d p1, point2d p2, point2d p3) {
+        return signed_area_parallelogram(p1, p2, p3) < 0;
+    }
+
+    bool counter_clockwise(point2d p1, point2d p2, point2d p3) {
+        return signed_area_parallelogram(p1, p2, p3) > 0;
+    }
+
+
+#################################################
+#################################################
+Cool Notes Part 0: Trigonometry formulas and identies put here!
+
+
+
+
+
+#################################################
+#################################################
+[PLEASE FINISH WRITING THESE NOTES!!!! -> STOPPED AT CROSS PRODUCT]
+
+
+
+
+COOL NOTES PART 1: BASIC GEOMETRY:
+(https://cp-algorithms.com/geometry/basic-geometry.html)
+
+In this article we will consider basic operations on points in 
+Euclidean space which maintains the foundation of the whole analytical geometry. 
+We will consider for each point r the vector r⃗  directed from 0 to r. Later we will 
+not distinguish between r and r⃗  and use the term point as a synonym for vector.
+
+
+    DOT PRODUCT:
+
+        The dot (or scalar) product a⋅b for vectors a and b can be defined in two 
+        identical ways. Geometrically it is product of the length of the first 
+        vector by the length of the projection of the second vector onto the first one. 
+        As you may see from the image below this projection is nothing but |a|cosθ 
+        where θ is the angle between a and b. Thus a⋅b=|a|cosθ⋅|b|.
+
+        The dot product holds some notable properties:
+
+        a⋅b=b⋅a
+        (α⋅a)⋅b=α⋅(a⋅b)
+        (a+b)⋅c=a⋅c+b⋅c
+
+        I.e. it is a commutative function which is linear with respect to both arguments. 
+        
+        Let's denote the unit vectors as
+        ex=[1,0,0],ey=[0,1,0],ez=[0,0,1].
+
+        With this notation we can write the vector r=(x;y;z) as r=x⋅ex+y⋅ey+z⋅ez. And since for unit vectors
+        ex⋅ex=ey⋅ey=ez⋅ez=1,
+        ex⋅ey=ey⋅ez=ez⋅ex=0
+
+        we can see that in terms of coordinates for a=(x1;y1;z1) and b=(x2;y2;z2) holds
+        a⋅b=(x1⋅ex + y1⋅ey + z1⋅ez)⋅(x2⋅ex + y2⋅ey + z2⋅ez)= x1x2 + y1y2 + z1z2
+
+        That is also the algebraic definition of the dot product. 
+        From this we can write functions which calculate it.
+
+        ftype dot(point2d a, point2d b) {
+        return a.x * b.x + a.y * b.y;
+        }
+
+        ftype dot(point3d a, point3d b) {
+            return a.x * b.x + a.y * b.y + a.z * b.z;
+        }
+        
+        When solving problems one should use algebraic definition to calculate dot products, 
+        but keep in mind geometric definition and properties to use it.
+
+        ftype dot(point2d a, point2d b) {
+        return a.x * b.x + a.y * b.y;
+        }
+
+        ftype dot(point3d a, point3d b) {
+            return a.x * b.x + a.y * b.y + a.z * b.z;
+        }
+
+        Properties
+        We can define many geometrical properties via the dot product. For example
+
+        Norm of a (squared length): |a|^2=a⋅a
+        Length of a: |a|=√(a⋅a)
+        Projection of a onto b: (a⋅b)/|b|
+        Angle between vectors: arccos((a⋅b)/(|a|⋅|b|))
+
+        From the previous point we may see that the dot product is positive 
+        if the angle between them is acute, negative if it is obtuse and it 
+        equals zero if they are orthogonal, i.e. they form a right angle.
+        
+        Note that all these functions do not depend on the number of dimensions, 
+        hence they will be the same for the 2D and 3D case:
+
+        ftype norm(point2d a) {
+            return dot(a, a);
+        }
+        double abs(point2d a) {
+            return sqrt(norm(a));
+        }
+        double proj(point2d a, point2d b) {
+            return dot(a, b) / abs(b);
+        }
+        double angle(point2d a, point2d b) {
+            return acos(dot(a, b) / abs(a) / abs(b));
+        }
+        
+        To see the next important property we should take a look at the set of 
+        points r for which r⋅a=C for some fixed constant C. You can see that 
+        this set of points is exactly the set of points for which the 
+        projection onto a is the point C⋅a/|a| and they form a hyperplane 
+        orthogonal to a. You can see the vector a alongside with 
+        several such vectors having same dot product with it in 2D on the picture below:
+
+        Vectors having same dot product with a
+        In 2D these vectors will form a line, in 3D they will form a plane. 
+        Note that this result allows us to define a line in 2D as r⋅n=C or (r−r0)⋅n=0 
+        where n is vector orthogonal to the line and r0 is any vector already present 
+        on the line and C=r0⋅n. In the same manner a plane can be defined in 3D.    
+
+
+
+
+
+
+
+
+    Points C++:
+
+    struct point2d {
+        ftype x, y;
+        point2d() {}
+        point2d(ftype x, ftype y): x(x), y(y) {}
+        point2d& operator+=(const point2d &t) {
+            x += t.x;
+            y += t.y;
+            return *this;
+        }
+        point2d& operator-=(const point2d &t) {
+            x -= t.x;
+            y -= t.y;
+            return *this;
+        }
+        point2d& operator*=(ftype t) {
+            x *= t;
+            y *= t;
+            return *this;
+        }
+        point2d& operator/=(ftype t) {
+            x /= t;
+            y /= t;
+            return *this;
+        }
+        point2d operator+(const point2d &t) const {
+            return point2d(*this) += t;
+        }
+        point2d operator-(const point2d &t) const {
+            return point2d(*this) -= t;
+        }
+        point2d operator*(ftype t) const {
+            return point2d(*this) *= t;
+        }
+        point2d operator/(ftype t) const {
+            return point2d(*this) /= t;
+        }
+    };
+    point2d operator*(ftype a, point2d b) {
+        return b * a;
+    }
+    And 3D points:
+
+    struct point3d {
+        ftype x, y, z;
+        point3d() {}
+        point3d(ftype x, ftype y, ftype z): x(x), y(y), z(z) {}
+        point3d& operator+=(const point3d &t) {
+            x += t.x;
+            y += t.y;
+            z += t.z;
+            return *this;
+        }
+        point3d& operator-=(const point3d &t) {
+            x -= t.x;
+            y -= t.y;
+            z -= t.z;
+            return *this;
+        }
+        point3d& operator*=(ftype t) {
+            x *= t;
+            y *= t;
+            z *= t;
+            return *this;
+        }
+        point3d& operator/=(ftype t) {
+            x /= t;
+            y /= t;
+            z /= t;
+            return *this;
+        }
+        point3d operator+(const point3d &t) const {
+            return point3d(*this) += t;
+        }
+        point3d operator-(const point3d &t) const {
+            return point3d(*this) -= t;
+        }
+        point3d operator*(ftype t) const {
+            return point3d(*this) *= t;
+        }
+        point3d operator/(ftype t) const {
+            return point3d(*this) /= t;
+        }
+    };
+    point3d operator*(ftype a, point3d b) {
+        return b * a;
+    }
+    Here ftype is some type used for coordinates, usually int, double or long long.
+
+
+
+
+
+
+
 
 
 
