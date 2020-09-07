@@ -71,6 +71,81 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+-48) DP + BINARY Search:
+
+    1180 - Software Company
+
+    This company has n employees to do the jobs. To manage the two 
+    projects more easily, each is divided into m independent subprojects. 
+    Only one employee can work on a single subproject at one
+    time, but it is possible for two employees to work 
+    on different subprojects of the same project
+    simultaneously. Our goal is to finish the projects as soon as possible.
+
+    Each case starts with two integers n (1 ≤ n ≤ 100), and m (1 ≤ m ≤ 100). Each of the next n lines
+    contains two integers which specify how much time in seconds it will take for the specified
+    employee to complete one subproject of each project. So if the line contains x and y, it means that it
+    takes the employee x seconds to complete a subproject from the first project, and y seconds to
+    complete a subproject from the second project.    
+    Input        -> Output : 
+    3 20           Case 1: 18
+    1 1           The input will be such that answer will be within 50000.
+    2 4
+    1 6
+
+    Run a binary search fixing the time needed to complete both the projects. 
+    Now you know for each employee, the doable max amount of sub-projects of A fixing 
+    the amount of sub-projects to do of type B. Keep a dp[i][j] which means the maximum 
+    number of sub-projects of B that can be done while j sub-projects of A are still 
+    to be done and we’re currently at employee i. If dp[0][m] >= m 
+    then the time fixed is ok. Answer is the minimum such time.
+
+    const int N = 107;
+    int dp[N][N];
+    int n, m;
+    int x[N], y[N];
+
+    bool ok(int tym) {
+        for(int i=1; i<=m; ++i) dp[n][i] = -INF;
+        dp[n][0] = 0;
+        for(int i=n-1; i>=0; --i) {
+            for(int j=0; j<=m; ++j) {
+                dp[i][j] = -INF;
+                int max_a = tym / x[i];
+                max_a = min(j, max_a);
+                for(int k=0; k<=max_a; ++k) {
+                    int max_b = (tym-k*x[i]) / y[i];
+                    dp[i][j] = max(dp[i][j], max_b + dp[i+1][j-k]);
+                }
+            }
+        }
+        return (dp[0][m] >= m);
+    }
+
+    int main() {
+        int t, tc=0;
+        scanf("%d", &t);
+
+        while(t--) {
+            scanf("%d %d", &n, &m);
+            for(int i=0; i<n; ++i) scanf("%d %d", x+i, y+i);
+
+            int lo = 1, hi = 50000;
+            while(lo < hi) {
+                int mid = (lo + hi) / 2;
+                if(ok(mid)) hi = mid;
+                else lo = mid + 1;
+            }
+            printf("Case %d: %d\n", ++tc, hi);
+        }
+
+        return 0;
+    }
+        
+
+
+
+
 
 
 -47) GREEDY ALGORITHM INTERVAL DEADLINES C++

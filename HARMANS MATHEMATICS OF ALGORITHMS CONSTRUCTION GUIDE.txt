@@ -994,6 +994,100 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
         }
 
 
+4.5) Sieve of Eratosthenes Having Linear Time Complexity
+    (https://cp-algorithms.com/algebra/prime-sieve-linear.html)
+
+    Given a number n, find all prime numbers in a segment [2;n].
+
+    The standard way of solving a task is to use the sieve of Eratosthenes. 
+    This algorithm is very simple, but it has runtime O(nloglogn).
+
+    Although there are a lot of known algorithms with sublinear runtime (i.e. o(n)), 
+    the algorithm described below is interesting by its simplicity: 
+    it isn't any more complex than the classic sieve of Eratosthenes.
+
+    Besides, the algorithm given here calculates factorizations of all numbers in the 
+    segment [2;n] as a side effect, and that can be helpful in many practical applications.
+
+    The weakness of the given algorithm is in using more memory than the classic sieve of 
+    Eratosthenes': it requires an array of n numbers, while for the classic 
+    sieve of Eratosthenes it is enough to have n bits of memory (which is 32 times less).
+
+    Thus, it makes sense to use the described algorithm only until for numbers of order 107 and not greater.
+
+    Algorithm
+    Manipulated Sieve of Eratosthenes algorithm works as following:
+
+    For every number i where i varies from 2 to N-1:
+        Check if the number is prime. If the number
+        is prime, store it in prime array.
+
+    For every prime numbers j less than or equal to the smallest  
+    prime factor p of i:
+        Mark all numbers j*p as non_prime.
+        Mark smallest prime factor of j*p as j
+
+    Implementation
+    const int N = 10000000;
+    int lp[N+1];
+    vector<int> pr;
+
+    for (int i=2; i<=N; ++i) {
+        if (lp[i] == 0) {
+            lp[i] = i;
+            pr.push_back(i);
+        }
+
+        for (int j=0; j<(int)pr.size() && pr[j]<=lp[i] && i*pr[j]<=N; ++j)
+            lp[i * pr[j]] = pr[j];
+    }
+
+    We can speed it up a bit by replacing vector pr with a simple array and a counter, 
+    and by getting rid of the second multiplication in the nested for 
+    loop (for that we just need to remember the product in a variable).
+
+    Correctness Proof
+    We need to prove that the algorithm sets all values lp[] correctly, 
+    and that every value will be set exactly once. Hence, the algorithm will 
+    have linear runtime, since all the remaining actions of the algorithm, obviously, work for O(n).
+
+    Notice that every number i has exactly one representation in form:
+
+    i=lp[i]⋅x ,
+
+    where lp[i] is the minimal prime factor of i, and the number x doesn't have any prime factors less than lp[i], i.e.
+
+    lp[i]≤lp[x].
+
+    Now, let's compare this with the actions of our algorithm: in fact, for every x it goes 
+    through all prime numbers it could be multiplied by, i.e. all prime numbers up to lp[x] inclusive, 
+    in order to get the numbers in the form given above.
+
+    Hence, the algorithm will go through every composite number exactly once, 
+    setting the correct values lp[] there. Q.E.D.
+
+    Runtime and Memory
+    Although the running time of O(n) is better than O(nloglogn) of the classic sieve of Eratosthenes, 
+    the difference between them is not so big. In practice that means just double 
+    difference in speed, and the optimized versions of the sieve run as fast as the algorithm given here.
+
+    Considering the memory requirements of this algorithm - an array lp[] of length n, 
+    and an array of pr[] of length n/lnn, this algorithm 
+    seems to worse that the classic sieve in every way.
+
+    However, its redeeming quality is that this algorithm calculates an array lp[], 
+    which allows us to find factorization of any number in the segment [2;n] in the time 
+    of the size order of this factorization. Moreover, using just one extra 
+    array will allow us to avoid divisions when looking for factorization.
+
+    Knowing the factorizations of all numbers is very useful for some tasks, 
+    and this algorithm is one of the few which allow to find them in linear time.
+
+
+
+
+
+
 5)  Congruence and Modulu Operation:
     x = y (mod n) means x and y have the same 
     remainder when divided by n
@@ -1573,6 +1667,109 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
     Also:
     if ccw(A, B, C), ccw(A, B, D), ccw(C, D, A), and ccw(C, D, B) are all zeros, then two 
     segments are collinear
+
+
+14.5) Convex Hull Grahams 
+    (https://cp-algorithms.com/geometry/grahams-scan-convex-hull.html)
+
+
+    The algorithm used here is Graham's scan (proposed in 1972 by Graham) with improvements by Andrew (1979). 
+    The algorithm allows for the construction of a convex hull in O(NlogN) using only comparison, 
+    addition and multiplication operations. The algorithm is asymptotically optimal 
+    (as it is proven that there is no algorithm asymptotically better), with the exception of a 
+    few problems where parallel or online processing is involved.
+
+    Description
+    The algorithm first finds the leftmost and rightmost points A and B. In the event multiple such 
+    points exist, the lowest among the left (lowest Y-coordinate) is taken as A, and the highest among 
+    the right (highest Y-coordinate) is taken as B. Clearly, A and B must both belong to the convex hull 
+    as they are the farthest away and they cannot be contained by any line formed by a pair among the given points.
+
+    Now, draw a line through AB. This divides all the other points into two sets, S1 and S2, 
+    where S1 contains all the points above the line connecting A and B, and S2 contains all the points 
+    below the line joining A and B. The points that lie on the line joining A and B may belong to either set. 
+    The points A and B belong to both sets. Now the algorithm constructs the upper set S1 and the lower set S2 
+    and then combines them to obtain the answer.
+
+    To get the upper set, we sort all points by the x-coordinate. For each point we check if either - the current point 
+    is the last point, (which we defined as B), or if the orientation between the line between A and the current point and the 
+    line between the current point and B is clockwise. In those cases the current point belongs 
+    to the upper set S1. Checking for clockwise or anticlockwise nature can 
+    be done by checking the orientation.
+
+    If the given point belongs to the upper set, we check the angle made by the line connecting the 
+    second last point and the last point in the upper convex hull, with the line connecting the last point in 
+    the upper convex hull and the current point. If the angle is not clockwise, we remove the most recent 
+    point added to the upper convex hull as the current point will be able to 
+    contain the previous point once it is added to the convex hull.
+
+    The same logic applies for the lower set S2. If either - the current point is B, or the orientation 
+    of the lines, formed by A and the current point and the current point and B, 
+    is counterclockwise - then it belongs to S2.
+
+    If the given point belongs to the lower set, we act similarly as for a point on the upper set 
+    except we check for a counterclockwise orientation instead of a clockwise orientation. 
+    Thus, if the angle made by the line connecting the second last point and the last point in the lower 
+    convex hull, with the line connecting the last point in the lower convex hull and the current point is 
+    not counterclockwise, we remove the most recent point added to the lower convex hull as the 
+    current point will be able to contain the previous point once added to the hull.
+
+    The final convex hull is obtained from the union of the upper and lower 
+    convex hull, and the implementation is as follows.
+
+    Implementation
+    struct pt {
+        double x, y;
+    };
+
+    bool cmp(pt a, pt b) {
+        return a.x < b.x || (a.x == b.x && a.y < b.y);
+    }
+
+    bool cw(pt a, pt b, pt c) {
+        return a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) < 0;
+    }
+
+    bool ccw(pt a, pt b, pt c) {
+        return a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) > 0;
+    }
+
+    void convex_hull(vector<pt>& a) {
+        if (a.size() == 1)
+            return;
+
+        sort(a.begin(), a.end(), &cmp);
+        pt p1 = a[0], p2 = a.back();
+        vector<pt> up, down;
+        up.push_back(p1);
+        down.push_back(p1);
+        for (int i = 1; i < (int)a.size(); i++) {
+            if (i == a.size() - 1 || cw(p1, a[i], p2)) {
+                while (up.size() >= 2 && !cw(up[up.size()-2], up[up.size()-1], a[i]))
+                    up.pop_back();
+                up.push_back(a[i]);
+            }
+            if (i == a.size() - 1 || ccw(p1, a[i], p2)) {
+                while(down.size() >= 2 && !ccw(down[down.size()-2], down[down.size()-1], a[i]))
+                    down.pop_back();
+                down.push_back(a[i]);
+            }
+        }
+
+        a.clear();
+        for (int i = 0; i < (int)up.size(); i++)
+            a.push_back(up[i]);
+        for (int i = down.size() - 2; i > 0; i--)
+            a.push_back(down[i]);
+    }
+   
+    Practice Problems
+    Kattis - Convex Hull
+    Kattis - Keep the Parade Safe
+    Timus 1185: Wall
+    Usaco 2014 January Contest, Gold - Cow Curling
+
+
 
 
 15) Convex Hull 

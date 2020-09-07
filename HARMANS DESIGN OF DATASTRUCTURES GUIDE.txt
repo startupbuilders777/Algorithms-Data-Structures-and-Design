@@ -922,6 +922,673 @@ Suffix Trees: Pattern Matching
 
 #########################################################################
 ########################################################################3
+
+Aho-Corasick algorithm (https://cp-algorithms.com/string/aho_corasick.html)
+
+    The Aho-Corasick algorithm constructs a data structure similar 
+    to a trie with some additional links, and then constructs a finite state 
+    machine (automaton) in O(mk) time, where k is the size of the used alphabet.
+
+
+    Formally a trie is a rooted tree, where each edge of the tree is labeled by 
+    some letter. All outgoing edge from one vertex mush have different labels.
+
+    Consider any path in the trie from the root to any vertex. If we write out 
+    the labels of all edges on the path, we get a string that corresponds to 
+    this path. For any vertex in the trie we will associate the string 
+    from the root to the vertex.
+
+    Each vertex will also have a flag leaf which will be true, if any string 
+    from the given set corresponds to this vertex.
+
+    Accordingly to build a trie for a set of strings means to build a trie such 
+    that each leaf vertex will correspond to one string from the set, and 
+    conversely that each string of the set corresponds to one leaf vertex.
+
+    We introduce a structure for the vertices of the tree.
+    _______________________
+    const int K = 26;
+
+    struct Vertex {
+        int next[K];
+        bool leaf = false;
+
+        Vertex() {
+            fill(begin(next), end(next), -1);
+        }
+    };
+
+    vector<Vertex> trie(1);
+    _______________________
+    To add strings to trie:
+    Now we implement a function that will add a string s to the trie. 
+    The implementation is extremely simple: we start at the root node, 
+    and as long as there are edges corresponding to the characters of
+    s we follow them. If there is no edge for one character, we simply 
+    generate a new vertex and connect it via an edge. At the end of the 
+    process we mark the last vertex with flag leaf.
+    _______________________
+    void add_string(string const& s) {
+        int v = 0;
+        for (char ch : s) {
+            int c = ch - 'a';
+            if (trie[v].next[c] == -1) {
+                trie[v].next[c] = trie.size();
+                trie.emplace_back(); // Default construction of the vector!
+            }
+            v = trie[v].next[c];
+        }
+        trie[v].leaf = true;
+    }   
+    _______________________
+    The implementation obviously runs in linear time. And 
+    since every vertex store k links, it will use O(mk) memory.
+
+    It is possible to decrease the memory consumption to O(m) by using a 
+    map instead of an array in each vertex. 
+    However this will increase the complexity to O(nlogk).
+
+    Construction of an automaton
+    Suppose we have built a trie for the given set of strings. Now let's 
+    look at it from a different side. If we look at any vertex. The string that 
+    corresponds to it is a prefix of one or more strings in the set, thus 
+    each vertex of the trie can be interpreted as a position in 
+    one or more strings from the set.
+
+    In fact the trie vertices can be interpreted as states in a finite deterministic 
+    automaton. From any state we can transition - using some input letter - to 
+    other states, i.e. to another position in the set of strings. For example, 
+    if there is only one string in the trie abc, and we are standing at 
+    vertex 2 (which corresponds to the string ab), then using the 
+    letter c we can transition to the state 3.
+
+    Thus we can understand the edges of the trie as transitions in an 
+    automaton according to the corresponding letter. 
+    However for an automaton we cannot restrict the possible transitions 
+    for each state. If we try to perform a transition using a letter, 
+    and there is no corresponding edge in the trie, then we 
+    nevertheless must go into some state.
+
+    More strictly, let us be in a state p corresponding to the string t, 
+    and we want to transition to a different state with the character c.
+    If there is an edge labeled with this letter c, then we can simply go 
+    over this edge, and get the vertex corresponding to t+c. If there is no such edge, 
+    then we must find the state corresponding to the longest proper suffix 
+    of the string t (the longest available in the trie), and try to perform 
+    a transition via c from there.
+
+    For example let the trie be constructed by the strings ab and bc, 
+    and we are currently at the vertex corresponding to ab, which 
+    is a leaf. For a transition with the letter c, we are forced to go
+    to the state corresponding to the string b, and from 
+    there follow the edge with the letter c.
+
+    A suffix link for a vertex p is a edge that points to the longest 
+    proper suffix of the string corresponding to the vertex p. 
+    The only special case is the root of the trie, the suffix 
+    link will point to itself. Now we can reformulate the statement 
+    about the transitions in the automaton like this: while from the 
+    current vertex of the trie there is no transition using the current 
+    letter (or until we reach the root), we follow the suffix link.
+
+    Thus we reduced the problem of constructing an automaton to 
+    the problem of finding suffix links for all vertices of the trie. 
+    However we will build these suffix links, oddly enough, 
+    using the transitions constructed in the automaton.
+
+    Note that if we want to find a suffix link for some vertex v, 
+    then we can go to the ancestor p of the current vertex 
+    (let c be the letter of the edge from p to v), then follow its 
+    suffix link, and perform from there the transition with the letter c.
+
+    Thus the problem of finding the transitions has been reduced 
+    to the problem of finding suffix links, and the problem of 
+    finding suffix links has been reduced to the problem of finding 
+    a suffix link and a transition, but for vertices closer to the root. 
+    So we have a recursive dependence that we can resolve in linear time.
+
+    Let's move to the implementation. Note that we now will store 
+    the ancestor p and the character pch of the edge from p to v for 
+    each vertex v. Also at each vertex we will store the suffix 
+    link link (or −1 if it hasn't been calculated yet), and in the 
+    array go[k] the transitions in the machine for each symbol 
+    (again −1 if it hasn't been calculated yet).
+    _________________________________________________
+    const int K = 26;
+
+    struct Vertex {
+        int next[K];
+        bool leaf = false;
+        int p = -1;
+        char pch;
+        int link = -1;
+        int go[K];
+
+        Vertex(int p=-1, char ch='$') : p(p), pch(ch) {
+            fill(begin(next), end(next), -1);
+            fill(begin(go), end(go), -1);
+        }
+    };
+
+    vector<Vertex> t(1);
+
+    void add_string(string const& s) {
+        int v = 0;
+        for (char ch : s) {
+            int c = ch - 'a';
+            if (t[v].next[c] == -1) {
+                t[v].next[c] = t.size();
+                // emplace_back is getting default args, parent and char.
+                t.emplace_back(v, ch); 
+            }
+            v = t[v].next[c];
+        }
+        t[v].leaf = true;
+    }
+
+    int go(int v, char ch);
+
+    int get_link(int v) {
+        if (t[v].link == -1) {
+            if (v == 0 || t[v].p == 0)
+                t[v].link = 0;
+            else
+                t[v].link = go(get_link(t[v].p), t[v].pch);
+        }
+        return t[v].link;
+    }
+
+    int go(int v, char ch) {
+        int c = ch - 'a';
+        if (t[v].go[c] == -1) {
+            if (t[v].next[c] != -1)
+                t[v].go[c] = t[v].next[c];
+            else
+                t[v].go[c] = v == 0 ? 0 : go(get_link(v), ch);
+        }
+        return t[v].go[c];
+    } 
+    _________________________________________________
+    It is easy to see, that due to the memoization of the found suffix 
+    links and transitions the total time for finding all suffix 
+    links and transitions will be linear.
+################################################################################
+###############################################################################
+
+    Aho-Corasick Python Implementation: 
+    (https://carshen.github.io/data-structures/algorithms/2014/04/07/aho-corasick-implementation-in-python.html)
+
+
+    Implementation of the Aho-Corasick algorithm in Python
+    07 Apr 2014
+
+    Recall from last time that we needed to construct the trie, and then 
+    set its failure transitions. After the trie is constructed, we traverse the 
+    trie as we are reading in the input text and output the positions that 
+    we find the keywords at. Essentially, these three parts form the structure of the algorithm.
+
+    The trie is represented as an adjacency list. One row of the adjacency 
+    list represents one node, and the index of the row is the unique id of that node. 
+    The row contains a dict {'value':'', 'next_states':[],'fail_state':0,'output':[]}
+    where value is the character the node represents ('a','b', '#', '$', etc), 
+    next_states is a list of the id's of the child nodes, 
+    fail_state is the id of the fail state, and output is a list of 
+    all the complete keywords we have encountered so far as we have gone 
+    through the input text (in this implementation, we can add the same word multiple times in the trie).
+
+    We initialize the trie, called AdjList, and add the root 
+    node. We have the keywords, which we will add one by one into the trie.
+
+    1 from collections import deque
+    2 AdjList = []
+    3 
+    4 def init_trie(keywords):
+    5  """ creates a trie of keywords, then sets fail transitions """
+    6  create_empty_trie()
+    7  add_keywords(keywords)
+    8  set_fail_transitions()
+    9 
+    10 def create_empty_trie():
+    11  """ initalize the root of the trie """
+    12  AdjList.append({'value':'', 'next_states':[],'fail_state':0,'output':[]})
+    13 
+    14 def add_keywords(keywords):
+    15  """ add all keywords in list of keywords """
+    16  for keyword in keywords:
+    17      add_keyword(keyword)
+
+    We also write a helper find_next_state which takes a node and a 
+    value, and returns the id of the child of that node whose 
+    value matches value, or else None if none found.
+
+    1 def find_next_state(current_state, value):
+    2   for node in AdjList[current_state]["next_states"]:
+    3       if AdjList[node]["value"] == value:
+    4           return node
+    5   return None
+
+    Note that this trie only handles lowercase words, for simplicity for my testing. 
+    To add a keyword into the trie, we traverse the longest prefix of 
+    the keyword that exists in the trie starting from the root, 
+    then we add the characters of the rest of the keyword as nodes in the trie, in a chain.
+
+    1 def add_keyword(keyword):
+    2  """ add a keyword to the trie and mark output at the last node """
+    3  current_state = 0
+    4  j = 0
+    5  keyword = keyword.lower()
+    6  child = find_next_state(current_state, keyword[j])
+    7  while child != None:
+    8      current_state = child
+    9      j = j + 1
+    10      if j < len(keyword):
+    11          child = find_next_state(current_state, keyword[j])
+    12      else:
+    13          break
+    14  for i in range(j, len(keyword)):
+    15      node = {'value':keyword[i],'next_states':[],'fail_state':0,'output':[]}
+    16      AdjList.append(node)
+    17      AdjList[current_state]["next_states"].append(len(AdjList) - 1)
+    18      current_state = len(AdjList) - 1
+    19  AdjList[current_state]["output"].append(keyword)
+
+    The while loop finds the longest prefix of the keyword which exists in the 
+    trie so far, and will exit when we can no longer match more characters 
+    at index j. The for loop goes through the rest of the keyword, creating 
+    a new node for each character and appending it to AdjList. len(AdjList) - 1 
+    gives the id of the node we are appending, since we are adding to the end of AdjList.
+
+    When we have completed adding the keyword in the trie, 
+    AdjList[current_state]["output"].append(keyword) will append the 
+    keyword to the output of the last node, to mark the end of the keyword at that node.
+
+    Now, to set the fail transitions. We will do a breadth first search 
+    over the trie and set the failure state of each node. First, we set 
+    all the children of the root to have the failure state of the root, 
+    since the longest strict suffix of a character would be the empty string, 
+    represented by the root. The failure state of the root doesn't matter, 
+    since when we get to the root, we will just leave the loop, 
+    but we can just set it to be the root itself.
+
+    Remember that the failure state indicates the end of 
+    the next longest proper suffix of the string that we have currently matched.
+
+    Consider the node r. We are setting the failure state for node child of r. 
+    Initially the potential parent of the fail state of child, 
+    state will be the next longest proper suffix, which is marked by r's fail state. 
+    If there is no transition from r's fail state to a node with the same 
+    value as child, then we go to the next longest proper suffix, 
+    which is the fail state of r's fail state, and so on, until we 
+    find one which works, or we are at the root. 
+    We set child's fail state to be this fail state.
+
+    We append the output of the fail state to child's output 
+    because since the fail state is a suffix of the string which ends 
+    at child, whatever matched words found at the fail state will also occur 
+    at child. If we did not keep this line, we would miss 
+    out on substrings of the currently matched string which are keywords.
+
+    1 def set_fail_transitions():
+    2  q = deque()
+    3  child = 0
+    4  for node in AdjList[0]["next_states"]:
+    5      q.append(node)
+    6      AdjList[node]["fail_state"] = 0
+    7  while q:
+    8      r = q.popleft()
+    9      for child in AdjList[r]["next_states"]:
+    10          q.append(child)
+    11          state = AdjList[r]["fail_state"] # parents fail state
+    12          while find_next_state(state, AdjList[child]["value"]) == None and state != 0:
+    14              state = AdjList[state]["fail_state"]
+    15          AdjList[child]["fail_state"] = find_next_state(state, AdjList[child]["value"])
+    17          if AdjList[child]["fail_state"] is None:
+    18              AdjList[child]["fail_state"] = 0
+    19          AdjList[child]["output"] = AdjList[child]["output"] + AdjList[AdjList[child]["fail_state"]]["output"]
+
+    Finally, our trie is constructed. Given an input, line, we iterate through each 
+    character in line, going up to the fail state when we no longer match the next 
+    character in line. At each node, we check to see if there is any output, and 
+    we will capture all the outputted words and their respective indices. 
+    (i-len(j) + 1 is for writing an index at the beginning of the word)
+
+    1 def get_keywords_found(line):
+    2  """ returns true if line contains any keywords in trie """
+    3  line = line.lower()
+    4  current_state = 0
+    5  keywords_found = []
+    6 
+    7  for i in range(len(line)):
+    8      while find_next_state(current_state, line[i]) is None and current_state != 0:
+    9          current_state = AdjList[current_state]["fail_state"]
+    10      current_state = find_next_state(current_state, line[i])
+    11      if current_state is None:
+    12          current_state = 0
+    13      else:
+    14          for j in AdjList[current_state]["output"]:
+    15              keywords_found.append({"index":i-len(j) + 1,"word":j})
+    16  return keywords_found
+    Yay! We are done!
+
+    Test it like so:
+
+    1 init_trie(['cash', 'shew', 'ew'])
+    2 print get_keywords_found("cashew")
+    As always, leave questions and concerns in the comments below. See you next time!
+
+
+
+#########################################################################
+########################################################################3
+
+Aho-Corasick APPLICATIONS:
+
+    Applications
+
+    Find all strings from a given set in a text
+        Given a set of strings and a text. We have to print all occurrences of all strings 
+        from the set in the given text in O(len+ans), where len is the 
+        length of the text and ans is the size of the answer.
+
+        We construct an automaton for this set of strings. We will now process the 
+        text letter by letter, transitioning during the different states. Initially 
+        we are at the root of the trie. If we are at any time at state v, and the 
+        next letter is c, then we transition to the next state with go(v,c), thereby 
+        either increasing the length of the current match substring by 1, 
+        or decreasing it by following a suffix link.
+
+        How can we find out for a state v, if there are any matches with strings for 
+        the set? First, it is clear that if we stand on a leaf vertex, then 
+        the string corresponding to the vertex ends at this position in the text. 
+        However this is by no means the only possible case of achieving a match: 
+        if we can reach one or more leaf vertices by moving along the suffix links, 
+        then there will be also a match corresponding to each found leaf vertex. 
+        A simple example demonstrating this situation can be creating using the 
+        set of strings {dabce,abc,bc} and the text dabc.
+
+        Thus if we store in each leaf vertex the index of the string corresponding 
+        to it (or the list of indices if duplicate strings appear in the set), 
+        then we can find in O(n) time the indices of all strings which match 
+        the current state, by simply following the suffix links from the current 
+        vertex to the root. However this is not the most efficient solution, 
+        since this gives us O(n len) complexity in total. However this can 
+        be optimized by computing and storing the nearest leaf vertex that 
+        is reachable using suffix links (this is sometimes called the exit link). 
+        This value we can compute lazily in linear time. Thus for 
+        each vertex we can advance in O(1) time to the next marked 
+        vertex in the suffix link path, i.e. to the next match. Thus for each 
+        match we spend O(1) time, and therefore we reach the complexity O(len+ans).
+
+        If you only want to count the occurrences and not find the indices themselves, 
+        you can calculate the number of marked vertices in the suffix link path for each 
+        vertex v. This can be calculated in O(n) time in total. Thus we can sum up all matches in O(len).
+
+    Finding the lexicographical smallest string of a given length 
+    that doesn't match any given strings
+        A set of strings and a length L is given. We have to find a 
+        string of length L, which does not contain any of the string, 
+        and derive the lexicographical smallest of such strings.
+
+        We can construct the automaton for the set of strings. Let's remember, 
+        that the vertices from which we can reach a leaf vertex are the states, 
+        at which we have a match with a string from the set. Since in this task 
+        we have to avoid matches, we are not allowed to enter such states. 
+        On the other hand we can enter all other vertices. Thus we delete all 
+        "bad" vertices from the machine, and in the remaining graph of the automaton 
+        we find the lexicographical smallest path of length L. This task can be solved 
+        in O(L) for example by depth first search.
+
+    Finding the shortest string containing all given strings
+        Here we use the same ideas. For each vertex we store a mask that 
+        denotes the strings which match at this state. Then the problem can 
+        be reformulated as follows: initially being in the state (v=root, mask=0), 
+        we want to reach the state (v, mask=(2^n − 1) ), where n is the number of strings 
+        in the set. When we transition from one state to another using a letter, 
+        we update the mask accordingly. By running a breath first search we 
+        can find a path to the state (v, mask=2^n−1) with the smallest length.
+
+    Finding the lexicographical smallest string of length L containing k strings
+        As in the previous problem, we calculate for each vertex the number of 
+        matches that correspond to it (that is the number of marked vertices 
+        reachable using suffix links). We reformulate the problem: the current 
+        state is determined by a triple of numbers (v, len, cnt), and we 
+        want to reach from the state (root, 0, 0) the state (v, L, k), 
+        where v can be any vertex. Thus we can find such a path using depth 
+        first search (and if the search looks at the edges in their 
+        natural order, then the found path will automatically 
+        be the lexicographical smallest).
+
+    Problems
+    UVA #11590 - Prefix Lookup
+    UVA #11171 - SMS
+    UVA #10679 - I Love Strings!!
+    Codeforces - x-prime Substrings
+    Codeforces - Frequency of String
+    CodeChef - TWOSTRS
+
+################################################################
+################################################################3
+
+Z-algorithm easy explanation:
+(https://cp-algorithms.com/string/z-function.html)
+
+    Z-function and its calculation
+
+    Suppose we are given a string s of length n. The Z-function for this string 
+    is an array of length n where the i-th element is equal to the greatest 
+    number of characters starting from the position i that 
+    coincide with the first characters of s.
+
+    In other words, z[i] is the length of the longest common prefix 
+    between s and the suffix of s starting at i.
+
+    Note. In this article, to avoid ambiguity, we assume 0-based indexes; 
+    that is: the first character of s has index 0 and the last one has index n−1.
+
+    The first element of Z-function, z[0], is generally not well defined. 
+    In this article we will assume it is zero (although it doesn't 
+    change anything in the algorithm implementation).
+
+    This article presents an algorithm for calculating the Z-function 
+    in O(n) time, as well as various of its applications.
+
+    Examples
+    For example, here are the values of the Z-function computed for different strings:
+
+    "aaaaa" - [0,4,3,2,1]
+    "aaabaab" - [0,2,1,0,2,1,0]
+    "abacaba" - [0,0,1,0,3,0,1]
+
+    Trivial algorithm
+    Formal definition can be represented in the following elementary O(n2) implementation.
+
+    vector<int> z_function_trivial(string s) {
+        int n = (int) s.length();
+        vector<int> z(n);
+        for (int i = 1; i < n; ++i)
+            while (i + z[i] < n && s[z[i]] == s[i + z[i]])
+                ++z[i];
+        return z;
+    }
+
+    We just iterate through every position i and update z[i] for each one of them, 
+    starting from z[i]=0 and incrementing it as long as we don't find 
+    a mismatch (and as long as we don't reach the end of the line).
+
+    Of course, this is not an efficient implementation. We will 
+    now show the construction of an efficient implementation.
+
+
+Efficient algorithm to compute the Z-function
+    To obtain an efficient algorithm we will compute the values of z[i] in 
+    turn from i=1 to n−1 but at the same time, when computing a new value, 
+    we'll try to make the best use possible of the previously computed values.
+
+    For the sake of brevity, let's call segment matches those substrings that 
+    coincide with a prefix of s. For example, the value of the desired 
+    Z-function z[i] is the length of the segment match starting at 
+    position i (and that ends at position i+z[i]−1).
+
+    To do this, we will keep the [l,r] indices of the rightmost segment match. 
+    That is, among all detected segments we will keep the one that ends 
+    rightmost. In a way, the index r can be seen as the "boundary" to 
+    which our string s has been scanned by the algorithm; 
+    everything beyond that point is not yet known.
+
+    Then, if the current index (for which we have to compute the next 
+    value of the Z-function) is i, we have one of two options:
+
+    i>r -- the current position is outside of what we have already processed.
+
+    We will then compute z[i] with the trivial algorithm (that is, just comparing 
+    values one by one). Note that in the end, if z[i]>0, we'll have to 
+    update the indices of the rightmost segment, because it's 
+    guaranteed that the new r=i+z[i]−1 is better than the previous r.
+
+    i≤r -- the current position is inside the current segment match [l,r].
+
+    Then we can use the already calculated Z-values to "initialize" the value 
+    of z[i] to something (it sure is better than "starting from zero"), 
+    maybe even some big number.
+
+    For this, we observe that the substrings s[l…r] and s[0…r−l] match. 
+    This means that as an initial approximation for z[i] we can take 
+    the value already computed for the corresponding segment s[0…r−l], 
+    and that is z[i−l].
+
+    However, the value z[i−l] could be too large: when applied 
+    to position i it could exceed the index r. This is not allowed 
+    because we know nothing about the characters 
+    to the right of r: they may differ from those required.
+
+    Here is an example of a similar scenario:
+
+    s="aaaabaa"
+    When we get to the last position (i=6), the current match 
+    segment will be [5,6]. Position 6 will then match position 6−5=1, 
+    for which the value of the Z-function is z[1]=3. Obviously, we 
+    cannot initialize z[6] to 3, it would be completely incorrect. 
+    The maximum value we could initialize it to is 1 -- because it's the 
+    largest value that doesn't bring us beyond the index r of the match segment [l,r].
+
+    Thus, as an initial approximation for z[i] we can safely take:
+
+    z0[i]=min(r−i+1,z[i−l])
+    After having z[i] initialized to z0[i], we try to increment z[i] by 
+    running the trivial algorithm -- because in general, after the border r, 
+    we cannot know if the segment will continue to match or not.
+
+    Thus, the whole algorithm is split in two cases, which differ only in 
+    the initial value of z[i]: in the first case it's assumed to be zero, 
+    in the second case it is determined by the previously computed 
+    values (using the above formula). After that, both branches of this 
+    algorithm can be reduced to the implementation of the trivial algorithm,
+    which starts immediately after we specify the initial value.
+
+    The algorithm turns out to be very simple. Despite the fact that on 
+    each iteration the trivial algorithm is run, we have made significant 
+    progress, having an algorithm that runs in linear time. Later on we will 
+    prove that the running time is linear.
+
+    Implementation
+    Implementation turns out to be rather laconic:
+
+    vector<int> z_function(string s) {
+        int n = (int) s.length();
+        vector<int> z(n);
+        for (int i = 1, l = 0, r = 0; i < n; ++i) {
+            if (i <= r)
+                z[i] = min (r - i + 1, z[i - l]);
+            while (i + z[i] < n && s[z[i]] == s[i + z[i]])
+                ++z[i];
+            if (i + z[i] - 1 > r)
+                l = i, r = i + z[i] - 1;
+        }
+        return z;
+    }
+
+    Comments on this implementation
+    The whole solution is given as a function which returns an array of length n -- the Z-function of s.
+
+    Array z is initially filled with zeros. The current rightmost match segment 
+    is assumed to be [0;0] (that is, a deliberately small segment which doesn't contain any i).
+
+    Inside the loop for i=1…n−1 we first determine the initial value z[i] -- 
+        it will either remain zero or be computed using the above formula.
+
+    Thereafter, the trivial algorithm attempts to increase the value of z[i] as much as possible.
+
+    In the end, if it's required (that is, if i+z[i]−1>r), we update the rightmost match segment [l,r].
+
+
+###################################################################
+#####################################################################
+z Algorithm Applications:
+(https://cp-algorithms.com/string/z-function.html)
+
+    Applications
+    We will now consider some uses of Z-functions for specific tasks.
+
+    These applications will be largely similar to applications of prefix function.
+
+    Search the substring
+    To avoid confusion, we call t the string of text, and p the pattern. 
+    The problem is: find all occurrences of the pattern p inside the text t.
+
+    To solve this problem, we create a new string s=p+⋄+t, that is, we apply 
+    string concatenation to p and t but we also put a separator character ⋄ 
+    in the middle (we'll choose ⋄ so that it will certainly not be 
+    present anywhere in the strings p or t).
+
+    Compute the Z-function for s. Then, for any i in the interval [0;length(t)−1], 
+    we will consider the corresponding value k=z[i+length(p)+1]. If k is equal 
+    to length(p) then we know there is one occurrence of p in the i-th position 
+    of t, otherwise there is no occurrence of p in the i-th position of t.
+
+    The running time (and memory consumption) is O(length(t)+length(p)).
+
+    Number of distinct substrings in a string
+    Given a string s of length n, count the number of distinct substrings of s.
+
+    We'll solve this problem iteratively. That is: knowing the current 
+    number of different substrings, recalculate this amount after adding to the end of s one character.
+
+    So, let k be the current number of distinct substrings of s. We 
+    append a new character c to s. Obviously, there can be some new 
+    substrings ending in this new character c (namely, all those strings 
+    that end with this symbol and that we haven't encountered yet).
+
+    Take a string t=s+c and invert it (write its characters in reverse order). 
+    Our task is now to count how many prefixes of t are not found anywhere else in t. 
+    Let's compute the Z-function of t and find its maximum value zmax. Obviously, 
+    t's prefix of length zmax occurs also somewhere in the middle of t. Clearly, 
+    shorter prefixes also occur.
+
+    So, we have found that the number of new substrings that appear when symbol c is
+    appended to s is equal to length(t)−zmax.
+
+    Consequently, the running time of this solution is O(n2) for a string of length n.
+
+    It's worth noting that in exactly the same way we can recalculate, still in 
+    O(n) time, the number of distinct substrings when appending a character in the 
+    beginning of the string, as well as when removing it (from the end or the beginning).
+
+    String compression
+    Given a string s of length n. Find its shortest "compressed" representation, 
+    that is: find a string t of shortest length such that s can be represented 
+    as a concatenation of one or more copies of t.
+
+    A solution is: compute the Z-function of s, loop through all i such that i 
+    divides n. Stop at the first i such that i+z[i]=n. Then, the string s 
+    can be compressed to the length i.
+
+    The proof for this fact is the same as the solution which uses the prefix function.
+
+
+
+
+#########################################################################
+########################################################################3
 Z algorithm (https://www.hackerearth.com/practice/algorithms/string-algorithm/z-algorithm/tutorial/)
 
 COOL NOTES: Z ALGORITHM FOR STRINGS:
@@ -1043,7 +1710,8 @@ COOL NOTES: Z ALGORITHM FOR STRINGS:
     Applications of Z algorithms are as follows:
     Finding all occurrences of the pattern P inside the text T in O(length(T) + length(P))
     Counting the number of distinct substrings of a string S in O(1)
-    Finding a string T of shortest length such that S can be represented as a concatenation of one or more copies of T
+    Finding a string T of shortest length such that S can be represented as a 
+    concatenation of one or more copies of T
 
 
 
