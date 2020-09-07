@@ -5223,6 +5223,340 @@ Cool Notes Part 0.5: Sliding Window with a deque
         Note: different from a priority queue (which takes O(nlogk) to solve this problem), 
         it doesn't pop the max element: It pops the first element (in original order) in queue.
 
+###################################################################################
+##################################################################################
+
+[Python] Powerful Ultimate Binary Search Template. Solved many problems
+
+
+    Binary Search helps us reduce the search time from linear O(n) to logarithmic O(log n). 
+
+    >> Most Generalized Binary Search
+    Suppose we have a search space. It could be an array, a range, etc. 
+    
+    Usually it's sorted in ascending order. For most tasks, 
+    we can transform the requirement into the following generalized form:
+
+    Minimize k , s.t. condition(k) is True
+
+    The following code is the most generalized binary search template:
+
+    def binary_search(array) -> int:
+        def condition(value) -> bool:
+            pass
+
+        left, right = min(search_space), max(search_space) # could be [0, n], [1, n] etc. Depends on problem
+        while left < right:
+            mid = left + (right - left) // 2
+            if condition(mid):
+                right = mid
+            else:
+                left = mid + 1
+        return left
+
+    What's really nice of this template is that, for most of the binary search problems, 
+    we only need to modify three parts after copy-pasting this template, 
+    and never need to worry about corner cases and bugs in code any more:
+
+    Correctly initialize the boundary variables left and right to specify search space. 
+    Only one rule: set up the boundary to include all possible elements;
+    Decide return value. Is it return left or return left - 1? 
+    Remember this: after exiting the while loop, left is the minimal k​ satisfying the condition function;
+    Design the condition function. This is the most difficult and most beautiful part. Needs lots of practice.
+    Below I'll show you guys how to apply this powerful template to many LeetCode problems.
+
+
+    278. First Bad Version [Easy]
+       You are a product manager and currently leading a team to develop a new 
+       product. Since each version is developed based on the previous version, 
+       all the versions after a bad version are also bad. Suppose you have n 
+       versions [1, 2, ..., n] and you want to find out the first bad one, which 
+       causes all the following ones to be bad. You are given an API bool 
+       isBadVersion(version) which will return whether version is bad.
+
+       Example:
+
+       Given n = 5, and version = 4 is the first bad version.
+
+       call isBadVersion(3) -> false
+       call isBadVersion(5) -> true
+       call isBadVersion(4) -> true
+
+       Then 4 is the first bad version. 
+       First, we initialize left = 1 and right = n to include all possible values. 
+       Then we notice that we don't even need to design the condition function. 
+       It's already given by the isBadVersion API. Finding the first bad version is 
+       equivalent to finding the minimal k satisfying isBadVersion(k) is True. 
+       Our template can fit in very nicely:
+
+       class Solution:
+           def firstBadVersion(self, n) -> int:
+               left, right = 1, n
+               while left < right:
+                   mid = left + (right - left) // 2
+                   if isBadVersion(mid):
+                       right = mid
+                   else:
+                       left = mid + 1
+               return left
+
+
+    69. Sqrt(x) [Easy]
+       Implement int sqrt(int x). Compute and return the square root of x, 
+       where x is guaranteed to be a non-negative integer. Since the return type 
+       is an integer, the decimal digits are truncated and only the 
+       integer part of the result is returned.
+
+       Example:
+
+       Input: 4
+       Output: 2
+       Input: 8
+       Output: 2
+       Easy one. First we need to search for minimal k satisfying 
+       condition k^2 > x, then k - 1 is the answer to the question. 
+       We can easily come up with the solution. Notice that I set 
+       right = x + 1 instead of right = x to deal with special input 
+       cases like x = 0 and x = 1.
+
+       def mySqrt(x: int) -> int:
+           left, right = 0, x + 1
+           while left < right:
+               mid = left + (right - left) // 2
+               if mid * mid > x:
+                   right = mid
+               else:
+                   left = mid + 1
+           return left - 1  # `left` is the minimum k value, `k - 1` is the answer
+
+
+    35. Search Insert Position [Easy]
+       Given a sorted array and a target value, return the index if the 
+       target is found. If not, return the index where it would be if it were 
+       inserted in order. You may assume no duplicates in the array.
+
+       Example:
+
+       Input: [1,3,5,6], 5
+       Output: 2
+       Input: [1,3,5,6], 2
+       Output: 1
+
+       Very classic application of binary search. We are looking for the 
+       minimal k value satisfying nums[k] >= target, and we can just 
+       copy-paste our template. Notice that our solution is correct regardless 
+       of whether the input array nums has duplicates. Also notice that the input 
+       target might be larger than all elements in nums and therefore 
+       needs to placed at the end of the array. 
+       That's why we should initialize right = len(nums) instead of right = len(nums) - 1.
+
+       class Solution:
+           def searchInsert(self, nums: List[int], target: int) -> int:
+               left, right = 0, len(nums)
+               while left < right:
+                   mid = left + (right - left) // 2
+                   if nums[mid] >= target:
+                       right = mid
+                   else:
+                       left = mid + 1
+               return left
+
+    >> Advanced Application
+    The above problems are quite easy to solve, because they 
+    already give us the array to be searched. We'd know that we should 
+    use binary search to solve them at first glance. However, more often 
+    are the situations where the search space and search target are not 
+    so readily available. Sometimes we won't even realize that the problem 
+    should be solved with binary search -- we might just turn to dynamic 
+    programming or DFS and get stuck for a very long time.
+
+    As for the question "When can we use binary search?", my answer 
+    is that, If we can discover some kind of monotonicity, for example, 
+    if condition(k) is True then condition(k + 1) is True, 
+    then we can consider binary search.
+
+
+    1011. Capacity To Ship Packages Within D Days [Medium]
+        A conveyor belt has packages that must be shipped from 
+        one port to another within D days. The i-th package on the 
+        conveyor belt has a weight of weights[i]. Each day, 
+        we load the ship with packages on the conveyor belt 
+        (in the order given by weights). We may not load more 
+        weight than the maximum weight capacity of the ship.
+
+        Return the least weight capacity of the ship that 
+        will result in all the packages on the conveyor 
+        belt being shipped within D days.
+
+        Example :
+
+        Input: weights = [1,2,3,4,5,6,7,8,9,10], D = 5
+        Output: 15
+        Explanation: 
+        A ship capacity of 15 is the minimum to ship all the packages in 5 days like this:
+        1st day: 1, 2, 3, 4, 5
+        2nd day: 6, 7
+        3rd day: 8
+        4th day: 9
+        5th day: 10
+
+        Note that the cargo must be shipped in the order given, 
+        so using a ship of capacity 14 and splitting 
+        the packages into parts like (2, 3, 4, 5), 
+        (1, 6, 7), (8), (9), (10) is not allowed.
+        
+        SOLN:
+        Start with a high capacity that works -> then keep reducing it until 
+        we are at an integer that causes D to go from viable -> not viable
+        Since thats the linear search solution -> Try binary
+        
+        Try total sum -> then half sum -> then quarter sum -> and keep going 
+        until D == 5
+        But how do verify a particular weight -> In O(N) by running it through array?
+        We should be able to do faster by doing a type of DP rite? idk.
+
+
+        Binary search probably would not come to our mind when we first meet 
+        this problem. We might automatically treat weights as search space and 
+        then realize we've entered a dead end after wasting lots of time. 
+        In fact, we are looking for the minimal one among all feasible capacities. 
+        We dig out the monotonicity of this problem: if we can successfully 
+        ship all packages within D days with capacity m, then we can definitely 
+        ship them all with any capacity larger than m. Now we can design a 
+        condition function, let's call it feasible, given an input capacity, 
+        it returns whether it's possible to ship all packages within D days. 
+        This can run in a greedy way: if there's still room for the current 
+        package, we put this package onto the conveyor belt, otherwise we 
+        wait for the next day to place this package. If the total days 
+        needed exceeds D, we return False, otherwise we return True.
+
+        Next, we need to initialize our boundary correctly. Obviously 
+        capacity should be at least max(weights), otherwise the conveyor 
+        belt couldn't ship the heaviest package. On the other hand, capacity 
+        need not be more thansum(weights), because then we can 
+        ship all packages in just one day.
+
+        Now we've got all we need to apply our binary search template:
+
+        def shipWithinDays(weights: List[int], D: int) -> int:
+            def feasible(capacity) -> bool:
+                days = 1
+                total = 0
+                for weight in weights:
+                    total += weight
+                    if total > capacity:  # too heavy, wait for the next day
+                        total = weight
+                        days += 1
+                        if days > D:  # cannot ship within D days
+                            return False
+                return True
+
+            left, right = max(weights), sum(weights)
+            while left < right:
+                mid = left + (right - left) // 2
+                if feasible(mid):
+                    right = mid
+                else:
+                    left = mid + 1
+            return left
+
+
+    410. Split Array Largest Sum [Hard]
+    Given an array which consists of non-negative integers and an 
+    integer m, you can split the array into m non-empty continuous 
+    subarrays. Write an algorithm to minimize the largest sum 
+    among these m subarrays.
+
+    Input:
+    nums = [7,2,5,10,8]
+    m = 2
+
+    Output:
+    18
+
+    Explanation:
+    There are four ways to split nums into two subarrays. 
+    The best way is to split it into [7,2,5] and [10,8], 
+    where the largest sum among the two subarrays is only 18.
+    
+    Are these problems like rotated DP? or binsearch on DP?
+    How are we avoiding doing DP?
+
+    def answer(nums, m):
+
+        def viable(nums, allowedSum):
+            # there is always 1 section
+            sections = 1
+            curr = 0
+
+            for i in nums:
+                # curr += i
+                if curr + i  > allowedSum:
+                    sections += 1
+                    curr = i 
+                    if sections > m:
+                        return False
+            
+
+            return True
+        
+        # do binsearch 
+        i, j = max(nums), sum(nums)
+        while i < j:
+            mid = i  + (j-i)//2
+
+            if viable(nums, mid):
+                j = mid
+            else:
+                i = mid + 1
+
+        return i
+
+    If you take a close look, you would probably see how similar 
+    this problem is with LC 1011 above. Similarly, we can design a 
+    feasible function: given an input threshold, then decide if we can 
+    split the array into several subarrays such that every subarray-sum 
+    is less than or equal to threshold. In this way, we discover the 
+    monotonicity of the problem: if feasible(m) is True, then all inputs 
+    larger than m can satisfy feasible function. You can see that the 
+    solution code is exactly the same as LC 1011.
+    Their soln:
+    
+    def splitArray(nums: List[int], m: int) -> int:        
+        def feasible(threshold) -> bool:
+            count = 1
+            total = 0
+            for num in nums:
+                total += num
+                if total > threshold:
+                    total = num
+                    count += 1
+                    if count > m:
+                        return False
+            return True
+
+        left, right = max(nums), sum(nums)
+        while left < right:
+            mid = left + (right - left) // 2
+            if feasible(mid):
+                right = mid     
+            else:
+                left = mid + 1
+        return left
+    
+    
+
+        
+
+                
+
+
+
+
+
+
+
+
 
 ###################################################################################
 ###################################################################################
