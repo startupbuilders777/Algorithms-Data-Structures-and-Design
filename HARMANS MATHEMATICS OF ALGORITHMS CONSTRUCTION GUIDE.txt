@@ -623,6 +623,202 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
     pieces is 2 + 2 + 3 + 4 + 5 + ... + 16 = 137. These are the triangular numbers plus 1 (cf. A000217).
 
 
+1) Crack the coding interview 2' Complement:
+
+    Twos complement of a N-bit number is the complement of the number with respect to 2^N
+
+    Create -3 in a 4 bit system. Have 1 bit for the sign. and 3 bits for the value. 
+    We want complement wrt to 2^3 which is 8 -> that is 5. 5 is 101 in binary. 
+    Therefore -3 as a 4bit number is 1101. 
+
+    In other words the binary rep of -K as a N-bit number is concat(1, 2^(N-1) - K)
+    OR, we invert the bits in the positive number, and then add 1. 
+
+    7 and -1 look the same aka: 0111, 1111
+    6 and -2 look the same aka: 0110, 1110
+    5 and -3 look the same aka: 0101, 1101
+    4 and -4 look the same aka: 0100, 1100
+    3 and -5 look the same aka: 0011, 1011
+    2 and -6 look the same aka: 0010, 1010
+    1 and -7 look the same: 0001, 1001
+    0 -> 0000
+    Observe above the values that look the same, and that the abs(left) + abs(right) sum to 2^8
+    They are identical except for sign bit. Why is tht?
+
+    Arithmetic vs Logical Shift. 
+
+    In a logical shift to riight -> we shift the bits and put a 0 as the most sig bit. 
+    -75 >>= 1  -> will become 90
+    in arithmetic right shfit, we shift the values to the right but fill in the new bits
+    with the value of the sign bit (so its division by 2 rather than a force in of a 0 as MSB)
+
+    Bit ops:
+
+    Get bit easy to write
+
+    set bit: num | (1 << i);
+
+    Clear bit -> need mask. 
+    int clearBit(int num, int i) {
+        int mask = ~(1 << i);
+        return num & mask. 
+    }
+
+    Clear bits MSB through I (inclusive):
+    int clearBitsMSTThroughI(int num, int i) {
+        // create mask with a 1 bit at the ith bit. 
+        // then subtract 1 giving us a sequence of 0s
+        int mask = (1 << i) - 1;
+        return num & mask;
+    }
+
+    Clear bits from i through 0(inclusive). We take a sequence of 1s,
+    and shift it left by i + 1 bits
+    int clearBitsIthrough0(int num, int i) {
+        int mask = (-1 << (i+1));
+        return num & mask;
+    }
+
+    Update bit: to set ith bit to a value v, clear bit at position i, 
+    then apply shifted value:
+
+    int updateBit(int num, int i, bool bitIs1){
+        int value = bitIs1 ? 1 : 0
+        int mask = ~(1 <<i);
+        return (num & mask) | (value << i);
+    }    
+
+    
+
+
+
+1.2) Balanced Ternary and coming up with CONVERSION ALGORITHMS: 
+    (https://cp-algorithms.com/algebra/balanced-ternary.html)
+
+    This is a non-standard but still positional numeral system. 
+    Its feature is that digits can have one of the values -1, 0 and 1. 
+    Nevertheless, its base is still 3 (because there are three possible values). 
+    Since it is not convenient to write -1 as a digit, we'll 
+    use letter Z further for this purpose. 
+
+    Here are the first few numbers from balanced ternary.
+    0    0
+    1    1
+    2    1Z
+    3    10
+    4    11
+    5    1ZZ
+    6    1Z0
+    7    1Z1
+    8    10Z
+    9    100
+    
+    This system allows you to write negative values without leading minus sign: 
+    you can simply invert digits in any positive number.
+    -1   Z
+    -2   Z1
+    -3   Z0
+    -4   ZZ
+    -5   Z11
+
+    Example 1: Let us convert 64 to balanced ternary. 
+            At first we use normal ternary to rewrite the number:
+
+        64 = 02101
+
+    Let us process it from the least significant (rightmost) digit:
+
+    1, 0 and 1 are skipped as it is.( Because 0 and 1 are allowed in balanced ternary )
+
+    2 is turned into Z increasing the digit to its left, so we get 1Z101.
+    The final result is 1Z101.
+
+    Let us convert it back to the decimal system by adding the weighted positional values:
+
+    1Z101 = 81⋅1+27⋅(−1)+9⋅1+3⋅0+1⋅1=64
+
+    Example 2: Let us convert 237 to balanced ternary. 
+        At first we use normal ternary to rewrite the number:
+
+    237 = 22210
+    Let us process it from the least significant (rightmost) digit:
+
+    0 and 1 are skipped as it is.( Because 0 and 1 are allowed in balanced ternary )
+    2 is turned into Z increasing the digit to its left, so we get 23Z10.
+    3 is turned into 0 increasing the digit to its left, so we get 30Z10.
+    3 is turned into 0 increasing the digit to its left( which is by default 0 ), and so we get 100Z10.
+    The final result is 100Z10.
+
+    Let us convert it back to the decimal system by adding the weighted positional values:
+    100Z10=243⋅1+81⋅0+27⋅0+9⋅(−1)+3⋅1+1⋅0=237
+
+
+1.25) Gray Codes (Used for N choose K for instance)
+
+      Gray code is a binary numeral system where two successive values differ in only one bit.
+  
+      For example, the sequence of Gray codes for 3-bit numbers is: 
+          000, 001, 011, 010, 110, 111, 101, 100, so G(4)=6.
+  
+      This code was invented by Frank Gray in 1953.
+
+      Finding Gray code
+      Let's look at the bits of number n and the bits of number G(n). 
+      Notice that i-th bit of G(n) equals 1 only when i-th bit of 
+      n equals 1 and i+1-th bit equals 0 or the other way 
+      around (i-th bit equals 0 and i+1-th bit equals 1). Thus, G(n)=n⊕(n>>1):
+  
+      int g (int n) {
+          return n ^ (n >> 1);
+      }
+
+      Finding inverse Gray code
+      Given Gray code g, restore the original number n.
+  
+      We will move from the most significant bits to the least significant 
+      ones (the least significant bit has index 1 and the most significant 
+      bit has index k). The relation between the bits ni of number n and 
+      the bits gi of number g:
+  
+      nknk−1nk−2nk−3⋮=gk,=gk−1⊕nk=gk⊕gk−1,=gk−2⊕nk−1=gk⊕gk−1⊕gk−2,=gk−3⊕nk−2=gk⊕gk−1⊕gk−2⊕gk−3,
+      The easiest way to write it in code is:
+  
+      int rev_g (int g) {
+        int n = 0;
+        for (; g; g >>= 1)
+            n ^= g;
+        return n;
+      }
+
+      Practical applications
+      Gray codes have some useful applications, sometimes quite unexpected:
+  
+      Gray code of n bits forms a Hamiltonian cycle on a hypercube, 
+      where each bit corresponds to one dimension.
+  
+      Gray codes are used to minimize the errors in digital-to-analog 
+      signals conversion (for example, in sensors).
+  
+      Gray code can be used to solve the Towers of Hanoi problem. Let n denote 
+      number of disks. Start with Gray code of length n which consists 
+      of all zeroes (G(0)) and move between consecutive Gray codes (from 
+      G(i) to G(i+1)). Let i-th bit of current Gray code represent n-th disk 
+      (the least significant bit corresponds to the smallest disk and the 
+      most significant bit to the biggest disk). Since exactly one bit 
+      changes on each step, we can treat changing i-th bit as moving i-th disk. 
+      Notice that there is exactly one move option for each disk (except the 
+      smallest one) on each step (except start and finish positions). There 
+      are always two move options for the smallest disk but there is a strategy 
+      which will always lead to answer: if n is odd then sequence of the smallest 
+      disk moves looks like f→t→r→f→t→r→... where f is the initial rod, t is the 
+      terminal rod and r is the remaining rod), and if n is even: f→r→t→f→r→t→....
+  
+      Gray codes are also used in genetic algorithms theory.
+
+
+
+
+
 1.3)  PLEASE IMPROVE THESE NOTES WITH PRACTICAL USE CASE OF 2'S COMPLIMENT IN PYTHON. 
 
         Decimal	Signed Magnitude	Signed One’s Complement	Signed Two’s Complement
@@ -662,6 +858,9 @@ WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
     Surprisingly, the negation operation is symmetric. It is not quite as simple 
     as the negation of the one's complement representation, 
     but addition is simpler, using an end-off carry.
+
+
+
 
 
 1.35) GCD by dividing 

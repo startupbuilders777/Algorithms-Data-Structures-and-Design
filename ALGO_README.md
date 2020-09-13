@@ -71,6 +71,195 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+
+-56) Do N CHOOSE K. Generate all K combinations:
+     Recursively:
+
+     // C++ program to print all combinations of size 
+    // k of elements in set 1..n 
+    #include <bits/stdc++.h> 
+    using namespace std; 
+    
+    void makeCombiUtil(vector<vector<int> >& ans, 
+        vector<int>& tmp, int n, int left, int k) 
+    { 
+        // Pushing this vector to a vector of vector 
+        if (k == 0) { 
+            ans.push_back(tmp); 
+            return; 
+        } 
+    
+        // i iterates from left to n. First time 
+        // left will be 1 
+        for (int i = left; i <= n; ++i) 
+        { 
+            tmp.push_back(i); 
+            makeCombiUtil(ans, tmp, n, i + 1, k - 1); 
+    
+            // Popping out last inserted element 
+            // from the vector 
+            tmp.pop_back(); 
+        } 
+    } 
+    
+    // Prints all combinations of size k of numbers 
+    // from 1 to n. 
+    vector<vector<int> > makeCombi(int n, int k) 
+    { 
+        vector<vector<int> > ans; 
+        vector<int> tmp; 
+        makeCombiUtil(ans, tmp, n, 1, k); 
+        return ans; 
+    } 
+    
+    // Driver code 
+    int main() 
+    { 
+        // given number 
+        int n = 5; 
+        int k = 3; 
+        vector<vector<int> > ans = makeCombi(n, k); 
+        for (int i = 0; i < ans.size(); i++) { 
+            for (int j = 0; j < ans[i].size(); j++) { 
+                cout << ans.at(i).at(j) << " "; 
+            } 
+            cout << endl; 
+        } 
+        return 0; 
+    } 
+        
+-55)
+
+
+
+
+-53) Recursive Multiply:
+    Write a recursie function to multiply 2 positive integers without using the 
+    * operator. Only addition, subtraction and bitshifting but minimize ops. 
+
+    Answer:
+
+    int minProduct(int a, int b) {
+        int bigger = a< b ? b : a;
+        int smaller = a < b ? a: b;
+        return minProductHelper(a, b);
+    }
+
+    int minProdHelper(smaller, bigger) {
+        if smaller == 0 return 0
+        elif smaller == 1 return 1
+
+        int s = smaller >> 1; //divide by 2
+        int halfPrd = minProductHelper(s, bigger);
+        if smaller % 2 == 0:
+            return halfProd + halfProd
+        else:
+            return halfProd + halfProd + bigger
+    }
+    Runtime O(log s)
+    
+
+
+
+
+
+-52) Random Node: Create a binary tree class, which in addition to 
+    insert, find, and delete, has a method getRandomNode() which 
+    returns a random node from teh tree. All nodes should be equally likely to be chosen
+
+    Just traverse left, return current, or right node with 1/3 probability
+    But this isnt O(N) for all nodes, top nodes more likely.
+
+    Return root with 1/N prb
+    odds of picking left node is LEFT_SIZE * 1/N, odds of going right is RIGHT_SIZE * 1/n
+
+    But we dont want to make that many RNG calls. Use inorder traversal to help:
+
+    Generate one random number -> this is the node (i) to return, and then 
+    we locate ith node using inorder traversal. Suubtracting leftsz + 1 from i 
+    reflects that, when we go right, we skip over left+1 nodes in the inorder traversal. 
+
+
+
+
+-51) Inorder Succcesor. Find next node of a given node in a BST. You
+    may assume each node has link to parent:
+
+    Node inorderSucc(Node n): 
+        if n has a right subtree:
+            return leftmost child of right subtree
+        else: 
+            while n is a right child of n.parent:
+                n = n.parent
+            
+            return n.parent
+    
+
+
+-50) Cool counting trick to count pairs: (Done in CodeSignal HARD)
+
+    Problem: A reverse is a number reversed. 
+    So 20 reversed is 2, 420 reversed is 24, 56060 reversed is 6065
+
+    Given 2 arrays, A and ReverseA, count all pairs i <= j
+    where A[i] + ReverseA[j] == Reverse[i] + A[j].
+    
+    So for instance given input: [1, 20, 3,  19 ] ->   A[i] + ReverseA[j] 
+                ReverseA is then [1,  2, 3,  91 ]
+        A[i] + ReverseA[j] == Reverse[i] + A[j] indexes are:
+        [(0,0),(1,1), (2,2), (3,3), (0,2)]
+
+    SINCE WE ARE COUNTING AND DONT HAVE TO LIST OUT ALL THE PAIRS IN THE
+    SOLUTION THIS TIPS US OFF THAT THERE IS AN O(N) soln. 
+    Brute force soln -> Enumerating pairs is O(N^2). 
+
+    OK BE SMART BY REARRANGING CONSTRAINT SO THAT WE CAN DO EASILY PRECOMPUTATIONS. 
+    A[i] + ReverseA[j] == Reverse[i] + A[j]
+    Rearrange to have variables of same type on same side:
+    
+    A[i] - Reverse[i] == A[j] - ReverseA[j]
+    Ok now precompute the top array. 
+
+    differences = []
+    for i,j in zip(A, RevA):
+        differences.append(i - j )
+    
+    AND RMBR YOU CAN COUNT PAIRS USING A MAP!! Pairs where i <= j
+    Use formula n*(n-1)/2
+
+    m = defaultdict(int)
+    
+    for diff in differences:
+        m[diff] += 1
+
+    So if m[3] -> means 3 different indexs have the same difference and 3 diff 
+                  indexes satisfy A[i] - Reverse[i] == A[j] - ReverseA[j]
+                  For instance index: (2, 4, 7)
+                  -> So 2<->4, 2<->7, and 4<->7 should be counted. Also rmbr 2<->2, 4<->4, 7<->7
+                     need to be counted too.
+                    Its a permutation of 2 elements (i,j), but with order, so to remove order, 
+                    divide by the ways it can be ordered which is 2!. Finanl solution is  
+                    aka _ _   (n) x (n-1) / 2!
+                    And then to sum the 2<->2, 4<->4, 7<->7, just add lenght of list. 
+
+                -> For example: count pairs from these indicies where i<=j : [1,3,4,5]
+                this is 4*3/2 -> 6
+                1<->3, 1<->4, 1<->5, 3<->4, 3<->5, 4<->5s
+                lst sz 4: 3+2+1 -> 6
+
+    count = 0
+    for k,v in m.items():
+        count += v*(v-1)/2
+    count += len(differences)
+    return count
+
+    
+
+
+
+-49) To do math cieling operation on num:
+    (num - 1) // divisor + 1
+
 -48) DP + BINARY Search (DELETE IF YOU DONT UNDERSTAND):
 
     1180 - Software Company
@@ -5336,7 +5525,32 @@ Cool Notes Part 0.5: Sliding Window with a deque
     Below I'll show you guys how to apply this powerful template to many LeetCode problems.
 
 
-    278. First Bad Version [Easy]
+    Excellent work! Many people think sorted array is a must to apply 
+    binary search, which is not 100% correct. In some cases, there is no 
+    such array, or the array is not sorted, or the element are not even 
+    comparable! What makes binary search work is that there exists a function 
+    that can map elements in left half to True, and the other half to False, 
+    or vice versa. If we can find such a function, we can apply bs to find 
+    the boundary (lower_bound for example). For the interval notation, 
+    Professor E.W. Dijkstra favors left closed right open interval 
+    notation and explained why we benefit from this notation in his 
+    post which was published in 1982.
+
+    In short, loop invariants help us design a loop and ensure the 
+    correctness of a loop in a formal way. ref1, ref2. For the binary search code, 
+    if we imagine the array expanded to infinity for both sides, then the loop 
+    invariants can phrased as:1) l<=r 2) elements in (-inf, l) are mapped to 
+    False by condition 3) elements in [r, +inf) are mapped to True by condition. 
+    These invariants are true before the loop, in each iteration of 
+    the loop, and after the loop. After the loop breaks, we know l ==r, 
+    from these invariants, we can conclude that elements in (-inf, l) are False, 
+    and those in [l, +inf) are true. Besides, to ensure a loop is 
+    correct, we also need to prove the loop break eventually. 
+    The proof is straight forward: at each iteration, the search 
+    range [l, r) shrinks by at least 1.
+
+
+    1.   First Bad Version [Easy]
        You are a product manager and currently leading a team to develop a new 
        product. Since each version is developed based on the previous version, 
        all the versions after a bad version are also bad. Suppose you have n 
@@ -5371,7 +5585,7 @@ Cool Notes Part 0.5: Sliding Window with a deque
                return left
 
 
-    69. Sqrt(x) [Easy]
+    2.  Sqrt(x) [Easy]
        Implement int sqrt(int x). Compute and return the square root of x, 
        where x is guaranteed to be a non-negative integer. Since the return type 
        is an integer, the decimal digits are truncated and only the 
@@ -5400,7 +5614,7 @@ Cool Notes Part 0.5: Sliding Window with a deque
            return left - 1  # `left` is the minimum k value, `k - 1` is the answer
 
 
-    35. Search Insert Position [Easy]
+    3.  Search Insert Position [Easy]
        Given a sorted array and a target value, return the index if the 
        target is found. If not, return the index where it would be if it were 
        inserted in order. You may assume no duplicates in the array.
@@ -5446,7 +5660,7 @@ Cool Notes Part 0.5: Sliding Window with a deque
     then we can consider binary search.
 
 
-    1011. Capacity To Ship Packages Within D Days [Medium]
+    1.    Capacity To Ship Packages Within D Days [Medium]
         A conveyor belt has packages that must be shipped from 
         one port to another within D days. The i-th package on the 
         conveyor belt has a weight of weights[i]. Each day, 
@@ -5532,7 +5746,7 @@ Cool Notes Part 0.5: Sliding Window with a deque
             return left
 
 
-    410. Split Array Largest Sum [Hard]
+    2.   Split Array Largest Sum [Hard]
         Given an array which consists of non-negative integers and an 
         integer m, you can split the array into m non-empty continuous 
         subarrays. Write an algorithm to minimize the largest sum 
@@ -5616,7 +5830,7 @@ Cool Notes Part 0.5: Sliding Window with a deque
             return left
     
 
-    875. Koko Eating Bananas [Medium]
+    3.   Koko Eating Bananas [Medium]
         Koko loves to eat bananas. There are N piles of bananas, 
         the i-th pile has piles[i] bananas. The guards have gone and 
         will come back in H hours. Koko can decide her bananas-per-hour 
@@ -5659,7 +5873,7 @@ Cool Notes Part 0.5: Sliding Window with a deque
                     left = mid + 1
             return left
     
-    1482. Minimum Number of Days to Make m Bouquets [Medium]
+    4.    Minimum Number of Days to Make m Bouquets [Medium]
           
         Given an integer array bloomDay, an integer m and an integer k. 
         We need to make m bouquets. To make a bouquet, you need to use 
@@ -5726,7 +5940,7 @@ Cool Notes Part 0.5: Sliding Window with a deque
                     
 
 
-    668. Kth Smallest Number in Multiplication Table [Hard]
+    5.   Kth Smallest Number in Multiplication Table [Hard]
         Nearly every one have used the Multiplication Table. 
         But could you find out the k-th smallest number quickly 
         from the multiplication table? Given the height m and the 
@@ -5810,7 +6024,7 @@ Cool Notes Part 0.5: Sliding Window with a deque
                     left = mid + 1
             return left 
                 
-    719. Find K-th Smallest Pair Distance [Hard]
+    6.   Find K-th Smallest Pair Distance [Hard]
        Given an integer array, return the k-th smallest distance 
        among all the pairs. The distance of a pair (A, B) is 
        defined as the absolute difference between A and B.
@@ -5924,7 +6138,7 @@ Cool Notes Part 0.5: Sliding Window with a deque
                         lo = mi + 1
                 return lo
         
-    1201. Ugly Number III [Medium]
+    7.    Ugly Number III [Medium]
        Write a program to find the n-th ugly number. 
        Ugly numbers are positive integers which are 
        divisible by a or b or c.
@@ -5963,7 +6177,7 @@ Cool Notes Part 0.5: Sliding Window with a deque
             return left
 
 
-    1283. Find the Smallest Divisor Given a Threshold [Medium]
+    8.    Find the Smallest Divisor Given a Threshold [Medium]
        Given an array of integers nums and an integer threshold, 
        we will choose a positive integer divisor and divide all 
        the array by it and sum the result of the division. Find 
@@ -5982,7 +6196,7 @@ Cool Notes Part 0.5: Sliding Window with a deque
        If the divisor is 4 we can get a sum to 7 (1+1+2+3) and 
        if the divisor is 5 the sum will be 5 (1+1+1+2). 
 
-       
+
        After so many problems introduced above, this one 
        should be a piece of cake. We don't even need to bother 
        to design a condition function, because the problem has 
@@ -6000,9 +6214,6 @@ Cool Notes Part 0.5: Sliding Window with a deque
                else:
                    left = mid + 1
            return left
-
-
-
 
 
 
