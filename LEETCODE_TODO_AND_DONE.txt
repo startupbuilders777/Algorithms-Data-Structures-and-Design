@@ -40,7 +40,7 @@ TAKE QUICK NOTES AND REVIEW DISCUSSION FOR  1223. Dice Roll Simulation
 WRITE BOTTOM UP SOLUTION FOR BEST TIME TO BUY AND SELL STOCK III, IV, COOLDOWN, TRANSACTION FEE.
     -> FOR COOLDOWN I WROTE SOMEONE ELSES SOLUTION. REDO IT WITH YOUR SOLUTION THANKS. 
 
-    
+Write notes on 911. Maximum size subarray sum equals K in most important problems
 
 Write notes about 3D surface area? 
 
@@ -58,3 +58,12 @@ and prime factorization, how to count them.
 
 # questions i finished:
 intersection of 2 arrays.py
+
+
+For 1235. Maximum Profit in Job Scheduling
+    -> Write notes, review discussion, write forward DP if you can. 
+    -> review fastest solution
+
+
+
+

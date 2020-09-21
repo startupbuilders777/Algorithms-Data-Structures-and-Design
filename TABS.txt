@@ -1,0 +1,600 @@
+https://leetcode.com/problems/number-of-ways-to-reorder-array-to-get-same-bst/ | Number of Ways to Reorder Array to Get Same BST - LeetCode
+https://leetcode.com/ | LeetCode - The World's Leading Online Programming Learning Platform
+https://trello.com/b/JuklKVMn/leetcode-preparation-plan | Leetcode Preparation Plan | Trello
+https://leetcode.com/problems/distribute-coins-in-binary-tree/ | Distribute Coins in Binary Tree - LeetCode
+https://leetcode.com/problems/minimum-add-to-make-parentheses-valid/ | Minimum Add to Make Parentheses Valid - LeetCode
+https://leetcode.com/problems/number-of-valid-subarrays/ | Number of Valid Subarrays - LeetCode
+https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/ | Max Sum of Rectangle No Larger Than K - LeetCode
+https://leetcode.com/problems/the-maze-iii/ | The Maze III - LeetCode
+https://leetcode.com/problems/couples-holding-hands/ | Couples Holding Hands - LeetCode
+https://leetcode.com/problems/minimum-unique-word-abbreviation/ | Minimum Unique Word Abbreviation - LeetCode
+https://leetcode.com/problems/best-meeting-point/ | Best Meeting Point - LeetCode
+https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/ | Find First and Last Position of Element in Sorted Array - LeetCode
+https://www.lintcode.com/problem/subarray-product-less-than-k/description | 1075. Subarray Product Less Than K - LintCode
+https://leetcode.com/problems/range-sum-query-mutable/ | Range Sum Query - Mutable - LeetCode
+https://leetcode.com/problems/shortest-unsorted-continuous-subarray/ | Shortest Unsorted Continuous Subarray - LeetCode
+https://leetcode.com/problems/partition-array-into-three-parts-with-equal-sum/ | Partition Array Into Three Parts With Equal Sum - LeetCode
+https://leetcode.com/problems/median-of-two-sorted-arrays/ | Median of Two Sorted Arrays - LeetCode
+https://leetcode.com/problems/maximum-gap/ | Maximum Gap - LeetCode
+https://leetcode.com/problems/asteroid-collision/ | Asteroid Collision - LeetCode
+https://www.cnblogs.com/Dylan-Java-NYC/p/11280623.html | LeetCode 1135. Connecting Cities With Minimum Cost - Dylan_Java_NYC - 博客园
+https://leetcode.com/problems/friend-circles/ | Friend Circles - LeetCode
+https://www.google.com/search?q=leetcode+sentence+similarity&oq=lintcode+setence+sim&aqs=chrome.2.69i57j0l2.4871j0j4&sourceid=chrome&ie=UTF-8 | leetcode sentence similarity - Google Search
+http://shibaili.blogspot.com/2018/11/734-sentence-similarity.html | Leetcode: 734. Sentence Similarity
+https://code.dennyzhang.com/sentence-similarity-ii | LeetCode: Sentence Similarity II – Prepare For Coder Interview – Denny
+https://leetcode.com/problems/maximum-frequency-stack/ | Maximum Frequency Stack - LeetCode
+https://leetcode.com/problems/sudoku-solver/ | Sudoku Solver - LeetCode
+https://leetcode.com/problems/minimum-area-rectangle/ | Minimum Area Rectangle - LeetCode
+https://leetcode.com/problems/minimum-area-rectangle-ii/ | Minimum Area Rectangle II - LeetCode
+https://leetcode.com/problems/erect-the-fence/ | Erect the Fence - LeetCode
+https://leetcode.com/problems/surface-area-of-3d-shapes/ | Surface Area of 3D Shapes - LeetCode
+https://leetcode.com/problems/minimum-swaps-to-make-sequences-increasing/ | Minimum Swaps To Make Sequences Increasing - LeetCode
+https://leetcode.com/discuss/interview-question/217510/google-phone-screen-shortest-way-to-form-string | Google | Phone screen | Shortest Way to Form String - LeetCode Discuss
+https://www.lintcode.com/problem/coin-path/description | LintCode 领扣
+https://medium.com/algorithm-and-datastructure/index-pairs-of-a-string-7b7c8306ead0 | Index Pairs of a String. Given a text string and words (a list… | by Omar Faroque | Algorithm and DataStructure | Medium
+https://leetcode.com/problems/split-array-into-fibonacci-sequence/ | Split Array into Fibonacci Sequence - LeetCode
+https://leetcode.com/problems/word-break-ii/ | Word Break II - LeetCode
+https://www.lintcode.com/problem/best-meeting-point/description | LintCode
+https://leetcode.com/problems/k-closest-points-to-origin/ | K Closest Points to Origin - LeetCode
+https://leetcode.com/problems/reorganize-string/ | Reorganize String - LeetCode
+https://leetcode.com/problems/palindrome-partitioning/ | Palindrome Partitioning - LeetCode
+https://leetcode.com/problems/flower-planting-with-no-adjacent/ | Flower Planting With No Adjacent - LeetCode
+https://leetcode.com/problems/number-of-atoms/ | Number of Atoms - LeetCode
+https://www.lintcode.com/problem/line-reflection/description | 908. Line Reflection - LintCode
+https://aaronice.gitbook.io/lintcode/hash-table/logger-rate-limiter | Logger Rate Limiter - LintCode & LeetCode
+https://www.lintcode.com/problem/two-sum-iii-data-structure-design/description | LintCode
+https://www.lintcode.com/problem/find-anagram-mappings/description | 813. Find Anagram Mappings - LintCode
+
+https://www.google.com/search?sxsrf=ALeKk00dwzuB_OT_TgsMe_uUC_WgU1pQ-g%3A1600026097843&ei=8XVeX6T_Mu2I_Qba2J_QDA&q=spark+interview+questions+&oq=spark+interview+questions+&gs_lcp=CgZwc3ktYWIQDDIECCMQJzICCAAyAggAMgIIADICCAA6BAgAEEdQ1tcBWJrZAWDi2QFoAHAEeACAAWGIAWGSAQExmAEAoAEBqgEHZ3dzLXdpesgBCMABAQ&sclient=psy-ab&ved=0ahUKEwjku8XZ8ebrAhVtRN8KHVrsB8oQ4dUDCA0 | spark interview questions - Google Search
+https://mindmajix.com/apache-spark-interview-questions | The Best Apache Spark Interview Questions [UPDATED] 2020
+https://www.edureka.co/blog/interview-questions/top-apache-spark-interview-questions-2016/ | Top 55 Apache Spark Interview Questions For 2020 | Edureka
+https://www.edureka.co/blog/interview-questions/top-apache-kafka-interview-questions-for-beginners/ | Top Apache Kafka Interview Questions To Prepare In 2020 | Edureka
+https://www.dezyre.com/article/top-50-spark-interview-questions-and-answers-for-2018/208 | Top 50 Spark Interview Questions and Answers for 2018
+https://intellipaat.com/blog/interview-question/kafka-interview-questions/ | Top Kafka Interview Questions – Most Asked - Intellipaat Blog
+https://mindmajix.com/apache-kafka-interview-questions | The Best Apache Kafka Interview Questions [UPDATED] 2020
+https://www.whizlabs.com/blog/apache-kafka-interview-questions/ | Top 30 Apache Kafka Interview Questions - Whizlabs Blog
+https://github.com/MingChen0919/learning-apache-spark/blob/master/notebooks/06-machine-learning/classification/binary-classification.ipynb | learning-apache-spark/binary-classification.ipynb at master · MingChen0919/learning-apache-spark
+https://towardsdatascience.com/ultimate-pyspark-cheat-sheet-7d3938d13421 | Ultimate PySpark Cheat Sheet. A short guide to the PySpark DataFrames… | by Kovid Rathee | Towards Data Science
+https://s905060.gitbooks.io/site-reliability-engineer-handbook/content/how_does_dns_server_work.html | How does DNS server work · Site Reliability Engineer HandBook
+
+https://tushars.xyz/data/cn.html | Computer Networks Interview Questions Track | Practice | GeeksforGeeks
+
+http://tiancao.me/Leetcode-Unlocked/index.html | Introduction | Leetcode Locked
+
+https://leetcode.com/problems/count-of-smaller-numbers-after-self/ | Count of Smaller Numbers After Self - LeetCode
+https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/ | Max Sum of Rectangle No Larger Than K - LeetCode
+https://leetcode.com/problems/insert-interval/ | Insert Interval - LeetCode
+https://leetcode.com/problems/first-missing-positive/ | First Missing Positive - LeetCode
+https://leetcode.com/problems/longest-repeating-character-replacement/ | Longest Repeating Character Replacement - LeetCode
+https://leetcode.com/problems/house-robber-ii/ | House Robber II - LeetCode
+https://leetcode.com/problems/house-robber-iii/ | House Robber III - LeetCode
+https://leetcode.com/problems/pacific-atlantic-water-flow/ | Pacific Atlantic Water Flow - LeetCode
+https://leetcode.com/problems/edit-distance/ | Edit Distance - LeetCode
+https://leetcode.com/problems/decode-ways/description/ | Decode Ways - LeetCode
+https://leetcode.com/problems/smallest-string-with-swaps/#:~:text=Smallest%20String%20With%20Swaps%20%2D%20LeetCode&text=You%20are%20given%20a%20string,pairs%20any%20number%20of%20times. | Smallest String With Swaps - LeetCode
+
+https://leetcode.com/discuss/general-discussion/491522/dynamic-programming-questions-thread | Dynamic Programming Questions Thread - LeetCode Discuss
+https://leetcode.com/tag/dynamic-programming/ | Dynamic Programming - LeetCode
+https://leetcode.com/problems/jump-game-v/ | Jump Game V - LeetCode
+https://leetcode.com/problems/minimum-difficulty-of-a-job-schedule/ | Minimum Difficulty of a Job Schedule - LeetCode
+https://leetcode.com/problems/k-th-smallest-prime-fraction/ | K-th Smallest Prime Fraction - LeetCode
+https://leetcode.com/problems/maximum-profit-in-job-scheduling/ | Maximum Profit in Job Scheduling - LeetCode
+https://leetcode.com/problems/decode-ways-ii/ | Decode Ways II - LeetCode
+https://leetcode.com/problems/palindrome-partitioning-iii/ | Palindrome Partitioning III - LeetCode
+https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/ | Number of Submatrices That Sum to Target - LeetCode
+https://leetcode.com/problems/cherry-pickup-ii/ | Cherry Pickup II - LeetCode
+https://leetcode.com/list/?selectedList=590lb2tv | My Lists - LeetCode
+https://leetcode.com/list/?selectedList=590lcw8g | My Lists - LeetCode
+https://leetcode.com/list/?selectedList=590ly7qe | My Lists - LeetCode
+https://leetcode.com/problems/longest-repeating-character-replacement/ | Longest Repeating Character Replacement - LeetCode
+https://www.netflix.com/browse | Netflix
+https://leetcode.com/problems/lfu-cache/ | LFU Cache - LeetCode
+https://leetcode.com/problems/all-oone-data-structure/ | All O`one Data Structure - LeetCode
+https://leetcode.com/problems/insert-delete-getrandom-o1-duplicates-allowed/ | Insert Delete GetRandom O(1) - Duplicates allowed - LeetCode
+https://leetcode.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ | Number of Ways to Wear Different Hats to Each Other - LeetCode
+https://leetcode.com/problems/set-mismatch/ | Set Mismatch - LeetCode
+https://www.google.com/search?sxsrf=ALeKk02jdcKI4f8z0UQ71jAKqr28weyEfA%3A1599984070065&ei=xtFdX9--A4yl_Qa8lIqgCg&q=40+bit+number&oq=40+bit+number&gs_lcp=CgZwc3ktYWIQDDICCAA6BAgAEEc6BggAEBYQHlDFHViUI2D9I2gAcAJ4AIABcYgBuQSSAQM1LjGYAQCgAQGqAQdnd3Mtd2l6yAEIwAEB&sclient=psy-ab&ved=0ahUKEwjfuZGR1eXrAhWMUt8KHTyKAqQQ4dUDCA0 | 40 bit number - Google Search
+https://www.kite.com/python/answers/how-to-unzip-a-list-of-tuples-in-python | How to unzip a list of tuples in Python
+
+https://www.google.com/search?q=generating+all+k+combinations&oq=generating+all+k+combinations&aqs=chrome..69i57j0j69i60.3351j0j4&sourceid=chrome&ie=UTF-8 | generating all k combinations - Google Search
+http://mathonline.wikidot.com/generating-k-combinations-of-a-set | Generating k-Combinations of a Set - Mathonline
+https://cp-algorithms.com/geometry/intersecting_segments.html | Search for a pair of intersecting segments - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/point-location.html | Point location in O(log n) - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/lca.html | Lowest Common Ancestor - O(sqrt(N)) and O(log N) with O(N) preprocessing - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/lca_binary_lifting.html | Lowest Common Ancestor - Binary Lifting - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/lca_farachcoltonbender.html | Lowest Common Ancestor - Farach-Colton and Bender algorithm - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/rmq_linear.html | Solve RMQ by finding LCA - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/lca_tarjan.html | Lowest Common Ancestor - Tarjan's off-line algorithm - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/gray-code.html | Gray Code - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/all-submasks.html | Submask Enumeration - Competitive Programming Algorithms
+
+https://www.google.com/search?q=cofidence+interval+interview+questions&oq=cofidence+interval+interview+questions&aqs=chrome..69i57j0l7.4984j0j1&sourceid=chrome&ie=UTF-8 | cofidence interval interview questions - Google Search
+https://medium.com/@ArtisOne/data-science-interview-questions-statistics-4a731ec0be59 | Data Science Interview questions — Statistics | by Mohit kumar | Medium
+https://medium.com/@ArtisOne | Mohit kumar – Medium
+https://medium.com/@ArtisOne/data-science-interview-questions-statistics-4a731ec0be59 | Data Science Interview questions — Statistics | by Mohit kumar | Medium
+https://www.google.com/search?q=data+science+interview+questions&oq=data+science+interview+questions&aqs=chrome.0.0l6j69i60l2.3104j0j1&sourceid=chrome&ie=UTF-8 | data science interview questions - Google Search
+https://towardsdatascience.com/top-30-data-science-interview-questions-7dd9a96d3f5c | Top 30 data science interview questions | by Nitin Panwar | Towards Data Science
+https://www.edureka.co/blog/interview-questions/data-science-interview-questions/ | 100+ Data Science Interview Questions and Answers For 2020 | Edureka
+https://www.google.com/search?q=data+science+interview+questions&oq=data+science+inter&aqs=chrome.0.69i59j69i57j69i65l3j69i60l3.2527j0j1&sourceid=chrome&ie=UTF-8 | data science interview questions - Google Search
+https://github.com/alexeygrigorev/data-science-interviews | alexeygrigorev/data-science-interviews: Data science interview questions and answers
+https://www.google.com/search?q=data+science+questions+github&oq=data+science+questions+github&aqs=chrome.0.0j69i57.3534j0j1&sourceid=chrome&ie=UTF-8 | data science questions github - Google Search
+https://github.com/rbackupX/QuestionBank/blob/master/100%20Data%20Science%20Interview%20Questions%20and%20Answers.docx | QuestionBank/100 Data Science Interview Questions and Answers.docx at master · rbackupX/QuestionBank
+https://github.com/iamtodor/data-science-interview-questions-and-answers#21-what-is-the-effect-on-the-coefficients-of-logistic-regression-if-two-predictors-are-highly-correlated-what-are-the-confidence-intervals-of-the-coefficients | iamtodor/data-science-interview-questions-and-answers: Data science interview questions with answers. Not ideally (yet)
+https://github.com/ShuaiW/data-science-question-answer | ShuaiW/data-science-question-answer: A repo for data science related questions and answers
+https://github.com/zhiqiangzhongddu/Data-Science-Interview-Questions-and-Answers-General- | zhiqiangzhongddu/Data-Science-Interview-Questions-and-Answers-General-: Data Science Questions and Answers (General) for beginner
+https://github.com/khanhnamle1994/cracking-the-data-science-interview | khanhnamle1994/cracking-the-data-science-interview: A Collection of Cheatsheets, Books, Questions, and Portfolio For DS/ML Interview Prep
+
+https://cp-algorithms.com/ | Main Page - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/big-integer.html | Arbitrary-Precision Arithmetic - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/gray-code.html | Gray Code - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/balanced-ternary.html | Balanced Ternary - Competitive Programming Algorithms
+https://cp-algorithms.com/dynamic_programming/profile-dynamics.html | Dynamic Programming on Broken Profile. Problem "Parquet" - Competitive Programming Algorithms
+https://cp-algorithms.com/dynamic_programming/zero_matrix.html | Finding the largest zero submatrix - Competitive Programming Algorithms
+https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html | Divide and Conquer DP - Competitive Programming Algorithms
+https://cp-algorithms.com/string/manacher.html | Manacher's Algorithm - Finding all sub-palindromes in O(N) - Competitive Programming Algorithms
+https://cp-algorithms.com/string/main_lorentz.html | Finding repetitions - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/intersecting_segments.html | Search for a pair of intersecting segments - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/point-location.html | Point location in O(log n) - Competitive Programming Algorithms
+
+https://cp-algorithms.com/algebra/divisors.html | Number of divisors / sum of divisors - Competitive Programming Algorithms
+
+https://cp-algorithms.com/combinatorics/binomial-coefficients.html | Binomial Coefficients - Competitive Programming Algorithms
+
+https://trello.com/b/KyyFZUNg/harmans-job-applications-todo | HARMANS JOB APPLICATIONS TODO | Trello
+https://leetcode.com/problems/reverse-pairs/ | Reverse Pairs - LeetCode
+
+https://leetcode.com/problems/image-overlap/ | Image Overlap - LeetCode
+
+https://cp-algorithms.com/ | Main Page - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/euler_path.html | Finding the Eulerian path in O(M) - Competitive Programming Algorithms
+https://cp-algorithms.com/string/z-function.html | Z-function and its calculation - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/convex_hull_trick.html | Convex hull trick and Li Chao tree - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/intersecting_segments.html | Search for a pair of intersecting segments - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/point-location.html | Point location in O(log n) - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/lca.html | Lowest Common Ancestor - O(sqrt(N)) and O(log N) with O(N) preprocessing - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/lca_binary_lifting.html | Lowest Common Ancestor - Binary Lifting - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/lca_farachcoltonbender.html | Lowest Common Ancestor - Farach-Colton and Bender algorithm - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/rmq_linear.html | Solve RMQ by finding LCA - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/lca_tarjan.html | Lowest Common Ancestor - Tarjan's off-line algorithm - Competitive Programming Algorithms
+https://codeforces.com/blog/entry/54804 | Dynamic Programming + Binary Search (Light OJ 1180 – Software Company) - Codeforces
+http://lightoj.com/volume_showproblem.php?problem=1180&language=english&type=pdf | volume_showproblem.php
+https://rebornplusplus.github.io/codir/lo-1180-software-company.html | LightOJ 1180 - Software Company | Au Revoir
+https://www.google.com/search?q=dynamic+programmng+plus+dp&oq=dynamic+programmng+plus+dp&aqs=chrome..69i57j0l2.4655j0j1&sourceid=chrome&ie=UTF-8 | dynamic programmng plus dp - Google Search
+
+https://cp-algorithms.com/geometry/basic-geometry.html | Basic Geometry - Competitive Programming Algorithms
+https://cp-algorithms.com/ | Main Page - Competitive Programming Algorithms
+https://cp-algorithms.com/combinatorics/bracket_sequences.html | Balanced bracket sequences - Competitive Programming Algorithms
+https://cp-algorithms.com/combinatorics/counting_labeled_graphs.html | Counting labeled graphs - Competitive Programming Algorithms
+
+https://cp-algorithms.com/ | Main Page - Competitive Programming Algorithms
+https://cp-algorithms.com/string/z-function.html | Z-function and its calculation - Competitive Programming Algorithms
+https://cp-algorithms.com/string/suffix-array.html | Suffix Array - Competitive Programming Algorithms
+https://cp-algorithms.com/string/expression_parsing.html | Expression parsing - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/grahams-scan-convex-hull.html | Convex Hull construction using Graham's Scan - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/convex_hull_trick.html | Convex hull trick and Li Chao tree - Competitive Programming Algorithms
+https://cp-algorithms.com/num_methods/ternary_search.html | Ternary Search and its Applications - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/phi-function.html | Euler's totient function - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/intersecting_segments.html | Search for a pair of intersecting segments - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/point-location.html | Point location in O(log n) - Competitive Programming Algorithms
+https://carshen.github.io/ | caro-baka
+
+https://leetcode.com/discuss/general-discussion/786126/python-powerful-ultimate-binary-search-template-solved-many-problems | [Python] Powerful Ultimate Binary Search Template. Solved many problems - LeetCode Discuss
+
+https://leetcode.com/discuss/general-discussion/786126/python-powerful-ultimate-binary-search-template-solved-many-problems | [Python] Powerful Ultimate Binary Search Template. Solved many problems - LeetCode Discuss
+
+https://leetcode.com/ | LeetCode - The World's Leading Online Programming Learning Platform
+https://leetcode.com/ | LeetCode - The World's Leading Online Programming Learning Platform
+https://chrome.google.com/webstore/detail/session-buddy/edacconmaakjimmfgnblocblbcdcpbko?hl=en | Session Buddy - Chrome Web Store
+chrome://history/?q=leet | History
+https://leetcode.com/ | LeetCode - The World's Leading Online Programming Learning Platform
+https://leetcode.com/problems/largest-rectangle-in-histogram/ | Largest Rectangle in Histogram - LeetCode
+https://leetcode.com/problems/my-calendar-i/ | My Calendar I - LeetCode
+https://leetcode.com/problems/my-calendar-iii/ | My Calendar III - LeetCode
+https://leetcode.com/problems/my-calendar-ii/ | My Calendar II - LeetCode
+https://leetcode.com/problems/find-median-from-data-stream/solution/ | Find Median from Data Stream - LeetCode
+https://leetcode.com/problems/find-median-from-data-stream/ | Find Median from Data Stream - LeetCode
+https://leetcode.com/problems/put-boxes-into-the-warehouse-i/ | Put Boxes Into the Warehouse I - LeetCode
+https://leetcode.com/problems/smallest-integer-divisible-by-k/ | Smallest Integer Divisible by K - LeetCode
+https://leetcode.com/problems/valid-triangle-number/ | Valid Triangle Number - LeetCode
+https://leetcode.com/problems/global-and-local-inversions/discuss/242101/Count-inversions | Count inversions - LeetCode Discuss
+https://leetcode.com/problems/global-and-local-inversions/ | Global and Local Inversions - LeetCode
+
+https://cp-algorithms.com/schedules/schedule_two_machines.html | Scheduling jobs on two machines - Competitive Programming Algorithms
+https://cp-algorithms.com/schedules/schedule_one_machine.html | Scheduling jobs on one machine - Competitive Programming Algorithms
+
+https://cp-algorithms.com/algebra/gray-code.html | Gray Code - Competitive Programming Algorithms
+https://cp-algorithms.com/combinatorics/generating_combinations.html | Generating all K-combinations - Competitive Programming Algorithms
+
+https://cp-algorithms.com/others/15-puzzle.html | 15 Puzzle Game: Existence Of The Solution - Competitive Programming Algorithms
+
+https://cp-algorithms.com/graph/tree_painting.html | Paint the edges of the tree - Competitive Programming Algorithms
+
+https://cp-algorithms.com/combinatorics/bracket_sequences.html | Balanced bracket sequences - Competitive Programming Algorithms
+https://cp-algorithms.com/combinatorics/counting_labeled_graphs.html | Counting labeled graphs - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/intersecting_segments.html | Search for a pair of intersecting segments - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/point-location.html | Point location in O(log n) - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/factorial-divisors.html | Finding Power of Factorial Divisor - Competitive Programming Algorithms
+https://cp-algorithms.com/ | Main Page - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/strongly-connected-components.html | Strongly Connected Components and Condensation graph - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/cutpoints.html | Finding articulation points in a graph in O(N+M) - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/topological-sort.html | Topological Sorting - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/bridge-searching.html | Finding bridges in a graph in O(N+M) - Competitive Programming Algorithms
+
+https://cp-algorithms.com/combinatorics/burnside.html#toc-tgt-8 | Burnside's lemma / Pólya enumeration theorem - Competitive Programming Algorithms
+https://cp-algorithms.com/combinatorics/binomial-coefficients.html | Binomial Coefficients - Competitive Programming Algorithms
+
+https://cp-algorithms.com/geometry/basic-geometry.html | Basic Geometry - Competitive Programming Algorithms
+https://cp-algorithms.com/combinatorics/inclusion-exclusion.html | The Inclusion-Exclusion Principle - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/point-location.html | Point location in O(log n) - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/area-of-simple-polygon.html | Finding area of simple polygon in O(N) - Competitive Programming Algorithms
+https://cp-algorithms.com/geometry/oriented-triangle-area.html | Oriented area of a triangle - Competitive Programming Algorithms
+
+https://cp-algorithms.com/geometry/intersecting_segments.html | Search for a pair of intersecting segments - Competitive Programming Algorithms
+
+https://cp-algorithms.com/algebra/module-inverse.html | Modular Inverse - Competitive Programming Algorithms
+
+https://cp-algorithms.com/num_methods/simpson-integration.html | Simpson integration - Competitive Programming Algorithms
+
+https://cp-algorithms.com/sequences/k-th.html | K-th order statistic in O(N) - Competitive Programming Algorithms
+https://cp-algorithms.com/game_theory/games_on_graphs.html | Games on arbitrary graphs - Competitive Programming Algorithms
+https://cp-algorithms.com/ | Main Page - Competitive Programming Algorithms
+https://cp-algorithms.com/num_methods/ternary_search.html | Ternary Search and its Applications - Competitive Programming Algorithms
+
+https://cp-algorithms.com/sequences/rmq.html | Range Minimum Query - Competitive Programming Algorithms
+https://cp-algorithms.com/data_structures/sqrt-tree.html | Sqrt Tree - Competitive Programming Algorithms
+https://cp-algorithms.com/data_structures/disjoint_set_union.html#arpa | Disjoint Set Union - Competitive Programming Algorithms
+https://cp-algorithms.com/graph/rmq_linear.html | Solve RMQ by finding LCA - Competitive Programming Algorithms
+
+https://www.google.com/search?q=leetcode+min+avg+2+slice&oq=leetcode+min+avg+2+slice&aqs=chrome..69i57j33.3523j0j1&sourceid=chrome&ie=UTF-8 | leetcode min avg 2 slice - Google Search
+https://app.codesignal.com/company/login | CodeSignal
+https://www.youtube.com/ | YouTube
+https://leetcode.com/ | LeetCode - The World's Leading Online Programming Learning Platform
+
+https://www.geeksforgeeks.org/deque-in-python/ | Deque in Python - GeeksforGeeks
+
+https://leetcode.com/problems/find-median-from-data-stream/ | Find Median from Data Stream - LeetCode
+
+https://leetcode.com/problems/cheapest-flights-within-k-stops/ | Cheapest Flights Within K Stops - LeetCode
+
+https://news.ycombinator.com/item?id=24342498 | Ask HN: Who is hiring? (September 2020) | Hacker News
+
+https://www.google.com/search?sxsrf=ALeKk02vmzPFV18ZiH47_fi8UR6hMp2mbQ%3A1598938215570&ei=Z9xNX7CbItC4ggedq4XYCg&q=coursera+data+engineering+oa&oq=coursera+&gs_lcp=CgZwc3ktYWIQARgCMgQIIxAnMgQIIxAnMgQIIxAnMgIIADIKCAAQsQMQFBCHAjIFCAAQsQMyCAgAELEDEIMBMgIIADICCAAyAggAOggILhDHARCvAVDLF1jdGGCJMmgAcAB4AIABbIgBygGSAQMxLjGYAQCgAQGqAQdnd3Mtd2l6wAEB&sclient=psy-ab | coursera data engineering oa - Google Search
+https://leetcode.com/discuss/interview-question/731453/citadel-swe-intern-oa-summer-2021 | Citadel SWE Intern OA (Summer 2021) - LeetCode Discuss
+https://leetcode.com/ | LeetCode - The World's Leading Online Programming Learning Platform
+
+https://www.google.com/search?q=great+pretender&oq=great+prete&aqs=chrome.0.0j46j0l2j69i57j0l3.1767j0j4&sourceid=chrome&ie=UTF-8 | great pretender - Google Search
+https://leetcode.com/ | LeetCode - The World's Leading Online Programming Learning Platform
+https://leetcode.com/problems/first-missing-positive/ | First Missing Positive - LeetCode
+https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array/ | Find All Numbers Disappeared in an Array - LeetCode
+https://app.codility.com/programmers/lessons/17-dynamic_programming/ | 17. Dynamic programming lesson - Learn to Code - Codility
+https://trello.com/b/KyyFZUNg/harmans-job-applications-todo | HARMANS JOB APPLICATIONS TODO | Trello
+https://www.facebook.com/ | Facebook
+https://app.codility.com/c/run/training5Y2E85-KUH/ | Codility
+https://www.google.com/search?q=leetcode+array+inversion&oq=leetcode+array+inversion&aqs=chrome..69i57.3551j1j1&sourceid=chrome&ie=UTF-8 | leetcode array inversion - Google Search
+https://leetcode.com/problems/global-and-local-inversions/ | Global and Local Inversions - LeetCode
+
+https://leetcode.com/discuss/interview-question/483409/Akuna-Capital-or-OA-2020-or-Quant-dynamics-Intern | Akuna Capital | OA 2020 | Quant dynamics Intern - LeetCode Discuss
+https://www.google.com/search?q=akuna+oa&oq=akuna+oa&aqs=chrome.0.69i59l2j0j35i39j69i60l4.871j0j1&sourceid=chrome&ie=UTF-8 | akuna oa - Google Search
+https://leetcode.com/discuss/interview-question/380825/akuna-capital-oa-quant-new-grad-2020 | Akuna Capital | OA | Quant New Grad 2020 - LeetCode Discuss
+
+https://leetcode.com/problems/graph-valid-tree/ | Graph Valid Tree - LeetCode
+https://leetcode.com/ | LeetCode - The World's Leading Online Programming Learning Platform
+https://leetcode.com/problems/largest-rectangle-in-histogram/ | Largest Rectangle in Histogram - LeetCode
+https://leetcode.com/problems/sum-of-subarray-minimums/ | Sum of Subarray Minimums - LeetCode
+https://www.reddit.com/r/csMajors/comments/hvzlw2/citadel_oa_2021_intern/ | Citadel OA 2021 intern : csMajors
+https://leetcode.com/discuss/interview-question/731453/Citadel-SWE-Intern-OA-(Summer-2021) | Citadel SWE Intern OA (Summer 2021) - LeetCode Discuss
+https://leetcode.com/discuss/interview-question/728898/citadel-swe-intern-oa-summer-2021 | Citadel SWE Intern OA (Summer 2021) - LeetCode Discuss
+https://github.com/jayshah19949596/CodingInterviews | jayshah19949596/CodingInterviews: This repository contains coding interviews that I have encountered in company interviews
+https://app.codesignal.com/interview-practice/topics/number-theory | Number Theory - Interview Practice | CodeSignal
+https://app.codesignal.com/interview-practice/task/tNajEfDckCgSvrjQp | modInverse | CodeSignal
+
+https://cp-algorithms.com/algebra/factorization.html | Integer factorization - Competitive Programming Algorithms
+
+https://www.google.com/search?q=2%27s+complement+algorithms&oq=2%27s+complement+algorithms&aqs=chrome..69i57j0l4.4591j0j1&sourceid=chrome&ie=UTF-8 | 2's complement algorithms - Google Search
+https://www.geeksforgeeks.org/1s-2s-complement-binary-number/ | 1's and 2's complement of a Binary Number - GeeksforGeeks
+https://www.google.com/search?q=fast+factorization&oq=fast+factorization&aqs=chrome..69i57j0l7.2479j0j1&sourceid=chrome&ie=UTF-8 | fast factorization - Google Search
+https://cp-algorithms.com/ | Main Page - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/euclid-algorithm.html | Euclidean algorithm for computing the greatest common divisor - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/extended-euclid-algorithm.html | Extended Euclidean Algorithm - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/linear-diophantine-equation.html | Linear Diophantine Equation - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/fibonacci-numbers.html | Fibonacci Numbers - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html | Sieve of Eratosthenes - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/prime-sieve-linear.html | Sieve of Eratosthenes With Linear Time Complexity - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/phi-function.html | Euler's totient function - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/divisors.html | Number of divisors / sum of divisors - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/primality_tests.html | Primality tests - Competitive Programming Algorithms
+https://cp-algorithms.com/algebra/binary-exp.html | Binary Exponentiation - Competitive Programming Algorithms
+
+https://app.codesignal.com/interview-practice/task/tNajEfDckCgSvrjQp | modInverse | CodeSignal
+https://app.codesignal.com/interview-practice/task/yWF4MmhvtmzfKNWgt | fillingBlocks | CodeSignal
+https://app.codesignal.com/interview-practice/topics/common-techniques-basic | Common Techniques: Basic - Interview Practice | CodeSignal
+https://app.codesignal.com/interview-practice/task/mkobsYSSQo3JpvYNN | maximalSquare | CodeSignal
+https://app.codesignal.com/interview-practice/topics/heaps-stacks-queues | Heaps, Stacks, Queues - Interview Practice | CodeSignal
+https://app.codesignal.com/interview-practice | Interview Practice | CodeSignal
+https://app.codesignal.com/interview-practice/task/cX2iJi2STeWguq3e2 | countSmallerToTheRight | CodeSignal
+https://www.w3schools.com/python/ref_math_gcd.asp#:~:text=The%20math.,it%20returns%200%20as%20result. | Python math.gcd() Method
+https://www.geeksforgeeks.org/topological-sorting/ | Topological Sorting - GeeksforGeeks
+
+https://leetcode.com/discuss/general-discussion/799989/google-online-coding-challenge-new-grad-role | Google Online Coding Challenge - New Grad role. - LeetCode Discuss
+https://leetcode.com/discuss/interview-question/805619/Google-or-OA-2021-or-New-Grad-Role | Google | OA 2021 | New Grad Role - LeetCode Discuss
+
+https://leetcode.com/ | LeetCode - The World's Leading Online Programming Learning Platform
+https://leetcode.com/problems/reorganize-string/ | Reorganize String - LeetCode
+https://leetcode.com/problems/find-and-replace-in-string/ | Find And Replace in String - LeetCode
+
+https://trello.com/b/KyyFZUNg/harmans-job-applications-todo | HARMANS JOB APPLICATIONS TODO | Trello
+https://chakra-ui.com/flex | Chakra UI | Flex
+https://css-tricks.com/snippets/css/a-guide-to-flexbox/ | A Complete Guide to Flexbox | CSS-Tricks
+https://www.npmjs.com/package/detect-browser | detect-browser - npm
+https://tobiasahlin.com/blog/flexbox-break-to-new-row/ | Breaking to a new row with flexbox | Tobias Ahlin
+https://stackoverflow.com/questions/3855127/find-and-kill-process-locking-port-3000-on-mac | macos - Find (and kill) process locking port 3000 on Mac - Stack Overflow
+
+https://jobs.lever.co/atlassian/e2990a0b-0b7d-4715-93a6-fc24b6cad1ae?trid=1e0b9127-2df6-4b3d-8bc4-d81ae332a601 | Atlassian - Backend Engineer, Trello
+https://www.linkedin.com/jobs/search/?currentJobId=1998931336&geoId=105080838&keywords=software%20engineer&location=New%20York%2C%20United%20States | software engineer Jobs in New York, United States | LinkedIn
+
+https://www.reddit.com/r/csMajors/ | Students of Computer Science!
+https://github.com/Pitt-CSC/NewGrad-2021 | Pitt-CSC/NewGrad-2021: A collection of New Grad full time roles in SWE, Quant, and PM.
+https://github.com/cscareers-dev/2021-new-grad | cscareers-dev/2021-new-grad
+https://www.google.com/search?q=amazon+oa&oq=amazon+oa&aqs=chrome..69i57j0l3j69i60j69i65j69i60l2.983j0j1&sourceid=chrome&ie=UTF-8 | amazon oa - Google Search
+
+https://trello.com/b/KyyFZUNg/harmans-job-applications-todo | HARMANS JOB APPLICATIONS TODO | Trello
+https://corp.roblox.com/careers/listing/?gh_jid=1777652 | Careers - Roblox
+
+https://leetcode.com/discuss/general-discussion/799989/google-online-coding-challenge-new-grad-role | Google Online Coding Challenge - New Grad role. - LeetCode Discuss
+
+https://leetcode.com/tag/dynamic-programming/ | Dynamic Programming - LeetCode
+https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/discuss/685955/Python-or-Top-Down-or-Recursive-or-Memoization | Python | Top Down | Recursive | Memoization - LeetCode Discuss
+
+https://www.lintcode.com/problem/candy-crush/description | 858. Candy Crush - LintCode
+
+https://leetcode.com/problems/add-and-search-word-data-structure-design/ | Page Not Found - LeetCode
+
+https://leetcode.com/problems/reverse-bits/ | Reverse Bits - LeetCode
+https://leetcode.com/problems/pacific-atlantic-water-flow/ | Pacific Atlantic Water Flow - LeetCode
+https://leetcode.com/problems/word-search-ii/ | Word Search II - LeetCode
+https://leetcode.com/problems/counting-bits/ | Counting Bits - LeetCode
+https://leetcode.com/problems/sum-of-two-integers/ | Sum of Two Integers - LeetCode
+https://leetcode.com/submissions/detail/361281793/ | Sum of Two Integers - Submission Detail - LeetCode
+https://leetcode.com/problems/reverse-bits/ | Reverse Bits - LeetCode
+https://leetcode.com/problems/reverse-pairs/submissions/ | Reverse Pairs - LeetCode
+https://learntocodetogether.com/top-150-leetcodes-best-practice-problems/ | Top 150 best practice LeetCode's problems sorted by difficulties | Learn To Code Together
+https://learntocodetogether.com/top-150-leetcodes-best-practice-problems/ | Top 150 best practice LeetCode's problems sorted by difficulties | Learn To Code Together
+https://leetcode.com/problems/binary-tree-postorder-traversal/ | Binary Tree Postorder Traversal - LeetCode
+https://leetcode.com/problems/longest-valid-parentheses/ | Longest Valid Parentheses - LeetCode
+
+https://www.lintcode.com/problem/kill-process/description | 872. Kill Process - LintCode
+https://www.google.com/search?q=leetcode+premium+questions&oq=leetcode+premium+questions+&aqs=chrome..69i57j0l5.4127j0j1&sourceid=chrome&ie=UTF-8 | leetcode premium questions - Google Search
+
+https://leetcode.com/problems/number-of-islands/ | Number of Islands - LeetCode
+https://leetcode.com/discuss/interview-question/345065/google-word-extensions | Google | Word Extensions - LeetCode Discuss
+
+https://leetcode.com/problems/integer-break/ | Integer Break - LeetCode
+https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/submissions/ | Best Time to Buy and Sell Stock IV - LeetCode
+https://leetcode.com/problems/construct-k-palindrome-strings/ | Construct K Palindrome Strings - LeetCode
+https://leetcode.com/problems/wiggle-subsequence/ | Wiggle Subsequence - LeetCode
+https://leetcode.com/problems/string-without-aaa-or-bbb/ | String Without AAA or BBB - LeetCode
+
+https://leetcode.com/discuss/interview-question/775392/got-this-in-an-interview-how-to-solve | Got this in an interview, how to solve? - LeetCode Discuss
+https://leetcode.com/problems/perfect-squares/ | Perfect Squares - LeetCode
+https://leetcode.com/problems/count-primes/ | Count Primes - LeetCode
+https://codeforces.com/blog/entry/43256 | Everything About Dynamic Programming - Codeforces
+https://leetcode.com/problems/minimum-falling-path-sum-ii/ | Minimum Falling Path Sum II - LeetCode
+https://leetcode.com/problems/house-robber-ii/submissions/ | House Robber II - LeetCode
+https://leetcode.com/problems/delete-and-earn/ | Delete and Earn - LeetCode
+https://www.lintcode.com/problem/coin-path/description | LintCode
+https://leetcode.com/problems/paint-fence/ | Paint Fence - LeetCode
+https://leetcode.com/problems/non-negative-integers-without-consecutive-ones/ | Non-negative Integers without Consecutive Ones - LeetCode
+https://leetcode.com/problems/corporate-flight-bookings/ | Corporate Flight Bookings - LeetCode
+https://www.google.com/search?q=leetcode+221&oq=leetcode+221&aqs=chrome.0.0l6j69i60l2.1447j0j1&sourceid=chrome&ie=UTF-8 | leetcode 221 - Google Search
+https://leetcode.com/discuss/general-discussion/491522/dynamic-programming-questions-thread | Dynamic Programming Questions Thread - LeetCode Discuss
+https://leetcode.com/problems/search-in-a-sorted-array-of-unknown-size/ | Search in a Sorted Array of Unknown Size - LeetCode
+
+https://www.w3schools.com/jsref/jsref_concat_array.asp | JavaScript Array concat() Method
+https://nolanlawson.com/2015/09/29/indexeddb-websql-localstorage-what-blocks-the-dom/ | IndexedDB, WebSQL, LocalStorage – what blocks the DOM? | Read the Tea Leaves
+https://developers.google.com/web/ilt/pwa/working-with-indexeddb | Working with IndexedDB  |  Web  |  Google Developers
+https://developer.chrome.com/apps/app_storage | Storage APIs - Google Chrome
+https://www.google.com/search?q=chrome+extension+indexeddb+vs&oq=chrome+extension+indexeddb+vs+&aqs=chrome..69i57.8021j0j1&sourceid=chrome&ie=UTF-8 | chrome extension indexeddb vs - Google Search
+https://stackoverflow.com/questions/26196265/unlimited-file-storage-in-chrome-app | javascript - unlimited file storage in chrome app - Stack Overflow
+https://www.raymondcamden.com/2015/04/17/indexeddb-and-limits | IndexedDB and Limits
+https://github.com/jonnysmith1981/getIndexedDbSize | jonnysmith1981/getIndexedDbSize
+https://medium.com/@AndyHaskell2013/build-a-basic-web-app-with-indexeddb-8ab4f83f8bda | Build a basic web app with IndexedDB | by Andy Haskell | Medium
+https://medium.com/@xon5/replacing-localstorage-with-indexeddb-2e11a759ff0c | Replacing LocalStorage with IndexedDB | by Keagan Chisnall | Medium
+https://medium.com/@an_object_is_a/chrome-extensions-and-local-database-indexeddb-3c92e12c436 | Chrome Extensions and a Local Database(IndexedDB) | by An Object Is A | Jul, 2020 | Medium
+https://stackoverflow.com/questions/24137965/can-chrome-option-page-access-indexeddb-created-by-my-background-script | can Chrome option page access indexedDB created by my background script? - Stack Overflow
+https://www.google.com/search?sxsrf=ALeKk00812b1KV6JcoZe6OeJqTAThWTyJA%3A1597556135283&ei=p8U4X7vyEOisytMPp5CHoA4&q=indexeddb+content+page&oq=indexeddb+content+page&gs_lcp=CgZwc3ktYWIQAzIFCCEQoAEyBQghEKABMgUIIRCgAToHCCMQsAMQJzoHCAAQRxCwAzoCCAA6BwgAEBQQhwI6BggAEBYQHjoHCCEQChCgAVDpR1j0UGCLUWgBcAB4AIABoAGIAdcIkgEDNy40mAEAoAEBqgEHZ3dzLXdpesABAQ&sclient=psy-ab&ved=0ahUKEwj74c6vgJ_rAhVolnIEHSfIAeQQ4dUDCAw&uact=5 | indexeddb content page - Google Search
+https://www.codemag.com/Article/1411041/Introduction-to-IndexedDB-The-In-Browser-Database | Introduction to IndexedDB: The In-Browser Database
+https://monsido.com/difference-title-tags-h1-tags | Difference between Title Tags and H1 Tags
+https://stackoverflow.com/questions/455338/how-do-i-check-if-an-object-has-a-key-in-javascript | How do I check if an object has a key in JavaScript? - Stack Overflow
+https://stackoverflow.com/questions/2986990/is-there-a-way-to-get-all-text-from-the-rendered-page-with-js | javascript - Is there a way to get all text from the rendered page with JS? - Stack Overflow
+https://stackoverflow.com/questions/3216013/get-the-last-item-in-an-array | javascript - Get the last item in an array - Stack Overflow
+https://grammar.yourdictionary.com/punctuation/what/fourteen-punctuation-marks.html | What Are the 14 Punctuation Marks in English Grammar?
+https://wikidiff.com/prepend/append#:~:text=is%20that%20prepend%20is%20(computing,appended%20to%20a%20record%3B%20the | Prepend vs Append - What's the difference? | WikiDiff
+
+https://www.youtube.com/watch?v=3nQxCoEmD9A | (4) Life is Strange - Best of - Original Soundtrack - Background Music - YouTube
+http://localhost:3000/ | React App
+https://evergreen.segment.com/get-started/introduction | Introduction · Evergreen
+https://www.google.com/search?q=chakra+ui+vs+blueprint&oq=chakra+ui+vs+blueprint&aqs=chrome..69i57j33l2.5903j0j1&sourceid=chrome&ie=UTF-8 | chakra ui vs blueprint - Google Search
+https://blueprintjs.com/docs/ | Blueprint – Documentation
+chrome://extensions/?id=hgmhmanijnjhaffoampdlllchpolkdnj | Extensions - Hunter: Find email addresses in seconds
+https://chrome.google.com/webstore/category/extensions | Chrome Web Store - Extensions
+https://www.google.com/search?q=chrome+size&oq=chrome+size&aqs=chrome..69i57j69i60j69i65l2j69i60l4.2896j0j1&sourceid=chrome&ie=UTF-8 | chrome size - Google Search
+https://www.google.com/search?q=define+HMR+cra&oq=define+HMR+cra&aqs=chrome..69i57j0l2.1791j1j1&sourceid=chrome&ie=UTF-8 | define HMR cra - Google Search
+chrome://extensions/ | Extensions
+https://www.google.com/search?q=react+static+generator+from+build&oq=react+static+generator+from+build&aqs=chrome..69i57j33l7.10607j0j1&sourceid=chrome&ie=UTF-8 | react static generator from build - Google Search
+
+https://www.google.com/search?q=next+js+static+github&oq=next+js+static+github&aqs=chrome.0.69i59j69i57j69i60l2.6033j0j9&sourceid=chrome&ie=UTF-8 | next js static github - Google Search
+https://nextjs.org/learn/basics/assets-metadata-css/css-styling | CSS Styling - Assets, Metadata, and CSS | Learn Next.js
+https://rebassjs.org/recipes/flexbox-grid | Flexbox Grid | Rebass
+https://www.google.com/search?q=react+suite&oq=react+suite+&aqs=chrome.0.0l8.1224j0j4&sourceid=chrome&ie=UTF-8 | react suite - Google Search
+https://next.chakra-ui.com/docs/components/list | List - Chakra UI
+http://localhost:3000/ | Next.js Sample Website
+https://www.grammarly.com/ | Grammarly: Free Online Writing Assistant
+https://www.crazyegg.com/blog/landing-page-essentials/ | How to Create a High Converting Landing Page (12 Essential Elements)
+https://www.teamblind.com/ | Anonymous Professional Network - Blind
+https://www.youtube.com/watch?v=OB12BslMI3Q | Tyler The Creator - Scum Fuck Flower Boy [Full Album] - YouTube
+https://info.varonis.com/en/demo | Demo the Varonis Data Security Platform
+https://www.forbes.com/sites/denispinsky/2017/04/10/domain/#1aaa3414b4f3 | 8 Smart Tips For Choosing A Winning Domain Name
+https://www.google.com/search?q=can+u+create+a+email+with+your+domain&oq=can+u+create+a+email+with+your+domain+&aqs=chrome..69i57j69i64.9712j0j1&sourceid=chrome&ie=UTF-8 | can u create a email with your domain - Google Search
+https://play.google.com/store/apps/details?id=com.wGodaddy_8230915 | Not Found
+https://hostadvice.com/tools/web-hosting-comparison/godaddy-vs-namecheap/ | GoDaddy vs. Namecheap 2020 - There's a clear winner
+
+https://chakra-ui.com/box | Chakra UI | Box
+https://chakra-ui.com/flex | Chakra UI | Flex
+https://chakra-ui.com/heading | Chakra UI | Chakra UI | Design System built with React
+https://chakra-ui.com/avatar | Chakra UI | Avatars
+https://chakra-ui.com/closebutton | Chakra UI | CloseButton
+http://localhost:3000/
+https://debuild.co/ | Debuild: Build web apps lightning fast.
+https://www.google.com/search?q=react+landing+page+animations&oq=react+landing+page+animations&aqs=chrome..69i57j0.2759j0j1&sourceid=chrome&ie=UTF-8 | react landing page animations - Google Search
+https://popmotion.io/pose/examples/event-drag/ | Events: Drag | Pose
+https://www.google.com/search?ei=bP8tX_yqFqWqytMPwbCCKA&q=react+animation&oq=react+animation&gs_lcp=CgZwc3ktYWIQAzIFCAAQkQIyAggAMgIIADICCAAyAggAMgIIADICCAAyAggAMgIIADICCAA6BAgAEEM6CAguELEDEIMBOgcIABCxAxBDOgUIABCxA1DQIlieLWCXLmgAcAB4AYABowGIAZ8KkgEEMTIuM5gBAKABAaoBB2d3cy13aXrAAQE&sclient=psy-ab&ved=0ahUKEwj8kM31uYrrAhUllXIEHUGYAAUQ4dUDCAw&uact=5 | react animation - Google Search
+https://popmotion.io/pose/learn/ui-events/ | UI events and interactions | Pose
+https://www.react-spring.io/docs/hooks/basics | react-spring
+https://codesandbox.io/embed/8zx4ppk01l | 8zx4ppk01l - CodeSandbox
+https://www.freshtilledsoil.com/whats-the-most-developer-friendly-react-animation-library/ | What's the most developer-friendly React animation library?
+https://www.framer.com/pricing/ | Pricing | Framer
+https://www.framer.com/api/motion/ | Framer Motion API
+https://www.namecheap.com/cart/remove.aspx?itemid=339210131&i=i339210131_0&removedType=14 | Namecheap.com
+https://ca.godaddy.com/domainsearch/find?checkAvail=1&domainToCheck=aifind.org | GoDaddy Domain Name Search
+https://www.google.com/search?ei=SAMuX9v4K9eKytMPnK-1kAM&q=smart+find&oq=smart+find&gs_lcp=CgZwc3ktYWIQAzIECAAQCjIECAAQCjICCAAyAggAMgQIABAKMgQIABAKMgIIADICCAAyBAgAEAoyBAgAEAo6BQgAEJECOgsILhCxAxDHARCjAjoOCC4QsQMQgwEQxwEQowI6CAgAELEDEIMBOgUIABCxAzoICAAQsQMQkQI6DgguELEDEMcBEK8BEJECOgQIABBDOgQILhBDOggILhCxAxCDAToKCAAQsQMQgwEQCjoHCAAQsQMQQzoRCC4QsQMQgwEQxwEQrwEQkwI6CAguEMcBEK8BUO-WAVi1nwFgvqABaABwAXgAgAF0iAHOB5IBAzYuNJgBAKABAaoBB2d3cy13aXrAAQE&sclient=psy-ab&ved=0ahUKEwjbvPHMvYrrAhVXhXIEHZxXDTIQ4dUDCAw&uact=5 | smart find - Google Search
+https://www.google.com/search?q=xyz+vs+.com&oq=xyz+vs+.com&aqs=chrome..69i57j0l2.2423j0j1&sourceid=chrome&ie=UTF-8 | xyz vs .com - Google Search
+https://www.thesaurus.com/browse/ai | Ai Synonyms, Ai Antonyms | Thesaurus.com
+https://www.google.com/search?q=.org+vs+.com&oq=.org+vs+.com&aqs=chrome.0.69i59j0l6j69i60.1951j0j9&sourceid=chrome&ie=UTF-8 | .org vs .com - Google Search
+https://www.google.com/search?q=.us+domain&oq=.us+&aqs=chrome.1.69i57j0l2j69i65l2j69i60l3.2023j0j1&sourceid=chrome&ie=UTF-8 | .us domain - Google Search
+https://www.google.com/ | Google
+
+https://www.youtube.com/watch?v=umplaBlyv1g | Odd Future - Radical Full Album with Tracklist on Screen - YouTube
+https://www.youtube.com/watch?v=u2MWpfpX12k | Domo Genesis - No Idols (Full Album) - YouTube
+
+https://www.google.com/search?q=launching+a+startup+landing+page&oq=launching+a+startup+landing+page&aqs=chrome..69i57j33.16383j1j1&sourceid=chrome&ie=UTF-8 | launching a startup landing page - Google Search
+https://medium.com/launchpeer/21-things-your-startup-landing-page-needs-to-optimize-conversions-5c7395701b38 | 21 Things Your Startup Landing Page Needs to Optimize Conversions | by Launchpeer | Launchpeer | Medium
+https://www.google.com/search?q=landing+page+on+next+js+or+gatsby&oq=landing+page+on+next+js+or+gatsby&aqs=chrome..69i57.7151j0j1&sourceid=chrome&ie=UTF-8 | landing page on next js or gatsby - Google Search
+https://medium.com/better-programming/why-i-chose-gatsby-over-next-js-115eb186ef65 | Why I Chose Gatsby Over Next.js. Server-side rendering vs. static site… | by Nicholas Martin | Better Programming | Medium
+https://www.youtube.com/watch?v=3Yf9Lzt8i3U | (1) Playboi Carti - Preach (prod. @rackidiorr) - YouTube
+https://www.reddit.com/r/wallstreetbets/ | wallstreetbets
+https://www.reddit.com/r/gatsbyjs/comments/f7u482/my_new_startup_website_proudly_made_in_gatsby/ | My new startup website, proudly made in Gatsby. Particularly happy about performance and responsiveness : gatsbyjs
+https://www.google.com/search?q=gatsby+landing+page&oq=gatsby+landing+page&aqs=chrome.0.69i59j0j46j0l2j69i60l3.2143j0j9&sourceid=chrome&ie=UTF-8 | gatsby landing page - Google Search
+https://github.com/carver/sneakemail-chrome-extension/blob/master/login-popup.html | sneakemail-chrome-extension/login-popup.html at master · carver/sneakemail-chrome-extension
+https://developer.chrome.com/extensions/getstarted | Getting Started Tutorial - Google Chrome
+https://www.quora.com/Is-there-any-Chrome-extension-to-stay-signed-into-websites | Is there any Chrome extension to stay signed into websites? - Quora
+https://support.google.com/chromebook/thread/11046385?hl=en | How can I stay logged into apps and websites on restart? - Chromebook Community
+
+https://www.youtube.com/watch?v=sIROWXH8xWU&list=PLX68ZEYlh74vDJY4XR775HHifYT7IeXsj&index=17 | End - YouTube
+
+https://www.producthunt.com/posts/moonshot-2 | Moonshot - A notebook that helps you plan and execute your ideas | Product Hunt
+https://marketingexamples.com/ | Marketing Examples
+https://blog.logrocket.com/next-js-vs-gatsbyjs-a-developers-perspective/ | Next.js vs. GatsbyJS: A developer's perspective - LogRocket Blog
+
+https://www.linkedin.com/jobs/view/1944118440/ | Machine Learning Data Scientist - Recommendation, Personalization | Afterpay | LinkedIn
+
+https://leetcode.com/problems/house-robber-ii/ | House Robber II - LeetCode
+
+https://www.geeksforgeeks.org/cutting-a-rod-dp-13/ | Cutting a Rod | DP-13 - GeeksforGeeks
+
+https://www.geeksforgeeks.org/partition-problem-dp-18/ | Partition problem | DP-18 - GeeksforGeeks
+https://www.geeksforgeeks.org/dice-throw-dp-30/ | Dice Throw | DP-30 - GeeksforGeeks
+https://www.geeksforgeeks.org/maximum-product-cutting-dp-36/ | Maximum Product Cutting | DP-36 - GeeksforGeeks
+https://www.geeksforgeeks.org/matrix-chain-multiplication-dp-8/ | Matrix Chain Multiplication | DP-8 - GeeksforGeeks
+https://www.geeksforgeeks.org/optimal-strategy-for-a-game-dp-31/ | Optimal Strategy for a Game | DP-31 - GeeksforGeeks
+https://www.geeksforgeeks.org/split-the-given-string-into-primes-digit-dp/ | Split the given string into Primes : Digit DP - GeeksforGeeks
+
+https://leetcode.com/discuss/interview-question/747879/de-shaw-online-assessment-questions-2020 | DE SHAW Online assessment questions 2020 - LeetCode Discuss
+
+https://leetcode.com/ | LeetCode - The World's Leading Online Programming Learning Platform
+https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/ | Minimum Insertion Steps to Make a String Palindrome - LeetCode
+https://leetcode.com/problems/maximum-product-of-splitted-binary-tree/ | Maximum Product of Splitted Binary Tree - LeetCode
+https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/ | Best Time to Buy and Sell Stock with Transaction Fee - LeetCode
+https://leetcode.com/problems/cherry-pickup/ | Cherry Pickup - LeetCode
+https://leetcode.com/problems/first-missing-positive/ | First Missing Positive - LeetCode
+https://leetcode.com/problems/3sum-closest/ | 3Sum Closest - LeetCode
+https://leetcode.com/problems/find-peak-element/ | Find Peak Element - LeetCode
+https://leetcode.com/list/xyehq5j6/ | Greedy Related Problems - a list by Mefarnis - LeetCode
+
+https://stevefrank.org/reprints-pdf/16Entropy.pdf | Common Probability Patterns Arise from Simple Invariances
+https://longintuition.com/2020/07/20/max-entropy-intuition.html | A Maximum Entropy Intuition for Fundamental Statistical Distributions | long intuition
+https://arxiv.org/abs/1908.07563 | [1908.07563] Reactive Probabilistic Programming
+https://rakhman.info/blog/solving-sudoku-with-graph-theory/ | Solving Sudoku with Graph Theory - Kirill Rakhman
+https://github.com/ | GitHub
+
+https://leetcode.com/problems/search-in-rotated-sorted-array-ii/ | Search in Rotated Sorted Array II - LeetCode
+https://www.lintcode.com/problem/boolean-parenthesization/my-submissions | 725. Boolean Parenthesization - LintCode
+https://www.teamblind.com/ | Anonymous Professional Network - Blind
+https://leetcode.com/problems/interleaving-string/ | Interleaving String - LeetCode
+https://medium.com/@jim.morris.shen/min-stack-or-max-stack-a5be2165cad8 | Min Stack or Max Stack. Four cases | by Jimmy Shen | Medium
+
+https://www.lintcode.com/problem/max-stack/description | 859. Max Stack - LintCode
+
+https://leetcode.com/problems/longest-repeating-character-replacement/submissions/ | Longest Repeating Character Replacement - LeetCode
+
+https://leetcode.com/problems/random-pick-index/ | Random Pick Index - LeetCode
+https://leetcode.com/problems/maximum-sum-of-3-non-overlapping-subarrays/ | Maximum Sum of 3 Non-Overlapping Subarrays - LeetCode
+https://leetcode.com/problems/burst-balloons/discuss/?currentPage=1&orderBy=most_votes&query= | Burst Balloons - LeetCode Discuss
+https://leetcode.com/problems/verify-preorder-serialization-of-a-binary-tree/ | Verify Preorder Serialization of a Binary Tree - LeetCode
+https://leetcode.com/problems/range-sum-query-2d-immutable/ | Range Sum Query 2D - Immutable - LeetCode
+https://leetcode.com/problems/range-sum-query-mutable/ | Range Sum Query - Mutable - LeetCode
+https://jeremyaguilon.me/blog/ranking_interview_questions_by_cram_score | Ranking Interview Questions by Cram Score | Jeremy Aguilon
+https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/ | Number of Submatrices That Sum to Target - LeetCode
+https://leetcode.com/problems/median-of-two-sorted-arrays/ | Median of Two Sorted Arrays - LeetCode
+
+https://leetcode.com/problems/max-points-on-a-line/solution/ | Max Points on a Line - LeetCode
+
+https://leetcode.com/problems/exclusive-time-of-functions/ | Exclusive Time of Functions - LeetCode
+
+https://leetcode.com/problems/erect-the-fence/ | Erect the Fence - LeetCode
+https://leetcode.com/problems/surface-area-of-3d-shapes/ | Surface Area of 3D Shapes - LeetCode
+https://leetcode.com/problems/minimum-area-rectangle-ii/ | Minimum Area Rectangle II - LeetCode
+https://leetcode.com/problems/check-if-it-is-a-straight-line/ | Check If It Is a Straight Line - LeetCode
+https://leetcode.com/problems/minimum-time-visiting-all-points/ | Minimum Time Visiting All Points - LeetCode
+https://leetcode.com/problems/circle-and-rectangle-overlapping/ | Circle and Rectangle Overlapping - LeetCode
+https://leetcode.com/problems/maximum-number-of-darts-inside-of-a-circular-dartboard/ | Maximum Number of Darts Inside of a Circular Dartboard - LeetCode
+https://leetcode.com/problems/best-position-for-a-service-centre/ | Best Position for a Service Centre - LeetCode
+
+https://leetcode.com/problems/parsing-a-boolean-expression/ | Parsing A Boolean Expression - LeetCode
+https://leetcode.com/problems/basic-calculator/ | Basic Calculator - LeetCode
+https://leetcode.com/problems/my-calendar-iii/discuss/113673/Python-Simple-Solution(beat-90) | Python Simple Solution(beat 90%) - LeetCode Discuss
+https://www.lintcode.com/problem/expression-tree-build/description | 367. Expression Tree Build - LintCode
+https://www.lintcode.com/problem/basic-calculator-iii/description | 849. Basic Calculator III - LintCode
+https://leetcode.com/problems/sliding-window-median/ | Sliding Window Median - LeetCode
+https://leetcode.com/problems/remove-invalid-parentheses/ | Remove Invalid Parentheses - LeetCode
+
+https://leetcode.com/problems/elimination-game/ | Elimination Game - LeetCode
+
+https://leetcode.com/problems/powx-n/discuss/?currentPage=1&orderBy=hot&query= | Pow(x, n) - LeetCode Discuss
+
+https://leetcode.com/problems/next-permutation/solution/ | Next Permutation - LeetCode
+
+https://leetcode.com/problems/number-of-ways-to-stay-in-the-same-place-after-some-steps/ | Number of Ways to Stay in the Same Place After Some Steps - LeetCode
+https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/submissions/ | Best Time to Buy and Sell Stock III - LeetCode
+https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/ | Best Time to Buy and Sell Stock IV - LeetCode
+https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/discuss/685955/Python-or-Top-Down-or-Recursive-or-Memoization | Python | Top Down | Recursive | Memoization - LeetCode Discuss
+https://leetcode.com/problemset/all/?search=calculator | Problems - LeetCode
+
+https://leetcode.com/problems/3sum/ | 3Sum - LeetCode
+
+https://leetcode.com/ | LeetCode - The World's Leading Online Programming Learning Platform
+https://leetcode.com/submissions/detail/367258745/ | Valid Triangle Number - Submission Detail - LeetCode
+
+https://leetcode.com/problems/valid-triangle-number/ | Valid Triangle Number - LeetCode
+
+https://www.lintcode.com/en/old/problem/paint-house-ii/ | Paint House II
+https://leetcode.com/problems/minimum-cost-to-hire-k-workers/ | Minimum Cost to Hire K Workers - LeetCode
+https://leetcode.com/problems/global-and-local-inversions/ | Global and Local Inversions - LeetCode
+https://stackoverflow.com/questions/19989606/builtin-function-or-method-object-is-not-subscriptable | python - 'builtin_function_or_method' object is not subscriptable - Stack Overflow
+
+https://stackoverflow.com/questions/49210801/python3-pass-lists-to-function-with-functools-lru-cache | python - Python3 pass lists to function with functools.lru_cache - Stack Overflow
+https://stackoverflow.com/questions/10016352/convert-numpy-array-to-tuple | python - Convert numpy array to tuple - Stack Overflow
+https://www.tutorialspoint.com/How-to-split-Python-tuples-into-sub-tuples#:~:text=In%20order%20to%20split%20it,tuples%20each%20with%203%20numbers. | How to split Python tuples into sub-tuples?
+
+https://leetcode.com/problems/search-in-rotated-sorted-array/discuss/14435/Clever-idea-making-it-simple | Clever idea making it simple - LeetCode Discuss
+https://leetcode.com/problems/longest-repeating-character-replacement/ | Longest Repeating Character Replacement - LeetCode
+
+https://www.youtube.com/watch?v=VC-dIxCFooQ&list=PLCA98B19C0B68052E&index=9 | (1) Dear Agony - Breaking Benjamin - YouTube
+https://leetcode.com/problems/set-matrix-zeroes/discuss/26026/O(1)-space-solution-in-Python | O(1) space solution in Python - LeetCode Discuss
+https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/submissions/ | Best Time to Buy and Sell Stock III - LeetCode
+https://leetcode.com/problems/3sum/ | 3Sum - LeetCode
+https://leetcode.com/problems/3sum-closest/ | 3Sum Closest - LeetCode
+https://stackoverflow.com/questions/37133547/time-complexity-of-string-concatenation-in-python | Time complexity of string concatenation in Python - Stack Overflow
+https://www.google.com/search?sxsrf=ALeKk01vtpznFuLVpnkABRqw3TOnXSlsHw%3A1594079860150&ei=dLoDX7jcCKyIytMPneOJkAE&q=python+string+concatenation+runtime+vs+join&oq=python+string+concatenation+runtime+vs+join&gs_lcp=CgZwc3ktYWIQAzoECAAQRzoCCAA6BggAEBYQHjoECCMQJzoFCAAQkQI6BQgAELEDOgQIABAKOggIIRAWEB0QHlCdJFijTmCrT2gAcAF4AoABoQGIAfIVkgEEMjIuOZgBAKABAaoBB2d3cy13aXo&sclient=psy-ab&ved=0ahUKEwi45rqe6rnqAhUshHIEHZ1xAhIQ4dUDCAw&uact=5 | python string concatenation runtime vs join - Google Search
+https://www.google.com/search?q=string+%2B+operator+speed&oq=string+%2B+operator+speed&aqs=chrome..69i57j33.3703j0j1&sourceid=chrome&ie=UTF-8 | string + operator speed - Google Search
+
+https://www.facebook.com/ | Facebook

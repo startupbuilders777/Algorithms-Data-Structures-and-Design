@@ -71,6 +71,322 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+-62) RECURSION AND ENUMERATION WITH FROZENSET AND DP:
+
+    You have a collection of coins, and you know the values of the 
+    coins and the quantity of each type of coin in it. You want to 
+    know how many distinct sums you can make from non-empty 
+    groupings of these coins.
+
+    Example
+
+    For coins = [10, 50, 100] and quantity = [1, 2, 1], the output should be
+    possibleSums(coins, quantity) = 9.
+
+    # RECURSIVE SOLUTION WITH DP. 
+    def possibleSums(coins, quantity):
+        @lru_cache(None)
+        def recursive(i):
+            if i == len(coins):
+                return frozenset([0])
+                
+            coinType = coins[i]
+            tot = quantity[i]
+            amts = recursive(i+1)
+            res = set()
+            for amt in amts:
+                for k in range(tot+1):
+                    res.add(amt + k*coinType)
+            return frozenset(res)
+            
+        s = recursive(0)
+        return len(s) - 1
+
+
+-61) Cycle detection in directed graph using BFS, and topological sort 
+     with indegree count. 
+
+    from collections import deque
+    def hasDeadlock(connections):
+        '''
+        If j is in the list connections[i], then there is a directed edge from process i to process j.
+        For connections = [[1], [2], [3, 4], [4], [0]], the output should be
+        hasDeadlock(connections) = true.
+        '''
+        N = len(connections)
+        
+        reverse_g = [[] for i in range(N)]
+        for parent, kids in enumerate(connections):
+            for k in kids:
+                reverse_g[k].append(parent)
+                
+        indegree = {}
+        q = deque([])
+        
+        for node, kids in enumerate(reverse_g):
+            indegree[node] = len(kids)
+            if indegree[node] == 0:
+                q.append(node)
+        
+        # no root nodes then cycle.
+        if len(q) == 0:
+            return True
+        
+        visited = set()
+        
+        while q:
+            print("process", q)
+            
+            node = q.popleft()
+            kids = connections[node]
+            
+            visited.add(node)
+            
+            for k in kids:
+                indegree[k] -= 1
+                
+                print("SAW KID with indg", k, indegree[k])
+                if(indegree[k] == 0):
+                    q.append(k)
+                #elif(indegree[k] <  0):
+                    # this elif was wrong because indegree will never fall below 0.
+                    # it just wont ever be added to queue if its part of cycle. 
+                    # Cycle because the indegrees dropped below 0!
+                    # return True
+
+        if len(visited) == N: # No cycle
+            return False
+        else:
+            return True # yes cycle
+
+
+
+
+
+-60) You cannot use union find to detect cycles in a directed graph. 
+     only undirected. 
+     You cannot use bfs and bipartition coloring to detect even cycles in
+     directed cycle. Only odd cycles can be found. 
+     You can use BFS to do topo sort with indegree 0, then indegree 1 etc. 
+
+     Use bellman ford for negative cycle finding. 
+
+-59) BUCKET SORT K most frequent elements:
+    Bucket Sort Algorithm: Steps on how it works:
+    Create an empty array.
+    Loop through the original array and put each object in a “bucket”.
+    Sort each of the non-empty buckets
+    Check the buckets in order and then put all objects back into the original array.
+
+    function bucketSort(array, k) is
+        buckets ← new array of k empty lists
+        M ← the maximum key value in the array
+        for i = 1 to length(array) do
+            insert array[i] into buckets[floor(k × array[i] / M)]
+        for i = 1 to k do
+            nextSort(buckets[i])
+        return the concatenation of buckets[1], ...., buckets[k]
+
+    Here array is the array to be sorted and k is the number of buckets to use. 
+    The maximum key value can be computed in linear time by looking up all the keys 
+    once. The floor function must be used to convert a floating number to an integer. 
+    The function nextSort is a sorting function used to sort each bucket. 
+    Conventionally, insertion sort would be used, but other algorithms 
+    could be used as well. Using bucketSort itself as nextSort 
+    produces a relative of radix sort; in particular, the case 
+    n = 2 corresponds to quicksort (although potentially with poor pivot choices).
+
+
+    Given a non-empty array of integers, return the k most frequent elements.
+
+    Example 1:
+
+    Input: nums = [1,1,1,2,2,3], k = 2
+    Output: [1,2]
+
+    Bucket sort is O(N):
+
+    def topKFrequent(self, nums, k):
+        bucket = [[] for _ in range(len(nums) + 1)]
+        Count = Counter(nums).items()  
+        for num, freq in Count: bucket[freq].append(num) 
+        flat_list = [item for sublist in bucket for item in sublist]
+        return flat_list[::-1][:k]
+
+    
+
+
+-58) HOARES PARTITION, QUICK SELECT K most frequent elements: 
+     Approach 2: Quickselect
+     Hoare's selection algorithm
+ 
+     Quickselect is a textbook algorthm typically used to solve the problems 
+     "find kth something": kth smallest, kth largest, kth most 
+     frequent, kth less frequent, etc. Like quicksort,  
+     quickselect was developed by Tony Hoare, and also known as Hoare's selection algorithm.
+ 
+     It has O(N) average time complexity and widely used in practice. It worth to note that its worth 
+     case time complexity is O(N^2), although the probability 
+     of this worst-case is negligible.
+ 
+     The approach is the same as for quicksort.
+ 
+     One chooses a pivot and defines its position in a sorted array in a 
+     linear time using so-called partition algorithm.
+ 
+     As an output, we have an array where the pivot is on its perfect position 
+     in the ascending sorted array, sorted by the frequency. All elements 
+     on the left of the pivot are less frequent  than the pivot, and 
+     all elements on the right are more frequent or have the same frequency.
+ 
+     Hence the array is now split into two parts. If by chance our pivot element 
+     took N - kth final position, then k elements on the right are 
+     these top k frequent we're looking for. If  not, we can choose 
+     one more pivot and place it in its perfect position.
+ 
+     If that were a quicksort algorithm, one would have to process both parts of the array. 
+     Quickselect just deal with one side -> O(N)
+ 
+     Algorithm
+ 
+     The algorithm is quite straightforward :
+ 
+     Build a hash map element -> its frequency and convert its keys into the 
+     array unique of unique elements. Note that elements are unique, but 
+     their frequencies are not. That means we need  
+     a partition algorithm that works fine with duplicates.
+ 
+     Work with unique array. Use a partition scheme (please check the next section) 
+     to place the pivot into its perfect position pivot_index in the sorted array, 
+     move less frequent elements  to the left of pivot, 
+     and more frequent or of the same frequency - to the right.
+ 
+     Compare pivot_index and N - k.
+ 
+     If pivot_index == N - k, the pivot is N - kth most frequent element, 
+     and all elements on the right are more frequent or of the 
+     same frequency. Return these top kk frequent elements.
+ 
+     Otherwise, choose the side of the array to proceed recursively.
+ 
+     Hoare's Partition vs Lomuto's Partition
+ 
+     There is a zoo of partition algorithms. 
+     The most simple one is Lomuto's Partition Scheme.
+     The drawback of Lomuto's partition is 
+     it fails with duplicates.
+ 
+     Here we work with an array of unique elements, but they are 
+     compared by frequencies, which are not unique. 
+     That's why we choose Hoare's Partition here.
+ 
+     Hoare's partition is more efficient than Lomuto's partition
+     because it does three times fewer swaps on average, and 
+     creates efficient partitions even when all values are equal.
+ 
+     Here is how it works:
+     Move pivot at the end of the array using swap.
+ 
+     Set the pointer at the beginning of the array store_index = left.
+ 
+     Iterate over the array and move all less frequent elements to the 
+     left swap(store_index, i). Move store_index 
+     one step to the right after each swap.
+ 
+     Move the pivot to its final place, and return this index.
+
+    from collections import Counter
+    class Solution:
+        def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+            count = Counter(nums)
+            unique = list(count.keys())
+            
+            def partition(left, right, pivot_index) -> int:
+                pivot_frequency = count[unique[pivot_index]]
+                # 1. move pivot to end
+                unique[pivot_index], unique[right] = unique[right], unique[pivot_index]  
+                
+                # 2. move all less frequent elements to the left
+                store_index = left
+                for i in range(left, right):
+                    if count[unique[i]] < pivot_frequency:
+                        unique[store_index], unique[i] = unique[i], unique[store_index]
+                        store_index += 1
+
+                # 3. move pivot to its final place
+                unique[right], unique[store_index] = unique[store_index], unique[right]  
+                
+                return store_index
+            
+            def quickselect(left, right, k_smallest) -> None:
+                """
+                Sort a list within left..right till kth less frequent element
+                takes its place. 
+                """
+                # base case: the list contains only one element
+                if left == right: 
+                    return
+                
+                # select a random pivot_index
+                pivot_index = random.randint(left, right)     
+                                
+                # find the pivot position in a sorted list   
+                pivot_index = partition(left, right, pivot_index)
+                
+                # if the pivot is in its final sorted position
+                if k_smallest == pivot_index:
+                    return 
+                # go left
+                elif k_smallest < pivot_index:
+                    quickselect(left, pivot_index - 1, k_smallest)
+                # go right
+                else:
+                    quickselect(pivot_index + 1, right, k_smallest)
+            
+            n = len(unique) 
+            # kth top frequent element is (n - k)th less frequent.
+            # Do a partial sort: from less frequent to the most frequent, till
+            # (n - k)th less frequent element takes its place (n - k) in a sorted array. 
+            # All element on the left are less frequent.
+            # All the elements on the right are more frequent.  
+            quickselect(0, n - 1, n - k)
+            # Return top k frequent elements
+            return unique[n - k:]
+
+
+
+
+
+
+
+
+-57) Counting all subarrays trick with prefixes:
+     
+     1.   Subarray Sums Divisible by K
+    
+    Given an array A of integers, return the number of 
+    (contiguous, non-empty) subarrays that have a sum divisible by K.
+
+    
+
+    Example 1:
+
+    Input: A = [4,5,0,-2,-3,1], K = 5
+    Output: 7
+    Explanation: There are 7 subarrays with a sum divisible by K = 5:
+    [4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]
+
+
+    class Solution(object):
+        def subarraysDivByK(self, A, K):
+            P = [0]
+            for x in A:
+                P.append((P[-1] + x) % K)
+
+            count = collections.Counter(P)
+            return sum(v*(v-1)/2 for v in count.values())
+
+
 
 -56) Do N CHOOSE K. Generate all K combinations:
      Recursively:
@@ -135,7 +451,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 -53) Recursive Multiply:
     Write a recursie function to multiply 2 positive integers without using the 
-    * operator. Only addition, subtraction and bitshifting but minimize ops. 
+    * operator. Only addition, subtraction and bit shifting but minimize ops. 
 
     Answer:
 
@@ -3390,7 +3706,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         where w is an ancestor of u and there is a back edge from 
         some descendant of u to w.
 
-
 2.39) Articulation points and Biconnected graphs:
     In graph theory, a biconnected component (sometimes known as a 2-connected component) 
     is a maximal biconnected subgraph. Any connected graph decomposes into a 
@@ -4525,7 +4840,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         Search in a Sorted Infinite Array (medium)
 
 27) Top K elements
-        -> CAN BE SOLVED IN O(N) WITH BUCKET SORT, AND QUICK SELECT. CHECK OUT
+        -> CAN BE SOLVED IN O(N) WITH BUCKET SORT, AND QUICK SELECT. CHECK IT OUT
         -> TOP K MOST FREQUENT ELEMENTS QUESTION TO SEE THIS. 
 
         Any problem that asks us to find the top/smallest/frequent ‘K’ 
@@ -4760,8 +5075,8 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
             1) Finally, root of the MH is the kth smallest element.
 
             Time complexity of this solution is O(k + (n-k)*Logk)
-        METHOD 4(BEST METHOD QUICK SELECT): -> DO MEDIAN OF MEDIANS TO GET O(N) NOT WORST AVERAGE CASE? worst time!!!
 
+        METHOD 4(BEST METHOD QUICK SELECT): -> DO MEDIAN OF MEDIANS TO GET O(N) NOT WORST AVERAGE CASE? worst time!!!
            The idea is, not to do complete quicksort, but stop at the point where pivot itself is k’th         
             smallest element. Also, not to recur for both left and right sides of pivot, 
             but recur for one of them according to the position of pivot. The worst case time          
