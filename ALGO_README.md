@@ -71,6 +71,101 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+-63) IMPORTANT TRICK: 
+     PRECOMPUTING LEFT AND RIGHT INDEX SUMS WITH KADANES
+
+    Strategy:
+        Try other precomputes besides cumulative sums. 
+        Use the precomputed solution for one problem to 
+        make several other precomputes that can be used for 
+        a more difficult but similarly looking problem!!! 
+
+        For instance pre-computes of the Kadane algorithm.
+
+    WITH KADANES, YOU CAN PRECOMPUTE maximum array sum that starts at i, 
+    and max array sum that ends at j. and use these to solve a question.
+
+    Problem: max_double_slice_sum
+
+    A non-empty array A consisting of N integers is given.
+
+    A triplet (X, Y, Z), such that 0 ≤ X < Y < Z < N, is called a double slice.
+
+    The sum of double slice (X, Y, Z) is the total of 
+        A[X + 1] + A[X + 2] + ... + A[Y − 1] + A[Y + 1] + A[Y + 2] + ... + A[Z − 1].
+
+        A[0] = 3
+        A[1] = 2
+        A[2] = 6
+        A[3] = -1
+        A[4] = 4
+        A[5] = 5
+        A[6] = -1
+        A[7] = 2
+        
+    contains the following example double slices:
+
+    double slice (0, 3, 6), sum is 2 + 6 + 4 + 5 = 17,
+    double slice (0, 3, 7), sum is 2 + 6 + 4 + 5 − 1 = 16,
+    double slice (3, 4, 5), sum is 0.
+    The goal is to find the maximal sum of any double slice.
+
+    Write a function:
+
+    def solution(A)
+
+    that, given a non-empty array A consisting of N integers, returns the maximal sum of any double slice.
+
+    For example for above array,
+    the function should return 17, because no double 
+    slice of array A has a sum of greater than 17.
+
+    ALGORITHM:
+    You can use a modified form of Kadane's algorithm that 
+    calculates the MAX Sum subarray ending at each index.
+    
+    For each index, calculate the max_sum_ending_at[i] value 
+    by using Kadane's algorithm in forward direction.
+    
+    For each index, calculate the max_sum_starting_from[i] 
+    value by using Kadane's algorithm in reverse direction.
+    
+    Iterate these arrays simultaneously and choose the 'Y' that has the maximum value of
+
+    max_sum_ending_at[Y-1] + max_sum_starting_from[Y+1]
+
+
+    def solution(A):
+        l_max_slice_sum = [0] * len(A)
+        r_max_slice_sum = [0] * len(A)
+
+        for i in range(1, len(A)-2): # A[X + 1] + A[X + 2] + ... + A[Y − 1]
+            # Let's assume that Y is equal to i+1.
+            # If l_max_slice_sum[i-1] + A[i] is negative, we assign X to i.
+            # It means that the slice sum is 0 because X and Y are consecutive indices.
+            l_max_slice_sum[i] = max(l_max_slice_sum[i-1] + A[i], 0)
+
+        for i in range(len(A)-2, 1, -1): # A[Y + 1] + A[Y + 2] + ... + A[Z − 1]
+            # We suppose that Y is equal to i-1.
+            # As aforementioned, Z will be assigned to i if r_max_slice_sum[i+1] + A[i]
+            # is negative, and it returns 0 because Y and Z becomes consecutive indices.
+            r_max_slice_sum[i] = max(r_max_slice_sum[i+1] + A[i], 0)
+
+        max_slice_sum = l_max_slice_sum[0] + r_max_slice_sum[2]
+        for i in range(1, len(A)-1):
+            # Let's say that i is the index of Y.
+            # l_max_slice_sum[i-1] is the max sum of the left slice, and
+            # r_max_slice_sum[i+1] is the max sum of the right slice.
+            max_slice_sum = max(max_slice_sum, l_max_slice_sum[i-1]+r_max_slice_sum[i+1])
+            
+        return max_slice_sum
+
+
+
+
+
+
+
 -62) RECURSION AND ENUMERATION WITH FROZENSET AND DP:
 
     You have a collection of coins, and you know the values of the 
