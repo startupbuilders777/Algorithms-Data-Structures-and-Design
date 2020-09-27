@@ -71,6 +71,101 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+
+
+
+-64) Bomber DP or is the DP just precomputation below? you should check:
+    (CAN DO WITH PRECOMPUTATION BUT LETS DO WITH DP!!!)
+    
+    Each cell in a 2D grid contains either a wall ('W') or an 
+    enemy ('E'), or is empty ('0'). Bombs can destroy enemies, 
+    but walls are too strong to be destroyed. A bomb placed in 
+    an empty cell destroys all enemies in the same row and column, 
+    but the destruction stops once it hits a wall.
+
+    Return the maximum number of enemies you can destroy using one bomb.
+
+    Note that your solution should have O(field.length · field[0].length) 
+    complexity because this is what you will be asked during an interview.
+
+    Example
+    For
+    field = [["0", "0", "E", "0"],
+            ["W", "0", "W", "E"],
+            ["0", "E", "0", "W"],
+            ["0", "W", "0", "E"]]
+    the output should be
+    bomber(field) = 2.
+
+    Sol'n A Easy (Cool Top Down):
+        from functools import lru_cache
+        def bomber(q):
+            if not q or not q[0]:
+                return 0
+            a , b = len(q),len(q[0])
+            @lru_cache(maxsize=None)
+            def g(m,n,x,y):
+                return 0 if m<0 or n<0 or m>=a or n>=b or q[m][n]=="W" \
+                    else g(m + x,n + y,x,y)+(q[m][n]=="E")
+            ans = 0
+            for i in range(a):
+                for j in range(b):
+                    if q[i][j] == "0":
+                        ans = max(ans,g(i-1,j,-1,0)+g(i,j-1,0,-1)+g(i+1,j,1,0)+g(i,j+1,0,1))
+            return ans
+    Soln B:
+        def bomber(F):
+            if not F or not F[0]         :   return 0
+            row ,col = len(F) ,len(F[0]) ;   F = numpy.array(F)
+            dp = numpy.zeros((row,col))  ;   t = zip(*numpy.where(F == 'E'))
+            for x,y in t:
+                for i in range(y-1,-1,-1):   
+                    if F[x,i] == 'W'  :   break
+                    if F[x,i] == '0' :   dp[x,i]+=1 
+                for i in range(y+1,col):
+                    if F[x,i] == 'W'  :   break
+                    if F[x,i] == '0'  :   dp[x,i]+=1 
+                for i in range(x-1,-1,-1):
+                    if F[i,y] == 'W'  :   break
+                    if F[i,y] == '0'  :   dp[i,y]+=1 
+                for i in range(x+1,row):
+                    if F[i,y] == 'W'  :   break
+                    if F[i,y] == '0'  :   dp[i,y]+=1 
+            return dp.max()
+
+    Soln C:
+        def bomber(A):
+            from itertools import groupby
+            if not A or not A[0]: return 0
+            R, C = len(A), len(A[0])
+            dp = [ [0] * C for _ in xrange(R) ]
+            for r, row in enumerate(A):
+                c = 0
+                for k, v in groupby(row, key = lambda x: x != 'W'):
+                    w = list(v)
+                    if k:
+                        enemies = w.count('E')
+                        for c2 in xrange(c, c + len(w)):
+                            dp[r][c2] += enemies
+                    c += len(w)
+
+            for c, col in enumerate(zip(*A)):
+                r = 0
+                for k, v in groupby(col, key = lambda x: x != 'W'):
+                    w = list(v)
+                    if k:
+                        enemies = w.count('E')
+                        for r2 in xrange(r, r + len(w)):
+                            dp[r2][c] += enemies
+                    r += len(w)
+            
+            ans = 0
+            for r, row in enumerate(A):
+                for c, val in enumerate(row):
+                    if val == '0':
+                        ans = max(ans, dp[r][c])
+            return ans
+
 -63) IMPORTANT TRICK: 
      PRECOMPUTING LEFT AND RIGHT INDEX SUMS WITH KADANES
 
