@@ -71,7 +71,139 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+-68) Counting clouds by removing and growing as an alternative DFS:
 
+    Given a 2D grid skyMap composed of '1's (clouds) and '0's (clear sky), 
+    count the number of clouds. A cloud is surrounded by clear sky, and is 
+    formed by connecting adjacent clouds horizontally or vertically. 
+    You can assume that all four edges of the skyMap are surrounded by clear sky.
+
+    Example
+
+    For
+
+    skyMap = [['0', '1', '1', '0', '1'],
+            ['0', '1', '1', '1', '1'],
+            ['0', '0', '0', '0', '1'],
+            ['1', '0', '0', '1', '1']]
+    the output should be
+    countClouds(skyMap) = 2;
+    
+    
+    def countClouds(skyMap):
+        if not skyMap or not skyMap[0]:
+            return 0
+        m, n = len(skyMap), len(skyMap[0])
+        ones = {(i, j) for i in range(m) for j in range(n) if skyMap[i][j] == '1'}
+        cc = 0
+        while ones:
+            active = {ones.pop()}
+            while active:
+                ones -= active
+                nxt_active = set()
+                for x, y in active:
+                    for dx, dy in ((-1,0), (1,0), (0,-1), (0,1)):
+                        if 0 <= x+dx < m and 0 <= y + dy < n and \
+                            (x+dx, y+dy) in ones:
+                            nxt_active.add((x+dx, y+dy))
+                active = nxt_active
+            cc += 1
+        return cc
+
+
+-67) Lazy updates to build faster data structures (aka min stack extended ):
+
+        Similar hill finding question from IMC oa: 
+        Techniques: for stack 2.0, where we create a stack
+        but we can also increment alll elements below index i 
+        by a value
+        
+        -> implement push, pop, increment(index i, value v)
+        you use 2 stacks, and we do LAZY updates. Similar to min stack.
+        When we access an element that should have been increment. 
+        add stack value + increment stack value. 
+        When we increment we only save it at index i. not [0...i] with for loop
+        to do O(1) lookup, push, pop, increment. And when we pop that index,
+        assign to index i-1.
+        
+        THE IDEA IS: -> look at the very specific constraints of problem and solve 
+        for only what it is asking. nothing more (which allows you to simplify and 
+        improve solutions).
+        
+        Try to solve by being as LAZY as possible, and keeping track of critical indexes. 
+        Do it similar to how you as a lazy human would solve it IRL. 
+        
+        By waiting to do operations until it is necessary -> and being GREEDY and smart 
+        about how to update the state of the problem for only the next state[and just the next state], 
+        and not all states, we optimized stack 2.0. 
+
+
+-66)  Hill finding w/ stacks and queues and lazy updates in data structures: 
+
+        '''
+        Given an array a composed of distinct elements, find 
+        the next larger element for each element of the array, i.e. 
+        the first element to the right that is greater than this element, 
+        in the order in which they appear in the array, and return the 
+        results as a new array of the same length. If an element does 
+        not have a larger element to its right, put -1 in the 
+        appropriate cell of the result array.
+
+        Example
+
+        For a = [6, 7, 3, 8], the output should be
+        nextLarger(a) = [7, 8, 8, -1]
+
+        '''
+        # use queue. 
+        '''
+        HILL FINDING WITH CRITICAL INDEXES + LAZINESS LECTURE.  
+        KEEP TRACK OF KEY POINTS ONLY IN QUEUE/STACK. 
+        NO WASTE IN QUEUE, JUST WHAT WE NEED. 
+        AKA hill finding.         
+        '''
+
+        def nextLarger(a):        
+            st = []
+            res = []
+
+            for i in range(len(a)-1, -1, -1):
+                val = a[i]
+                while len(st) > 0:
+                    if a[i] > st[-1]:
+                        st.pop()
+                    else:
+                        break     
+                if len(st) == 0:
+                    res.append(-1)
+                else:
+                    res.append(st[-1])
+                st.append(val)
+            return res[::-1]
+
+
+
+-65) REGEX REVIEW USAGE:
+
+    You categorize strings into three types: good, bad, or mixed. If a string has 
+    3 consecutive vowels or 5 consecutive consonants, or both, then it is categorized 
+    as bad. Otherwise it is categorized as good. Vowels in the English alphabet are 
+    ["a", "e", "i", "o", "u"] and all other letters are consonants.
+
+    The string can also contain the character ?, which can be replaced by either a 
+    vowel or a consonant. This means that the string "?aa" can be bad if ? is a 
+    vowel or good if it is a consonant. This kind of string is categorized as mixed.
+
+    Implement a function that takes a string s and returns its category: good, bad, or mixed.
+
+    def classifyStrings(s):
+        if re.search(r"[aeiou]{3}|[^aeiou?]{5}", s):
+            return "bad"
+        if "?" not in s:
+            return "good"
+        a = classifyStrings(s.replace("?", "a", 1))
+        b = classifyStrings(s.replace("?", "b", 1))
+        return "mixed" if a != b else a
 
 
 -64) Bomber DP or is the DP just precomputation below? you should check:
@@ -208,8 +340,8 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     Write a function:
 
     def solution(A)
-
-    that, given a non-empty array A consisting of N integers, returns the maximal sum of any double slice.
+    that, given a non-empty array A consisting of N integers, 
+    returns the maximal sum of any double slice.
 
     For example for above array,
     the function should return 17, because no double 
@@ -254,10 +386,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
             max_slice_sum = max(max_slice_sum, l_max_slice_sum[i-1]+r_max_slice_sum[i+1])
             
         return max_slice_sum
-
-
-
-
 
 
 

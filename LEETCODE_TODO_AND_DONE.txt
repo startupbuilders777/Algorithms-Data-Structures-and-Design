@@ -65,5 +65,7 @@ For 1235. Maximum Profit in Job Scheduling
     -> review fastest solution
 
 
+Write indepth notes on 403. Frog Jump. Write notes on Graph DFS and DP, 
+and forward dp vs backward DP conceptualization, and try it and read discuss. 
 
 

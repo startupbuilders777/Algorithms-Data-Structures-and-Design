@@ -72,9 +72,6 @@ public:
         
         
         Problem has DP!
-        
-        
-        
         if we know the solution for n = 3
         
         Solution for n=4.
