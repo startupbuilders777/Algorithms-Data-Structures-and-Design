@@ -748,7 +748,6 @@ COOL NOTES PART -3: NETWORK FLOW Tutorial: maxflow and mincut
 
 
 49.7 SQRT DECOMPOSITION  - MO'S Algorithm (https://cp-algorithms.com/data_structures/sqrt_decomposition.html)
-    PLEASE WRITE NOTES ON MO's algorithm here. 
 
     A similar idea, based on sqrt decomposition, can be used to answer range 
     queries (Q) offline in O((N+Q)N−−√). This might sound like a lot worse than 

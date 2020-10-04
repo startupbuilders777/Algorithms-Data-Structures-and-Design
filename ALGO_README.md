@@ -71,6 +71,157 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+
+
+
+-70) Example of extracting dynamic programming traversal paths 
+     after doing DP problem.
+        '''
+        CombinationSum:
+
+        Given an array of integers a and an integer sum, find all of the 
+        unique combinations in a that add up to sum.
+        The same number from a can be used an unlimited number of times in 
+        a combination.
+        Elements in a combination (a1 a2 … ak) must be sorted in non-descending order, 
+        while the combinations themselves must be sorted in ascending order.
+
+        If there are no possible combinations that add up to sum, 
+        the output should be the string "Empty".
+
+        Example
+
+        For a = [2, 3, 5, 9] and sum = 9, the output should be
+        combinationSum(a, sum) = "(2 2 2 3)(2 2 5)(3 3 3)(9)".
+
+
+        The DP problem is simple, done previously before HARMAN!!
+
+        Here we try to return the paths themselves, that were traversed in the DP
+        2 ways to do so:
+        A parents map OR as we save our results in the DP array, we also save our paths in a DP paths array.
+        Look at both methods and learn!!
+
+        '''
+        from collections import defaultdict, deque
+        def combinationSum(a, sum):
+            # parents map? 
+            g = defaultdict(list)
+            
+            # sort a and deduplicate. 
+            
+            a = sorted(list(set(a)))
+            
+            # we could also space optimize and just use One D array, because new 
+            # index doesnt use just previous index, but all previous indexes.
+            # so include all of em. 
+            OPT = [[0 for i in range(sum+1)]]
+            OPT[0][0] = 1
+            
+            
+            dp_paths = [[] for i in range(sum+1)]
+            dp_paths[0].append([])
+            
+            for idx, coinVal in enumerate(a):
+                # to compute for current index, 
+                # first copy previous, then operate on current. 
+                curr = OPT[-1][:]
+                '''
+                idx, coin?
+                '''
+                for i in range(sum+1):
+                    if i >= coinVal:
+                        # do we specify the coin type we used??
+                        # depends if we built from previous index, or 
+                        # coins from this index.  -> cant you use difference in amts
+                        # to determine coins -> YESS.
+                        # you dont need to save coinVal
+                        curr[i] += curr[i-coinVal]
+                        # can we save it, as we build the dp?
+                        
+                        parent_paths = dp_paths[i-coinVal]
+                        for p in parent_paths:
+                            cp = p[::]
+                            cp.append(coinVal)
+                            dp_paths[i].append(cp)
+
+                        if(curr[i-coinVal] > 0):
+                            g[i].append(i-coinVal)
+                                
+                OPT.append(curr)
+            
+            # DP PATHS WORKS HOW YOU EXPECT. IF OPT[sum] = 6, then in DP paths there is 6 paths.
+            print("DP_PATHS", dp_paths)
+            print("OPT", OPT)
+            
+            '''
+            Problem with getting all paths: we end up with all permutations instead of 
+            combinations: 
+            
+            Output: "(2 2 2 2)(2 2 4)(2 4 2)(2 6)(4 2 2)(4 4)(6 2)(8)"
+            Expected Output: "(2 2 2 2)(2 2 4)(2 6)(4 4)(8)"
+            SO WE NEED LIMIT ARGUMENT.
+            '''
+            
+            results = []
+            
+            def get_all_paths(node, path, limit):
+                kids = g[node]
+                if len(kids) == 0:
+                    # nonlocal results
+                    results.append(path)
+                
+                # USING A LIMIT ALLOWS YOU TO TURN 
+                # PERMUTATONS INTO COMBINATIONS IF ITS SORTED.
+                # BY TRAVERSING COINS FROM LARGEST TO SMALLEST ONLY. 
+                
+                for k in kids:
+                    coinVal = node-k
+                    if coinVal <= limit:
+                        cp = path.copy()
+                        cp.appendleft(coinVal)
+                        get_all_paths(k, cp, min(limit, coinVal))
+                        
+            get_all_paths(sum, deque([]), float("inf"))
+            final=[]
+            
+            # Uncomment this line and code still creates correct output!
+            # results = dp_paths[sum]
+
+            for r in results:
+                if len(r) == 0:
+                    continue
+                s = str(r[0])
+                for idx in range(1, len(r)):
+                    s += " " + str(r[idx])
+                final.append(s)
+            
+            final.sort()
+            
+            if len(final) == 0:
+                return "Empty"
+                
+            last = ")(".join(final)
+            return "(" + last + ")" 
+
+
+
+
+
+
+
+
+
+
+
+-69) You can return a deduplicated sorted list of combinations from a 
+     sorted list that has repeated values without using the sort function, or sets.
+     When you dfs, include a limit argument, and dont include the current argument in the take/donttake 
+     if its the same as the previous argument, and the previous argument was not taken. 
+     Look at sumSubsets for more info. 
+
+
+
 -68) Counting clouds by removing and growing as an alternative DFS:
 
     Given a 2D grid skyMap composed of '1's (clouds) and '0's (clear sky), 
@@ -5945,14 +6096,17 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
 
 55)    Common problems solved using DP on broken profile include:
 
-        finding number of ways to fully fill an area (e.g. chessboard/grid) with some figures (e.g. dominoes)
+        finding number of ways to fully fill an area 
+        (e.g. chessboard/grid) with some figures (e.g. dominoes)
         finding a way to fill an area with minimum number of figures
         finding a partial fill with minimum number of unfilled space (or cells, in case of grid)
         finding a partial fill with the minimum number of figures, such that no more figures can be added
         Problem "Parquet"
         
-        Problem description. Given a grid of size N×M. Find number of ways to 
-        fill the grid with figures of size 2×1 (no cell should be left unfilled, 
+        Problem description. Given a grid of size N×M. 
+        Find number of ways to 
+        fill the grid with figures of size 2×1 (no cell 
+        should be left unfilled, 
         and figures should not overlap each other).
 
         Let the DP state be: dp[i,mask], where i=1,…N and mask=0,…2^(M)−1.

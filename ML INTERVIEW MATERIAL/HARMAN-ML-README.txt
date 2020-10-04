@@ -134,3 +134,27 @@ Q12. In unsupervised learning, if a ground truth about a dataset is unknown, how
     close to -1 indicates the opposite. A clustered set of data in a model producing mostly 
     high silhouette values is likely an acceptable and appropriate model.s
 
+
+
+Gradient boosting vs Random Forest Tree:
+
+    Random Forest vs Decision Trees
+    As noted above, decision trees are fraught with problems. A tree generated from 99 data points might differ significantly from a tree generated with just one different data point. If there was a way to generate a very large number of trees, averaging out their solutions, then you'll likely get an answer that is going to be very close to the true answer. Enter the random forest—a collection of decision trees with a single, aggregated result. Random forests are commonly reported as the most accurate learning algorithm. 
+
+    Random forests reduce the variance seen in decision trees by:
+
+    Using different samples for training,
+    Specifying random feature subsets, 
+    Building and combining small (shallow) trees.
+    A single decision tree is a weak predictor, but is relatively fast to build. More trees give you a more robust model and prevent overfitting. However, the more trees you have, the slower the process. Each tree in the forest has to be generated, processed, and analyzed. In addition, the more features you have, the slower the process (which can sometimes take hours or even days); Reducing the set of features can dramatically speed up the process.
+
+    Another distinct difference between a decision tree and random forest is that while a decision tree is easy to read—you just follow the path and find a result—a random forest is a tad more complicated to interpret. There are a slew of articles out there designed to help you read the results from random forests (like this one), but in comparison to decision trees, the learning curve is steep.
+
+    Random Forest vs Gradient Boosting
+    Like random forests, gradient boosting is a set of decision trees. The two main differences are:
+
+    How trees are built: random forests builds each tree independently while gradient boosting builds one tree at a time. This additive model (ensemble) works in a forward stage-wise manner, introducing a weak learner to improve the shortcomings of existing weak learners. 
+    Combining results: random forests combine results at the end of the process (by averaging or "majority rules") while gradient boosting combines results along the way.
+    If you carefully tune parameters, gradient boosting can result in better performance than random forests. However, gradient boosting may not be a good choice if you have a lot of noise, as it can result in overfitting. They also tend to be harder to tune than random forests.
+
+    Random forests and gradient boosting each excel in different areas. Random forests perform well for multi-class object detection and bioinformatics, which tends to have a lot of statistical noise. Gradient Boosting performs well when you have unbalanced data such as in real time risk assessment.
