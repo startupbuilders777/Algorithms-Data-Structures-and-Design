@@ -37,10 +37,6 @@ RMQ PRACTICAL IMPLEMENTATIONS:
     Once the tree is constructed, how to do range minimum 
     query using the constructed segment tree. Following is algorithm to get the minimum.
 
-    Query for minimum value of given range
-    Once the tree is constructed, how to do range minimum 
-    query using the constructed segment tree. Following is algorithm to get the minimum.
-
     // qs --> query start index, qe --> query end index
     int RMQ(node, qs, qe) 
     {
@@ -610,7 +606,8 @@ COOL NOTES PART -3: NETWORK FLOW Tutorial: maxflow and mincut
     e.g. the Lowest Common Ancestor problem.
 
     Solution
-    There are lots of possible approaches and data structures that you can use to solve the RMQ task.
+    There are lots of possible approaches and data 
+    structures that you can use to solve the RMQ task.
 
     The ones that are explained on this site are listed below.
 
@@ -624,7 +621,8 @@ COOL NOTES PART -3: NETWORK FLOW Tutorial: maxflow and mincut
 
     Fenwick tree - answers each query in O(logN), preprocessing done in O(NlogN). 
                 Pros: the shortest code, good time complexity. 
-                Cons: Fenwick tree can only be used for queries with L=1, so it is not applicable to many problems.
+                Cons: Fenwick tree can only be used for queries with L=1, 
+                      so it is not applicable to many problems.
 
     And here are the approaches that only work on static arrays, i.e. it is not possible 
         to change a value in the array without recomputing the complete data structure.

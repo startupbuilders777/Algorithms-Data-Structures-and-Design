@@ -234,9 +234,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     For
 
     skyMap = [['0', '1', '1', '0', '1'],
-            ['0', '1', '1', '1', '1'],
-            ['0', '0', '0', '0', '1'],
-            ['1', '0', '0', '1', '1']]
+              ['0', '1', '1', '1', '1'],
+              ['0', '0', '0', '0', '1'],
+              ['1', '0', '0', '1', '1']]
     the output should be
     countClouds(skyMap) = 2;
     
@@ -5976,6 +5976,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
 
 
 53) The art of segment trees and monoqueues:
+    PLEASE REVIEW SEGMENT TREES IN DATA STRUCTURES NOTES!!
 
     Previously we saw segment trees.
     That data structure was able to answer the question
@@ -8553,6 +8554,7 @@ COOL NOTES PART -2: HOW TO USE HEAP DICTIONARIES WITH DECREASE KEY USING HEAPQ!
                     del entry_finder[task]
                     return task
             raise KeyError('pop from an empty priority queue')
+
 
 
 #################################################################################3

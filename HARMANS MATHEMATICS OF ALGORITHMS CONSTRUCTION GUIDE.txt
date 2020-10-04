@@ -32,6 +32,24 @@ Ray tracing: Given a set of objects in space, produce a data structure that effi
 
 WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
 
+-6) GCD of multiple numbers follows following rule: 
+    The GCD of three or more numbers equals the product of the prime factors 
+    common to all the numbers, but it can also be calculated by repeatedly 
+    taking the GCDs of pairs of numbers.
+
+    gcd(a, b, c) = gcd(a, gcd(b, c)) 
+                = gcd(gcd(a, b), c) 
+                = gcd(gcd(a, c), b)
+
+    For an array of elements, we do the following. We will also 
+    check for the result if the result at any step becomes 
+    1 we will just return the 1 as gcd(1,x)=1.
+    
+
+
+
+
+
 -5) Write about binomial coefficients:
     https://cp-algorithms.com/combinatorics/binomial-coefficients.html
 

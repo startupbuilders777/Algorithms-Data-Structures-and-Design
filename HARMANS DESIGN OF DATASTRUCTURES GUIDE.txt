@@ -1585,8 +1585,6 @@ z Algorithm Applications:
     The proof for this fact is the same as the solution which uses the prefix function.
 
 
-
-
 #########################################################################
 ########################################################################3
 Z algorithm (https://www.hackerearth.com/practice/algorithms/string-algorithm/z-algorithm/tutorial/)
@@ -1713,11 +1711,158 @@ COOL NOTES: Z ALGORITHM FOR STRINGS:
     Finding a string T of shortest length such that S can be represented as a 
     concatenation of one or more copies of T
 
+#################################################################################################
+SUPER FAST COMPETITIVE PROGRAMMING SHORT IMPLEMENTATION OF SEGMENT TREES TO USE FOR OA'S and in Interview:
+    (https://codeforces.com/blog/entry/18051)
+    Segment tree with single element modifications
+
+    Let's start with a brief explanation of segment trees. They are used when we have an array, 
+    perform some changes and queries on continuous segments. 
+    In the first example we'll consider 2 operations:
+
+    modify one element in the array;
+    find the sum of elements on some segment. .
+    Perfect binary tree
+    I like to visualize a segment tree in the following way:  (post has image)
+    Node 1 (root): [0,16)
+    Node 2 [0, 8)
+    Node 3 [8, 16)
+
+    Node 4 [0, 4)
+    Node 5 [4 8)
+
+    Node 6 [8, 12)
+    Node 7 [12, 16)
+    ...
+    Node 16: 0
+    Node 17: 1
+    Node 18: 2
+    Node 19:  3
+    ...
+
+
+
+    Notation is node_index: corresponding segment (left border included, right excluded). 
+    At the bottom row we have our array (0-indexed), the leaves of the tree. For now suppose 
+    it's length is a power of 2 (16 in the example), so we get perfect binary tree. When going 
+    up the tree we take pairs of nodes with indices (2 * i, 2 * i + 1) and combine their values 
+    in their parent with index i. This way when we're asked to find a sum on interval [3, 11), 
+    we need to sum up only values in the nodes 19, 5, 12 and 26 (marked with bold), not all 
+    8 values inside the interval. 
+    Let's jump directly to implementation (in C++) to see how it works:
+
+
+
+    const int N = 1e5;  // limit for array size
+    int n;  // array size
+    int t[2 * N];
+
+    void build() {  // build the tree
+        for (int i = n - 1; i > 0; --i) t[i] = t[i<<1] + t[i<<1|1];
+    }
+
+    void modify(int p, int value) {  // set value at position p
+        for (t[p += n] = value; p > 1; p >>= 1) t[p>>1] = t[p] + t[p^1];
+    }
+
+    int query(int l, int r) {  // sum on interval [l, r)
+        int res = 0;
+        for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
+            if (l&1) res += t[l++];
+            if (r&1) res += t[--r];
+        }
+        return res;
+    }
+
+    int main() {
+        scanf("%d", &n);
+        for (int i = 0; i < n; ++i) scanf("%d", t + n + i);
+        build();
+        modify(0, 1);
+        printf("%d\n", query(3, 11));
+        return 0;
+    }
+
+    That's it! Fully operational example. Forget about those cumbersome 
+    recursive functions with 5 arguments!
+
+    Now let's see why this works, and works very efficient.
+
+        1) As you could notice from the picture, leaves are stored in 
+        continuous nodes with indices starting with n, element with 
+        index i corresponds to a node with index i + n. So we can read 
+        initial values directly into the tree where they belong.
+
+        2) Before doing any queries we need to build the tree, which is 
+        quite straightforward and takes O(n) time. Since parent always 
+        has index less than its children, we just process all the internal 
+        nodes in decreasing order. In case you're confused by bit operations, 
+        the code in build() is equivalent to t[i] = t[2*i] + t[2*i+1].
+
+        3) Modifying an element is also quite straightforward and takes 
+        time proportional to the height of the tree, which is O(log(n)). 
+        We only need to update values in the parents of given node. So we 
+        just go up the tree knowing that parent of node p is p / 2 or p>>1, 
+        which means the same. p^1 turns 2 * i into 2 * i + 1 and vice versa, 
+        so it represents the second child of p's parent.
+
+        4) Finding the sum also works in O(log(n)) time. To better understand it's 
+        logic you can go through example with interval [3, 11) and verify that 
+        result is composed exactly of values in nodes 19, 26, 12 and 5 (in that order).
+
+    General idea is the following. If l, the left interval border, is 
+    odd (which is equivalent to l&1) then l is the right child of its parent. 
+    Then our interval includes node l but doesn't include it's parent. 
+    So we add t[l] and move to the right of l's parent by setting l = (l + 1) / 2. 
+    
+    If l is even, it is the left child, and the interval includes 
+    its parent as well (unless the right border interferes), so we 
+    just move to it by setting l = l / 2. Similar argumentation is 
+    applied to the right border. We stop once borders meet.
+
+    No recursion and no additional computations like finding the middle 
+    of the interval are involved, we just go through all the nodes we need, 
+    so this is very efficient.
+
+
+    Arbitrary sized array
+
+    For now we talked only about an array with size equal to some power of 2, 
+    so the binary tree was perfect. The next fact may be stunning, so prepare yourself.
+
+    The code above works for any size n.
+
+    Explanation is much more complex than before, so let's focus 
+    first on the advantages it gives us.
+
+    Segment tree uses exactly 2 * n memory, not 4 * n like some other implementations offer.
+    Array elements are stored in continuous manner starting with index n.
+    All operations are very efficient and easy to write.
+
+    For those interested in some kind of explanation, here's how the tree for n = 13 looks:
+
+    It's not actually a single tree any more, but a set of perfect 
+    binary trees: with root 2 and height 4, root 7 and height 2, 
+    root 12 and height 2, root 13 and height 1. 
+
+    I won't bother with formal proof here, let's just go through 
+    the example with interval [0, 7). We have l = 13, r = 20, 
+    l&1 => add t[13] and borders change to l = 7, r = 10. 
+    Again l&1 => add t[7], borders change to l = 4, r = 5, 
+    and suddenly nodes are at the same height. Now we have r&1 => add t[4 = --r], 
+    borders change to l = 2, r = 2, so we're finished.
+
+
+    PLEASE FINISH NOTES HERE START WRITING NOTES FROM MODIFICTION ON INTERVAL SINGLE ELEMENT access.
+
+
+
 
 
 
 ###################################################################################################
 Segment trees are soooo cool. 
+SIMPLE IMPLEMENTATION 
 
     Basically, if you have some list, and you want to calculate.
 
@@ -1761,8 +1906,1198 @@ Segment trees are soooo cool.
                     ans = self.operator(ans, self.arr[right])
                 left, right = (left - 1)/2, (right - 1)/2
             return ans
+###########################################################################
+
+Segment Trees (https://cp-algorithms.com/data_structures/segment_tree.html)
+USE CASES AND INTUITION
+    A Segment Tree is a data structure that allows answering range 
+    queries over an array effectively, while still being flexible 
+    enough to allow modifying the array. This includes finding the 
+    sum of consecutive array elements a[l…r], or finding the minimum 
+    element in a such a range in O(logn) time. Between answering such 
+    queries the Segment Tree allows modifying the array by replacing 
+    one element, or even change the elements of a whole subsegment (e.g. 
+    assigning all elements a[l…r] to any value, or adding a value to all 
+    element in the subsegment).
+
+    In general a Segment Tree is a very flexible data structure, and a huge 
+    number of problems can be solved with it. Additionally it is also 
+    possible to apply more complex operations and answer more complex 
+    queries (see Advanced versions of Segment Trees). In particular the 
+    Segment Tree can be easily generalized to larger dimensions. For 
+    instance with a two-dimensional Segment Tree you can answer sum or 
+    minimum queries over some subrectangle of a given matrix. However 
+    only in O(log2n) time.
+
+    One important property of Segment Trees is, that they require only a 
+    linear amount of memory. The standard Segment Tree requires 4n 
+    vertices for working on an array of size n.
+
+
+    Simplest form of a Segment Tree
+    To start easy, we consider the simplest form of a Segment Tree. 
+    We want to answer sum queries efficiently. The formal definition 
+    of our task is: We have an array a[0…n−1], and the Segment Tree 
+    must be able to find the sum of elements between the indices 
+    l and r (i.e. computing the sum ∑ri=la[i]), and also handle 
+    changing values of the elements in the array (i.e. perform assignments 
+    of the form a[i]=x). The Segment Tree should be able to process 
+    both queries in O(logn) time.
+
+Structure of the Segment Tree
+    So, what is a Segment Tree?
+
+    We compute and store the sum of the elements of the whole array, i.e. 
+    the sum of the segment a[0…n−1]. We then split the array into two 
+    halves a[0…n/2] and a[n/2+1…n−1] and compute the sum of each 
+    halve and store them. Each of these two halves in turn also 
+    split in half, their sums are computed and stored. And this 
+    process repeats until all segments reach size 1. In other words 
+    we start with the segment a[0…n−1], split the current segment 
+    in half (if it has not yet become a segment containing a single element), 
+    and then calling the same procedure for both halves. For each such segment 
+    we store the sum of the numbers on it.
+
+    We can say, that these segments form a binary tree: the root of this 
+    tree is the segment a[0…n−1], and each vertex (except leaf vertices) 
+    has exactly two child vertices. This is why the data structure is 
+    called "Segment Tree", even though in most implementations the tree 
+    is not constructed explicitly (see Implementation).
+
+
+    From this short description of the data structure, we can already 
+    conclude that a Segment Tree only requires a linear number of vertices. 
+    The first level of the tree contains a single node (the root), the second 
+    level will contain two vertices, in the third it will contain four 
+    vertices, until the number of vertices reaches n. Thus the number of 
+    vertices in the worst case can be estimated by the sum 
+    1+2+4+⋯+2^⌈logn⌉=2^(⌈logn⌉+1)<4n.
+
+    It is worth noting that whenever n is not a power of two, not all levels of 
+    the Segment Tree will be completely filled. We can see that behavior in the 
+    image. For now we can forget about this fact, but it will become important 
+    later during the implementation.
+
+    The height of the Segment Tree is O(logn), because when going down from the 
+    root to the leaves the size of the segments decreases approximately by half.
+
+
+Construction
+    Before constructing the segment tree, we need to decide:
+
+    the value that gets stored at each node of the segment tree. 
+    For example, in a sum segment tree, a node would store the sum 
+    of the elements in its range [l,r].
+
+    the merge operation that merges two siblings in a segment tree. 
+    For example, in a sum segment tree, the two nodes corresponding to 
+    the ranges a[l1…r1] and a[l2…r2] would be merged into a node 
+    corresponding to the range a[l1…r2] by adding the values of the two nodes.
+    Note that a vertex is a "leaf vertex", if its corresponding segment 
+    covers only one value in the original array. It is present at 
+    the lowermost level of a segment tree. Its value would be equal 
+    to the (corresponding) element a[i].
+
+    Now, for construction of the segment tree, we start at the bottom 
+    level (the leaf vertices) and assign them their respective values. 
+    On the basis of these values, we can compute the values of the previous 
+    level, using the merge function. And on the basis of those, we can 
+    compute the values of the previous, and repeat the procedure until 
+    we reach the root vertex.
+
+    It is convenient to describe this operation recursively in the other 
+    direction, i.e., from the root vertex to the leaf vertices. The 
+    construction procedure, if called on a non-leaf vertex, does the following:
+
+        recursively construct the values of the two child vertices
+        merge the computed values of these children.
+
+    We start the construction at the root vertex, and hence, we are 
+    able to compute the entire segment tree.
+
+    The time complexity of this construction is O(n), assuming 
+    that the merge operation is constant time (the merge operation gets 
+    called n times, which is equal to the number of internal nodes in the segment tree).
+
+
+Sum queries
+    For now we are going to answer sum queries. As an input we receive two 
+    integers l and r, and we have to compute the sum of the segment a[l…r] in O(logn) time.
+
+    To do this, we will traverse the Segment Tree and use the precomputed sums 
+    of the segments. Let's assume that we are currently at the vertex 
+    that covers the segment a[tl…tr]. There are three possible cases.
+
+    The easiest case is when the segment a[l…r] is equal to the 
+    corresponding segment of the current vertex (i.e. a[l…r]=a[tl…tr]), 
+    then we are finished and can return the precomputed sum that is stored in the vertex.
+
+    Alternatively the segment of the query can fall completely into the 
+    domain of either the left or the right child. Recall that the 
+    left child covers the segment a[tl…tm] and the right vertex covers 
+    the segment a[tm+1…tr] with tm=(tl+tr)/2. In this case we can 
+    simply go to the child vertex, which corresponding segment 
+    covers the query segment, and execute the algorithm described
+    here with that vertex.
+
+    And then there is the last case, the query segment intersects 
+    with both children. In this case we have no other option 
+    as to make two recursive calls, one for each child. First we go 
+    to the left child, compute a partial answer for this vertex 
+    (i.e. the sum of values of the intersection between the 
+    segment of the query and the segment of the left child), 
+    then go to the right child, compute the partial answer using 
+    that vertex, and then combine the answers by adding them. 
+    In other words, since the left child represents the segment a[tl…tm] 
+    and the right child the segment a[tm+1…tr], we compute the sum 
+    query a[l…tm] using the left child, and the sum query a[tm+1…r] 
+    using the right child.
+
+    So processing a sum query is a function that recursively calls 
+    itself once with either the left or the right child (without changing 
+    the query boundaries), or twice, once for the left and once 
+    for the right child (by splitting the query into two subqueries). 
+    And the recursion ends, whenever the boundaries of the current 
+    query segment coincides with the boundaries of the segment 
+    of the current vertex. In that case the answer will be the 
+    precomputed value of the sum of this segment, which is stored in the tree.
+
+    In other words, the calculation of the query is a traversal of the tree, 
+    which spreads through all necessary branches of the tree, 
+    and uses the precomputed sum values of the segments in the tree.
+
+    Obviously we will start the traversal from the root vertex of the Segment Tree.
+
+Sum Query LOG N performance explanation:
+    Why is the complexity of this algorithm O(logn)? To show this complexity 
+    we look at each level of the tree. It turns out, that for each level 
+    we only visit not more than four vertices. And since the height 
+    of the tree is O(logn), we receive the desired running time.
+
+    We can show that this proposition (at most four vertices each level) 
+    is true by induction. At the first level, we only visit one vertex, the 
+    root vertex, so here we visit less than four vertices. Now let's 
+    look at an arbitrary level. By induction hypothesis, we 
+    visit at most four vertices. If we only visit at most two vertices, 
+    the next level has at most four vertices. That trivial, 
+    because each vertex can only cause at most two recursive calls. 
+    So let's assume that we visit three or four vertices in the current level. 
+    From those vertices, we will analyze the vertices in the middle 
+    more carefully. Since the sum query asks for the sum of a continuous 
+    subarray, we know that segments corresponding to the visited vertices 
+    in the middle will be completely covered by the segment of the sum query. 
+    Therefore these vertices will not make any recursive calls. So only 
+    the most left, and the most right vertex will have the potential to 
+    make recursive calls. And those will only create at most four 
+    recursive calls, so also the next level will satisfy the assertion. 
+    We can say that one branch approaches the left boundary of the query, 
+    and the second branch approaches the right one.
+
+    Therefore we visit at most 4logn vertices in total, and that is 
+    equal to a running time of O(logn).
+
+    In conclusion the query works by dividing the input segment 
+    into several sub-segments for which all the sums are already 
+    precomputed and stored in the tree. And if we stop partitioning 
+    whenever the query segment coincides with the vertex segment, 
+    then we only need O(logn) such segments, which gives the effectiveness 
+    of the Segment Tree.
+
+Update Queries:
+    Now we want to modify a specific element in the array, let's say we 
+    want to do the assignment a[i]=x. And we have to rebuild the Segment Tree, 
+    such that it correspond to the new, modified array.
+
+    This query is easier than the sum query. Each level of a Segment Tree 
+    forms a partition of the array. Therefore an element a[i] only 
+    contributes to one segment from each level. Thus only O(logn) vertices need to be updated.
+
+    It is easy to see, that the update request can be implemented 
+    using a recursive function. The function gets passed the current 
+    tree vertex, and it recursively calls itself with one of the two 
+    child vertices (the one that contains a[i] in its segment), and after 
+    that recomputes its sum value, similar how it is done in the build 
+    method (that is as the sum of its two children).
+
+    Again here is a visualization using the same array. Here we perform the 
+    update a[2]=3. The green vertices are the vertices that we visit and update.
+
+Implementation:
+
+    We only store the sums in an array. The sum of the root vertex at index 1, 
+    the sums of its two child vertices at indices 2 and 3, the sums of the 
+    children of those two vertices at indices 4 to 7, and so on. 
+    It is easy to see, that the left child of a vertex at index i 
+    is stored at index 2i, and the right one at index 2i+1.
+
+    This simplifies the implementation a lot. We don't need to 
+    store the structure of the tree in memory. It is defined implicitly. 
+    We only need one array which contains the sums of all segments.
+
+    As noted before, we need to store at most 4n vertices. It might 
+    be less, but for convenience we always allocate an array of size 4n.
+    There will be some elements in the sum array, that will 
+    not correspond to any vertices in the actual tree, but this 
+    doesn't complicate the implementation.
+
+    So, we store the Segment Tree simply as an array t[] with a size 
+    of four times the input size n:
+
+    int n, t[4*MAXN];
+    The procedure for constructing the Segment Tree from a given 
+    array a[] looks like this: it is a recursive function with the 
+    parameters a[] (the input array), v (the index of the current vertex), 
+    and the boundaries tl and tr of the current segment. In the main 
+    program this function will be called with the parameters of the 
+    root vertex: v=1, tl=0, and tr=n−1.
+
+
+    void build(int a[], int v, int tl, int tr) {
+        if (tl == tr) {
+            t[v] = a[tl];
+        } else {
+            int tm = (tl + tr) / 2;
+            build(a, v*2,   tl,   tm);
+            build(a, v*2+1, tm+1, tr);
+            t[v] = t[v*2] + t[v*2+1];
+        }
+    }
+
+    Further the function for answering sum queries is also a recursive function, 
+    which receives as parameters information about the current vertex/segment 
+    (i.e. the index v and the boundaries tl and tr) and also the information 
+    about the boundaries of the query, l and r. In order to simplify the code, 
+    this function always does two recursive calls, even if only one is necessary 
+    - in that case the superfluous recursive call will have l>r, and this 
+    can easily be caught using an additional check at the 
+    beginning of the function.
+
+    int sum(int v, int tl, int tr, int l, int r) {
+        if (l > r) 
+            return 0;
+        if (l == tl && r == tr) {
+            return t[v];
+        }
+        int tm = (tl + tr) / 2;
+        return sum(v*2,   tl,   tm, l,            min(r, tm))
+            +  sum(v*2+1, tm+1, tr, max(l, tm+1), r);
+    }
+
+    Finally the update query. The function will also receive information 
+    about the current vertex/segment, and additionally also the parameter 
+    of the update query (i.e. the position of the element and its new value).
+
+    void update(int v, int tl, int tr, int pos, int new_val) {
+        if (tl == tr) {
+            t[v] = new_val;
+        } else {
+            int tm = (tl + tr) / 2;
+            if (pos <= tm)
+                update(v*2, tl, tm, pos, new_val);
+            else
+                update(v*2+1, tm+1, tr, pos, new_val);
+            t[v] = t[v*2] + t[v*2+1];
+        }
+    }
+
+Memory efficient implementation
+    Most people use the implementation from the previous section. If you 
+    look at the array t you can see that it follows the numbering of the 
+    tree nodes in the order of a BFS traversal (level-order traversal). 
+    Using this traversal the children of vertex v are 2v and 2v+1 respectively. 
+    However if n is not a power of two, this method will skip some indices and 
+    leave some parts of the array t unused. The memory consumption is limited 
+    by 4n, even though a Segment Tree of an array of n elements 
+    requires only 2n−1 vertices.
+
+    However it can be reduced. We renumber the vertices of the tree in the order 
+    of an Euler tour traversal (pre-order traversal), and we write all 
+    these vertices next to each other.
+
+    Lets look at a vertex at index v, and let him be responsible for the 
+    segment [l,r], and let mid=(l+r)/2. It is obvious that the left child 
+    will have the index v+1. The left child is responsible for the segment 
+    [l,mid], i.e. in total there will be 2∗(mid−l+1)−1 vertices in the left 
+    child's subtree. Thus we can compute the index of the right child of v.
+    The index will be v+2∗(mid−l+1). By this numbering we achieve a 
+    reduction of the necessary memory to 2n.
+
+
+################################################################
+Segment Tree INTERVIEW QUESTIONS -> A lot of Cool Use Cases:
+(https://cp-algorithms.com/data_structures/segment_tree.html)
+
+More complex queries
+    It can be quite easy to change the Segment Tree in a direction, 
+    such that it computes different queries (e.g. computing the 
+    minimum / maximum instead of the sum), but 
+    it also can be very nontrivial.
+
+    Finding the maximum
+        Let us slightly change the condition of the problem 
+        described above: instead of querying the sum, 
+        we will now make maximum queries.
+
+        The tree will have exactly the same structure as the tree described above. 
+        We only need to change the way t[v] is computed in the build and update 
+        functions. t[v] will now store the maximum of the corresponding segment. 
+        And we also need to change the calculation of the 
+        returned value of the sum function (replacing 
+        the summation by the maximum).
+
+        Of course this problem can be easily changed into computing
+        the minimum instead of the maximum.
+
+        Instead of showing an implementation to this problem, the 
+        implementation will be given to a more complex version of 
+        this problem in the next section.
+
+    Finding the maximum and the number of times it appears
+
+        This task is very similar to the previous one. In addition of 
+        finding the maximum, we also have to find the number 
+        of occurrences of the maximum.
+
+        To solve this problem, we store a pair of numbers at each 
+        vertex in the tree: In addition to the maximum we also 
+        store the number of occurrences of it in the corresponding segment. 
+        Determining the correct pair to store at t[v] can still be 
+        done in constant time using the information of the pairs stored 
+        at the child vertices. Combining two such pairs should be done 
+        in a separate function, since this will be an operation that we 
+        will do while building the tree, while answering maximum queries 
+        and while performing modifications.
+
+
+        pair<int, int> t[4*MAXN];
+
+        pair<int, int> combine(pair<int, int> a, pair<int, int> b) {
+            if (a.first > b.first) 
+                return a;
+            if (b.first > a.first)
+                return b;
+            return make_pair(a.first, a.second + b.second);
+        }
+
+        void build(int a[], int v, int tl, int tr) {
+            if (tl == tr) {
+                t[v] = make_pair(a[tl], 1);
+            } else {
+                int tm = (tl + tr) / 2;
+                build(a, v*2, tl, tm);
+                build(a, v*2+1, tm+1, tr);
+                t[v] = combine(t[v*2], t[v*2+1]);
+            }
+        }
+
+        pair<int, int> get_max(int v, int tl, int tr, int l, int r) {
+            if (l > r)
+                return make_pair(-INF, 0);
+            if (l == tl && r == tr)
+                return t[v];
+            int tm = (tl + tr) / 2;
+            return combine(get_max(v*2, tl, tm, l, min(r, tm)), 
+                           get_max(v*2+1, tm+1, tr, max(l, tm+1), r));
+        }
+
+        void update(int v, int tl, int tr, int pos, int new_val) {
+            if (tl == tr) {
+                t[v] = make_pair(new_val, 1);
+            } else {
+                int tm = (tl + tr) / 2;
+                if (pos <= tm)
+                    update(v*2, tl, tm, pos, new_val);
+                else
+                    update(v*2+1, tm+1, tr, pos, new_val);
+                t[v] = combine(t[v*2], t[v*2+1]);
+            }
+        }
+
+
+    Compute the greatest common divisor / least common multiple
+        In this problem we want to compute the GCD / LCM of all numbers 
+        of given ranges of the array.
+
+        This interesting variation of the Segment Tree can be solved 
+        in exactly the same way as the Segment Trees we derived for 
+        sum / minimum / maximum queries: it is enough to store the 
+        GCD / LCM of the corresponding vertex in each vertex of the 
+        tree. Combining two vertices can be done by computing the 
+        GCD / LCM of both vertices.
+
+    Counting the number of zeros, searching for the k-th zero
+        In this problem we want to find the number of zeros in a given 
+        range, and additionally find the index of the k-th zero 
+        using a second function.
+
+        Again we have to change the store values of the tree a bit: 
+        This time we will store the number of zeros in each segment 
+        in t[]. It is pretty clear, how to implement the build, update and 
+        count_zero functions, we can simply use the ideas from the 
+        sum query problem. Thus we solved the first part of the problem.
+
+        Now we learn how to solve the problem of finding the k-th zero 
+        in the array a[]. To do this task, we will descend the Segment Tree, 
+        starting at the root vertex, and moving each time to either 
+        the left or the right child, depending on which segment 
+        contains the k-th zero. In order to decide to which child we 
+        need to go, it is enough to look at the number of zeros 
+        appearing in the segment corresponding to the left vertex. 
+        If this precomputed count is greater or equal to k, it is 
+        necessary to descend to the left child, and otherwise descent 
+        to the right child. Notice, if we chose the right child, 
+        we have to subtract the number of zeros of the left child from k.
+
+        In the implementation we can handle the special case, 
+        a[] containing less than k zeros, by returning -1.
+
+
+        int find_kth(int v, int tl, int tr, int k) {
+            if (k > t[v])
+                return -1;
+            if (tl == tr)
+                return tl;
+            int tm = (tl + tr) / 2;
+            if (t[v*2] >= k)
+                return find_kth(v*2, tl, tm, k);
+            else 
+                return find_kth(v*2+1, tm+1, tr, k - t[v*2]);
+        }
+
+
+    Searching for an array prefix with a given amount
+        The task is as follows: for a given value x we have to quickly 
+        find smallest index i such that the sum of the first i elements 
+        of the array a[] is greater or equal to x (assuming that the array 
+        a[] only contains non-negative values).
+        
+        This task can be solved using binary search, computing the sum of 
+        the prefixes with the Segment Tree. However 
+        this will lead to a O(log^2(n) ) solution.
+
+
+        Instead we can use the same idea as in the previous section, 
+        and find the position by descending the tree: by moving each 
+        time to the left or the right, depending on the sum of the 
+        left child. Thus finding the answer in O(logn) time.
+
+
+    Searching for the first element greater than a given amount
+
+        The task is as follows: for a given value x and a range a[l…r] 
+        find the smallest i in the range a[l…r], 
+        such that a[i] is greater than x.
+
+        This task can be solved using binary search over max prefix 
+        queries with the Segment Tree. However, this will lead to a O(log^2(n) ) solution.
+
+        Instead, we can use the same idea as in the previous sections, 
+        and find the position by descending the tree: by moving each
+        time to the left or the right, depending on the maximum value of the 
+        left child. Thus finding the answer in O(logn) time.
+
+        int get_first(int v, int lv, int rv, int l, int r, int x) {
+            if(lv > r || rv < l) return -1;
+            // segment tree interval too small.
+            if(l <= lv && rv <= r) {
+                if(t[v] <= x) return -1;
+                while(lv != rv) {
+                    int mid = lv + (rv-lv)/2;
+                    if(t[2*v] > x) {
+                        v = 2*v;
+                        rv = mid;
+                    }else {
+                        v = 2*v+1;
+                        lv = mid+1;
+                    }
+                }
+                return lv;
+            }
+            // segment tree interval too large -> break it up and recurse on each side. 
+            int mid = lv + (rv-lv)/2;
+            int rs = get_first(2*v, lv, mid, l, r, x);
+            if(rs != -1) return rs;
+            return get_first(2*v+1, mid+1, rv, l ,r, x);
+        }
+
+
+    Finding subsegments with the maximal sum
+        
+        Here again we receive a range a[l…r] for each query, this 
+        time we have to find a subsegment a[l′…r′] such that 
+        l≤l′ and r′≤r and the sum of the elements of this segment is 
+        maximal. As before we also want to be able to modify individual 
+        elements of the array. The elements of the array can be negative, 
+        and the optimal subsegment can be empty (e.g. if all elements are negative).
+
+        This problem is a non-trivial usage of a Segment Tree. This time 
+        we will store four values for each vertex: the sum of the segment, 
+        the maximum prefix sum, the maximum suffix sum, and the sum of 
+        the maximal subsegment in it. In other words for each segment of 
+        the Segment Tree the answer is already precomputed as well as 
+        the answers for segments touching the left and the 
+        right boundaries of the segment.
+
+
+        How to build a tree with such data? Again we compute it in a 
+        recursive fashion: we first compute all four values 
+        for the left and the right child, and then combine 
+        those to archive the four values for the current vertex. 
+        Note the answer for the current vertex is either:
+
+        the answer of the left child, which means that the optimal 
+        subsegment is entirely placed in the segment of the left child
+
+        the answer of the right child, which means that the optimal 
+        subsegment is entirely placed in the segment of the right child
+
+        the sum of the maximum suffix sum of the left child and the 
+        maximum prefix sum of the right child, which means that the 
+        optimal subsegment intersects with both children.
+
+        Hence the answer to the current vertex is the maximum of 
+        these three values. Computing the maximum prefix / suffix sum 
+        is even easier. Here is the implementation of the combine function, 
+        which receives only data from the left and right child, 
+        and returns the data of the current vertex.
+
+        struct data {
+            int sum, pref, suff, ans;
+        };
+
+        data combine(data l, data r) {
+            data res;
+            res.sum = l.sum + r.sum;
+            res.pref = max(l.pref, l.sum + r.pref);
+            res.suff = max(r.suff, r.sum + l.suff);
+            res.ans = max(max(l.ans, r.ans), l.suff + r.pref);
+            return res;
+        }
+
+        Using the combine function it is easy to build the Segment Tree.
+        We can implement it in exactly the same way as in the previous 
+        implementations. To initialize the leaf vertices, we 
+        additionally create the auxiliary function make_data, 
+        which will return a data object holding the information of a single value.
+
+        data make_data(int val) {
+            data res;
+            res.sum = val;
+            res.pref = res.suff = res.ans = max(0, val);
+            return res;
+        }
+
+        void build(int a[], int v, int tl, int tr) {
+            if (tl == tr) {
+                t[v] = make_data(a[tl]);
+            } else {
+                int tm = (tl + tr) / 2;
+                build(a, v*2, tl, tm);
+                build(a, v*2+1, tm+1, tr);
+                t[v] = combine(t[v*2], t[v*2+1]);
+            }
+        }
+
+        void update(int v, int tl, int tr, int pos, int new_val) {
+            if (tl == tr) {
+                t[v] = make_data(new_val);
+            } else {
+                int tm = (tl + tr) / 2;
+                if (pos <= tm)
+                    update(v*2, tl, tm, pos, new_val);
+                else
+                    update(v*2+1, tm+1, tr, pos, new_val);
+                t[v] = combine(t[v*2], t[v*2+1]);
+            }
+        }
+
+        It only remains, how to compute the answer to a query. 
+        To answer it, we go down the tree as before, 
+        breaking the query into several subsegments that 
+        coincide with the segments of the Segment Tree, 
+        and combine the answers in them into a single answer 
+        for the query. Then it should be clear, that the work 
+        is exactly the same as in the simple Segment Tree, 
+        but instead of summing / minimizing / maximizing the values, 
+        we use the combine function.
+
+        data query(int v, int tl, int tr, int l, int r) {
+            if (l > r) 
+                return make_data(0);
+            if (l == tl && r == tr) 
+                return t[v];
+            int tm = (tl + tr) / 2;
+            return combine(query(v*2, tl, tm, l, min(r, tm)), 
+                        query(v*2+1, tm+1, tr, max(l, tm+1), r));
+        }
+
+
+
+
+################################################################
+SEGMENT TREE WITH NODES THAT STORE SUBARRAYS INSTEAD OF COMPRESSED VALUES 
++ INTERVIEW QUESTIONS (We want to do this when we want to return array values instead of 
+array indexes as answers? thats my currrent thinking vs above approach)
+(https://cp-algorithms.com/data_structures/segment_tree.html)
+
+    Intuition +  Mem Cost:
+
+        This is a separate subsection that stands apart from the others, because at each 
+        vertex of the Segment Tree we don't store information about the corresponding 
+        segment in compressed form (sum, minimum, maximum, ...), but store all 
+        elements of the segment. Thus the root of the Segment Tree will store 
+        all elements of the array, the left child vertex will store the first 
+        half of the array, the right vertex the second half, and so on.
+
+        In its simplest application of this technique we store the elements in 
+        sorted order. In more complex versions the elements are not stored in 
+        lists, but more advanced data structures (sets, maps, ...). But all 
+        these methods have the common factor, that each vertex requires 
+        linear memory (i.e. proportional to the length of the corresponding segment).
+
+        The first natural question, when considering these Segment Trees, is 
+        about memory consumption. Intuitively this might look like O(n2) memory, 
+        but it turns out that the complete tree will only need O(nlogn) memory. 
+        Why is this so? Quite simply, because each element of the array falls 
+        into O(logn) segments (remember the height of the tree is O(logn)).
+
+        So in spite of the apparent extravagance of such a Segment Tree, it 
+        consumes only slightly more memory than the usual Segment Tree.
+
+        Several typical applications of this data structure are described below. 
+        It is worth noting the similarity of these Segment Trees with 2D data 
+        structures (in fact this is a 2D data structure, but with rather limited capabilities).
+
+    Find the smallest number greater or equal to a specified number. 
+    No modification queries.
+
+
+        We want to answer queries of the following form: for three given numbers 
+        (l,r,x) we have to find the minimal number in the segment a[l…r] 
+        which is greater than or equal to x.
+
+        We construct a Segment Tree. In each vertex we store a sorted list 
+        of all numbers occurring in the corresponding segment, like described above.
+        How to build such a Segment Tree as effectively as possible? 
+        As always we approach this problem recursively: 
+        let the lists of the left and right children already be 
+        constructed, and we want to build the list for the current vertex. 
+        From this view the operation is now trivial and can be accomplished 
+        in linear time: We only need to combine the two sorted lists into one, 
+        which can be done by iterating over them using two pointers. 
+        The C++ STL already has an implementation of this algorithm.
+
+        Because this structure of the Segment Tree and the similarities 
+        to the merge sort algorithm, the data structure is also often 
+        called "Merge Sort Tree".
+
+        vector<int> t[4*MAXN];
+
+        void build(int a[], int v, int tl, int tr) {
+            if (tl == tr) {
+                t[v] = vector<int>(1, a[tl]);
+            } else { 
+                int tm = (tl + tr) / 2;
+                build(a, v*2, tl, tm);
+                build(a, v*2+1, tm+1, tr);
+                merge(t[v*2].begin(), t[v*2].end(), t[v*2+1].begin(), t[v*2+1].end(),
+                    back_inserter(t[v]));
+            }
+        }
+
+        We already know that the Segment Tree constructed in this way will 
+        require O(nlogn) memory. And thanks to this implementation 
+        its construction also takes O(nlogn) time, after all each list 
+        is constructed in linear time in respect to its size.
+
+        Now consider the answer to the query. We will go down the tree, 
+        like in the regular Segment Tree, breaking our segment a[l…r] 
+        into several subsegments (into at most O(logn) pieces). 
+        It is clear that the answer of the whole answer is the 
+        minimum of each of the subqueries. So now we only need to 
+        understand, how to respond to a query on one such subsegment
+        that corresponds with some vertex of the tree.
+
+        We are at some vertex of the Segment Tree and we want to compute the answer 
+        to the query, i.e. find the minimum number greater that or equal to a 
+        given number x. Since the vertex contains the list of elements in sorted order, 
+        we can simply perform a binary search on this list and return the first number, 
+        greater than or equal to x.
+
+        Thus the answer to the query in one segment of the tree takes O(logn) time, 
+        and the entire query is processed in O(log2n).
+
+        int query(int v, int tl, int tr, int l, int r, int x) {
+            if (l > r)
+                return INF;
+            if (l == tl && r == tr) {
+                vector<int>::iterator pos = lower_bound(t[v].begin(), t[v].end(), x);
+                if (pos != t[v].end())
+                    return *pos;
+                return INF;
+            }
+            int tm = (tl + tr) / 2;
+            return min(query(v*2, tl, tm, l, min(r, tm), x), 
+                    query(v*2+1, tm+1, tr, max(l, tm+1), r, x));
+        }
+
+        The constant INF is equal to some large number that is bigger than all 
+        numbers in the array. Its usage means, that there is no number greater 
+        than or equal to x in the segment. It has the meaning of "there is no 
+        answer in the given interval".
+    
+
+    Find the smallest number greater or equal to a specified number. 
+    With modification queries. (Solution requres Red Black Tree)
+
+    (ALSO PYTHON DOES NOT HAVE RED BLACK TREE SORTED BINARY TREE MULTISET IMPLEMENTATIONS. 
+    THESE ARE ALSO KNOWN AS SORTED LISTS IN C++ COMMUNITY. WHAT SHOULD WE DO?? LEARN C++
+    I GUESS LOL)
+
+        This task is similar to the previous. The last approach has a disadvantage, 
+        it was not possible to modify the array between answering queries. 
+        Now we want to do exactly this: a modification query will do the assignment a[i]=y.
+
+        The solution is similar to the solution of the previous problem, but 
+        instead of lists at each vertex of the Segment Tree, 
+        we will store a balanced list that allows you to quickly search for numbers, 
+        delete numbers, and insert new numbers. Since the array can contain a 
+        number repeated, the optimal choice is the data structure multiset.
+
+        The construction of such a Segment Tree is done in pretty much the 
+        same way as in the previous problem, only now we need to 
+        combine multisets and not sorted lists. This leads to a construction 
+        time of O(nlog^2(n) ) (in general merging two red-black trees 
+        can be done in linear time, but the C++ STL doesn't 
+        guarantee this time complexity).
+
+        The query function is also almost equivalent, only now the lower_bound 
+        function of the multiset function should be called instead 
+        (std::lower_bound only works in O(logn) time if used with random-access iterators).
+
+        Finally the modification request. To process it, we must go down 
+        the tree, and modify all multiset from the corresponding segments 
+        that contain the effected element. We simply delete the old value 
+        of this element (but only one occurrence), and insert the new value.
+
+        void update(int v, int tl, int tr, int pos, int new_val) {
+            t[v].erase(t[v].find(a[pos]));
+            t[v].insert(new_val);
+            if (tl != tr) {
+                int tm = (tl + tr) / 2;
+                if (pos <= tm)
+                    update(v*2, tl, tm, pos, new_val);
+                else
+                    update(v*2+1, tm+1, tr, pos, new_val);
+            } else {
+                a[pos] = new_val;
+            }
+        }
+
+        Processing of this modification query also takes O(log^2(n)) time.
+
+
+        Other possible variations
+        This technique implies a whole new class of possible applications. 
+        Instead of storing a vector or a multiset in each vertex, other 
+        data structures can be used: other Segment Trees (somewhat discussed in
+        Generalization to higher dimensions), Fenwick Trees, Cartesian trees, etc.
+
+
+################################################################
+2D Segment Tree Interview questions
+
+    Idea:
+
+    A Segment Tree can be generalized quite natural to higher dimensions. 
+    If in the one-dimensional case we split the indices of the array 
+    into segments, then in the two-dimensional we make an ordinary 
+    Segment Tree with respect to the first indices, and for each segment
+    we build an ordinary Segment Tree with respect to the second indices.
+
+
+    Simple 2D Segment Tree
+        A matrix a[0…n−1,0…m−1] is given, and we have to find the sum 
+        (or minimum/maximum) on some submatrix a[x1…x2,y1…y2], as well 
+        as perform modifications of individual matrix elements 
+        (i.e. queries of the form a[x][y]=p).
+
+        So we build a 2D Segment Tree: first the Segment Tree using 
+        the first coordinate (x), then the second (y).
+
+        To make the construction process more understandable, you can 
+        forget for a while that the matrix is two-dimensional, and 
+        only leave the first coordinate. We will construct an ordinary 
+        one-dimensional Segment Tree using only the first coordinate. 
+        But instead of storing a number in a segment, be store an 
+        entire Segment Tree: i.e. at this moment we remember that we 
+        also have a second coordinate; but because at this moment the 
+        first coordinate is already fixed to some interval [l…r], we 
+        actually work with such a strip a[l…r,0…m−1] and for 
+        it we build a Segment Tree.
+
+        Here is the implementation of the construction of a 2D Segment Tree. 
+        It actually represents two separate blocks: the construction of 
+        a Segment Tree along the x coordinate (buildx), and the y 
+        coordinate (buildy). For the leaf nodes in buildy we have to 
+        separate two cases: when the current segment of the first 
+        coordinate [tlx…trx] has length 1, and when it has a length greater 
+        than one. In the first case, we just take the corresponding value 
+        from the matrix, and in the second case we can combine the values of 
+        two Segment Trees from the left and the right son in the coordinate x.
+
+        void build_y(int vx, int lx, int rx, int vy, int ly, int ry) {
+            if (ly == ry) {
+                if (lx == rx)
+                    t[vx][vy] = a[lx][ly];
+                else
+                    t[vx][vy] = t[vx*2][vy] + t[vx*2+1][vy];
+            } else {
+                int my = (ly + ry) / 2;
+                build_y(vx, lx, rx, vy*2, ly, my);
+                build_y(vx, lx, rx, vy*2+1, my+1, ry);
+                t[vx][vy] = t[vx][vy*2] + t[vx][vy*2+1];
+            }
+        }
+
+        void build_x(int vx, int lx, int rx) {
+            if (lx != rx) {
+                int mx = (lx + rx) / 2;
+                build_x(vx*2, lx, mx);
+                build_x(vx*2+1, mx+1, rx);
+            }
+            build_y(vx, lx, rx, 1, 0, m-1);
+        }
+
+        Such a Segment Tree still uses a linear amount of memory, 
+        but with a larger constant: 16nm. It is clear that the described 
+        rocedure buildx also works in linear time.
+
+        Now we turn to processing of queries. We will answer to the two-dimensional 
+        query using the same principle: first break the query on the first coordinate, 
+        and then for every reached vertex, we call the corresponding Segment Tree 
+        of the second coordinate.
+
+        int sum_y(int vx, int vy, int tly, int try_, int ly, int ry) {
+            if (ly > ry) 
+                return 0;
+            if (ly == tly && try_ == ry)
+                return t[vx][vy];
+            int tmy = (tly + try_) / 2;
+            return sum_y(vx, vy*2, tly, tmy, ly, min(ry, tmy))
+                + sum_y(vx, vy*2+1, tmy+1, try_, max(ly, tmy+1), ry);
+        }
+
+        int sum_x(int vx, int tlx, int trx, int lx, int rx, int ly, int ry) {
+            if (lx > rx)
+                return 0;
+            if (lx == tlx && trx == rx)
+                return sum_y(vx, 1, 0, m-1, ly, ry);
+            int tmx = (tlx + trx) / 2;
+            return sum_x(vx*2, tlx, tmx, lx, min(rx, tmx), ly, ry)
+                + sum_x(vx*2+1, tmx+1, trx, max(lx, tmx+1), rx, ly, ry);
+        }
+
+        This function works in O(lognlogm) time, since it first descends 
+        the free in the first coordinate, and for each traversed vertex in 
+        the tree it makes a query in the corresponding Segment Tree 
+        along the second coordinate.
+
+        Finally we consider the modification query. We want to learn how 
+        to modify the Segment Tree in accordance with the change in the 
+        value of some element a[x][y]=p. It is clear, that the changes 
+        will occur only in those vertices of the first Segment Tree that 
+        cover the coordinate x (and such will be O(logn)), and for Segment 
+        Trees corresponding to them the changes will only occurs at those 
+        vertices that covers the coordinate y (and such will be O(logm)). 
+        Therefore the implementation will be not very different form 
+        the one-dimensional case, only now we first descend the first 
+        coordinate, and then the second.
+
+        void update_y(int vx, int lx, int rx, int vy, int ly, int ry, int x, int y, int new_val) {
+            if (ly == ry) {
+                if (lx == rx)
+                    t[vx][vy] = new_val;
+                else
+                    t[vx][vy] = t[vx*2][vy] + t[vx*2+1][vy];
+            } else {
+                int my = (ly + ry) / 2;
+                if (y <= my)
+                    update_y(vx, lx, rx, vy*2, ly, my, x, y, new_val);
+                else
+                    update_y(vx, lx, rx, vy*2+1, my+1, ry, x, y, new_val);
+                t[vx][vy] = t[vx][vy*2] + t[vx][vy*2+1];
+            }
+        }
+
+        void update_x(int vx, int lx, int rx, int x, int y, int new_val) {
+            if (lx != rx) {
+                int mx = (lx + rx) / 2;
+                if (x <= mx)
+                    update_x(vx*2, lx, mx, x, y, new_val);
+                else
+                    update_x(vx*2+1, mx+1, rx, x, y, new_val);
+            }
+            update_y(vx, lx, rx, 1, 0, m-1, x, y, new_val);
+        }
+
+
+    Compression of 2D Segment Tree
+
+        Let the problem be the following: there are n points on the plane 
+        given by their coordinates (xi,yi) and queries of the form "count 
+        the number of points lying in the rectangle ((x1,y1),(x2,y2))". 
+        It is clear that in the case of such a problem it becomes unreasonably 
+        wasteful to construct a two-dimensional Segment Tree with O(n^2) elements. 
+        Most on this memory will be wasted, since each single point can only get 
+        into O(logn) segments of the tree along the first coordinate, 
+        and therefore the total "useful" size of all tree segments on 
+        the second coordinate is O(nlogn).
+
+        So we proceed as follows: at each vertex of the Segment Tree with 
+        respect to the first coordinate we store a Segment Tree constructed
+        only by those second coordinates that occur in the current segment 
+        of the first coordinates. In other words, when constructing a Segment 
+        Tree inside some vertex with index vx and the boundaries tlx and trx, 
+        we only consider those points that fall into this interval x∈[tlx,trx], 
+        and build a Segment Tree just using them.
+
+        Thus we will achieve that each Segment Tree on the 
+        second coordinate will occupy exactly as much memory as it should.
+        As a result, the total amount of memory will decrease to O(nlogn). 
+        We still can answer the queries in O(log^2(n) ) time, we just have to 
+        make a binary search on the second coordinate, 
+        but this will not worsen the complexity.
+
+        But modification queries will be impossible with this structure: 
+        in fact if a new point appears, we have to add a new element in 
+        the middle of some Segment Tree along the second coordinate, which 
+        cannot be effectively done.
+
+        In conclusion we note that the two-dimensional Segment Tree contracted 
+        in the described way becomes practically equivalent to the modification 
+        of the one-dimensional Segment Tree (see Saving the entire subarrays 
+        in each vertex). In particular the two-dimensional Segment Tree is 
+        just a special case of storing a subarray in each vertex of the tree. 
+        It follows, that if you gave to abandon a two-dimensional Segment Tree 
+        due to the impossibility of executing a query, it makes 
+        sense to try to replace the nested Segment Tree with 
+        some more powerful data structure, for example a Cartesian tree.
+    
+    (CONTINUE STUDY OF SEGMENT TREES WITH PRESERVING 
+    THE HISTORY OF ITS VALUES (PERSISTENT SEG TREES))
+
+
+################################################################
+SEGMENT TREE RANGE UPDATES AND LAZY PROPOGATION. 
+(https://cp-algorithms.com/data_structures/segment_tree.html)
+
+    All p roblems in the above sections discussed modification queries 
+    that only effected a single element of the array each. However the 
+    Segment Tree allows applying modification queries to an entire segment 
+    of contiguous elements, and perform the query in the same time O(logn).
+
+    Addition on segments
+        We begin by considering problems of the simplest form: 
+        the modification query should add a number x to all numbers 
+        in the segment a[l…r]. The second query, that we are supposed to answer, 
+        asked simply for the value of a[i].
+
+        To make the addition query efficient, we store at each vertex in the 
+        Segment Tree how many we should add to all numbers in the corresponding 
+        segment. For example, if the query "add 3 to the whole array a[0…n−1]" 
+        comes, then we place the number 3 in the root of the tree. In general 
+        we have to place this number multiple to multiple segments, which form a 
+        partition of the query segment. Thus we don't have to change all O(n) values, 
+        but only O(logn) many.
+
+        If now there comes a query that asks the current value of a particular 
+        array entry, it is enough to go down the tree and add up all 
+        values found along the way.
+
+        void build(int a[], int v, int tl, int tr) {
+            if (tl == tr) {
+                t[v] = a[tl];
+            } else {
+                int tm = (tl + tr) / 2;
+                build(a, v*2, tl, tm);
+                build(a, v*2+1, tm+1, tr);
+                t[v] = 0;
+            }
+        }
+
+        void update(int v, int tl, int tr, int l, int r, int add) {
+            if (l > r)
+                return;
+            if (l == tl && r == tr) {
+                t[v] += add;
+            } else {
+                int tm = (tl + tr) / 2;
+                update(v*2, tl, tm, l, min(r, tm), add);
+                update(v*2+1, tm+1, tr, max(l, tm+1), r, add);
+            }
+        }
+
+        int get(int v, int tl, int tr, int pos) {
+            if (tl == tr)
+                return t[v];
+            int tm = (tl + tr) / 2;
+            if (pos <= tm)
+                return t[v] + get(v*2, tl, tm, pos);
+            else
+                return t[v] + get(v*2+1, tm+1, tr, pos);
+        }
+
+
+    Assignment on segments
+        Suppose now that the modification query asks to assign each element 
+        of a certain segment a[l…r] to some value p. As a second query we 
+        will again consider reading the value of the array a[i].
+
+        To perform this modification query on a whole segment, you have 
+        to store at each vertex of the Segment Tree whether 
+        the corresponding segment is covered entirely with the 
+        same value or not. This allows us to make a "lazy" update: 
+        instead of changing all segments in the tree that cover the 
+        query segment, we only change some, and leave others unchanged. 
+        A marked vertex will mean, that every element of the corresponding 
+        segment is assigned to that value, and actually also 
+        the complete subtree should only contain this value. In a sense we 
+        are lazy and delay writing the new value to all those vertices.
+        We can do this tedious task later, if this is necessary.
+
+        So after the modification query is executed, some parts of the tree 
+        become irrelevant - some modifications remain unfulfilled in it.
+
+        For example if a modification query "assign a number to the 
+        whole array a[0…n−1]" gets executed, in the Segment Tree only 
+        a single change is made - the number is placed in the root of 
+        the tree and this vertex gets marked. The remaining segments 
+        remain unchanged, although in fact the number should be placed in the whole tree.
+
+        Suppose now that the second modification query says, that the 
+        first half of the array a[0…n/2] should be assigned with some other number. 
+        To process this query we must assign each element in the 
+        whole left child of the root vertex with that number. But before 
+        we do this, we must first sort out the root vertex first. The 
+        subtlety here is that the right half of the array should 
+        still be assigned to the value of the first query, and at 
+        the moment there is no information for the right half stored.
+
+        The way to solve this is to push the information of 
+        the root to its children, i.e. if the root of the tree was 
+        assigned with any number, then we assign the left and the 
+        right child vertices with this number and remove the mark 
+        of the root. After that, we can assign the left child with 
+        the new value, without loosing any necessary information.
+
+        Summarizing we get: for any queries (a modification or reading query) 
+        during the descent along the tree we should always 
+        push information from the current vertex into both of 
+        its children. We can understand this in such a way, that 
+        when we descent the tree we apply delayed modifications, 
+        but exactly as much as necessary (so not to degrade the complexity of O(logn).
+
+        For the implementation we need to make a push function, 
+        which will receive the current vertex, and it will push 
+        the information for its vertex to both its children. We 
+        will call this function at the beginning of the query 
+        functions (but we will not call it from the leaves, 
+        because there is no need to push information from 
+        them any further).
+
+        void push(int v) {
+            if (marked[v]) {
+                t[v*2] = t[v*2+1] = t[v];
+                marked[v*2] = marked[v*2+1] = true;
+                marked[v] = false;
+            }
+        }
+
+        void update(int v, int tl, int tr, int l, int r, int new_val) {
+            if (l > r) 
+                return;
+            if (l == tl && tr == r) {
+                t[v] = new_val;
+                marked[v] = true;
+            } else {
+                push(v);
+                int tm = (tl + tr) / 2;
+                update(v*2, tl, tm, l, min(r, tm), new_val);
+                update(v*2+1, tm+1, tr, max(l, tm+1), r, new_val);
+            }
+        }
+
+        int get(int v, int tl, int tr, int pos) {
+            if (tl == tr) {
+                return t[v];
+            }
+            push(v);
+            int tm = (tl + tr) / 2;
+            if (pos <= tm) 
+                return get(v*2, tl, tm, pos);
+            else
+                return get(v*2+1, tm+1, tr, pos);
+        }
+
+        Notice: the function get can also be implemented in a 
+        different way: do not make delayed updates, but immediately
+        return the value t[v] if marked[v] is true.
+
+    Adding on segments, querying for maximum
+        Now the modification query is to add a number to all elements 
+        in a range, and the reading query is to find the maximum in a range.
+
+        So for each vertex of the Segment Tree we have to store 
+        the maximum of the corresponding subsegment. 
+        The interesting part is how to recompute 
+        these values during a modification request.
+
+        For this purpose we keep store an additional value 
+        for each vertex. In this value we store the addends 
+        we haven't propagated to the child vertices. 
+        Before traversing to a child vertex, we call 
+        push and propagate the value to both children. 
+        We have to do this in both the update 
+        function and the query function.
+
+        void push(int v) {
+            t[v*2] += lazy[v]; # update maxes
+            lazy[v*2] += lazy[v];
+            t[v*2+1] += lazy[v]; # update maxes
+            lazy[v*2+1] += lazy[v];
+            lazy[v] = 0;
+        }
+
+        void update(int v, int tl, int tr, int l, int r, int addend) {
+            if (l > r) 
+                return;
+            if (l == tl && tr == r) {
+                t[v] += addend;
+                lazy[v] += addend;
+            } else {
+                push(v);
+                int tm = (tl + tr) / 2;
+                update(v*2, tl, tm, l, min(r, tm), addend);
+                update(v*2+1, tm+1, tr, max(l, tm+1), r, addend);
+                t[v] = max(t[v*2], t[v*2+1]);
+            }
+        }
+
+        int query(int v, int tl, int tr, int l, int r) {
+            if (l > r)
+                return -INF;
+            if (l <= tl && tr <= r)
+                return t[v];
+            push(v);
+            int tm = (tl + tr) / 2;
+            return max(query(v*2, tl, tm, l, min(r, tm)), 
+                    query(v*2+1, tm+1, tr, max(l, tm+1), r));
+        }
+
 
 ####################################################################
+Another segment tree tutorial: 
 Segment trees Analysis and in C++
 
     Let our data be in an array arr[] of size nn.
@@ -1962,6 +3297,7 @@ class NumArray:
             return self.sumRange(i, j, 2 * index + 2, mid + 1, high)
         elif j <= mid:
             return self.sumRange(i, j, 2 * index + 1, low, mid)
+
         left = self.sumRange(i, mid , 2 * index + 1, low, mid)
         right = self.sumRange(mid + 1, j , 2 * index + 2, mid + 1, high)
         return left + right    
@@ -3098,3 +4434,135 @@ class MyHashMap:
 
 ###########################################################################################################################
 ################################# CIRCULAR QUEUE
+
+
+
+
+###############################################################################
+################################################################################
+
+PLEASE FINISH YOUR NOTES ON FRACTIONAL CASCADING!!
+
+
+Improving Binary search with fractional cascading!
+
+    Things become more interesting when we have to perform an 
+    iterative binary search on k lists in which we find the target 
+    value in each of the k lists independently. The problem statement could be formally defined as
+
+    Given k lists of n sorted integers each, and a target value x, return the 
+    position of the smallest value greater than or equal to x in each of the k lists. 
+    Preprocessing of the list is allowed before answering the queries.  
+
+
+    Naive approach do binary search in each list -> klogn
+
+    Second approach (memory expensive):
+    Unified binary search
+    This approach uses some extra space, preprocessing and computations to reduce search time. The preprocessing actually involves precomputing the positions of all elements in all the k lists. This precomputation enables us to perform just one binary search and get the required precalculated positions in one go.
+
+    Preprocess
+    The preprocessing is done in two phases; in the first phase, we compute a position tuple for each element and associate it with the same. In phase two of preprocessing, we create an auxiliary list containing all the elements of all the lists, on which we then perform a binary search for the given target value.
+
+    FRACTIONAL CASCADING APPROACH:
+
+    Fractional cascading is a technique through which we speed up the 
+    iterative binary searches by creating bridges between the lists. 
+    The main idea behind this approach is to dampen the need to perform 
+    binary searches on subsequent lists after performing the search on one.
+
+    In the k-binary searches approach, we solved the problem by performing k 
+    binary searches on k lists. If, after the binary search on the first list, 
+    we would have known a range within which the target value was present in the 
+    2nd list, we would have limited our search within that subset which helps us 
+    save a bunch of computation time. The bridges, defined above, provides us 
+    with a shortcut to reach the subset of the other list where that target value would be present.
+
+
+    Fractional cascading is just an idea through which we could speed up binary searches, 
+    implementations vary with respect to the underlying data. The bridges could be 
+    implemented using pointers, graphs, or array indexes.
+
+    Preprocess
+    Preprocessing is a super-critical step in fractional cascading because it is 
+    responsible for speeding up the iterative binary searches. Preprocessing actually 
+    sets up all the bridges from all the elements from one list to the range of items 
+    in the lower list where the element could be found. These bridges then 
+    cascade to all the lists on the lower levels.
+
+    Create Auxiliary Lists
+    The first step in pre-processing is to create k auxiliary lists from k original lists. 
+    These lists are created bottom-up which means lists on the lower levels are created 
+    first - M(i+1) is created before M(i). An auxiliary list M(i) is created as a 
+    sorted list of elements of the original list L(i) and half of the previously 
+    created auxiliary list M(i+1). The half elements of auxiliary lists are 
+    chosen by picking every other element from it.
+
+    Create Auxiliary Lists
+
+    By picking every other element from lower-level lists, we fill the gaps in 
+    value ranges in the original list L(i), giving us a uniform spread of values across 
+    all auxiliary lists. Another advantage of picking every other element is that we eradicate 
+    the need for performing binary searches on subsequent lists altogether. Now we only need to 
+    perform a binary search for list M(0) and for every other list, we only need to check the 
+    element we reach via the bridge and an element before that - a constant time comparison.
+
+    Position tuples
+    A position tuple for Fractional Cascading is a 2 item tuple, associated with 
+    each element of the auxiliary list, where the first item is the position of the 
+    element in the original list on the same level - serving as the required position - 
+    and the second element is the position of the element in the auxiliary list on 
+    the lower level - serving as the bridge from one level to another.
+
+    Create position pointerss
+
+    The position tuple for each element in the auxiliary array can be created by 
+    doing a binary search on the original list and the auxiliary list on the lower 
+    level. Given a 2-dimensional array arr and auxiliary lists m_arr we compute the 
+    position tuples for element (i, j) by performing a binary search on all k original 
+    and auxiliary lists as shown in python code below
+
+    for i, l in enumerate(m_arr):
+        for j, m in enumerate(m_arr[i]):
+            pointers[i][j] = [
+                bisect.bisect_left(arr[i], m_arr[i][j]),
+                bisect.bisect_left(m_arr[i+1], m_arr[i][j]),
+            ]
+            
+    Fractional Cascading in action
+    We start by performing a binary search on the first auxiliary list M(0) from which we get the element corresponding to the target value. The position tuple for this element contains the position corresponding to the original list L(0) and bridge that will take us to the list M(1). Now when we move to the list M(1) through the bridge and have reached the index b.
+
+    Since auxiliary lists have uniform range spread, because of every other element being promoted, we are sure that the target value should be checked again at the index b and b - 1; because if the value was any lower it would have been promoted and bridged to other value and hence the trail we trace would be different from what we are tracing now.
+
+    Once we know which of the b and b-1 index to pick (depending on the values at the index and the target value) we add the first item of the position tuple to the solution set and move the auxiliary list on the lower level and the entire process continues.
+
+    Once we reach the last auxiliary list and process the position tuple there and pick the element, our solution set contains the required positions and we can stop the iteration.
+
+    def get_locations_fractional_cascading(x): 
+        locations = []
+
+        # the first and only binary search on the auxiliary list M[0]
+        index = bisect.bisect_left(m_arr[0], x)
+
+        # loc always holds the required location from the original list on same level
+        # next_loc holds the bridge index on the lower level
+        loc, next_loc = pointers[0][index]
+
+        # adding loc to the solution
+        locations.append(loc)
+
+        for i in range(1, len(m_arr)):
+            # we check for the element we reach through the bridge
+            # and the one before it and make the decision to go with one
+            # depending on the target value.
+            if x <= m_arr[i][next_loc-1]:
+                loc, next_loc = pointers[i][next_loc-1]
+            else:
+                loc, next_loc = pointers[i][next_loc]
+
+            # adding loc to the solution
+            locations.append(loc)
+
+        # returning the required locations
+        return locations
+    The entire working code could be found here github.com/arpitbbhayani/fractional-cascading  
