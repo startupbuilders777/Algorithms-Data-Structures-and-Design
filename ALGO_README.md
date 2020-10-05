@@ -4143,6 +4143,156 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     -> Topological SORT: dfs, process nodes children first, then add node to list. then reverse entire list at end
      REMOVING CYCLES, DFS, AND BFS using colors: DONE IN GRAPHA ALGO REVIEW SECTION BELOW. 
 
+
+
+
+
+
+2.31) DFS ANALYSIS START AND END TIMES!
+    The parenthesis theorem says that the discovery 
+    and finish time intervals are either disjoint or nested.
+
+    With the graph version of DFS, only some edges 
+    (the ones for which visited[v] is false) will be traversed. 
+    These edges will form a tree, called the depth-first-search 
+    tree of G starting at the given root, and the edges in this
+    tree are called tree edges. The other edges of G can be 
+    divided into three categories:
+
+    Back edges point from a node to one of its ancestors in the DFS tree.
+    Forward edges point from a node to one of its descendants.
+    Cross edges point from a node to a previously visited 
+    node that is neither an ancestor nor a descendant.
+
+    AnnotatedDFS(u, parent):
+        parent[u] = parent
+        start[u] = clock; clock = clock + 1
+        visited[u] = true
+        for each successor v of u:
+            if not visited[v]:
+            AnnotatedDFS(v, u)
+        end[u] = clock; clock = clock + 1
+
+    we will show in a moment that a graph is acyclic if and 
+    only if it has no back edges. But first: how do we tell 
+    whether an edge is a tree edge, a back edge, a forward edge, 
+    or a cross edge? We can do this using the clock mechanism 
+    we used before to convert a tree into a collection of intervals.
+
+
+    Tree edges are now easy to recognize; uv is a tree edge 
+    if parent[v] = u. For the other types of edges, 
+    we can use the (start,end) intervals to tell 
+    whether v is an ancestor, descendant, or distant cousin of u:
+
+    Edge type of uv | start times         | end times
+    Tree edge       | start[u] < start[v] | end[u] > end[v]
+    Back edge       | start[u] > start[v] | end[u] < end[v]
+    Forward edge    | start[u] < start[v] | end[u] > end[v]
+    Cross edge      | start[u] > start[v] | end[u] > end[v]
+
+2.32) Construct the Rooted Tree by using start and finish time of its 
+      DFS traversal: 
+
+
+    Given start and finish times of DFS traversal of N vertices 
+    that are available in a Rooted tree, the task is 
+    to construct the tree (Print the Parent of each node).
+
+    Parent of the root node is 0.
+
+    Examples:
+
+    Input: Start[] = {2, 4, 1, 0, 3}, End[] = {3, 5, 4, 5, 4}
+    Output: 3 4 4 0 3
+    Given Tree is -:
+                        4(0, 5)
+                        /   \
+                (1, 4)3     2(4, 5)
+                    /  \    
+            (2, 3)1    5(3, 4)
+
+
+    The root will always have start time = 0
+    processing a node takes 1 unit time but backtracking 
+    does not consume time, so the finishing time 
+    of two nodes can be the same.
+
+    Input: Start[] = {4, 3, 2, 1, 0}, End[] = {5, 5, 3, 3, 5}
+    Output: 2 5 4 5 0
+
+    Root of the tree is the vertex whose starting time is zero.
+
+    Now, it is sufficient to find the descendants of a vertex, 
+    this way we can find the parent of every vertex.
+
+    Define Identity[i] as the index of the vertex with starting equal to i.
+    As Start[v] and End[v] are starting and ending time of vertex v.
+    The first child of v is Identity[Start[v]+1] and
+    the (i+1)th is Identity[End[chv[i]]] where chv[i] is the ith child of v.
+    Traverse down in DFS manner and update the parent of each node.
+    
+    Time Complexity : O(N)
+    where N is the number of nodes in the tree.
+    
+    def Restore_Tree(S, E): 
+    
+        # Storing index of vertex with starting 
+        # time Equal to i 
+        Identity = N*[0]   
+    
+        for i in range(N): 
+            Identity[Start[i]] = i 
+    
+        # Parent array 
+        parent = N*[-1] 
+        curr_parent = Identity[0] 
+        
+        for j in range(1, N): 
+    
+            # Find the vertex with starting time j 
+            child = Identity[j] 
+    
+            # If end time of this child is greater than  
+            # (start time + 1), then we traverse down and  
+            # store curr_parent as the parent of child 
+            if End[child] - j > 1: 
+                parent[child] = curr_parent 
+                curr_parent = child 
+    
+            # Find the parent of current vertex 
+            # over iterating on the finish time 
+            else:      
+                parent[child] = curr_parent 
+    
+                # Backtracking takes zero time 
+                while End[child]== End[parent[child]]: 
+                    child = parent[child] 
+                    curr_parent = parent[child] 
+                    if curr_parent == Identity[0]: 
+                        break
+        for i in range(N): 
+            parent[i]+= 1
+    
+        # Return the parent array 
+        return parent 
+    
+    # Driver Code  
+    if __name__=="__main__": 
+        N = 5
+    
+        # Start and End time of DFS 
+        Start = [2, 4, 1, 0, 3] 
+        End = [3, 5, 4, 5, 4] 
+        print(*Restore_Tree(Start, End)) 
+
+
+
+
+
+
+
+
 2.35) In head recursion , the recursive call, when it happens, comes 
       before other processing in the function (think of it happening at the top, 
       or head, of the function). In tail recursion , it's the 
