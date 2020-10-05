@@ -9423,7 +9423,7 @@ COOL NOTES PART 6.5
         Notice that the truncation in the shift right operation automatically rounds the division-by-2 down,
         e.g. 17/2  = 8.
 
-        For example:         A = 34 (base 10)                  = 100010 (base 2)
+        For example:        A = 34 (base 10)                  = 100010 (base 2)
                             A = A << 1 = A * 2 = 68 (base 10) = 1000100 (base 2)
                             A = A >> 2 = A / 4 = 17 (base 10) = 10001 (base 2)
                             A = A >> 1 = A / 2 = 8 (base 10) = 1000 (base 2) <- LSB( Least Significant Bit )is gone
@@ -9733,7 +9733,7 @@ COMPETITIVE PROGRAMMING GRAPH ALGORITHM GUIDE:
                 put it in the SCC of vertex v. 
 
 
-    Dijkstra
+    Dijkstra -----------------------
     This algorithm is a single source shortest path (from one source to any other vertices). 
     Pay attention that you can't have edges with negative weight.
 
@@ -9905,7 +9905,7 @@ COMPETITIVE PROGRAMMING GRAPH ALGORITHM GUIDE:
                     then ans += w
         Time complexity : .
 
-    Prim
+    Prim -----------------------------------------------
         In this approach, we act like Dijkstra. We have a set of vertices S, 
         in each step we add the nearest vertex to S, in S 
         (distance of v from  where weight(i, j) 
