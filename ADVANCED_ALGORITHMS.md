@@ -1,4 +1,140 @@
 ##########################################################
+LCA - Intro (https://cp-algorithms.com/graph/lca.html)
+    (USE THE IMAGE IN THE TUTORIAL TO HELP SEE EXAMPLE)
+
+
+    Given a tree G. Given queries of the form (v1,v2), for 
+    each query you need to find the lowest common ancestor (or least common ancestor), 
+    i.e. a vertex v that lies on the path from the root to v1 
+    and the path from the root to v2, and the vertex should be 
+    the lowest. In other words, the desired vertex v is the most 
+    bottom ancestor of v1 and v2. It is obvious that their 
+    lowest common ancestor lies on a shortest path from v1 and v2. 
+    Also, if v1 is the ancestor of v2, v1 is their lowest common ancestor.
+
+
+    The Idea of the Algorithm
+    Before answering the queries, we need to preprocess the tree.
+    We make a DFS traversal starting at the root and we build a list 
+    euler which stores the order of the vertices that we visit (a vertex 
+    is added to the list when we first visit it, and after the return 
+    of the DFS traversals to its children). This is also called an Euler tour 
+    of the tree. It is clear that the size of this list will be O(N). 
+    We also need to build an array first[0..N−1] which stores for each 
+    vertex i its first occurrence in euler. That is, the first position 
+    in euler such that euler[first[i]]=i. Also by using the DFS we 
+    can find the height of each node (distance from root to it) 
+    and store it in the array height[0..N−1].
+
+    So how can we answer queries using the Euler tour and the additional 
+    two arrays? Suppose the query is a pair of v1 and v2. Consider 
+    the vertices that we visit in the Euler tour between the first 
+    visit of v1 and the first visit of v2. It is easy to see, that the 
+    LCA(v1,v2) is the vertex with the lowest height on this path. 
+    We already noticed, that the LCA has to be part of the shortest 
+    path between v1 and v2. Clearly it also has to be the vertex 
+    with the smallest height. And in the Euler tour we essentially 
+    use the shortest path, except that we additionally visit all 
+    subtrees that we find on the path. But all vertices in these 
+    subtrees are lower in the tree than the LCA and therefore have a
+    larger height. So the LCA(v1,v2) can be uniquely determined 
+    by finding the vertex with the smallest height in the Euler tour 
+    between first(v1) and first(v2).
+
+    To recap: to answer a query we just need to find the vertex 
+    with smallest height in the array euler in the range from 
+    first[v1] to first[v2]. Thus, the LCA problem is reduced to 
+    the RMQ problem (finding the minimum in an range problem).
+    
+    Using Sqrt-Decomposition, it is possible to obtain
+    a solution answering each query in O(√N) with preprocessing in O(N) time.
+
+    Using a Segment Tree you can answer each query in O(logN) 
+    with preprocessing in O(N) time.
+
+    Since there will almost never be any update to the stored values, 
+    a Sparse Table might be a better choice, allowing O(1) 
+    query answering with O(NlogN) build time.
+
+LCA - IMPLEMENTATION OF ABOVE IDEA: 
+
+    struct LCA {
+        vector<int> height, euler, first, segtree;
+        vector<bool> visited;
+        int n;
+
+        LCA(vector<vector<int>> &adj, int root = 0) {
+            n = adj.size();
+            height.resize(n);
+            first.resize(n);
+            euler.reserve(n * 2);
+            visited.assign(n, false);
+            dfs(adj, root);
+            int m = euler.size();
+            segtree.resize(m * 4);
+            build(1, 0, m - 1);
+        }
+
+        void dfs(vector<vector<int>> &adj, int node, int h = 0) {
+            visited[node] = true;
+            height[node] = h;
+            first[node] = euler.size();
+            euler.push_back(node);
+            for (auto to : adj[node]) {
+                if (!visited[to]) {
+                    dfs(adj, to, h + 1);
+                    euler.push_back(node);
+                }
+            }
+        }
+
+        void build(int node, int b, int e) {
+            if (b == e) {
+                segtree[node] = euler[b];
+            } else {
+                int mid = (b + e) / 2;
+                build(node << 1, b, mid);
+                build(node << 1 | 1, mid + 1, e);
+                int l = segtree[node << 1], r = segtree[node << 1 | 1];
+                segtree[node] = (height[l] < height[r]) ? l : r;
+            }
+        }
+
+        int query(int node, int b, int e, int L, int R) {
+            if (b > R || e < L)
+                return -1;
+            if (b >= L && e <= R)
+                return segtree[node];
+            int mid = (b + e) >> 1;
+
+            int left = query(node << 1, b, mid, L, R);
+            int right = query(node << 1 | 1, mid + 1, e, L, R);
+            if (left == -1) return right;
+            if (right == -1) return left;
+            return height[left] < height[right] ? left : right;
+        }
+
+        int lca(int u, int v) {
+            int left = first[u], right = first[v];
+            if (left > right)
+                swap(left, right);
+            return query(1, 0, euler.size() - 1, left, right);
+        }
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+##########################################################
 RMQ PRACTICAL IMPLEMENTATIONS:
 
 
