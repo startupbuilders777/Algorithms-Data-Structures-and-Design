@@ -72,6 +72,226 @@ TOPICS TO UNDERSTAND:
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
+-72) Getting tripped up by doordash challanege:
+     WHEN TO USE DP VS SORTING+GREEDY+MAXIMALMUNCH+HEAPQ SOLUTION/HILLFINDING. 
+
+    Question:
+
+
+    
+
+
+    from heapq import heappush, heappop
+
+    def maximumTeamQuality(speed, professionalism, maxDashers):
+        '''
+        sort by professionalism.
+        
+        keep taking ppl, and update max?
+        as we reduce professionalism -> speed increases. 
+        and we should always take everyone thats more professional
+        
+        '''  
+        
+        # max dashers ?
+        
+        '''
+        if we go over max, then move 
+        '''
+        # couldnt you sort by professionalism first before DPIng?
+        zipped = sorted(zip(professionalism, speed), key=lambda x: x[0], reverse=True)
+        # professionalism, speed = zip(*zipped)
+        
+        # pop the lowest sum element each time when we go over maxDashers!
+        # since the professionalism doesnt matter for the chosen ones if we choosing lower
+        # professionalism one. 
+        # need minheap.
+        
+        maxQ = 0
+        curr_sum = 0
+        h = []
+        
+        for p, s in zipped: 
+            curr_sum += s
+            # check
+            if len(h) == maxDashers:
+                smallest = heappop(h)
+                curr_sum -= smallest[0]
+                
+            heappush(h, [s])    
+
+            maxQ = max(maxQ, curr_sum*p)
+        return maxQ
+
+
+
+
+-71) Interval Problem Type Intuition, and Line Sweeping
+     Try 2 pointer! or heap!
+     
+    986. Interval List Intersections
+    Given two lists of closed intervals, each list of 
+    intervals is pairwise disjoint and in sorted order.
+
+    Return the intersection of these two interval lists.
+
+    (Formally, a closed interval [a, b] (with a <= b) denotes the set of real numbers x with a <= x <= b.  The intersection of two closed intervals is a set of real numbers that is either empty, or can be represented as a closed interval.  For example, the intersection of [1, 3] and [2, 4] is [2, 3].)
+
+    Example 1:
+    Input: A = [[0,2],[5,10],[13,23],[24,25]], B = [[1,5],[8,12],[15,24],[25,26]]
+    Output: [[1,2],[5,5],[8,10],[15,23],[24,24],[25,25]]
+
+    2 POINTER SOLUTION OPTIMAL: 
+        def intervalIntersection(self, A: List[List[int]], B: List[List[int]]) -> List[List[int]]:
+            '''
+            FOR INTERVAL QUESTIONS RMBR:
+            SORTS FOR INTERSECTIONS USUALLY BEST TO SORT BY START TIME.
+            
+            BUT WHENEVER WE ARE CHECKING TO REMOVE INTERVALS FROM THE ACTIVE REGION!
+            REMOVE BASED ON EARLIEST FINISH TIME, RATHER THAN OTHER METRICS:
+            
+            SOLUTION IS 2 POINTERS:
+            
+            ANOTHER INTERSECTION HINT: 
+            INTERSECTIONS HAVE THE FORM OF THE FOLLOWING:
+            [max(Astart, Bstart), min(Aend, Bend)]
+            -> intersection exists if above computation is a real interval!
+                (aka has positive length)        
+            '''
+            
+            i = 0
+            j = 0
+            res = []
+            if len(A) == 0 or len(B) == 0:
+                return []
+            
+            '''
+            You dont move pointers based on what the next earlier one was
+            but the one that finished earlier, 
+            because that one can no longer intersect with anything!
+            '''
+            while i < len(A) and j < len(B):
+                
+                a_start, a_end = A[i]
+                b_start, b_end = B[j]
+                
+                pos_int_s = max(a_start, b_start)
+                pos_int_e = min(a_end, b_end)
+                if pos_int_s <= pos_int_e:
+                    res.append([pos_int_s, pos_int_e])
+                
+                if a_end < b_end:
+                    i += 1
+                else:
+                    j += 1 
+            return res
+
+
+    LINE SWEEPING SOLUTION:
+        Remember when things are presorted, then line sweeep is not 
+        optimal because it requires sorting.
+        O(NLOGN) so it is slower than sorted variant!
+
+
+
+        Like every interval problem, this can be solved by line sweep. 
+        Note that, if the input is already pre-sorted, this 
+        isn't an optimal solution. But it is cool and interesting.
+
+        The general idea here is that we have a window, keyed by 
+        person A or person B. When we add/remove intervals, we just need 
+        to be careful that we're extending any existing window values, 
+        if that person already exists in our window.
+
+        Time: O(n log n)
+        Space: O(n)
+
+            def intervalIntersection(self, A: List[List[int]], B: List[List[int]]) -> List[List[int]]:
+                events = []
+                OPEN, CLOSE = 0, 1
+                
+                for start, end in A:
+                    events.append((start, OPEN, end, "A"))
+                    events.append((end, CLOSE, end, "A"))
+                    
+                for start, end in B:
+                    events.append((start, OPEN, end, "B"))
+                    events.append((end, CLOSE, end, "B"))
+                
+                events.sort()
+                window = {}
+                ans = []
+                
+                for time, event_type, end, key in events:
+                    if event_type == OPEN:
+                        if key in window:
+                            existing_start, existing_end = window[key]
+                            best_start = min(existing_start, time)
+                            best_end = max(end, existing_end)
+                            window[key] = ((best_start, best_end))
+                        else:
+                            window[key] = (time, end)
+                    else:
+                        del window[key]
+
+                    if len(window) > 1:
+                        start_a, end_a = window["A"]
+                        start_b, end_b = window["B"]
+                        
+                        best_start = max(start_a, start_b)
+                        best_end = min(end_a, end_b)
+                        ans.append((best_start, best_end))
+                        
+                return ans
+
+
+    LINE SWEEPING second method.
+
+        class Solution {
+            public int[][] intervalIntersection(int[][] A, int[][] B) {
+                List<int[]> res = new ArrayList<>();
+                int n = A.length + B.length;
+                int[] start = new int[n], end = new int[n];
+                int c = 0;
+                for (int i = 0;  i < A.length; ++i) {
+                start[c] = A[i][0];
+                end[c++] = A[i][1];
+                }
+                
+                for (int i = 0;  i < B.length; ++i) {
+                start[c] = B[i][0];
+                end[c++] = B[i][1];
+                }
+                
+                // O(n log (n))
+                Arrays.sort(start);
+                Arrays.sort(end);
+                
+                /**
+                line sweep : go from left to right, stopping at start or end intervals.
+                if its a start the increment busy.
+                if its an end, decrement busy. before that check if 2 intervals are busy at the moment, if they are, it means A and B are indulged in the period end[e] and start[s - 1].
+                note that end[e - 1] < start[s - 1] if busy = 2 else busy < 2, so the interval of interest is start[s - 1] and end[e]. Also s cannot be 0.
+                */
+                int s = 0, e = 0, busy = 0;
+                while( e < n ) {
+                if (s < n && start[s] <= end[e]) {
+                    busy++;
+                    ++s;
+                } else {
+                    if (busy == 2) {
+                    res.add(new int[] {start[s - 1], end[e]});
+                    }
+                    busy--;
+                    ++e;
+                }
+                }
+                
+                return res.toArray(new int[0][0]); 
+            }
+        }
+
+
 
 
 -70) Example of extracting dynamic programming traversal paths 
@@ -287,6 +507,45 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         By waiting to do operations until it is necessary -> and being GREEDY and smart 
         about how to update the state of the problem for only the next state[and just the next state], 
         and not all states, we optimized stack 2.0. 
+
+        IMPLEMENTATION OF SUPER STACK:
+    
+        def superStack(operations):
+            stack = []
+            inc = []
+            result = []
+            '''
+            Save and propogate lazy updates using inc[]
+            based on how we access stack 
+            '''
+            for op in operations:
+                
+                items = op.split()
+                cmd = items[0]  
+                if cmd == "push":
+                    stack.append(int(items[1]) )
+                    inc.append(0)
+                elif cmd == "pop":
+                    if len(stack) > 0:
+                        stack.pop()
+                        poppedInc = inc.pop()
+                        if len(inc) > 0:
+                            inc[-1] += poppedInc
+                elif cmd == "inc":
+                    # inc 2 2
+                    pos, val = int(items[1]), int(items[2])
+                    inc[pos-1] += val
+                
+                if len(stack) > 0:
+                    print(stack[-1] + inc[-1])
+                else:
+                    print("EMPTY")
+
+
+
+
+
+
 
 
 -66)  Hill finding w/ stacks and queues and lazy updates in data structures: 
@@ -4286,13 +4545,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         End = [3, 5, 4, 5, 4] 
         print(*Restore_Tree(Start, End)) 
 
-
-
-
-
-
-
-
 2.35) In head recursion , the recursive call, when it happens, comes 
       before other processing in the function (think of it happening at the top, 
       or head, of the function). In tail recursion , it's the 
@@ -4351,7 +4603,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     GetArticulationPoints(u)
         visited[u] = true
         u.st = time++
-        u.low = v.st    //keeps track of highest ancestor reachable from any descendants
+        u.low = u.st    //keeps track of highest ancestor reachable from any descendants
         dfsChild = 0    //needed because if no child then removing this node doesn't decompose graph
         for each ni in adj[i]
             if not visited[ni]
