@@ -75,10 +75,29 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 -72) Getting tripped up by doordash challanege:
      WHEN TO USE DP VS SORTING+GREEDY+MAXIMALMUNCH+HEAPQ SOLUTION/HILLFINDING. 
 
-    Question:
+    Question: 
+    So given drivers, they have speed, and professionalism such as:
+    5 drivers and [100, 12, 4, 23, 5], [20, 30, 50, 12, 12]
 
+    We can only select a maximum of 3 drivers and a minium of 1. 
+    We want to get the max quality of a set of drivers 
+    where quality = (Sum of drivers speed ) * min(of all drivers professionalism)
 
+    What we can do is sort by professionals, so we can always take the best drivers first
+    and then the worse drivers next. And we should take maximal because its sum for the speed.
+    HOWEVER WE ARE LIMITED IN THE NUMBER OF MAX DRIVERS WE CAN TAKE.
+    TO DEAL WITH THAT USE A HEAPQ TO STORE THE CURRENT SUM OF DRIVERS, AND POP THE SMALLEST
+    VALUE DRIVER FROM SET OF DRIVERS.
+    and keep track of max sum as you do this. 
     
+
+    Initially i tried to solve with DP because thinking through the problem was hard.
+    You should know when to use dp and when not too. YOU MUST START BY EXPLOITING PROBLEM 
+    STRUCTURE AND THINKING GREEDY IN ALL DIRECTONS. Then when you figure that out, 
+    TRY HILL FINDING WITH A DEQUE/HEAPQ/SEGMENT TREE. 
+
+    THAT IS THE WAY!!!!
+    SOLUTION BELOW: 
 
 
     from heapq import heappush, heappop
@@ -90,18 +109,10 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         keep taking ppl, and update max?
         as we reduce professionalism -> speed increases. 
         and we should always take everyone thats more professional
-        
         '''  
         
-        # max dashers ?
-        
-        '''
-        if we go over max, then move 
-        '''
-        # couldnt you sort by professionalism first before DPIng?
         zipped = sorted(zip(professionalism, speed), key=lambda x: x[0], reverse=True)
-        # professionalism, speed = zip(*zipped)
-        
+                
         # pop the lowest sum element each time when we go over maxDashers!
         # since the professionalism doesnt matter for the chosen ones if we choosing lower
         # professionalism one. 
@@ -129,7 +140,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 -71) Interval Problem Type Intuition, and Line Sweeping
      Try 2 pointer! or heap!
      
-    986. Interval List Intersections
+    1.   Interval List Intersections
     Given two lists of closed intervals, each list of 
     intervals is pairwise disjoint and in sorted order.
 
