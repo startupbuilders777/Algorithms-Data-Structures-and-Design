@@ -204,7 +204,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         O(NLOGN) so it is slower than sorted variant!
 
 
-
         Like every interval problem, this can be solved by line sweep. 
         Note that, if the input is already pre-sorted, this 
         isn't an optimal solution. But it is cool and interesting.
@@ -217,6 +216,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         Time: O(n log n)
         Space: O(n)
 
+        class Solution:
             def intervalIntersection(self, A: List[List[int]], B: List[List[int]]) -> List[List[int]]:
                 events = []
                 OPEN, CLOSE = 0, 1
@@ -235,13 +235,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                 
                 for time, event_type, end, key in events:
                     if event_type == OPEN:
-                        if key in window:
-                            existing_start, existing_end = window[key]
-                            best_start = min(existing_start, time)
-                            best_end = max(end, existing_end)
-                            window[key] = ((best_start, best_end))
-                        else:
-                            window[key] = (time, end)
+                        window[key] = (time, end)
                     else:
                         del window[key]
 
@@ -265,13 +259,13 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                 int[] start = new int[n], end = new int[n];
                 int c = 0;
                 for (int i = 0;  i < A.length; ++i) {
-                start[c] = A[i][0];
-                end[c++] = A[i][1];
+                    start[c] = A[i][0];
+                    end[c++] = A[i][1];
                 }
                 
                 for (int i = 0;  i < B.length; ++i) {
-                start[c] = B[i][0];
-                end[c++] = B[i][1];
+                    start[c] = B[i][0];
+                    end[c++] = B[i][1];
                 }
                 
                 // O(n log (n))
@@ -291,7 +285,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                     ++s;
                 } else {
                     if (busy == 2) {
-                    res.add(new int[] {start[s - 1], end[e]});
+                        res.add(new int[] {start[s - 1], end[e]});
                     }
                     busy--;
                     ++e;
@@ -434,14 +428,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                 
             last = ")(".join(final)
             return "(" + last + ")" 
-
-
-
-
-
-
-
-
 
 
 

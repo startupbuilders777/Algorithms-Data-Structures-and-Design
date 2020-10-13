@@ -1,0 +1,39 @@
+REVIEW THE FOLLOWING SITE FOR ADVANCED STATS KNOWLEDGE: 
+https://bookdown.org/rdpeng/advstatcomp/
+
+
+STATISTICS TOPICS TO GOOGLE AND READ ARTICLES ON:
+
+Bias-Variance Trade-Off
+Confusion Matrix
+ROC curve
+Normal Distribution
+P-Value
+Pearson Spearman
+Normal distribution problem: z-scores (from ck12.org)
+Continuous Probability Distributions
+Standardizing Normally Distributed Random Variables (fast version)
+Statistics 101: Simple Linear Regression, The Very Basics
+Statistics 101: Linear Regression, Outliers, and Influential Observations
+Statistics 101: ANOVA, A Visual Introduction
+Statistics 101: Multiple Regression, The Very Basics
+Statistics: Variance of a population | Probability and Statistics | Khan Academy
+Expected Value: E(X)
+Law of large numbers | Probability and Statistics | Khan Academy
+Central limit theorem | Inferential statistics | Probability and Statistics | Khan Academy
+Margin of error 1 | Inferential statistics | Probability and Statistics | Khan Academy
+Margin of error 2 | Inferential statistics | Probability and Statistics | Khan Academy
+Hypothesis testing and p-values | Inferential statistics | Probability and Statistics | Khan Academy
+One-tailed and two-tailed tests | Inferential statistics | Probability and Statistics | Khan Academy
+Type 1 errors | Inferential statistics | Probability and Statistics | Khan Academy
+Large sample proportion hypothesis testing | Probability and Statistics | Khan Academy
+Boosting and Bagging
+
+Covariance vs Correlation
+Point estimates vs confidence intervals
+different distributions, and mean median mode for left and right tailed
+Method of moments vs MLE
+
+Probabilistic graphical model notes -> https://ermongroup.github.io/cs228-notes/
+bayesian nets vs Markov random fields
+

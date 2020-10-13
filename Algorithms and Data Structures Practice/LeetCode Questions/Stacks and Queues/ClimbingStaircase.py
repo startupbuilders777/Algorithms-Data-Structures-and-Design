@@ -15,7 +15,6 @@ There are 4 steps in the staircase, and you can jump up 2 or fewer steps at a ti
 
 '''
 
-
 def climbingStaircase(n, k):
     
     stack = [(n, [])]

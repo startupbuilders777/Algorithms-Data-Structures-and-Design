@@ -3234,6 +3234,7 @@ Segment trees Analysis and in C++
     
     This makes the build process run in O(n) linear complexity.
     Both the read and update queries now take logarithmic O(log_2(n))
+    
 ##########################################################################################3
 PYTHON SEGMENT TREE FOR ABOVE:
 
