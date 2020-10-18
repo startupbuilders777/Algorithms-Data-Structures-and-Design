@@ -71,6 +71,183 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+-75) ORDERED SETS vs PRIORTIY QUEUES (Python does not have ordered set aka bst)
+
+    Since both std::priority_queue and std::set (and std::multiset) are data 
+    containers that store elements and allow you to access them in an ordered 
+    fashion, and have same insertion complexity O(log n), what are the advantages 
+    of using one over the other (or, what kind of situations call for the one or the other?)?
+
+    While I know that the underlying structures are different, I am not as much 
+    interested in the difference in their implementation as I am in the comparison 
+    their performance and suitability for various uses.
+
+    Note: I know about the no-duplicates in a set. That's why I also mentioned std::multiset 
+    since it has the exactly same behavior as the std::set but can be used 
+    where the data stored is allowed to compare as equal elements. 
+    So please, don't comment on single/multiple keys issue.
+
+    The priority queue only offers access to the largest element, while the set 
+    gives you a complete ordering of all elements. This weaker interface means that 
+    implementations may be more efficient (e.g. you can store the actual queue 
+    data in a vector, which may have better performance on account of its memory locality).
+
+
+    A priority queue only gives you access to one element in sorted order -- i.e., 
+    you can get the highest priority item, and when you remove that, you can get 
+    the next highest priority, and so on. A priority queue also allows duplicate 
+    elements, so it's more like a multiset than a set. [Edit: As @Tadeusz Kopec pointed out, 
+    building a heap is also linear on the number of items in the heap, where building a 
+    set is O(N log N) unless it's being built from a sequence that's already 
+    ordered (in which case it is also linear).]
+
+    A set allows you full access in sorted order, so you can, for example, find 
+    two elements somewhere in the middle of the set, then traverse in order from one to the other.
+
+
+-74)MULTI TIMESTAMP DP FINITE STATE MACHINE problems. Bottom up with decode ways:
+    DECODE WAYS (REVIEW in most important)
+    class Solution:
+        def numDecodings(self, s):        
+            # BOTTOM UP ONLY!
+            '''        
+            ADD UP ALL THE WAYS WE ARRIVED TO A STATE FROM OTHER STATES!!
+            USE IF STATEMENTS TO DETECT IF WE CAN ARRIVE TO THE STATE. 
+            
+            OPT[i] = OPT[i-1]   (TAKE ONE ALWAYS POSSIBLE!)
+                    + OPT[i-2]   (TAKE 2 MAY NOT BE POSSIBLE)
+            
+            s = "12"
+            "0" does not map to anything -> can only be used with 10 or 20
+            
+            226
+            2 -> 1  b
+            22 -> 1 bb 
+            2 26
+            3 ways:
+            2 2 6
+            22 6
+            2 26
+            
+            Base case empty string = 1?
+            take 1 
+            2 
+            take 2:
+            22 
+            next timestamp?
+            we take 1 
+            
+            OPT[i] -> all the ways to decode up to index i. 
+            process index 0 -> only 1 way to decode unless its 0. 
+            can take 2 charcters if OPT[i-1] exists. 
+            
+            In other words solution relies on 3 timesteps to build finite automata
+            '''
+            
+            OPT = [0 for i in range(len(s) +1)]
+            
+            # BASE CASE
+            OPT[0] = 1 
+            prevCh = None
+            seeNonezero = False
+            
+            # BTW its easy to optimize this to O(N) space, using 2 variables for 
+            # previous 2 timestamps. 
+            
+            for idx in range(1, len(s)+1):
+                # 0 cannot become anything!
+                # take current character as single. 
+                ch = int(s[idx-1])
+                if ch != 0:
+                    OPT[idx] += OPT[idx-1]    
+                # only way we can use 0 is if we see prev.                         
+                # if you see 2 zeros in a row you cant decode it -> answer is 0. 
+                if prevCh != None: 
+                    # take current character + prev char!
+                    if (prevCh == 1 and ch < 10) or (prevCh == 2 and ch < 7):
+                        OPT[idx] += OPT[idx-2]
+                # loop end set prevCharacter
+                prevCh = ch            
+                
+            return OPT[len(s)]    
+
+
+
+-73) To solve weird optimization problems, write out the problem constraints in 
+     mathematical notation!  
+     + english words
+     + greedy detection/hill finding/maximization/montonic queue/segment tree optimize/binary search/quick select   
+     + As you find constraints -> think of edge cases -> can they be solved by setting the base case in a recurrence?
+     + NEGATIVE SPACE. 
+     + or through other means? 
+    
+    1.    Remove Covered Intervals: 
+
+    Given a list of intervals, remove all intervals that are covered by another interval in the list.
+
+    Interval [a,b) is covered by interval [c,d) if and only if c <= a and b <= d.
+
+    After doing so, return the number of remaining intervals.
+    
+    Example 1:
+
+    Input: intervals = [[1,4],[3,6],[2,8]]
+    Output: 2
+    Explanation: Interval [3,6] is covered by [2,8], therefore it is removed.
+    Example 2:
+
+    Input: intervals = [[1,2],[1,4],[3,4]]
+    Output: 1
+    class Solution:
+        def removeCoveredIntervals(self, intervals: List[List[int]]) -> int:
+            '''
+            Sort by start time. 
+            
+            Then check if interval after me I cover. If i do remove, 
+            otherwise keep. 
+            
+            sort intervals by start time.          
+            
+            when checking next interval, make sure its start time is after 
+            the max finish time, otherwise covered. 
+            
+            Compare end time of first one with endtime of second one, if its within its covered.
+            OTHERWISE!!,
+            
+            if you get an interval with further endtime -> update the FOCUS interval to that. 
+            because it will be able to cover more on the right. 
+            So keep the one with largest end time asthe main focus. 
+            
+            Requires sorting on start time  -> NLOGN.
+            
+            need to do 2 sorts, 
+            earliest start time,
+            then for those with same start time -> latest finish time comes first. 
+            So then the latest finish times can consume the earlier finish times and be used to consume intervals
+            without same start time. 
+            '''
+            
+            # DO A DOUBLE SORT -> MAJOR SORT ON START -> MINOR SORT ON FINISH TIME. 
+            intervals.sort(key=lambda x: (x[0], -x[1]))
+            
+            curr_fin = intervals[0][1]
+            
+            covered_count = 0
+            for i in range(1, len(intervals)):
+                nxt_fin = intervals[i][1]
+
+                if nxt_fin <= curr_fin:
+                    covered_count += 1
+                else:
+                    curr_fin = nxt_fin
+                    
+            return len(intervals) - covered_count
+
+
+
+
+
+
 
 -72) Getting tripped up by doordash challanege:
      WHEN TO USE DP VS SORTING+GREEDY+MAXIMALMUNCH+HEAPQ SOLUTION/HILLFINDING. 
@@ -4400,11 +4577,347 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
      REMOVING CYCLES, DFS, AND BFS using colors: DONE IN GRAPHA ALGO REVIEW SECTION BELOW. 
 
 
+2.31) PRIM VS KRUSKAL
+    If you implement both Kruskal and Prim, in their optimal form : with a union find and a 
+    finbonacci heap respectively, then you will note how Kruskal is easy to implement compared to Prim.
+
+    Prim is harder with a fibonacci heap mainly because you have to maintain a book-keeping 
+    table to record the bi-directional link between graph nodes and heap nodes. With a Union Find, 
+    it's the opposite, the structure is simple and can even produce directly the mst at almost no additional cost.
+
+
+
+    Use Prim's algorithm when you have a graph with lots of edges.
+
+    For a graph with V vertices E edges, Kruskal's algorithm runs in O(E log V) time 
+    and Prim's algorithm can run in O(E + V log V) amortized time, if you use a Fibonacci Heap.
+
+    Prim's algorithm is significantly faster in the limit when you've got a 
+    really dense graph with many more edges than vertices. Kruskal performs better in 
+    typical situations (sparse graphs) because it uses simpler data structures.
+
+
+    Kruskal's algorithm will grow a solution from the cheapest edge by 
+    adding the next cheapest edge, provided that it doesn't create a cycle.
+
+    Prim's algorithm will grow a solution from a random vertex by adding 
+    the next cheapest vertex, the vertex that is not currently in the 
+    solution but connected to it by the cheapest edge.    
+
+2.311) KRUSKALS WITH AND WITHOUT Disjoint set union
+
+
+    Then begins the process of unification: pick all edges from the first to 
+    the last (in sorted order), and if the ends of the currently picked edge 
+    belong to different subtrees, these subtrees are combined, 
+    and the edge is added to the answer. After iterating through 
+    all the edges, all the vertices will belong to the same sub-tree, 
+    and we will get the answer.
+
+    The simplest implementation
+    The following code directly implements the algorithm described above, 
+    and is having O(MlogM+N^2) time complexity. Sorting edges requires O(MlogN) 
+    (which is the same as O(MlogM)) operations. Information regarding the subtree to 
+    which a vertex belongs is maintained with the help of an array tree_id[] - 
+    for each vertex v, tree_id[v] stores the number of the tree , to which v belongs. 
+    For each edge, whether it belongs to the ends of different trees, 
+    can be determined in O(1). Finally, the union of the two trees is carried 
+    out in O(N) by a simple pass through tree_id[] array. Given that the 
+    total number of merge operations is N−1, we obtain 
+    the asymptotic behavior of O(MlogN+N^2).
+
+    NON DSU IMPL:
+        struct Edge {
+            int u, v, weight;
+            bool operator<(Edge const& other) {
+                return weight < other.weight;
+            }
+        };
+
+        int n;
+        vector<Edge> edges;
+
+        int cost = 0;
+        vector<int> tree_id(n);
+        vector<Edge> result;
+        for (int i = 0; i < n; i++)
+            tree_id[i] = i;
+
+        sort(edges.begin(), edges.end());
+
+        for (Edge e : edges) {
+            if (tree_id[e.u] != tree_id[e.v]) {
+                cost += e.weight;
+                result.push_back(e);
+
+                int old_id = tree_id[e.u], new_id = tree_id[e.v];
+                for (int i = 0; i < n; i++) {
+                    if (tree_id[i] == old_id)
+                        tree_id[i] = new_id;
+                }
+            }
+        }
+
+    DSU implementation:
+
+    Just as in the simple version of the Kruskal algorithm, we 
+    sort all the edges of the graph in non-decreasing order of weights. 
+    Then put each vertex in its own tree (i.e. its set) via calls to the make_set 
+    function - it will take a total of O(N). We iterate through all the edges (in sorted order) 
+    and for each edge determine whether the ends belong to different trees (with two find_set 
+    calls in O(1) each). Finally, we need to perform the union of the two trees (sets), for 
+    which the DSU union_sets function will be called - also in O(1). So we get the total 
+    time complexity of O(MlogN+N+M) = O(MlogN).
+
+    Here is an implementation of Kruskal's algorithm with Union by Rank:
+
+        vector<int> parent, rank;
+
+        void make_set(int v) {
+            parent[v] = v;
+            rank[v] = 0;
+        }
+
+        int find_set(int v) {
+            if (v == parent[v])
+                return v;
+            return parent[v] = find_set(parent[v]);
+        }
+
+        void union_sets(int a, int b) {
+            a = find_set(a);
+            b = find_set(b);
+            if (a != b) {
+                if (rank[a] < rank[b])
+                    swap(a, b);
+                parent[b] = a;
+                if (rank[a] == rank[b])
+                    rank[a]++;
+            }
+        }
+
+        struct Edge {
+            int u, v, weight;
+            bool operator<(Edge const& other) {
+                return weight < other.weight;
+            }
+        };
+
+        int n;
+        vector<Edge> edges;
+
+        int cost = 0;
+        vector<Edge> result;
+        parent.resize(n);
+        rank.resize(n);
+        for (int i = 0; i < n; i++)
+            make_set(i);
+
+        sort(edges.begin(), edges.end());
+
+        for (Edge e : edges) {
+            if (find_set(e.u) != find_set(e.v)) {
+                cost += e.weight;
+                result.push_back(e);
+                union_sets(e.u, e.v);
+            }
+        }
+
+        Notice: since the MST will contain exactly N−1 edges, 
+        we can stop the for loop once we found that many.
+
+
+2.312) Prims Impl:
+    minimum spanning tree is built gradually by adding edges one at a time. 
+    At first the spanning tree consists only of a single vertex (chosen arbitrarily). Then the 
+    minimum weight edge outgoing from this vertex is selected and added to the spanning tree. 
+    After that the spanning tree already consists of two vertices. Now select and add the edge 
+    with the minimum weight that has one end in an already selected vertex (i.e. a vertex 
+    that is already part of the spanning tree), and the other end in an 
+    unselected vertex. And so on, i.e. every time we select and add the edge 
+    with minimal weight that connects one selected vertex with one unselected vertex. 
+    The process is repeated until the spanning tree contains all vertices (or equivalently until we have n−1 edges).
+
+    In the end the constructed spanning tree will be minimal. If 
+    the graph was originally not connected, then there doesn't 
+    exist a spanning tree, so the number of selected edges will be less than n−1.
+
+    Two impls discussed: O(N^2) and O(mlogn)
+
+
+    Dense Graph Implementation: O(N^2)
+
+    We approach this problem for a different side: for every not yet 
+    selected vertex we will store the minimum edge to an already selected vertex.
+
+    Then during a step we only have to look at these 
+    minimum weight edges, which will have a complexity of O(n).
+
+    After adding an edge some minimum edge pointers have to be recalculated. 
+    Note that the weights only can decrease, i.e. the minimal weight edge of 
+    every not yet selected vertex might stay the same, or it will be 
+    updated by an edge to the newly selected vertex. 
+    Therefore this phase can also be done in O(n).
+
+    Thus we received a version of Prim's algorithm with the complexity O(n^2).
+
+    In particular this implementation is very convenient for the Euclidean Minimum Spanning 
+    Tree problem: we have n points on a plane and the distance between each pair 
+    of points is the Euclidean distance between them, and we want to find a minimum 
+    spanning tree for this complete graph. This task can be solved by the described 
+    algorithm in O(n^2) time and O(n) memory, which is not possible with Kruskal's algorithm.
+
+    The adjacency matrix adj[][] of size n×n stores the weights of the edges, and it 
+    uses the weight INF if there doesn't exist an edge between two vertices. The 
+    algorithm uses two arrays: the flag selected[], which indicates which vertices 
+    we already have selected, and the array min_e[] which stores the edge with minimal 
+    weight to an selected vertex for each not-yet-selected vertex (it stores the weight and the end vertex). 
+    The algorithm does n steps, in each iteration the vertex with the smallest 
+    edge weight is selected, and the min_e[] of all other vertices gets updated.
+
+
+    int n;
+    vector<vector<int>> adj; // adjacency matrix of graph
+    const int INF = 1000000000; // weight INF means there is no edge
+
+    struct Edge {
+        int w = INF, to = -1;
+    };
+
+    void prim() {
+        int total_weight = 0;
+        vector<bool> selected(n, false);
+        vector<Edge> min_e(n);
+        min_e[0].w = 0;
+
+        for (int i=0; i<n; ++i) {
+            int v = -1;
+            for (int j = 0; j < n; ++j) {
+                if (!selected[j] && (v == -1 || min_e[j].w < min_e[v].w))
+                    v = j;
+            }
+
+            if (min_e[v].w == INF) {
+                cout << "No MST!" << endl;
+                exit(0);
+            }
+
+            selected[v] = true;
+            total_weight += min_e[v].w;
+            if (min_e[v].to != -1)
+                cout << v << " " << min_e[v].to << endl;
+
+            for (int to = 0; to < n; ++to) {
+                if (adj[v][to] < min_e[to].w)
+                    min_e[to] = {adj[v][to], v};
+            }
+        }
+
+        cout << total_weight << endl;
+    }
+
+
+
+2.32) ORDERED SET/BST IN ACITION: (optimally done with fibonnaci heaps however) 
+    PRIMS ALGORITHM WITH RED BLACK TREES + SET!
+    (usally done with HEAP)
+
+    n the above described algorithm it is possible to interpret the 
+    operations of finding the minimum and modifying some values as set 
+    operations. These two classical operations are supported by many 
+    data structure, for example by set in C++ (which are implemented via red-black trees).
+
+    The main algorithm remains the same, but now we can find the minimum 
+    edge in O(logn) time. On the other hand recomputing the pointers 
+    will now take O(nlogn) time, which is worse than in the previous algorithm.
+
+    But when we consider that we only need to update O(m) times in total, 
+    and perform O(n) searches for the minimal edge, then the total 
+    complexity will be O(mlogn). For sparse graphs this is better 
+    than the above algorithm, but for dense graphs this will be slower.
+
+    Here the graph is represented via a adjacency list adj[], where adj[v] 
+    contains all edges (in form of weight and target pairs) for the vertex v. 
+    min_e[v] will store the weight of the smallest edge from vertex v to an 
+    already selected vertex (again in the form of a weight and target pair). 
+    In addition the queue q is filled with all not yet selected vertices in 
+    the order of increasing weights min_e. The algorithm does n steps, on each 
+    of which it selects the vertex v with the smallest weight min_e (by extracting 
+    it from the beginning of the queue), and then looks through all the edges 
+    from this vertex and updates the values in min_e (during an update we also 
+    need to also remove the old edge from the queue q and put in the new edge).
+
+
+
+    const int INF = 1000000000;
+
+    struct Edge {
+        int w = INF, to = -1;
+        bool operator<(Edge const& other) const {
+            return make_pair(w, to) < make_pair(other.w, other.to);
+        }
+    };
+
+    int n;
+    vector<vector<Edge>> adj;
+
+    void prim() {
+        int total_weight = 0;
+        vector<Edge> min_e(n);
+        min_e[0].w = 0;
+        set<Edge> q;
+        q.insert({0, 0});
+        vector<bool> selected(n, false);
+        for (int i = 0; i < n; ++i) {
+            if (q.empty()) {
+                cout << "No MST!" << endl;
+                exit(0);
+            }
+
+            int v = q.begin()->to;
+            selected[v] = true;
+            total_weight += q.begin()->w;
+            q.erase(q.begin());
+
+            if (min_e[v].to != -1)
+                cout << v << " " << min_e[v].to << endl;
+
+            for (Edge e : adj[v]) {
+                if (!selected[e.to] && e.w < min_e[e.to].w) {
+                    q.erase({min_e[e.to].w, e.to});
+                    min_e[e.to] = {e.w, v};
+                    q.insert({e.w, e.to});
+                }
+            }
+        }
+
+        cout << total_weight << endl;
+    }
 
 
 
 
-2.31) DFS ANALYSIS START AND END TIMES!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2.325) DFS ANALYSIS START AND END TIMES!
     The parenthesis theorem says that the discovery 
     and finish time intervals are either disjoint or nested.
 
@@ -4447,7 +4960,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     Forward edge    | start[u] < start[v] | end[u] > end[v]
     Cross edge      | start[u] > start[v] | end[u] > end[v]
 
-2.32) Construct the Rooted Tree by using start and finish time of its 
+2.33) Construct the Rooted Tree by using start and finish time of its 
       DFS traversal: 
 
 
@@ -10573,6 +11086,8 @@ COMPETITIVE PROGRAMMING GRAPH ALGORITHM GUIDE:
     Kruskal ------------------------------------------
         In this algorithm, first we sort the edges in ascending order of 
         their weight in an array of edges.
+        
+        MERGE IS DONE WITH UNION FIND!!
 
         Then in order of the sorted array, we add ech edge if and only if 
         after adding it there won't be any cycle (check it using DSU).
@@ -11001,7 +11516,7 @@ GRAPH REFERENCE (From cheatsheet algos.py)
         return Grev
 
     def kosaraju(G):
-        f = depth_first_search_rec(G)[2]
+        f = depth_first_search_rec(G)[2] # finish times
         Grev = reverse_graph(G)
 
         color = {v: WHITE for v in G}
@@ -11033,7 +11548,9 @@ GRAPH REFERENCE (From cheatsheet algos.py)
             if undirected_has_cycle(mst):
                 mst[u].pop()
                 mst[v].pop()
-        return breadth_first_search(mst, s)[1]
+
+        # return parents map
+        return breadth_first_search(mst, s)[1] 
 
     def prim(G, w, s):
 

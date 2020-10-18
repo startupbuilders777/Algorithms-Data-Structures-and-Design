@@ -29,6 +29,117 @@ B TREES
 TRIES, COMPRESSED TRIES (PATRICIA TRIES)
 
 
+###############################################################
+
+HEAP  WHY IS SIFTDOWN BETTER THAN SIFT UP?
+
+    Actually, building a heap with repeated calls of siftDown has a complexity of O(n) 
+    whereas building it with repeated calls of siftUp has a complexity of O(nlogn).
+
+    This is due to the fact that when you use siftDown, the time taken by each call 
+    decreases with the depth of the node because these nodes are closer to the 
+    leaves. When you use siftUp, the number of swaps increases with the depth of 
+    the node because if you are at full depth, you may have to swap all the way 
+    to the root. As the number of nodes grows exponentially with the depth of the tree, 
+    using siftUp gives a more expensive algorithm.
+
+    Moreover, if you are using a Max-heap to do some sort of sorting where you pop 
+    the max element of the heap and then reheapify it, it's easier to do so by 
+    using siftDown. You can reheapify in O(logn) time by popping the max element, 
+    putting the last element at the root node (which was empty because you popped it) 
+    and then sifting it down all the way back to its correct spot.
+
+
+##################################################################################
+BINARY HEAP
+
+    A Binary Heap is a Binary Tree with following properties.
+
+    1) It’s a complete tree (All levels are completely filled except possibly the last 
+    level and the last level has all keys as left as possible). 
+    This property of Binary Heap makes them suitable to be stored in an array.
+
+    2) A Binary Heap is either Min Heap or Max Heap. In a Min Binary Heap, 
+    the key at root must be minimum among all keys present in Binary Heap. 
+    The same property must be recursively true for all nodes in Binary Tree. 
+    Max Binary Heap is similar to MinHeap.
+
+
+    Arr[(i-1)/2]	Returns the parent node
+    Arr[(2*i)+1]	Returns the left child node
+    Arr[(2*i)+2]	Returns the right child node
+
+    4) Many problems can be efficiently solved using Heaps. See following for example.
+    a) K’th Largest Element in an array.
+    b) Sort an almost sorted array/
+    c) Merge K Sorted Arrays.
+
+    Operations on Min Heap:
+    1) getMini(): It returns the root element of Min Heap.
+     Time Complexity of this operation is O(1).
+
+    2) extractMin(): Removes the minimum element from MinHeap. 
+    Time Complexity of this Operation is O(Logn) as this operation 
+    needs to maintain the heap property (by calling heapify()) after removing root.
+
+    3) decreaseKey(): Decreases value of key. The time complexity of this operation is O(Logn). 
+    If the decreases key value of a node is greater than the parent of the node, 
+    then we don’t need to do anything. Otherwise, we need 
+    to traverse up to fix the violated heap property.
+
+
+
+############################################
+BINOMIAL HEAP
+
+
+
+
+#############################################################################
+
+BINOMIAL HEAP
+VS
+FIBONNACI HEAPS -> USED IN PRIMS MST algorithm
+
+    In terms of Time Complexity, Fibonacci Heap beats both Binary and Binomial Heaps.
+
+    Below are amortized time complexities of Fibonacci Heap.
+
+    1) Find Min:      Θ(1)     [Same as both Binary and Binomial]
+    2) Delete Min:    O(Log n) [Θ(Log n) in both Binary and Binomial]
+    3) Insert:        Θ(1)     [Θ(Log n) in Binary and Θ(1) in Binomial]
+    4) Decrease-Key:  Θ(1)     [Θ(Log n) in both Binary and Binomial]
+    5) Merge:         Θ(1)     [Θ(m Log n) or Θ(m+n) in Binary and
+                                Θ(Log n) in Binomial]
+
+    Like Binomial Heap, Fibonacci Heap is a collection of trees with min-heap or 
+    max-heap property. In Fibonacci Heap, trees can can have any shape even 
+    all trees can be single nodes (This is unlike Binomial Heap where 
+    every tree has to be Binomial Tree).
+
+    Binomial heap takes O(log n) time in all operations while Fibonacci 
+    heap takes amortized running time O(1) in Insert, find, 
+    decrease key operations and O(log n) time in delete min, delete operations.
+
+
+    Binomial heaps use a singly linked circular link list and 
+    Fibonacci heaps use a doubly linked circular linked list.
+
+    every Binomial heap is a Fibonacci heap but every Fibonacci heap isn't Binomial heap.
+
+    Delete-min in Binomial heaps involves the combining of trees where as delete-min or 
+    delete in Fibonacci heaps is performed without 
+    joining the trees obtained after deletion.
+
+    Data members in a node for Binomial heaps are data, link, degree and child. 
+    Whereas in Fibonacci heaps it is data, parent, childcut, child, link and degree.
+
+
+
+
+
+
+
 ##################################################################################
 Trie Implementation
 

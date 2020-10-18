@@ -69,3 +69,6 @@ Write indepth notes on 403. Frog Jump. Write notes on Graph DFS and DP,
 and forward dp vs backward DP conceptualization, and try it and read discuss. 
 
 
+Review discussion for 1288. Remove Covered Intervals however its prtty simple.
+
+read discussion for decode ways bottom up.
