@@ -71,8 +71,234 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+-81)MONTONIC QUEUE/STACK + CRITICAL ELEMENTS + LEFT RIGHT, THEN RIGHT LEFT TRICK:
+    Sometimes you have to look at critically ordered elements left to right, then 
+    right to left like product of array except self
 
--79)
+    Given an array of integers a, return a new array b using the following guidelines:
+
+    For each index i in b, the value of bi is the index of the aj 
+    nearest to ai and is also greater than ai.
+    If there are two options for bi, put the leftmost one in bi.
+    If there are no options for bi, put -1 in bi.
+    Example
+
+    For a = [1, 4, 2, 1, 7, 6], the output should be
+    nearestGreater(a) = [1, 4, 1, 2, -1, 4].
+
+
+    def nearestGreater(a):
+        # n log n solution with binary search, on sorted array!
+        '''
+        Can do with sorting + keeping track of index + binary search
+        Faster soln (MONTONIC QUEUE/STACK + CRITICAL ELEMENTS + LEFT RIGHT, THEN RIGHT LEFT TRICK): 
+        
+        process left to right. when i use word queue below, i mean stack.  
+        
+        keep elements in queue. 
+        go left to right. 
+        
+        pick up elements as you go left to right.
+        
+        when you see smaller element, check queue. if queue has smaller element, remove it 
+        because it is no longer a critical point, the element we just saw is a critical point 
+        that can be a larger element. 
+        
+        to get nearest! -> we redo algo right to left, 
+        after doing it left to right, and overwrite the soln 
+        when we find a better one aka closer one!   
+        '''
+        result = [None for i in range(len(a))]
+        
+        stack = [] 
+        
+        # left to right
+        for idx, el in enumerate(a):
+            while len(stack) > 0:    
+                if stack[-1][0] <= el:
+                    stack.pop()
+                else:
+                    break
+                    
+            if len(stack) > 0:    
+                result[idx] = stack[-1][1]
+            
+            stack.append([el, idx])
+        
+        # generator
+        def enumerate_reversed(L):
+            for index in reversed(range(len(L))):
+                yield index, L[index]
+
+        stack = []
+        # right to left
+        for idx, el in enumerate_reversed(a):
+            while len(stack) > 0:    
+                if stack[-1][0] <= el:
+                    stack.pop()
+                else:
+                    break
+                    
+            if len(stack) > 0:
+                if result[idx] is None or abs(idx - result[idx]) > abs(idx - stack[-1][1]):
+                    result[idx] = stack[-1][1] 
+            
+            if result[idx] is None:
+                result[idx] = -1
+            
+            stack.append([el, idx])
+        return result
+
+
+
+
+
+-80) Union Find VS DFS for finding connected components pros/cons:
+
+    '''
+    UNION FIND VS DFS FOR CONNECTED COMPONENTS: 
+
+    The union-find algorithm is best suited for situations 
+    where the equivalence relationship is changing, i.e., there are 
+    "Union" operations which need to be performed on your set of partitions. 
+    Given a fixed undirected graph, you don't have the equivalence relationships 
+    changing at all - the edges are all fixed. OTOH, if you have a graph with new 
+    edges being added, DFS won't cut it. While DFS is asymptotically faster than 
+    union-find, in practice, the likely deciding factor would be the 
+    actual problem that you are trying to solve.
+
+    tl;dr - Static graph? DFS! Dynamic graph? Union-find!
+
+    when new edges being added or remoed -> O(1) union find
+
+    If the graph is already in memory in adjacency list format, 
+    then DFS is slightly simpler and faster (O(n) versus O(n alpha(n)), 
+    where alpha(n) is inverse Ackermann), but union-find can handle the 
+    edges arriving online in any order, which is sometimes useful 
+    (e.g., there are too many to fit in main memory).
+
+    RUNTIME ANALYSIS:
+
+    According to CLRS,
+
+    When the edges of the graph are static—not changing over
+    Time—we can compute the connected components faster by using depth-first search.
+
+    I tried to do some runtime analysis, and in a graph G(V,E) 
+    on which we have to answer Q connectivity queries.
+
+    Your running time analysis of Union-Find is incorrect. 
+    To use Union-Find for this situation, we need to perform 
+    V MakeSet operations, E Union operations, and 2Q Find operations. 
+    Each operation takes O(α(V)) amortized time. Therefore, the total 
+    running time for the Union-Find-based algorithm will be O(α(V)(V+E+Q)) ... not O(α(V)(E+Q)) 
+    as you claimed. I suspect you forgot the cost of the MakeSet operations.
+
+    It seems clear that O(α(V)(V+E+Q)) is asymptotically 
+    slower than O(V+E+Q), or at least no faster.
+
+    If you care, you can reduce the running time of DFS to O(E+Q) 
+    and the running time of the Union-Find algorithm to O(α(V)(E+Q)). 
+    Basically, you first scan the graph to remove all isolated vertices 
+    (vertices with no edges incident on them). You know that the 
+    isolated vertices aren't connected to anything, so they can be ignored. 
+    Then, run your algorithm on the resulting graph, after removal 
+    of isolated vertices. For the resulting graph, we have E/2≤V≤E, 
+    so V=Θ(Q) and O(V+E+Q)=O(E+Q) and O(α(V)(V+E+Q))=O(α(V)(E+Q)).
+
+    '''
+
+-79) UNION FIND VS DFS Question -> Swap lexiographical order
+
+    Given a string str and array of pairs that indicates 
+    which indices in the string can be swapped, return the 
+    lexicographically largest string that results from doing the 
+    allowed swaps. You can swap indices any number of times.
+
+    Example
+
+    For str = "abdc" and pairs = [[1, 4], [3, 4]], the output should be
+    swapLexOrder(str, pairs) = "dbca".
+
+    By swapping the given indices, you get the strings: "cbda", "cbad", 
+    "dbac", "dbca". The lexicographically largest string in this list is "dbca".
+
+
+    from collections import defaultdict
+
+    def swapLexOrder(s, pairs):
+        '''
+        Taking advantage of transitivity relationship using union find:
+        find all connected components aka indexes that can be swaped with other indexes. 
+        if a swaps with b and b swaps with c then a swaps with c
+        as you process each pair, do union find.
+        do simpler version store parent of each node 
+        with parents map.
+        '''
+            
+        '''
+        UNION BY RANK + PATH COMPRESSION
+        '''
+        parents = {}
+        rank = {}
+        
+        # make set
+        for i in range(len(s)):
+            parents[i] = i
+            rank[i] = 0
+            
+        def find(item):
+            # do path compression 
+            if item == parents[item]:
+                return item
+                
+            parents[item] = find(parents[item])
+            return parents[item]
+                
+        def union(a, b):
+            # unions. 
+            parent_a = find(a)
+            parent_b = find(b)
+            if parent_a == parent_b:
+                return 
+                
+            if rank[parent_a] > rank[parent_b]:
+                parent_a, parent_b = parent_b, parent_a
+
+            parents[parent_a] = parent_b        
+            if rank[parent_a] == rank[parent_b]:
+                rank[parent_b] += 1
+        
+        for p in pairs: 
+            idx1, idx2 = p
+            union(idx1-1, idx2-1)
+                
+        comp = defaultdict(list)
+        
+        for i in range(len(s)):
+            parent = find(i)
+            comp[parent].append(i)
+        
+        # ok go through each comp, sort the chars in reverse!
+        res = ["" for i in range(len(s))]
+        
+        for k in comp.keys():
+            indices = comp[k]
+            chars = sorted([s[i] for i in indices], reverse=True)
+            # then sort indices?
+            
+            locs = zip(chars, sorted(indices))
+            
+            for c, i in locs:
+                res[i] = c
+        
+        return "".join(res)
+
+
+
+
+
+
 
 
 -78) Maximal Square DP - DP vs cumulative array strategy?

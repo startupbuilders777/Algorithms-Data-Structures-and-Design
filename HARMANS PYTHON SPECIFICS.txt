@@ -276,6 +276,210 @@ and symmetric_difference_update() will accept any iterable as an argument.
 
 
 ##################################################################################
+
+HOW TO NOT COPY A LIST TO TRAVERSE IT IN REVERSE!!!
+
+    Use the built-in reversed() function:
+
+    >>> a = ["foo", "bar", "baz"]
+    >>> for i in reversed(a):
+    ...     print(i)
+    ... 
+    baz
+    bar
+    foo
+    To also access the original index, use enumerate() on your list before passing it to reversed():
+
+    >>> for i, e in reversed(list(enumerate(a))):
+    ...     print(i, e)
+    ... 
+    2 baz
+    1 bar
+    0 foo
+    Since enumerate() returns a generator and generators can't be 
+    reversed, you need to convert it to a list first.
+
+
+    1
+    Thanks. Out of curiosity, does this reversed method, creates a separate copy 
+    of the collection or just alters the looping? – Joan Venge Feb 9 '09 at 19:09
+    138
+    No copy is created, the elements are reversed on the fly while traversing! This is 
+    an important feature of all these iteration functions (which all end on “ed”). – 
+    Konrad Rudolph Feb 9 '09 at 19:10
+
+    Kinda sucks that this has to traverse the entire list before iteration... Still upvoted. – Triptych Feb 9 '09 at 19:23
+    99
+    To avoid the confusion: reversed() doesn't modify the list. reversed() doesn't make a copy of the list 
+    (otherwise it would require O(N) additional memory). If you need to modify the list 
+    use alist.reverse(); if you need a copy of the list in reversed order use alist[::-1]. – jfs Feb 9 '09 at 19:27
+
+    98
+    in this answer though, list(enumerate(a)) DOES create a copy. – Triptych Feb 9 '09 at 19:29
+    It doesn't quite make a copy, it seems to do the same logic as manually walking backwards. 
+    If you call reversed, then alter the list, then iterate over the 
+    reversed list, the changes will be reflected by reversed(). – Richard Levasseur Feb 9 '09 at 19:30
+
+    Thanks Triptych, that's what I mean, not collection copy but an iterator copy. – Joan Venge Feb 9 '09 at 23:47
+    Although reversed(list(enumerate(a))) works it's not optimized. An alternative is 
+    proposed here using a lambda function: christophe-simonis-at-tiny.blogspot.ca/2008/08/… – Bill Jan 24 '16 at 22:11 
+    5
+
+    @Bill I think enumerate(reversed(a)) would be also a solution. However, indices will be 
+    in reversed order i.e. the last element has index 0 – Snow bunting Jul 6 '17 at 15:58 
+
+    @Snowbunting, the indeces can be produces in reversed easily using len(a)-i-1, and if accessing 
+    a list b of the same length, b[-i-1] is equivalent to b[len(a)-i-1] – CervEd Jun 3 '19 at 9:30 
+    In fact, you can use the following generator (-(ri+1), val) for ri, val in enumerate(reversed(foo)), 
+    see my answer for example – CervEd Jun 3 '19 at 9:55
+
+    I'd actually prefer @disooqi / Francsics version (for i in range(len(a)-1, -1, -1)) 
+    since this is one line and realy avoids any list-copying or list creation. – Markus Jun 4 '19 at 11:53
+
+
+If you need the loop index, and don't want to traverse the entire list twice, or use extra memory, I'd write a generator.
+
+def reverse_enum(L):
+   for index in reversed(xrange(len(L))):
+      yield index, L[index]
+
+L = ['foo', 'bar', 'bas']
+for index, item in reverse_enum(L):
+   print index, item
+share  improve this answer  follow 
+edited Feb 10 '09 at 17:23
+answered Feb 9 '09 at 19:14
+
+Triptych
+181k3131 gold badges140140 silver badges167167 bronze badges
+3
+I would call the function enumerate_reversed, but that might be only my taste. I believe your answer is the cleanest for the specific question. – tzot Feb 9 '09 at 20:58
+1
+reversed(xrange(len(L))) produces the same indices as xrange(len(L)-1, -1, -1). – jfs Feb 10 '09 at 16:52
+2
+I prefer fewer moving parts to understand: for index, item in enumerate(reversed(L)): print len(L)-1-index, item – Don Kirkby Nov 5 '14 at 21:56
+2
+@Triptych I just had to cope with fact that enumerate from reversed() won't yield reversed indexes, and your code helped a lot. This method should be in the standard library.
+
+
+
+
+
+
+
+
+
+
+################################################################################
+
+Difference Between Iterable and Iterator
+It will be easier to understand the concept of 
+generators if you get the idea of iterables and iterators.
+
+Iterable is a “sequence” of data, you can iterate over using a loop. 
+The easiest visible example of iterable can be a list of integers – [1, 2, 3, 4, 5, 6, 7]. 
+However, it’s possible to iterate over other 
+types of data like strings, dicts, tuples, sets, etc.
+
+Basically, any object that has iter() method can be used as an iterable. 
+You can check it using hasattr()function in the interpreter.
+
+>>> hasattr(str, '__iter__')
+True
+>>> hasattr(bool, '__iter__')
+False
+
+Iterator protocol is implemented whenever you iterate over a sequence of data. 
+For example, when you use a for loop the following is happening on a background:
+
+first iter() method is called on the object to converts it to an iterator object.
+next() method is called on the iterator object to get the next element of the sequence.
+StopIteration exception is raised when there are no elements left to call.
+>>> simple_list = [1, 2, 3]
+>>> my_iterator = iter(simple_list)
+>>> print(my_iterator)
+
+<list_iterator object at 0x7f66b6288630>
+>>> next(my_iterator)
+1
+>>> next(my_iterator)
+2
+>>> next(my_iterator)
+3
+>>> next(my_iterator)
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+StopIteration
+
+##############################################################################
+Generator Expressions
+In Python, generators provide a convenient way to implement the iterator 
+protocol. Generator is an iterable created using a function with a yield statement.
+
+The main feature of generator is evaluating the elements on demand. 
+When you call a normal function with a return statement the function 
+is terminated whenever it encounters a return statement. 
+In a function with a yield statement the state of the function is “saved” 
+from the last call and can be picked up the next time you call a generator function.
+
+>>> def my_gen():
+... for x in range(5):
+... yield x
+
+Generator expression allows creating a generator on a fly without a 
+yield keyword. However, it doesn’t share the whole power of generator 
+created with a yield function. The syntax and concept is similar to list comprehensions:
+
+>>> gen_exp = (x ** 2 for x in range(10) if x % 2 == 0)
+>>> for x in gen_exp:
+... print(x)
+0
+4
+16
+36
+64
+
+In terms of syntax, the only difference is that you use parentheses 
+instead of square brackets. However, the type of data 
+returned by list comprehensions and generator expressions differs.
+
+>>> list_comp = [x ** 2 for x in range(10) if x % 2 == 0]
+>>> gen_exp = (x ** 2 for x in range(10) if x % 2 == 0)
+>>> print(list_comp)
+[0, 4, 16, 36, 64]
+>>> print(gen_exp)
+<generator object <genexpr> at 0x7f600131c410>
+
+
+The main advantage of generator over a list is that it takes much less memory. 
+We can check how much memory is taken by both types using sys.getsizeof() method.
+
+Note: in Python 2 using range() function can’t actually reflect the 
+advantage in term of size, as it still keeps the whole list of elements in 
+memory. In Python 3, however, this example is viable as the range() returns a range object.
+
+>>> from sys import getsizeof
+>>> my_comp = [x * 5 for x in range(1000)]
+>>> my_gen = (x * 5 for x in range(1000))
+>>> getsizeof(my_comp)
+9024
+>>> getsizeof(my_gen)
+88
+
+We can see this difference because while `list` creating Python 
+reserves memory for the whole list and calculates it on the spot. 
+In case of generator, we receive only ”algorithm”/ “instructions” how to 
+calculate that Python stores. And each time we call for generator, it will 
+only “generate” the next element of the sequence on demand according to “instructions”.
+
+On the other hand, generator will be slower, as every time the 
+element of sequence is calculated and yielded, function context/state 
+has to be saved to be picked up next time for generating next value. 
+That “saving and loading function context/state” takes time.
+
+
+
+##################################################################################
 COMPREHENSIONS: 
 
 
@@ -331,6 +535,20 @@ fruits = ["apple", "mango", "banana", "cherry"]
 {f:len(f) for f in fruits}
 Out[23]:
 {'apple': 5, 'mango': 5, 'banana': 6, 'cherry': 6}
+
+
+The comprehensions are not limited to lists. You can create dicts and sets comprehensions as well.
+
+>>> dict_comp = {x:chr(65+x) for x in range(1, 11)}
+>>> type(dict_comp)
+<class 'dict'>
+>>> print(dict_comp)
+{1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H', 8: 'I', 9: 'J', 10: 'K'}
+>>> set_comp = {x ** 3 for x in range(10) if x % 2 == 0}
+>>> type(set_comp)
+<class 'set'>
+>>> print(set_comp)
+{0, 8, 64, 512, 216}
 
 
 ##################################################################################

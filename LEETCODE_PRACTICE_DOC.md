@@ -29,6 +29,14 @@ Snapchat (26)
 635 Design Log Storage System
 
 ##########################
+STUDY GUIDE: 
+GO THROUGH ALL THE MONTONIC STACK/QUEUE LINKS IN CHROME ONETABS.
+MAKE GOOD NOTES.
+
+DO SAME FOR DSU in cp-algorithms.
+
+
+##########################
 
 DONE:
 
