@@ -71,6 +71,205 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+
+-79)
+
+
+-78) Maximal Square DP - DP vs cumulative array strategy?
+    
+    You have a 2D binary matrix that's filled with 0s and 1s. 
+    In the matrix, find the largest square that 
+    contains only 1s and return its area.
+
+    NOTES:
+        When a problem looks like a cumulative array problem try other accumulations,
+        rather than sum, such as 2d segment trees, or 2d maximum slice accumations.
+
+        In this probem -> we did our accumulation based on 3 other coordinates in matrix. 
+        Up your preprocessing game
+        ALWAYS USE THE DIAGONAL SOMEHOW IN 2D ARRAYS + DONT FORGET TOP-LEFT COORDINATE.
+    
+    SOLUTION:
+        def maximalSquare(matrix):
+            
+            '''
+            then do maximal rectangle. 
+            Go right and go down. 
+            question -> how many 1's below me?
+            
+            1 1 1 1
+            1 2 2 2 
+            1 2 3
+
+            Recurrence:
+            dp(i,j) = min(dp(i−1, j), dp(i−1, j−1), dp(i, j−1)) + 1
+
+            BASE CASE: 
+            matrix[i,j] == '0' THEN return 0        
+            '''
+            R = len(matrix)
+            if R == 0:
+                return 0
+            C = len(matrix[0])
+            prevRow = [0 for j in range(C+1)]
+            maxSquare = 0
+            for i in range(R):
+                # we have to zero pad. 
+                currRow = [0]
+                
+                for j in range(1, C+1):
+                    # if current value is 0, put 0.
+                    val = matrix[i][j-1]
+                    if val == "0":
+                        currRow.append(0)
+                    else:
+                        minOfTopAndLeft = min(currRow[-1], prevRow[j-1], prevRow[j])
+                        cellVal = minOfTopAndLeft + 1
+                        maxSquare = max(maxSquare, cellVal**2)
+                        currRow.append(cellVal)
+                        
+                prevRow = currRow[::]
+            return maxSquare
+            
+
+
+
+
+
+-77) Painted Ladies BACKWARD DP
+
+    In San Francisco, there is a row of several beautiful houses called 
+    the Painted Ladies. Each of the Painted Ladies can be painted with 
+    one of three colors: red, blue or green. The cost of painting each 
+    house with a certain color is different. cost[i][0] for each i is 
+    the cost of painting house i red, cost[i][1] is the cost of painting 
+    it blue, and cost[i][2] is the cost of painting it green.
+
+    You want to paint all the houses in a way such that no two adjacent 
+    Painted Ladies have the same color. Find the minimum cost to achieve this.
+
+    Example
+
+    For cost = [[1, 3, 4], [2, 3, 3], [3, 1, 4]], the output should be
+    paintHouses(cost) = 5.
+
+    def paintHouses(cost):
+        
+        '''
+        recurrence 
+        OPT[i, color] = minimum cost as a result of choosing a specific color. 
+        # compute all three! -> BACKWARD DP. 
+        OPT[i, Blue] = min(OPT[i-1, RED], OPT[i-1, GREEN])
+        OPT[i, RED] =  min(OPT[i-1, BLUE], OPT[i-1, GREEN])
+        OPT[i, GREEN] =  min(OPT[i-1, BLUE], OPT[i-1, RED])
+        answer is min(of all colors OPT[i])
+        
+        recursive
+        fn(idx, prev_color)
+            we know prev color -> choose other 2 colors. 
+            take min of choosing either color!
+        
+        Space optimize to 3 variables!        
+        '''
+        opt_b, opt_r, opt_g = cost[0][0], cost[0][1], cost[0][2]
+        IDX_b, IDX_r, IDX_g = 0, 1, 2
+        
+        for i in range(1, len(cost)):
+            blue_cost = cost[i][IDX_b]
+            red_cost = cost[i][IDX_r]
+            green_cost = cost[i][IDX_g]
+            
+            opt_b, opt_g, opt_r = \
+                min(opt_r, opt_g) + blue_cost, min(opt_r, opt_b) + green_cost, min(opt_b, opt_g) + red_cost  
+            
+        return min(opt_b, opt_g, opt_r)
+
+
+
+
+-76) Linked Lists, 2 Pointers and simplifying problems by  respecting   
+     OPEN-CLOSE 2 pointers which satisfy a <= b < c aka [X, Y) for start and end. 
+
+    Given a singly linked list of integers l and a non-negative integer n, 
+    move the last n list nodes to the beginning of the linked list.
+
+    Example
+
+    For l = [1, 2, 3, 4, 5] and n = 3, the output should be
+    rearrangeLastN(l, n) = [3, 4, 5, 1, 2];
+    For l = [1, 2, 3, 4, 5, 6, 7] and n = 1, the output should be
+    rearrangeLastN(l, n) = [7, 1, 2, 3, 4, 5, 6].
+
+    HARMAN SOLUTION WHICH USES 2POINTERS that refer to [start, end]
+    problem is both pointers can point to same node so this case 
+    has to be handled seperately!! + other edge cases.
+    
+        def rearrangeLastN(l, n):     
+            # use 2 pointers that occupy n space. 
+            # go to the  second last element. do you know why? 
+            # because we have to set None to the element we are 
+            # splitting from. 
+            i = l 
+            j = l
+            
+            if l is None:
+                return None
+            if n == 0:
+                return l
+                
+            # n-1 spaces between n nodes
+            for _ in range(n-1):
+                j = j.next
+            
+            # the whole list was chosen as n. 
+            if j.next == None:
+                return l
+            
+            # second last.
+            while j and j.next and j.next.next:
+                i = i.next
+                j = j.next
+            
+            # get last node. 
+            j.next.next = l
+            
+            # end
+            newStart = i.next            
+            # SET THE NULLS AT THE END BECAUSE WE CAN 
+            # BREAK LINKED LIST FUNCTIONALITY
+            # IF BOTH POINTERS POINT AT SAME NODE!
+            i.next = None
+            return newStart
+
+    OPEN CLOSE NOTATION SOLUTION CLEANNN:
+
+        def rearrangeLastN(l, n):
+            if n == 0:
+                return l
+            front, back = l, l
+            for _ in range(n):
+                front = front.next
+            if not front:
+                return l
+            while front.next:
+                front = front.next
+                back = back.next
+            out = back.next
+            back.next = None
+            front.next = l
+            return out
+
+
+        
+
+
+
+
+
+
+
+
+
 -75) ORDERED SETS vs PRIORTIY QUEUES (Python does not have ordered set aka bst)
 
     Since both std::priority_queue and std::set (and std::multiset) are data 

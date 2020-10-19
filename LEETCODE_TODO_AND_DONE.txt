@@ -72,3 +72,7 @@ and forward dp vs backward DP conceptualization, and try it and read discuss.
 Review discussion for 1288. Remove Covered Intervals however its prtty simple.
 
 read discussion for decode ways bottom up.
+
+
+Write notes for maximal square LC problem. 
+

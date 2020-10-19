@@ -249,10 +249,63 @@ Q26. What is TF/IDF vectorization?
 
     The TF–IDF value increases proportionally to the number of times a word appears in the document but is offset by the frequency of the word in the corpus, which helps to adjust for the fact that some words appear more frequently in general.
 
+KMEANS -> how to choose K ->
+    Elbow method, by taking square distance sum of each cluster center to surrounding points in cluster 
+    and measure homeogenity
+    Or use Hierarchal clustering to determine K.
+
+Q65. What cross-validation technique would you use on a time series data set?
+
+    fold 1: training[1], test[2]
+
+    fold 1: training[1 2], test[3]
+
+    fold 1: training[1 2 3], test[4]
+
+    fold 1: training[1 2 3 4], test[5]
 
 
+Q68. If you are having 4GB RAM in your machine and you want to train your model on 10GB data set. How would you go about this problem? Have you ever faced this kind of problem in your machine learning/data science experience so far?
+    First of all, you have to ask which ML model you want to train.
+
+    For Neural networks: Batch size with Numpy array will work.
+
+    Steps:
+
+    Load the whole data in the Numpy array. Numpy array has a property to create a mapping of the complete data set, it doesn’t load complete data set in memory.
+
+    You can pass an index to Numpy array to get required data.
+
+    Use this data to pass to the Neural network.
+
+    Have a small batch size.
+
+    For SVM: Partial fit will work
+
+    Steps:
+
+    Divide one big data set in small size data sets.
+
+    Use a partial fit method of SVM, it requires a subset of the complete data set.
+
+    Repeat step 2 for other subsets.
 
 
+What is a box cox transformation?
+    https://www.statisticshowto.com/box-cox-transformation/#:~:text=What%20is%20a%20Box%20Cox,a%20broader%20number%20of%20tests.
+
+
+    Common Box-Cox Transformations
+    Lambda value (λ)	Transformed data (Y’)
+    -3	Y-3 = 1/Y3
+    -2	Y-2 = 1/Y2
+    -1	Y-1 = 1/Y1
+    -0.5	Y-0.5 = 1/(√(Y))
+    0	log(Y)**
+    0.5	Y0.5 = √(Y)
+    1	Y1 = Y
+    2	Y2
+    3	Y3
 
 
 
