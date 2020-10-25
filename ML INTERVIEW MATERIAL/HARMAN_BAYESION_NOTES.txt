@@ -1,0 +1,5 @@
+Latent variable models, part 1
+Gaussian mixture models and the EM algorithm
+
+
+

@@ -37,3 +37,294 @@ Method of moments vs MLE
 Probabilistic graphical model notes -> https://ermongroup.github.io/cs228-notes/
 bayesian nets vs Markov random fields
 
+Research statement:
+    Other methods include DBScan clustering, Isolation Forests, and Robust Random Cut Forests.
+
+
+Confidence intervals, critical values, t scores, z scores, hypothesisi testing, 
+
+Hypothesis Testing Articles
+
+    Basics:
+
+    What is Ad Hoc Testing?
+    Composite Hypothesis Test
+    What is a Rejection Region?
+    What is a Two Tailed Test?
+    How to Decide if a Hypothesis Test is a One Tailed Test or a Two Tailed Test.
+    How to Decide if a Hypothesis is a Left Tailed Test or a Right-Tailed Test.
+    How to State the Null Hypothesis in Statistics.
+    How to Find a Critical Value.
+    How to Support or Reject a Null Hypothesis.
+    Specific Tests:
+
+    ANOVA.
+    Chi Square Test for Normality
+    Cochran-Mantel-Haenszel Test
+    F Test
+    Granger Causality Test.
+    Hotelling’s T-Squared
+    KPSS Test.
+    What is a Likelihood-Ratio Test?
+    Log rank test.
+    MANCOVA
+    Sequential Probability Ratio Test
+    How to Run a Sign Test.
+    T Test: one sample.
+    T-Test: Two sample.
+    Welch’s ANOVA.
+    Welch’s Test for Unequal Variances.
+    Z-Test: one sample.
+    Z Test: Two Proportion
+    Wald Test.
+    Related Articles:
+
+    What is an Acceptance Region?
+    How to Calculate Chebyshev’s Theorem.
+    Decision Rule.
+    Degrees of Freedom.
+    Directional Test
+    False Discovery Rate
+    How to calculate the Least Significant Difference.
+    Levels in Statistics.
+    How to Calculate Margin of Error.
+    Mean Difference (Difference in Means)
+    The Multiple Testing Problem.
+    What is the Neyman-Pearson Lemma?
+    One Sample Median Test.
+    REGWF
+    How to Find a Sample Size (General Instructions).
+    Sig 2(Tailed) meaning in results
+    What is a Standardized Test Statistic?
+    How to Find Standard Error
+    Standardized values: Example.
+    How to Calculate a T-Score.
+    T-Score Vs. a Z.Score.
+    Testing a Single Mean.
+    Unequal Sample Sizes.
+    Uniformly Most Powerful Tests.
+    How to Calculate a Z-Score.
+
+
+Review this to find confidence interval for 2 independnt sampes continious outcome:
+https://sphweb.bumc.bu.edu/otlt/MPH-Modules/BS/BS704_Confidence_Intervals/BS704_Confidence_Intervals5.html
+
+
+
+5 minute stats has good notes:
+
+https://stephens999.github.io/fiveMinuteStats/index.html
+
+
+Mathematics - List of questions
+Linear Algebra
+What is broadcasting in connection to Linear Algebra?
+What are scalars, vectors, matrices, and tensors?
+What is Hadamard product of two matrices?
+What is an inverse matrix?
+If inverse of a matrix exists, how to calculate it?
+What is the determinant of a square matrix? How is it calculated (Laplace expansion)? What is the connection of determinant to eigenvalues?
+Discuss span and linear dependence.
+What is Ax = b? When does Ax =b has a unique solution?
+In Ax = b, what happens when A is fat or tall?
+When does inverse of A exist?
+What is a norm? What is L1, L2 and L infinity norm?
+What are the conditions a norm has to satisfy?
+Why is squared of L2 norm preferred in ML than just L2 norm?
+When L1 norm is preferred over L2 norm?
+Can the number of nonzero elements in a vector be defined as L0 norm? If no, why?
+What is Frobenius norm?
+What is a diagonal matrix? (D_i,j = 0 for i != 0)
+Why is multiplication by diagonal matrix computationally cheap? How is the multiplication different for square vs. non-square diagonal matrix?
+At what conditions does the inverse of a diagonal matrix exist? (square and all diagonal elements non-zero)
+What is a symmetrix matrix? (same as its transpose)
+What is a unit vector?
+When are two vectors x and y orthogonal? (x.T * y = 0)
+At R^n what is the maximum possible number of orthogonal vectors with non-zero norm?
+When are two vectors x and y orthonormal? (x.T * y = 0 and both have unit norm)
+What is an orthogonal matrix? Why is computationally preferred? (a square matrix whose rows are mutually orthonormal and columns are mutually orthonormal.)
+What is eigendecomposition, eigenvectors and eigenvalues?
+How to find eigen values of a matrix?
+Write the eigendecomposition formula for a matrix. If the matrix is real symmetric, how will this change?
+Is the eigendecomposition guaranteed to be unique? If not, then how do we represent it?
+What are positive definite, negative definite, positive semi definite and negative semi definite matrices?
+What is SVD? Why do we use it? Why not just use ED?
+Given a matrix A, how will you calculate its SVD?
+What are singular values, left singulars and right singulars?
+What is the connection of SVD of A with functions of A?
+Why are singular values always non-negative?
+What is the Moore Penrose pseudo inverse and how to calculate it?
+If we do Moore Penrose pseudo inverse on Ax = b, what solution is provided is A is fat? Moreover, what solution is provided if A is tall?
+Which matrices can be decomposed by ED? (Any NxN square matrix with N linearly independent eigenvectors)
+Which matrices can be decomposed by SVD? (Any matrix; V is either conjugate transpose or normal transpose depending on whether A is complex or real)
+What is the trace of a matrix?
+How to write Frobenius norm of a matrix A in terms of trace?
+Why is trace of a multiplication of matrices invariant to cyclic permutations?
+What is the trace of a scalar?
+Write the frobenius norm of a matrix in terms of trace?
+Numerical Optimization
+What is underflow and overflow?
+How to tackle the problem of underflow or overflow for softmax function or log softmax function?
+What is poor conditioning?
+What is the condition number?
+What are grad, div and curl?
+What are critical or stationary points in multi-dimensions?
+Why should you do gradient descent when you want to minimize a function?
+What is line search?
+What is hill climbing?
+What is a Jacobian matrix?
+What is curvature?
+What is a Hessian matrix?
+Basics of Probability and Informaion Theory
+Compare "Frequentist probability" vs. "Bayesian probability"?
+What is a random variable?
+What is a probability distribution?
+What is a probability mass function?
+What is a probability density function?
+What is a joint probability distribution?
+What are the conditions for a function to be a probability mass function?
+What are the conditions for a function to be a probability density function?
+What is a marginal probability? Given the joint probability function, how will you calculate it?
+What is conditional probability? Given the joint probability function, how will you calculate it?
+State the Chain rule of conditional probabilities.
+What are the conditions for independence and conditional independence of two random variables?
+What are expectation, variance and covariance?
+Compare covariance and independence.
+What is the covariance for a vector of random variables?
+What is a Bernoulli distribution? Calculate the expectation and variance of a random variable that follows Bernoulli distribution?
+What is a multinoulli distribution?
+What is a normal distribution?
+Why is the normal distribution a default choice for a prior over a set of real numbers?
+What is the central limit theorem?
+What are exponential and Laplace distribution?
+What are Dirac distribution and Empirical distribution?
+What is mixture of distributions?
+Name two common examples of mixture of distributions? (Empirical and Gaussian Mixture)
+Is Gaussian mixture model a universal approximator of densities?
+Write the formulae for logistic and softplus function.
+Write the formulae for Bayes rule.
+What do you mean by measure zero and almost everywhere?
+If two random variables are related in a deterministic way, how are the PDFs related?
+Define self-information. What are its units?
+What are Shannon entropy and differential entropy?
+What is Kullback-Leibler (KL) divergence?
+Can KL divergence be used as a distance measure?
+Define cross-entropy.
+What are structured probabilistic models or graphical models?
+In the context of structured probabilistic models, what are directed and undirected models? How are they represented? What are cliques in undirected structured probabilistic models?
+Confidence interval
+What is population mean and sample mean?
+What is population standard deviation and sample standard deviation?
+Why population s.d. has N degrees of freedom while sample s.d. has N-1 degrees of freedom? In other words, why 1/N inside root for pop. s.d. and 1/(N-1) inside root for sample s.d.? (Here)
+What is the formula for calculating the s.d. of the sample mean?
+What is confidence interval?
+What is standard error?
+
+
+
+
+
+Machine Learning - List of questions
+Learning Theory
+Describe bias and variance with examples.
+What is Empirical Risk Minimization?
+What is Union bound and Hoeffding's inequality?
+Write the formulae for training error and generalization error. Point out the differences.
+State the uniform convergence theorem and derive it.
+What is sample complexity bound of uniform convergence theorem?
+What is error bound of uniform convergence theorem?
+What is the bias-variance trade-off theorem?
+From the bias-variance trade-off, can you derive the bound on training set size?
+What is the VC dimension?
+What does the training set size depend on for a finite and infinite hypothesis set? Compare and contrast.
+What is the VC dimension for an n-dimensional linear classifier?
+How is the VC dimension of a SVM bounded although it is projected to an infinite dimension?
+Considering that Empirical Risk Minimization is a NP-hard problem, how does logistic regression and SVM loss work?
+Model and feature selection
+Why are model selection methods needed?
+How do you do a trade-off between bias and variance?
+What are the different attributes that can be selected by model selection methods?
+Why is cross-validation required?
+Describe different cross-validation techniques.
+What is hold-out cross validation? What are its advantages and disadvantages?
+What is k-fold cross validation? What are its advantages and disadvantages?
+What is leave-one-out cross validation? What are its advantages and disadvantages?
+Why is feature selection required?
+Describe some feature selection methods.
+What is forward feature selection method? What are its advantages and disadvantages?
+What is backward feature selection method? What are its advantages and disadvantages?
+What is filter feature selection method and describe two of them?
+What is mutual information and KL divergence?
+Describe KL divergence intuitively.
+Curse of dimensionality
+Describe the curse of dimensionality with examples.
+What is local constancy or smoothness prior or regularization?
+Universal approximation of neural networks
+State the universal approximation theorem? What is the technique used to prove that?
+What is a Borel measurable function?
+Given the universal approximation theorem, why can't a MLP still reach a arbitrarily small positive error?
+Deep Learning motivation
+What is the mathematical motivation of Deep Learning as opposed to standard Machine Learning techniques?
+In standard Machine Learning vs. Deep Learning, how is the order of number of samples related to the order of regions that can be recognized in the function space?
+What are the reasons for choosing a deep model as opposed to shallow model? (1. Number of regions O(2^k) vs O(k) where k is the number of training examples 2. # linear regions carved out in the function space depends exponentially on the depth. )
+How Deep Learning tackles the curse of dimensionality?
+Support Vector Machine
+How can the SVM optimization function be derived from the logistic regression optimization function?
+What is a large margin classifier?
+Why SVM is an example of a large margin classifier?
+SVM being a large margin classifier, is it influenced by outliers? (Yes, if C is large, otherwise not)
+What is the role of C in SVM?
+In SVM, what is the angle between the decision boundary and theta?
+What is the mathematical intuition of a large margin classifier?
+What is a kernel in SVM? Why do we use kernels in SVM?
+What is a similarity function in SVM? Why it is named so?
+How are the landmarks initially chosen in an SVM? How many and where?
+Can we apply the kernel trick to logistic regression? Why is it not used in practice then?
+What is the difference between logistic regression and SVM without a kernel? (Only in implementation – one is much more efficient and has good optimization packages)
+How does the SVM parameter C affect the bias/variance trade off? (Remember C = 1/lambda; lambda increases means variance decreases)
+How does the SVM kernel parameter sigma^2 affect the bias/variance trade off?
+Can any similarity function be used for SVM? (No, have to satisfy Mercer’s theorem)
+Logistic regression vs. SVMs: When to use which one? ( Let's say n and m are the number of features and training samples respectively. If n is large relative to m use log. Reg. or SVM with linear kernel, If n is small and m is intermediate, SVM with Gaussian kernel, If n is small and m is massive, Create or add more fetaures then use log. Reg. or SVM without a kernel)
+Bayesian Machine Learning
+What are the differences between “Bayesian” and “Freqentist” approach for Machine Learning?
+Compare and contrast maximum likelihood and maximum a posteriori estimation.
+How does Bayesian methods do automatic feature selection?
+What do you mean by Bayesian regularization?
+When will you use Bayesian methods instead of Frequentist methods? (Small dataset, large feature set)
+Regularization
+What is L1 regularization?
+What is L2 regularization?
+Compare L1 and L2 regularization.
+Why does L1 regularization result in sparse models? here
+Evaluation of Machine Learning systems
+What are accuracy, sensitivity, specificity, ROC?
+What are precision and recall?
+Describe t-test in the context of Machine Learning.
+Clustering
+Describe the k-means algorithm.
+What is distortion function? Is it convex or non-convex?
+Tell me about the convergence of the distortion function.
+Topic: EM algorithm
+What is the Gaussian Mixture Model?
+Describe the EM algorithm intuitively.
+What are the two steps of the EM algorithm
+Compare GMM vs GDA.
+Dimensionality Reduction
+Why do we need dimensionality reduction techniques? (data compression, speeds up learning algorithm and visualizing data)
+What do we need PCA and what does it do? (PCA tries to find a lower dimensional surface such the sum of the squared projection error is minimized)
+What is the difference between logistic regression and PCA?
+What are the two pre-processing steps that should be applied before doing PCA? (mean normalization and feature scaling)
+Basics of Natural Language Processing
+What is WORD2VEC?
+What is t-SNE? Why do we use PCA instead of t-SNE?
+What is sampled softmax?
+Why is it difficult to train a RNN with SGD?
+How do you tackle the problem of exploding gradients? (By gradient clipping)
+What is the problem of vanishing gradients? (RNN doesn't tend to remember much things from the past)
+How do you tackle the problem of vanishing gradients? (By using LSTM)
+Explain the memory cell of a LSTM. (LSTM allows forgetting of data and using long memory when appropriate.)
+What type of regularization do one use in LSTM?
+What is Beam Search?
+How to automatically caption an image? (CNN + LSTM)
+Miscellaneous
+What is the difference between loss function, cost function and objective function?

@@ -1,0 +1,1228 @@
+27. Infection rates at a hospital above a 1 infection per 100 person-days at 
+    risk are considered high. A hospital had 10 infections over the last 1787 person-days at risk. 
+    Give the p-value of the correct one-sided test of whether the hospital is below the standard.
+
+    Since we looking at the number of events (# of infections) 
+    occurring within a given timeframe, this is a Poisson distribution question.
+
+    P(k events in interval) = (lambda^k)*(e^-lambda)/k!
+
+    Null (H0): 1 infection per person-days
+    Alternative (H1): >1 infection per person-days
+
+    k (actual) = 10 infections
+    lambda (theoretical) = (1/100)*1787
+    p = 0.032372 or 3.2372% calculated using .poisson() in excel or ppois in R
+    Since p-value < alpha (assuming 5% level of significance), we reject 
+        the null and conclude that the hospital is below the standard.
+    
+
+29. A random variable X is normal with mean 1020 and a standard deviation 50. Calculate P(X>1200)
+    Using Excel…
+    p =1-norm.dist(1200, 1020, 50, true)
+    p= 0.000159
+
+
+30. Consider the number of people that show up at a bus station is Poisson with mean 2.5/h. 
+    What is the probability that at most three people show up in a four hour period?
+    x = 3
+    mean = 2.5*4 = 10
+    using Excel…
+    p = poisson.dist(3,10,true)
+    p = 0.010336
+
+
+32. You are running for office and your pollster polled hundred people. 
+    Sixty of them claimed they will vote for you. Can you relax?
+    
+    Assume that there’s only you and one other opponent.
+    Also, assume that we want a 95% confidence interval. This gives us a z-score of 1.96.
+    
+    Confidence interval formula
+    [phat - z*sqrt(phat(1-phat)/n), phat + z*sqrt(phat(1-phat)/n)] 
+    
+    p-hat = 60/100 = 0.6
+    z* = 1.96
+    n = 100
+    This gives us a confidence interval of [50.4,69.6]. Therefore, given a confidence interval of 95%, if you are okay with the worst scenario of tying then you can relax. Otherwise, you cannot relax until you got 61 out of 100 to claim yes.
+
+
+33. Geiger counter records 100 radioactive decays in 5 minutes. Find an approximate 95% interval for the number of decays per hour.
+    
+    Since this is a Poisson distribution question, mean = lambda = variance, which also 
+    means that standard deviation = square root of the mean
+    a 95% confidence interval implies a z score of 1.96
+    one standard deviation = 10
+    
+    Therefore the confidence interval = 100 +/- 19.6 = [964.8, 1435.2]
+
+
+34. The homicide rate in Scotland fell last year to 99 from 115 the year before. Is this reported change really noteworthy?
+    Since this is a Poisson distribution question, mean = lambda = variance, which also means that standard deviation = square root of the mean
+    a 95% confidence interval implies a z score of 1.96
+    one standard deviation = sqrt(115) = 10.724
+    Therefore the confidence interval = 115+/- 21.45 = [93.55, 136.45]. Since 99 is within this confidence interval, we can assume that this change is not very noteworthy.
+
+
+36. Suppose that diastolic blood pressures (DBPs) for men aged 35–44 are 
+normally distributed with a mean of 80 (mm Hg) and a standard deviation of 10. 
+About what is the probability that a random 35–44 year old has a DBP less than 70?
+
+    Since 70 is one standard deviation below the mean, take the area of the 
+    Gaussian distribution to the left of one standard deviation.
+    = 2.3 + 13.6 = 15.9%
+
+
+37. In a population of interest, a sample of 9 men yielded a sample average 
+    brain volume of 1,100cc and a standard deviation of 30cc. What is a 95% Student’s 
+    T confidence interval for the mean brain volume in this new population?
+
+    Given a confidence level of 95% and degrees of freedom equal to 8, the t-score = 2.306
+    Confidence interval = 1100 +/- 2.306*(30/3)
+    Confidence interval = [1076.94, 1123.06]
+
+
+
+
+38. A diet pill is given to 9 subjects over six weeks. The average difference in 
+    weight (follow up — baseline) is -2 pounds. What would the standard deviation 
+    of the difference in weight have to be for the upper endpoint of the 95% 
+    T confidence interval to touch 0?
+    
+    Upper bound = mean + t-score*(standard deviation/sqrt(sample size))
+    0 = -2 + 2.306*(s/3)
+    2 = 2.306 * s / 3
+    s = 2.601903
+
+    Therefore the standard deviation would have to be at least approximately 
+    2.60 for the upper bound of the 95% T confidence interval to touch 0.
+
+
+    Review this to find confidence interval for 2 independnt sampes continious outcome:
+39. In a study of emergency room waiting times, investigators consider a new and the standard triage systems. To test the systems, administrators selected 20 nights and randomly assigned the new triage system to be used on 10 nights and the standard system on the remaining 10 nights. They calculated the nightly median waiting time (MWT) to see a physician. The average MWT for the new system was 3 hours with a variance of 0.60 while the average MWT for the old system was 5 hours with a variance of 0.68. Consider the 95% confidence interval estimate for the differences of the mean MWT associated with the new system. Assume a constant variance. What is the interval? Subtract in this order (New System — Old System).
+    See here for full tutorial on finding the Confidence Interval for Two Independent Samples.
+    Image for post
+    Confidence Interval = mean +/- t-score * standard error (see above)
+    mean = new mean — old mean = 3–5 = -2
+    t-score = 2.101 given df=18 (20–2) and confidence interval of 95%
+    Image for post
+    standard error = sqrt((0.⁶²*9+0.⁶⁸²*9)/(10+10–2)) * sqrt(1/10+1/10)
+    standard error = 0.352
+    confidence interval = [-2.75, -1.25]
+
+    Review this to find confidence interval for 2 independnt sampes continious outcome:
+40. To further test the hospital triage system, administrators selected 200 nights and randomly assigned a new triage system to be used on 100 nights and a standard system on the remaining 100 nights. They calculated the nightly median waiting time (MWT) to see a physician. The average MWT for the new system was 4 hours with a standard deviation of 0.5 hours while the average MWT for the old system was 6 hours with a standard deviation of 2 hours. Consider the hypothesis of a decrease in the mean MWT associated with the new treatment. What does the 95% independent group confidence interval with unequal variances suggest vis a vis this hypothesis? (Because there’s so many observations per group, just use the Z quantile instead of the T.)
+    Assuming we subtract in this order (New System — Old System):
+    Image for post
+    confidence interval formula for two independent samples
+    mean = new mean — old mean = 4–6 = -2
+    z-score = 1.96 confidence interval of 95%
+    Image for post
+    st. error = sqrt((0.⁵²*99+²²*99)/(100+100–2)) * sqrt(1/100+1/100)
+    standard error = 0.205061
+    lower bound = -2–1.96*0.205061 = -2.40192
+    upper bound = -2+1.96*0.205061 = -1.59808
+    confidence interval = [-2.40192, -1.59808]
+
+
+CHI SQUARED hypothesis test:
+
+    A chi-squared test, also written as χ2 test, is a statistical hypothesis test that is valid to perform when the test statistic is chi-squared distributed under the null hypothesis, specifically Pearson's chi-squared test and variants thereof. Pearson's chi-squared test is used to determine whether there is a statistically significant difference between the expected frequencies and the observed frequencies in one or more categories of a contingency table.
+
+    In the standard applications of this test, the observations are classified into mutually exclusive classes. If the null hypothesis that there are no differences between the classes in the population is true, the test statistic computed from the observations follows a χ2 frequency distribution. The purpose of the test is to evaluate how likely the observed frequencies would be assuming the null hypothesis is true.
+
+    Test statistics that follow a χ2 distribution occur when the observations are independent and normally distributed, which assumptions are often justified under the central limit theorem. There are also χ2 tests for testing the null hypothesis of independence of a pair of random variables based on observations of the pairs.
+
+    Chi-squared tests often refers to tests for which the distribution of the test statistic approaches the χ2 distribution asymptotically, meaning that the sampling distribution (if the null hypothesis is true) of the test statistic approximates a chi-squared distribution more and more closely as sample sizes increase.
+
+    Other examples of chi-squared tests
+    One test statistic that follows a chi-squared distribution exactly is the test that the variance of a normally distributed population has a given value based on a sample variance. Such tests are uncommon in practice because the true variance of the population is usually unknown. However, there are several statistical tests where the chi-squared distribution is approximately valid:
+
+    Fisher's exact test
+    For an exact test used in place of the 2 x 2 chi-squared test for independence, see Fisher's exact test.
+
+    Binomial test
+    For an exact test used in place of the 2 x 1 chi-squared test for goodness of fit, see Binomial test.
+
+    Other chi-squared tests
+    Cochran–Mantel–Haenszel chi-squared test.
+    McNemar's test, used in certain 2 × 2 tables with pairing
+    Tukey's test of additivity
+    The portmanteau test in time-series analysis, testing for the presence of autocorrelation
+    Likelihood-ratio tests in general statistical modelling, for testing whether there is evidence of the need to move from a simple model to a more complicated one (where the simple model is nested within the complicated one).
+    Yates's correction for continuity
+    Main article: Yates's correction for continuity
+    Using the chi-squared distribution to interpret Pearson's chi-squared statistic requires one to assume that the discrete probability of observed binomial frequencies in the table can be approximated by the continuous chi-squared distribution. This assumption is not quite correct and introduces some error.
+
+    To reduce the error in approximation, Frank Yates suggested a correction for continuity that adjusts the formula for Pearson's chi-squared test by subtracting 0.5 from the absolute difference between each observed value and its expected value in a 2 × 2 contingency table.[9] This reduces the chi-squared value obtained and thus increases its p-value.
+
+
+Chi-squared test for variance in a normal population
+    If a sample of size n is taken from a population having a normal distribution, 
+    then there is a result (see distribution of the sample variance) which allows 
+    a test to be made of whether the variance of the population has a 
+    pre-determined value. For example, a manufacturing process might have been 
+    in stable condition for a long period, allowing a value for the 
+    variance to be determined essentially without error. Suppose that a 
+    variant of the process is being tested, giving rise to a small sample 
+    of n product items whose variation is to be tested. The test statistic T 
+    in this instance could be set to be the sum of squares about the sample 
+    mean, divided by the nominal value for the variance (i.e. the value to 
+    be tested as holding). Then T has a chi-squared distribution with n − 1 degrees 
+    of freedom. For example, if the sample size is 21, the acceptance region for T 
+    with a significance level of 5% is between 9.59 and 34.17.
+
+
+CHI SQUARED TEST EXAMPLE WITH CATEGORICAL DATA:
+
+    Example chi-squared test for categorical data
+    Suppose there is a city of 1,000,000 residents with four neighborhoods: 
+    A, B, C, and D. A random sample of 650 residents of the city is taken 
+    and their occupation is recorded as "white collar", "blue collar", or 
+    "no collar". The null hypothesis is that each person's neighborhood of 
+    residence is independent of the person's occupational classification. 
+    The data are tabulated as:
+
+                        A	B	C	D	total
+    White collar	90	60	104	95	349
+    Blue collar	    30	50	51	20	151
+    No collar	    30	40	45	35	150
+    Total	        150	150	200	150	650
+
+    Let us take the sample living in neighborhood A, 150, to estimate 
+    what proportion of the whole 1,000,000 live in neighborhood A. Similarly we take 
+    349/650
+    to estimate what proportion of the 1,000,000 are white-collar workers. 
+    By the assumption of independence under the hypothesis we should 
+    "expect" the number of white-collar workers in neighborhood A to be
+
+     150 * 349/650 =  80.54
+    Then in that "cell" of the table, we have
+
+    (observed-expected)^2 / expected = (90-80.54)^2/ 80.54 = 1.11
+    The sum of these quantities over all of the cells is the test statistic; 
+    in this case, {\displaystyle \approx 24.6}{\displaystyle \approx 24.6}. 
+    
+    Under the null hypothesis, this sum has approximately a 
+    chi-squared distribution whose number of degrees of freedom are
+
+    {\displaystyle ({\text{number of rows}}-1)({\text{number of columns}}-1)=(3-1)(4-1)=6}
+    If the test statistic is improbably large according to that chi-squared distribution, 
+    then one rejects the null hypothesis of independence.
+
+    A related issue is a test of homogeneity. Suppose that instead of giving 
+    every resident of each of the four neighborhoods an equal chance of 
+    inclusion in the sample, we decide in advance how many residents of 
+    each neighborhood to include. Then each resident has the same chance 
+    of being chosen as do all residents of the same neighborhood, but 
+    residents of different neighborhoods would have different probabilities 
+    of being chosen if the four sample sizes are not proportional to the 
+    populations of the four neighborhoods. In such a case, we would be testing 
+    "homogeneity" rather than "independence". The question is whether the 
+    proportions of blue-collar, white-collar, and no-collar workers in the 
+    four neighborhoods are the same. However, the test is done in the same way.
+
+
+33.5) Confidence Level: What is it?
+    alpha/2 percentile to 1-(alpha/2) percentile on normal distribution has length 1-alpha
+    length is 95% then alpha is 5%, and 2.5% on either side of normal distribution.
+
+    When a poll is reported in the media, a confidence level is often included in the results. 
+    For example, a survey might report a 95 percent confidence level. But what exactly does this mean? 
+    At first glance you might think that it means it’s 95 percent accurate. That’s close to the truth, 
+    but like many things in statistics, it’s actually a little more defined.
+
+
+    Real Life Example
+    Example: A recent article on Rasmussen Reports states that “38% of Likely U.S. Voters now say their health insurance coverage has changed because of Obamacare”. If you scroll down to the bottom of the article, you’ll see this line: “The margin of sampling error is +/- 3 percentage points with a 95% level of confidence.”
+
+    It’s impractical to survey all 300 million+ U.S. residents, so it’s impossible to know exactly how many people would actually respond “yes my health insurance has changed.” We take a sample (say, 2,000 people) and, using good statistical techniques like simple random sampling, take our “best guess” at what that actual figure is (we call that unknown figure a population parameter). What a 95 percent confidence level is saying is that if the poll or survey were repeated over and over again, the results would match the results from the actual population 95 percent of the time.
+
+    What about “+/- 3 percentage points”?
+    The width of the confidence interval tells us more about how certain (or uncertain) we are about the true figure in the population. This width is stated as a plus or minus (in this case,+/- 3) and is called the confidence interval. When the interval and confidence level are put together, you get a spread of percentage. In this case, you would expect the results to be 35 (38-3) to 41 (35+3) percent, 95% of the time.
+
+    Factors that Affect Confidence Intervals (CI)
+    Population size: this does not usually affect the CI but can be a factor if you are working with small and known groups of people.
+    Sample Size: the smaller your sample, the less likely it is you can be confident the results reflect the true population parameter.
+    Percentage: Extreme answers come with better accuracy. For example, if 99 percent of voters are for gay marriage, the chances of error are small. However, if 49.9 percent of voters are “for” and 50.1 percent are “against” then the chances of error are bigger.
+    0% and 100% Confidence Level
+    A 0% confidence level means you have no faith at all that if you repeated the survey that you would get the same results. A 100% confidence level means there is no doubt at all that if you repeated the survey you would get the same results. In reality, you would never publish the results from a survey where you had no confidence at all that your statistics were accurate (you would probably repeat the survey with better techniques). A 100% confidence level doesn’t exist in statistics, unless you surveyed an entire population — and even then you probably couldn’t be 100 percent sure that your survey wasn’t open to some kind or error or bias.
+
+    Confidence Coefficient
+    The confidence coefficient is the confidence level stated as a proportion, rather than as a percentage. For example, if you had a confidence level of 99%, the confidence coefficient would be .99.
+
+    In general, the higher the coefficient, the more certain you are that your results are accurate. For example, a .99 coefficient is more accurate than a coefficient of .89. It’s extremely rare to see a coefficient of 1 (meaning that you are positive without a doubt that your results are completely, 100% accurate). A coefficient of zero means that you have no faith that your results are accurate at all.
+
+
+    The following table lists confidence coefficients and the equivalent confidence levels.
+
+    Confidence coefficient (1 – α)	Confidence level (1 – α * 100%)
+    0.90	90 %
+    0.95	95 %
+    0.99	99 %
+
+33.7) Z SCORES:
+
+    The z-score formula that we have been using is:
+
+    z =  (x − μ)/σ 
+
+    z is the "z-score" (Standard Score)
+    x is the value to be standardised
+    μ ('mu") is the mean
+    σ ("sigma") is the standard deviation
+    And this is how to use it:
+
+    Example: Travel Time (continued)
+    Here are the first three conversions using the "z-score formula":
+
+    z =  (x − μ)/σ 
+
+    μ = 38.8
+    σ = 11.4
+    x	   (x − μ)/σ 	        z
+                        (z-score)
+    26	 (26 − 38.8)/11.4 	= −1.12
+    33	 (33 − 38.8)/11.4 	= −0.51
+    65	 (65 − 38.8)/11.4 	= +2.30
+    ...	...	...
+    The exact calculations we did before, just following the formula.
+
+    Why Standardize ... ?
+    It can help us make decisions about our data.
+
+    Example: Professor Willoughby is marking a test.
+    Here are the students' results (out of 60 points):
+
+    20, 15, 26, 32, 18, 28, 35, 14, 26, 22, 17
+
+    Most students didn't even get 30 out of 60, and most will fail.
+
+    The test must have been really hard, so the Prof decides to Standardize all 
+    the scores and only fail people more than 1 standard deviation below the mean.
+
+    The Mean is 23, and the Standard Deviation is 6.6, and these are the Standard Scores:
+
+    -0.45, -1.21, 0.45, 1.36, -0.76, 0.76, 1.82, -1.36, 0.45, -0.15, -0.91
+
+    Now only 2 students will fail (the ones lower than −1 standard deviation)
+
+    Much fairer!
+
+    It also makes life easier because we only need one table 
+    (the Standard Normal Distribution Table), rather than doing 
+    calculations individually for each value of mean and standard deviation.
+
+What is the T Distribution?
+    The T distribution (also called Student’s T Distribution) is a family 
+    of distributions that look almost identical to the normal distribution 
+    curve, only a bit shorter and fatter. The t distribution is used instead 
+    of the normal distribution when you have small samples (for more on this, 
+    see: t-score vs. z-score). The larger the sample size, the more the t 
+    distribution looks like the normal distribution. In fact, for sample 
+    sizes larger than 20 (e.g. more degrees of freedom), the distribution 
+    is almost exactly like the normal distribution.
+
+    t-distribution
+
+
+    How to Calculate the Score for a T Distribution
+    When you look at the t-distribution tables, you’ll see that you need 
+    to know the “df.” This means “degrees of freedom” and is just the sample size minus one.
+
+    Step 1: Subtract one from your sample size. This will be your degrees of freedom.
+    Step 2: Look up the df in the left hand side of the t-distribution table. 
+    Locate the column under your alpha level (the alpha level is usually
+    given to you in the question).
+    For more detailed steps, including a video, see: t score formula.
+
+    Uses
+    The T Distribution (and the associated t scores), are used in hypothesis testing when you want to figure out if you should accept or reject the null hypothesis.
+    t distribution
+    The central region on this graph is the acceptance area and the tail is the rejection region, or regions. In this particular graph of a two tailed test, the rejection region is shaded blue. The area in the tail can be described with z-scores or t-scores. For example, the image to the left shows an area in the tails of 5% (2.5% each side). The z-score would be 1.96 (from the z-table), which represents 1.96 standard deviations from the mean. The null hypothesis will be rejected if z is less than -1.96 or greater than 1.96.
+
+    In general, this distribution is used when you have a small sample size (under 30) or you don’t know the population standard deviation. For practical purposes (i.e. in the real world), this is nearly always the case. So, unlike in your elementary statistics class, you’ll likely be using it in real life situations more than the normal distribution. If the size of your sample is large enough, the two distributions are practically the same.
+
+
+
+
+34) INDEPTH CONFIDENCE INTERVAL:
+
+        A Confidence Interval is a range of values we are fairly sure our true value lies in.
+
+        men running
+        Example: Average Height
+        We measure the heights of 40 randomly chosen men, and get a mean height of 175cm,
+
+        We also know the standard deviation of men's heights is 20cm.
+
+        The 95% Confidence Interval (we show how to calculate it later) is:
+
+        175cm ± 6.2cm
+
+        confidence interval 175 plus minus 6.2
+
+        This says the true mean of ALL men (if we could measure all their heights) 
+        is likely to be between 168.8cm and 181.2cm.
+
+        But it might not be!
+
+        The "95%" says that 95% of experiments like we just did will include the true mean, but 5% won't.
+
+        So there is a 1-in-20 chance (5%) that our Confidence Interval does NOT include the true mean.
+
+        Calculating the Confidence Interval
+        Step 1: start with
+
+        the number of observations n
+        the mean X
+        and the standard deviation s
+        Note: we should use the standard deviation of the entire population, but in many cases we won't know it.
+
+        We can use the standard deviation for the sample if we have enough observations (at least n=30, hopefully more).
+
+        Using our example:
+
+        number of observations n = 40
+        mean X = 175
+        standard deviation s = 20
+
+        Step 2: decide what Confidence Interval we want: 95% or 99% are common choices. 
+        Then find the "Z" value for that Confidence Interval here:
+
+        Confidence
+        Interval	Z
+        80%	1.282
+        85%	1.440
+        90%	1.645
+        95%	1.960
+        99%	2.576
+        99.5%	2.807
+        99.9%	3.291
+        For 95% the Z value is 1.960
+
+        Step 3: use that Z value in this formula for the Confidence Interval
+
+        X  ±  Z s√n 
+
+        Where:
+
+        X is the mean
+        Z is the chosen Z-value from the table above
+        s is the standard deviation
+        n is the number of observations
+        And we have:
+
+        175 ± 1.960 ×  20√40 
+
+        Which is:
+
+        175cm ± 6.20cm
+
+        In other words: from 168.8cm to 181.2cm
+
+        The value after the ± is called the margin of error
+
+        The margin of error in our example is 6.20cm
+
+35) Confidence intervals continued:
+
+    If you’re just beginning statistics, you’ll probably be finding confidence intervals 
+    using the normal distribution (see #3 below). But in reality, most confidence intervals 
+    are found using the t-distribution (especially if you are working with small samples). 
+    If you aren’t sure which technique you should be looking at, start with #1 below 
+    (how to find a confidence interval for a sample).
+
+
+    What is the Definition of a Confidence Interval?
+    A confidence interval is how much uncertainty there is with any particular statistic. 
+    Confidence intervals are often used with a margin of error. It tells you how 
+    confident you can be that the results from a poll or survey reflect what you 
+    would expect to find if it were possible to survey the entire population.
+
+
+    Confidence Interval For a Sample: Steps
+    Question:
+
+    A group of 10 foot surgery patients had a mean weight of 240 pounds. The sample standard deviation was 25 pounds. Find a confidence interval for a sample for the true mean weight of all foot surgery patients. Find a 95% CI.
+
+    Step 1: Subtract 1 from your sample size. 10 – 1 = 9. This gives you degrees of freedom, which you’ll need in step 3.
+
+    Step 2: Subtract the confidence level from 1, then divide by two.
+    (1 – .95) / 2 = .025
+
+    Step 3: Look up your answers to step 1 and 2 in the t-distribution table. For 9 degrees of freedom (df) and α = 0.025, my result is 2.262.
+
+    df	α = 0.1	0.05	0.025	0.01	0.005	0.001	0.0005
+    ∞	tα=1.282	1.645	1.960	2.326	2.576	3.091	3.291
+    1	3.078	6.314	12.706	31.821	63.656	318.289	636.578
+    2	1.886	2.920	4.303	6.965	9.925	22.328	31.600
+    3	1.638	2.353	3.182	4.541	5.841	10.214	12.924
+    4	1.533	2.132	2.776	3.747	4.604	7.173	8.610
+    5	1.476	2.015	2.571	3.365	4.032	5.894	6.869
+    6	1.440	1.943	2.447	3.143	3.707	5.208	5.959
+    7	1.415	1.895	2.365	2.998	3.499	4.785	5.408
+    8	1.397	1.860	2.306	2.896	3.355	4.501	5.041
+    9	1.383	1.833	2.262
+    Step 4: Divide your sample standard deviation by the square root of your sample size.
+    25 / √(10) = 7.90569415
+
+    Step 5: Multiply step 3 by step 4.
+    2.262 × 7.90569415 = 17.8826802
+
+    Step 6: For the lower end of the range, subtract step 5 from the sample mean.
+    240 – 17.8826802 = 222.117
+
+    Step 7: For the upper end of the range, add step 5 to the sample mean.
+    240 + 17.8826802 = 257.883
+
+    That’s how to find the confidence interval for a sample!
+
+    Like the explanation on how to find a confidence interval? Check out our statistics how-to book, with a how-to for every elementary statistics problem type.
+
+36) How to Find a Confidence Interval Example 2 (small sample)
+
+    CI: Xhat plus minus t*s/sqrt(n)
+
+    Watch the video or read the steps below:
+
+    If you have one small set of data (under 30 items), you’ll want to use the t-distribution 
+    instead of the normal distribution to construct your confidence interval.
+
+    construct a confidence interval
+    The formula for constructing a CI with the t-distribution.
+
+
+
+    Example problem: Construct a 98% Confidence Interval based 
+    on the following data: 45, 55, 67, 45, 68, 79, 98, 87, 84, 82.
+
+    Step 1: Find the mean, μ and standard deviation, σ for the data.
+    σ: 18.172.
+    μ: 71
+
+    Set these numbers aside for a moment.
+
+    Step 2: Subtract 1 from your sample size to find the degrees of freedom (df). 
+    We have 10 numbers listed, so our sample size is 10, so our df = 9. 
+    Set this number aside for a moment.
+
+    Step 3: Subtract the confidence level from 1, then divide by two. This is your alpha level.
+    (1 – .98) / 2 = .01
+
+    Step 4: Look up df (Step 2) and α (Step 3) in the t-distribution table. 
+        For df = 9 and α = .01, the table gives us 2.821.
+    degrees of freedom
+    Degrees of freedom in the left column of the t distribution table.
+
+
+
+    Step 5: Divide your std dev (step 1) by the square root of your sample size.
+    18.172 / √(10) = 5.75
+
+    Step 6: : Multiply step 4 by step 5.
+    2.821 × 5.75 = 16.22075
+
+
+    Step 7: For the lower end of the range, subtract step 6 from the mean (Step 1).
+    71 – 16.22075 = 54.77925
+
+    Step 8: For the upper end of the range, add step 6 to the mean (Step 1).
+    71 + 16.22075 = 87.22075
+
+    That’s how to find a confidence interval using the t-distribution!
+
+
+Confidence Interval with the Normal Distribution / Z-Distribution
+
+    Watch the video or read the article below:
+
+    If you don’t know your population mean (μ) but you do know the standard deviation (σ), 
+    you can find a confidence interval for the population mean, with the formula:
+    x̄ ± z* σ / (√n),
+
+
+    Example problem: Construct a 95 % confidence interval an experiment that found 
+    the sample mean temperature for a certain city in August was 101.82, with a 
+    population standard deviation of 1.2. There were 6 samples in this experiment.
+
+    Step 1: Subtract the confidence level (Given as 95 percent in the question) from 1 and 
+    then divide the result by two. This is your alpha level, which represents the area in one tail.
+    (1 – .95) / 2 = .025
+
+    Step 2: Subtract your result from Step 1 from 1 and then look that area up in the middle of the z-table to get the z-score:
+
+    1 – 0.025 = 0.975
+    z score = 1.96.
+    Step 3: Plug the numbers into the second part of the formula and solve:
+    z* σ / (√n)
+    = 1.96 * 1.2/√(6)
+    = 1.96 * 0.49
+    = 0.96
+
+    Step 4: For the lower end of the range, subtract step 3 from the mean.
+    101.82 – 0.96 = 100.86
+
+    Step 5: For the upper end of the range, add step 3 to the  mean.
+    101.82 + 0.96 = 102.78.
+
+    The CI is (100.86,102.78)
+
+    Back to Top
+
+How to Find a Confidence Interval for a Proportion: Steps
+
+    Question: 510 people applied to the Bachelor’s in Elementary Education program 
+    at Florida State College. Of those applicants, 57 were men. Find the 90% CI 
+    of the true proportion of men who applied to the program.
+
+    Step 1: Read the question carefully and figure out the following variables:
+
+    α : subtract the given CI from 1.
+    1-.9=.10
+    z α/2: divide α by 2, then look up that area in the z-table. Not sure how to read a z table? 
+
+    .1/2=.0500. The closest z-value to an area of .0500 is 0.13
+    phat: Divide the proportion given (i.e. the smaller number)by the sample size.
+    57/510=0.112
+    qhat: Subtractphatfrom 1.
+    1-0.112 = 0.888
+    Step 2: Multiplyphatbyqhat.
+    0.112 x 0.888 = 0.099456
+
+    Step 3: Divide step 2 by the sample size.
+    0.099456 / 510 = 0.000195011765
+
+    Step 4:Take the square root of step 3:
+    sqrt(0.000195011765) = 0.0139646613
+
+    Step 5: Multiply step 4 by z a/2:
+    0.0139646613 x 0.13 = 0.00182
+
+    Step 6:: For the lower percentage, subtract step 5 fromphat.  
+    0.112-0.00182 =  .11018 = 11.018%
+
+    Step 7:For the upper percentage, add step 5 tophat.
+    0.112 + 0.00182 =  0.11382 = 11.382%
+
+    This next method involves plugging in numbers into the actual formula. You’ll get the same results if you use the “formula free” method above or if you use the steps below.
+
+    Confidence intervals for a proportion are calculated using the following formula:
+
+
+Degrees of Freedom in Hypothesis testing:
+
+    Degrees of freedom are used in hypothesis testing. ->used in T tables
+
+    Contents (click to skip to that section):
+
+    What are Degrees of Freedom?
+    DF: Two Samples
+    Degrees of Freedom in ANOVA
+    Why Do Critical Values Decrease While DF Increase?
+
+
+    Degrees of freedom in the left column of the t distribution table.
+
+    Degrees of freedom of an estimate is the number of independent pieces 
+    of information that went into calculating the estimate. It’s not quite 
+    the same as the number of items in the sample. In order to get the df 
+    for the estimate, you have to subtract 1 from the number of items. Let’s 
+    say you were finding the mean weight loss for a low-carb diet. You could 
+    use 4 people, giving 3 degrees of freedom (4 – 1 = 3), or you could use 
+    one hundred people with df = 99.
+
+    In math terms (where “n” is the number of items in your set):
+
+    Degrees of Freedom = n – 1
+
+    Why do we subtract 1 from the number of items? Another way to look at degrees of freedom 
+    is that they are the number of values that are free to vary in a data set. What does 
+    “free to vary” mean? Here’s an example using the mean (average):
+
+    Q. Pick a set of numbers that have a mean (average) of 10.
+    A. Some sets of numbers you might pick: 9, 10, 11 or 8, 10, 12 or 5, 10, 15.
+    Once you have chosen the first two numbers in the set, the third is fixed. In other 
+    words, you can’t choose the third item in the set. The only numbers that are free 
+    to vary are the first two. You can pick 9 + 10 or 5 + 15, but once you’ve made that 
+    decision you must choose a particular number that will give you the mean you are 
+    looking for. So degrees of freedom for a set of three numbers is TWO.
+
+    For example: if you wanted to find a confidence interval for a sample, degrees of 
+    freedom is n – 1. “N’ can also be the number of classes or categories. 
+    
+    See: Critical chi-square value for an example.
+
+Degrees of Freedom: Two Samples
+    If you have two samples and want to find a parameter, like the mean, you have two “n”s 
+    to consider (sample 1 and sample 2). Degrees of freedom in that case is:
+
+    Degrees of Freedom (Two Samples): (N1 + N2) – 2.
+
+
+Degrees of Freedom in ANOVA
+    Degrees of freedom becomes a little more complicated in ANOVA tests. Instead of a simple 
+    parameter (like finding a mean), ANOVA tests involve comparing known means in sets of data. 
+    For example, in a one-way ANOVA you are comparing two means in two cells. 
+    The grand mean (the average of the averages) would be:
+
+    Mean 1 + mean 2 = grand mean.
+    What if you chose mean 1 and you knew the grand mean? You wouldn’t have a choice 
+    about Mean2, so your degrees of freedom for a two-group ANOVA is 1.
+
+    Two Group ANOVA df1 = n – 1
+
+    For a three-group ANOVA, you can vary two means so degrees of freedom is 2.
+
+    It’s actually a little more complicated because there are two 
+    degrees of freedom in ANOVA: df1 and df2. The explanation above 
+    is for df1. Df2 in ANOVA is the total number of observations 
+    in all cells – degrees of freedoms lost because the cell means are set.
+
+    Two Group ANOVA df2 = n – k
+
+    The “k” in that formula is the number of cell means or groups/conditions.
+    For example, let’s say you had 200 observations and four cell means. 
+    Degrees of freedom in this case would be: Df2 = 200 – 4 = 196.
+
+Why Do Critical Values Decrease While DF Increase?
+    Thanks to Mohammed Gezmu for this question.
+
+    Let’s take a look at the t-score formula in a hypothesis test:
+    t-score  =  (xbar - u0) /(s/sqrt(n))
+     
+
+    When n increases, the t-score goes up. This is because of the square root in the 
+    denominator: as it gets larger, the fraction s/√n gets smaller and the t-score (the result 
+    of another fraction) gets bigger. As the degrees of freedom are defined above as n-1, 
+    you would think that the t-critical value should get bigger too, but 
+    they don’t: they get smaller. This seems counter-intuitive.
+
+    However, think about what a t-test is actually for. You’re using the t-test because 
+    you don’t know the standard deviation of your population and therefore you don’t 
+    know the shape of your graph. It could have short, fat tails. It could have long skinny 
+    tails. You just have no idea. The degrees of freedom affect the shape of the graph in 
+    the t-distribution; as the df get larger, the area in the tails of the distribution get 
+    smaller. As df approaches infinity, the t-distribution will look like a normal distribution. 
+    When this happens, you can be certain of your standard deviation 
+    (which is 1 on a normal distribution).
+
+
+    Let’s say you took repeated sample weights from four people, drawn from a population with an 
+    unknown standard deviation. You measure their weights, calculate the mean difference 
+    between the sample pairs and repeat the process over and over. The tiny sample 
+    size of 4 will result a t-distribution with fat tails. The fat tails tell you that 
+    you’re more likely to have extreme values in your sample. You test your hypothesis at an 
+    alpha level of 5%, which cuts off the last 5% of your distribution. The graph below shows 
+    the t-distribution with a 5% cut off. This gives a critical value of 2.6. (Note: I’m 
+    using a hypothetical t-distribution here as an example–the CV is not exact).
+
+    sample size and t dist shape
+    Now look at the normal distribution. We have less chance of 
+    extreme values with the normal distribution. 
+    Our 5% alpha level cuts off at a CV of 2.
+
+    Back to the original question “Why Do Critical Values Decrease While DF Increases?” 
+    Here’s the short answer:
+
+
+    Degrees of freedom are related to sample size (n-1). If the df increases, 
+    it also stands that the sample size is increasing; the graph of the t-distribution 
+    will have skinnier tails, pushing the critical value towards the mean.
+
+Hypothesis Testing Guide:
+
+    The main purpose of statistics is to test a hypothesis. 
+    For example, you might run an experiment and find that a 
+    certain drug is effective at treating headaches. But if you 
+    can’t repeat that experiment, no one will take your results 
+    seriously. A good example of this was the cold fusion discovery, 
+    which petered into obscurity because no one was able to duplicate the results.
+
+
+    What is a Hypothesis Statement?
+    If you are going to propose a hypothesis, it’s customary to write a statement. Your statement will look like this:
+    “If I…(do this to an independent variable)….then (this will happen to the dependent variable).”
+    For example:
+
+    If I (decrease the amount of water given to herbs) then (the herbs will increase in size).
+    If I (give patients counseling in addition to medication) then (their overall depression scale will decrease).
+    If I (give exams at noon instead of 7) then (student test scores will improve).
+    If I (look in this certain location) then (I am more likely to find new species).
+    A good hypothesis statement should:
+
+    Include an “if” and “then” statement (according to the University of California).
+    Include both the independent and dependent variables.
+    Be testable by experiment, survey or other scientifically sound technique.
+    Be based on information in prior research (either yours or someone else’s).
+    Have design criteria (for engineering or programming projects).
+
+
+    Hypothesis testing can be one of the most confusing aspects for students, 
+    mostly because before you can even perform a test, you have to know what 
+    your null hypothesis is. Often, those tricky word problems that you are 
+    faced with can be difficult to decipher. But it’s easier than you think; 
+    all you need to do is:
+
+    Figure out your null hypothesis,
+    State your null hypothesis,
+    Choose what kind of test you need to perform,
+    Either support or reject the null hypothesis.
+
+
+    if you trace back the history of science, the null hypothesis is 
+    always the accepted fact. Simple examples of null hypotheses that 
+    are generally accepted as being true are:
+
+    DNA is shaped like a double helix.
+    There are 8 planets in the solar system (excluding Pluto).
+    Taking Vioxx can increase your risk of heart problems (a drug now
+    taken off the market).
+
+
+
+    Hypothesis Testing Examples #1: Basic Example
+    A researcher thinks that if knee surgery patients go to physical 
+    therapy twice a week (instead of 3 times), their recovery period will 
+    be longer. Average recovery times for knee surgery patients is 8.2 weeks.
+
+    The hypothesis statement in this question is that the researcher 
+    believes the average recovery time is more than 8.2 weeks. It can be 
+    written in mathematical terms as:
+    H1: μ > 8.2
+
+    Next, you’ll need to state the null hypothesis (See: How 
+    to state the null hypothesis). That’s what will happen if the 
+    researcher is wrong. In the above example, if the researcher 
+    is wrong then the recovery time is less than or equal to 8.2 weeks. 
+    In math, that’s:
+    H0: μ ≤ 8.2
+
+    Hypothesis Testing Examples (One Sample Z Test)
+    The one sample z test isn’t used very often (because we rarely know 
+    the actual population standard deviation). However, it’s a good 
+    idea to understand how it works as it’s one of the simplest tests 
+    you can perform in hypothesis testing. 
+
+    Z = (xhat - u0)/(sigma/sqrt(n))
+    
+    A principal at a certain school claims that the students in his school 
+    are above average intelligence. A random sample of thirty students 
+    IQ scores have a mean score of 112. Is there sufficient 
+    evidence to support the principal’s claim? The mean population 
+    IQ is 100 with a standard deviation of 15.
+
+    Step 1: State the Null hypothesis. The accepted fact is that 
+    the population mean is 100, so: H0: μ=100.
+
+    Step 2: State the Alternate Hypothesis. The claim is that 
+    the students have above average IQ scores, so:
+    H1: μ > 100.
+
+    The fact that we are looking for scores “greater than” 
+    a certain point means that this is a one-tailed test.
+
+    Step 3: Draw a picture to help you visualize the problem.
+
+
+    hypothesis testing examples
+
+    Step 4: State the alpha level. If you aren’t given an alpha level, use 5% (0.05).
+
+    Step 5: Find the rejection region area (given by your alpha level 
+    above) from the z-table. An area of .05 is equal to a z-score of 1.645.
+
+    Step 6: Find the test statistic using this formula:z score formula
+    For this set of data: z= (112.5 – 100) / (15/√30) = 4.56.
+
+
+    Step 6: If Step 6 is greater than Step 5, reject the null hypothesis. 
+    If it’s less than Step 5, you cannot reject the null hypothesis. 
+    In this case, it is greater (4.56 > 1.645), so you can reject the null.
+
+
+
+Hypothesis Tests in One Picture
+    Critical Values
+    What is the Null Hypothesis?
+    Need help with a homework problem? Check out our tutoring page!
+
+    What is a Hypothesis?
+    What is a Hypothesis
+    Andreas Cellarius hypothesis, showing the planetary motions.
+
+
+    A hypothesis is an educated guess about something in the world around you. It should be testable, either by experiment or observation. For example:
+    A new medicine you think might work.
+    A way of teaching you think might be better.
+    A possible location of new species.
+    A fairer way to administer standardized tests.
+    It can really be anything at all as long as you can put it to the test.
+
+    What is a Hypothesis Statement?
+    If you are going to propose a hypothesis, it’s customary to write a statement. Your statement will look like this:
+    “If I…(do this to an independent variable)….then (this will happen to the dependent variable).”
+    For example:
+
+    If I (decrease the amount of water given to herbs) then (the herbs will increase in size).
+    If I (give patients counseling in addition to medication) then (their overall depression scale will decrease).
+    If I (give exams at noon instead of 7) then (student test scores will improve).
+    If I (look in this certain location) then (I am more likely to find new species).
+    A good hypothesis statement should:
+
+    Include an “if” and “then” statement (according to the University of California).
+    Include both the independent and dependent variables.
+    Be testable by experiment, survey or other scientifically sound technique.
+    Be based on information in prior research (either yours or someone else’s).
+    Have design criteria (for engineering or programming projects).
+    What is Hypothesis Testing?
+    hypothesis testing
+    Hypothesis testing in statistics is a way for you to test the results of a survey or experiment to see if you have meaningful results. You’re basically testing whether your results are valid by figuring out the odds that your results have happened by chance. If your results may have happened by chance, the experiment won’t be repeatable and so has little use.
+
+    Hypothesis testing can be one of the most confusing aspects for students, mostly because before you can even perform a test, you have to know what your null hypothesis is. Often, those tricky word problems that you are faced with can be difficult to decipher. But it’s easier than you think; all you need to do is:
+
+    Figure out your null hypothesis,
+    State your null hypothesis,
+    Choose what kind of test you need to perform,
+    Either support or reject the null hypothesis.
+    What is the Null Hypothesis?
+    If you trace back the history of science, the null hypothesis is always the accepted fact. Simple examples of null hypotheses that are generally accepted as being true are:
+
+    DNA is shaped like a double helix.
+    There are 8 planets in the solar system (excluding Pluto).
+    Taking Vioxx can increase your risk of heart problems (a drug now taken off the market).
+    How do I State the Null Hypothesis?
+    You won’t be required to actually perform a real experiment or survey in elementary statistics (or even disprove a fact like “Pluto is a planet”!), so you’ll be given word problems from real-life situations. You’ll need to figure out what your hypothesis is from the problem. This can be a little trickier than just figuring out what the accepted fact is. With word problems, you are looking to find a fact that is nullifiable (i.e. something you can reject).
+
+    Hypothesis Testing Examples #1: Basic Example
+    A researcher thinks that if knee surgery patients go to physical therapy twice a week (instead of 3 times), their recovery period will be longer. Average recovery times for knee surgery patients is 8.2 weeks.
+
+    The hypothesis statement in this question is that the researcher believes the average recovery time is more than 8.2 weeks. It can be written in mathematical terms as:
+    H1: μ > 8.2
+
+    Next, you’ll need to state the null hypothesis (See: How to state the null hypothesis). That’s what will happen if the researcher is wrong. In the above example, if the researcher is wrong then the recovery time is less than or equal to 8.2 weeks. In math, that’s:
+    H0 μ ≤ 8.2
+
+    Rejecting the null hypothesis
+    Ten or so years ago, we believed that there were 9 planets in the solar system. Pluto was demoted as a planet in 2006. The null hypothesis of “Pluto is a planet” was replaced by “Pluto is not a planet.” Of course, rejecting the null hypothesis isn’t always that easy—the hard part is usually figuring out what your null hypothesis is in the first place.
+
+    Hypothesis Testing Examples (One Sample Z Test)
+    The one sample z test isn’t used very often (because we rarely know the actual population standard deviation). However, it’s a good idea to understand how it works as it’s one of the simplest tests you can perform in hypothesis testing. In English class you got to learn the basics (like grammar and spelling) before you could write a story; think of one sample z tests as the foundation for understanding more complex hypothesis testing. This page contains two hypothesis testing examples for one sample z-tests.
+
+One Sample Hypothesis Testing Examples: #2
+
+
+    A principal at a certain school claims that the students in his school are above average intelligence. A random sample of thirty students IQ scores have a mean score of 112. Is there sufficient evidence to support the principal’s claim? The mean population IQ is 100 with a standard deviation of 15.
+    Step 1: State the Null hypothesis. The accepted fact is that the population mean is 100, so: H0: μ=100.
+
+    Step 2: State the Alternate Hypothesis. The claim is that the students have above average IQ scores, so:
+    H1: μ > 100.
+    The fact that we are looking for scores “greater than” a certain point means that this is a one-tailed test.
+
+    Step 3: Draw a picture to help you visualize the problem.
+
+
+    hypothesis testing examples
+
+    Step 4: State the alpha level. If you aren’t given an alpha level, use 5% (0.05).
+
+    Step 5: Find the rejection region area (given by your alpha level above) from the z-table. An area of .05 is equal to a z-score of 1.645.
+
+    Step 6: Find the test statistic using this formula:z score formula
+    For this set of data: z= (112.5 – 100) / (15/√30) = 4.56.
+
+    Step 6: If Step 6 is greater than Step 5, reject the null hypothesis. If it’s less than Step 5, you cannot reject the null hypothesis. In this case, it is greater (4.56 > 1.645), so you can reject the null.
+
+    One Sample Hypothesis Testing Examples: #3
+
+    Blood glucose levels for obese patients have a mean of 100 with a standard deviation of 15. A researcher thinks that a diet high in raw cornstarch will have a positive or negative effect on blood glucose levels. A sample of 30 patients who have tried the raw cornstarch diet have a mean glucose level of 140. Test the hypothesis that the raw cornstarch had an effect.
+
+    Step 1: State the null hypothesis: H0:μ=100
+    Step 2: State the alternate hypothesis: H1:≠100
+    Step 3: State your alpha level. We’ll use 0.05 for this example. As this is a two-tailed test, split the alpha into two.
+    0.05/2=0.025
+    Step 4: Find the z-score associated with your alpha level. You’re looking for the area in one tail only. A z-score for 0.75(1-0.025=0.975) is 1.96. As this is a two-tailed test, you would also be considering the left tail (z = 1.96)
+    Step 5: Find the test statistic using this formula:z score formula
+    z = (140 – 100) / (15/√30) = 14.60.
+    Step 6: If Step 5 is less than -1.96 or greater than 1.96 (Step 3), reject the null hypothesis. In this case, it is greater, so you can reject the null.
+
+    *This process is made much easier if you use a TI-83 or Excel to calculate the z-score (the “critical value”).
+    See:
+
+Bayesian Hypothesis Testing: What is it?
+    bayesian hypothesis testing
+    Image: Los Alamos National Lab.
+
+
+    Bayesian hypothesis testing helps to answer the question: Can the results from a test or survey be repeated?
+    Why do we care if a test can be repeated? Let’s say twenty people in the same village came down with leukemia. A group of researchers find that cell-phone towers are to blame. However, a second study found that cell-phone towers had nothing to do with the cancer cluster in the village. In fact, they found that the cancers were completely random. If that sounds impossible, it actually can happen! Clusters of cancer can happen simply by chance. There could be many reasons why the first study was faulty. One of the main reasons could be that they just didn’t take into account that sometimes things happen randomly and we just don’t know why.
+    P Values.
+    It’s good science to let people know if your study results are solid, or if they could have happened by chance. The usual way of doing this is to test your results with a p-value. A p value is a number that you get by running a hypothesis test on your data. A P value of 0.05 (5%) or less is usually enough to claim that your results are repeatable. However, there’s another way to test the validity of your results: Bayesian Hypothesis testing. This type of testing gives you another way to test the strength of your results.
+
+    Bayesian Hypothesis Testing.
+    Traditional testing (the type you probably came across in elementary stats or AP stats) is called Non-Bayesian. It is how often an outcome happens over repeated runs of the experiment. It’s an objective view of whether an experiment is repeatable.
+    Bayesian hypothesis testing is a subjective view of the same thing. It takes into account how much faith you have in your results. In other words, would you wager money on the outcome of your experiment?
+
+    Differences Between Traditional and Bayesian Hypothesis Testing.
+    Traditional testing (Non Bayesian) requires you to repeat sampling over and over, while Bayesian testing does not. The main different between the two is in the first step of testing: stating a probability model. In Bayesian testing you add prior knowledge to this step. It also requires use of a posterior probability, which is the conditional probability given to a random event after all the evidence is considered.
+
+    Arguments for Bayesian Testing.
+    Many researchers think that it is a better alternative to traditional testing, because it:
+
+    Includes prior knowledge about the data.
+    Takes into account personal beliefs about the results.
+    Arguments against.
+    Including prior data or knowledge isn’t justifiable.
+    It is difficult to calculate compared to non-Bayesian testing.
+
+
+Critical Chi-Square Value: Overview
+    critical chi-square value
+    The chi-square statistic is used to compare two categorical variables to see if they are related. Calculating the statistic involves looking the figure up in the chi-square table. The chi-square table is similar to other distribution tables; You need a couple of pieces of information to look up the statistic. In the case of chi-square, you’ll need to know degrees of freedom and probability (both of which are usually supplied in the question).
+
+
+    Watch the video or read below for the article. Need help? Check out our tutoring page!
+
+    Critical Chi-Square Value: Steps
+    Example question: You hold an experiment for an agricultural firm. They want to find out if there might be a link between hybrids (cross strains of plants) and the number of deviations (i.e. unexpected or unwanted plants) that show up. The firm has two types of corn it is crossing: blue and yellow corn. Most biologists agree that deviations with a chance probability of more than 5% are not statistically significant. Find the critical chi-square value.
+
+    Step 1: Calculate the number of degrees of freedom. This number may be given to you in the question. If it isn’t then the degrees of freedom equals the number of classes (categories) minus one. In the sample question, you have two categories: blue corn and yellow corn. Therefore the degrees of freedom = 2-1 = 1.
+
+    Step 2: Find the probability that the phenomenon you are investigating would occur by chance. This is usually stated in the question. In the sample question, you are given the probability of 5%, or 0.05.
+
+    Step 3: Look up degrees of freedom and probability in the chi-square table. One degree of freedom and 5 percent probability equals 3.84 in the chi-square table. This is your critical chi-square value.
+
+    Looking up df=1 and 5% probability in the chi-square table.
+    Looking up df=1 and 5% probability in the chi-square table.
+
+    Tip: A small chi-square value means that there is very little relationship between your two variables. A larger value means that there is a greater relationship between your two variables.
+
+Anova vs Regression (not that useful to read):
+
+    ANOVA and regression analysis. At first glance, the two methods may look similar—so similar in fact, that you wouldn’t be the first to completely confuse the two.
+    ANOVA vs Regression: Key Similarities
+    ANOVA can be described as “Analysis of variance approach to regression analysis” (Akman), although ANOVA can be reserved for more complex regression analysis (Akman, n.d.).
+
+
+    Both result in continuous output (Y) variables. And both can have continuous variables as (X) inputs—or categorical variables. If you use exactly the same structure for both tests (see the demonstration of dummy coding here for an example), they are effectively the same; In fact, ANOVA is a “special case” of multilevel regression.
+
+
+    ANOVA vs Regression: Key Differences
+    ANOVA can provide one piece of information that regression cannot: structure on the regression coefficients (Andrew, 2019).
+
+    The preferred inputs for ANOVA are categorical variables. You can think of ANOVA as a regression with a categorical predictors (Pruim, n.d.). However, you can choose to use continuous variables. The opposite is true: use continuous variables for regression with categorical variables as a second option. The reason that categorical variables are a second option in regression analysis is that you can’t just plug in categorical data into your regression model; You have to code dummy variables first. Dummy coding is where you give your categorical variables a numeric value, like “1” for black and “0” for white.
+
+
+
+
+
+Anova:
+
+        An ANOVA test is a way to find out if survey or experiment results are significant. In other words, they help you to figure out if you need to reject the null hypothesis or accept the alternate hypothesis.
+
+        Basically, you’re testing groups to see if there’s a difference between them. Examples of when you might want to test different groups:
+
+        A group of psychiatric patients are trying three different therapies: counseling, medication and biofeedback. You want to see if one therapy is better than the others.
+        A manufacturer has two different processes to make light bulbs. They want to know if one process is better than the other.
+        Students from different colleges take the same exam. You want to see if one college outperforms the other.
+        What Does “One-Way” or “Two-Way Mean?
+        One-way or two-way refers to the number of independent variables (IVs) in your Analysis of Variance test.
+
+        One-way has one independent variable (with 2 levels). For example: brand of cereal,
+        Two-way has two independent variables (it can have multiple levels). For example: brand of cereal, calories.
+        What are “Groups” or “Levels”?
+        Groups or levels are different groups within the same independent variable. In the above example, your levels for “brand of cereal” might be Lucky Charms, Raisin Bran, Cornflakes — a total of three levels. Your levels for “Calories” might be: sweetened, unsweetened — a total of two levels.
+
+        Let’s say you are studying if an alcoholic support group and individual counseling combined is the most effective treatment for lowering alcohol consumption. You might split the study participants into three groups or levels:
+
+        Medication only,
+        Medication and counseling,
+        Counseling only.
+        Your dependent variable would be the number of alcoholic beverages consumed per day.
+
+        If your groups or levels have a hierarchical structure (each level has unique subgroups), then use a nested ANOVA for the analysis.
+
+        What Does “Replication” Mean?
+        It’s whether you are replicating (i.e. duplicating) your test(s) with multiple groups. With a two way ANOVA with replication , you have two groups and individuals within that group are doing more than one thing (i.e. two groups of students from two colleges taking two tests). If you only have one group taking two tests, you would use without replication.
+
+        Types of Tests.
+        There are two main types: one-way and two-way. Two-way tests can be with or without replication.
+
+        One-way ANOVA between groups: used when you want to test two groups to see if there’s a difference between them.
+        Two way ANOVA without replication: used when you have one group and you’re double-testing that same group. For example, you’re testing one set of individuals before and after they take a medication to see if it works or not.
+        Two way ANOVA with replication: Two groups, and the members of those groups are doing more than one thing. For example, two groups of patients from different hospitals trying two different therapies.
+        Back to Top
+
+        One Way ANOVA
+        A one way ANOVA is used to compare two means from two independent (unrelated) groups using the F-distribution. The null hypothesis for the test is that the two means are equal. Therefore, a significant result means that the two means are unequal.
+
+        Examples of when to use a one way ANOVA
+        Situation 1: You have a group of individuals randomly split into smaller groups and completing different tasks. For example, you might be studying the effects of tea on weight loss and form three groups: green tea, black tea, and no tea.
+        Situation 2: Similar to situation 1, but in this case the individuals are split into groups based on an attribute they possess. For example, you might be studying leg strength of people according to weight. You could split participants into weight categories (obese, overweight and normal) and measure their leg strength on a weight machine.
+
+        Limitations of the One Way ANOVA
+        A one way ANOVA will tell you that at least two groups were different from each other. But it won’t tell you which groups were different. If your test returns a significant f-statistic, you may need to run an ad hoc test (like the Least Significant Difference test) to tell you exactly which groups had a difference in means.
+        Back to Top
+
+        Two Way ANOVA
+        A Two Way ANOVA is an extension of the One Way ANOVA. With a One Way, you have one independent variable affecting a dependent variable. With a Two Way ANOVA, there are two independents. Use a two way ANOVA when you have one measurement variable (i.e. a quantitative variable) and two nominal variables. In other words, if your experiment has a quantitative outcome and you have two categorical explanatory variables, a two way ANOVA is appropriate.
+
+        For example, you might want to find out if there is an interaction between income and gender for anxiety level at job interviews. The anxiety level is the outcome, or the variable that can be measured. Gender and Income are the two categorical variables. These categorical variables are also the independent variables, which are called factors in a Two Way ANOVA.
+
+        The factors can be split into levels. In the above example, income level could be split into three levels: low, middle and high income. Gender could be split into three levels: male, female, and transgender. Treatment groups are all possible combinations of the factors. In this example there would be 3 x 3 = 9 treatment groups.
+
+        Main Effect and Interaction Effect
+        The results from a Two Way ANOVA will calculate a main effect and an interaction effect. The main effect is similar to a One Way ANOVA: each factor’s effect is considered separately. With the interaction effect, all factors are considered at the same time. Interaction effects between factors are easier to test if there is more than one observation in each cell. For the above example, multiple stress scores could be entered into cells. If you do enter multiple observations into cells, the number in each cell must be equal.
+
+        Two null hypotheses are tested if you are placing one observation in each cell. For this example, those hypotheses would be:
+        H01: All the income groups have equal mean stress.
+        H02: All the gender groups have equal mean stress.
+
+        For multiple observations in cells, you would also be testing a third hypothesis:
+        H03: The factors are independent or the interaction effect does not exist.
+
+        An F-statistic is computed for each hypothesis you are testing.
+
+        Assumptions for Two Way ANOVA
+        The population must be close to a normal distribution.
+        Samples must be independent.
+        Population variances must be equal.
+        Groups must have equal sample sizes.
+        Back to Top
+
+        What is MANOVA?
+        MANOVA is just an ANOVA with several dependent variables. It’s similar to many other tests and experiments in that it’s purpose is to find out if the response variable (i.e. your dependent variable) is changed by manipulating the independent variable. The test helps to answer many research questions, including:
+
+        Do changes to the independent variables have statistically significant effects on dependent variables?
+        What are the interactions among dependent variables?
+        What are the interactions among independent variables?
+        MANOVA Example
+        Suppose you wanted to find out if a difference in textbooks affected students’ scores in math and science. Improvements in math and science means that there are two dependent variables, so a MANOVA is appropriate.
+
+        An ANOVA will give you a single (univariate) f-value while a MANOVA will give you a multivariate F value. MANOVA tests the multiple dependent variables by creating new, artificial, dependent variables that maximize group differences. These new dependent variables are linear combinations of the measured dependent variables.
+
+        Interpreting the MANOVA results
+        If the multivariate F value indicates the test is statistically significant, this means that something is significant. In the above example, you would not know if math scores have improved, science scores have improved (or both). Once you have a significant result, you would then have to look at each individual component (the univariate F tests) to see which dependent variable(s) contributed to the statistically significant result.
+
+        Advantages and Disadvantages of MANOVA vs. ANOVA
+        Advantages
+        MANOVA enables you to test multiple dependent variables.
+        MANOVA can protect against Type I errors.
+        Disadvantages
+        MANOVA is many times more complicated than ANOVA, making it a challenge to see which independent variables are affecting dependent variables.
+        One degree of freedom is lost with the addition of each new variable.
+        The dependent variables should be uncorrelated as much as possible. If they are correlated, the loss in degrees of freedom means that there isn’t much advantages in including more than one dependent variable on the test.
+        Reference:
+        (SFSU)
+
+        Back to Top
+
+        What is Factorial ANOVA?
+        A factorial ANOVA is an Analysis of Variance test with more than one independent variable, or “factor“. It can also refer to more than one Level of Independent Variable. For example, an experiment with a treatment group and a control group has one factor (the treatment) but two levels (the treatment and the control). The terms “two-way” and “three-way” refer to the number of factors or the number of levels in your test. Four-way ANOVA and above are rarely used because the results of the test are complex and difficult to interpret.
+
+        A two-way ANOVA has two factors (independent variables) and one dependent variable. For example, time spent studying and prior knowledge are factors that affect how well you do on a test.
+        A three-way ANOVA has three factors (independent variables) and one dependent variable. For example, time spent studying, prior knowledge, and hours of sleep are factors that affect how well you do on a test
+        Factorial ANOVA is an efficient way of conducting a test. Instead of performing a series of experiments where you test one independent variable against one dependent variable, you can test all independent variables at the same time.
+
+        Variability
+        In a one-way ANOVA, variability is due to the differences between groups and the differences within groups. In factorial ANOVA, each level and factor are paired up with each other (“crossed”). This helps you to see what interactions are going on between the levels and factors. If there is an interaction then the differences in one factor depend on the differences in another.
+
+        Let’s say you were running a two-way ANOVA to test male/female performance on a final exam. The subjects had either had 4, 6, or 8 hours of sleep.
+
+        IV1: SEX (Male/Female)
+        IV2: SLEEP (4/6/8)
+        DV: Final Exam Score
+        A two-way factorial ANOVA would help you answer the following questions:
+
+        Is sex a main effect? In other words, do men and women differ significantly on their exam performance?
+        Is sleep a main effect? In other words, do people who have had 4,6, or 8 hours of sleep differ significantly in their performance?
+        Is there a significant interaction between factors? In other words, how do hours of sleep and sex interact with regards to exam performance?
+        Can any differences in sex and exam performance be found in the different levels of sleep?
+        Assumptions of Factorial ANOVA
+        Normality: the dependent variable is normally distributed.
+        Independence: Observations and groups are independent from each other.
+        Equality of Variance: the population variances are equal across factors/levels.
+        How to run an ANOVA
+        These tests are very time-consuming by hand. In nearly every case you’ll want to use software. For example, several options are available in Excel:
+
+        Two way ANOVA in Excel with replication and without replication.
+        One way ANOVA in Excel 2013.
+        anova
+        Running the test in Excel.
+
+
+        ANOVA tests in statistics packages are run on parametric data. If you have rank or ordered data, you’ll want to run a non-parametric ANOVA (usually found under a different heading in the software, like “nonparametric tests“).
+        Steps
+        It is unlikely you’ll want to do this test by hand, but if you must, these are the steps you’ll want to take:
+
+        Find the mean for each of the groups.
+        Find the overall mean (the mean of the groups combined).
+        Find the Within Group Variation; the total deviation of each member’s score from the Group Mean.
+        Find the Between Group Variation: the deviation of each Group Mean from the Overall Mean.
+        Find the F statistic: the ratio of Between Group Variation to Within Group Variation.
+        ANOVA vs. T Test
+        A Student’s t-test will tell you if there is a significant variation between groups. A t-test compares means, while the ANOVA compares variances between populations.
+        You could technically perform a series of t-tests on your data. However, as the groups grow in number, you may end up with a lot of pair comparisons that you need to run. ANOVA will give you a single number (the f-statistic) and one p-value to help you support or reject the null hypothesis.
+        Back to Top
+
+        Repeated Measures ANOVA
+        A repeated measures ANOVA is almost the same as one-way ANOVA, with one main difference: you test related groups, not independent ones. It’s called Repeated Measures because the same group of participants is being measured over and over again. For example, you could be studying the cholesterol levels of the same group of patients at 1, 3, and 6 months after changing their diet. For this example, the independent variable is “time” and the dependent variable is “cholesterol.” The independent variable is usually called the within-subjects factor.
+
+        Repeated measures ANOVA is similar to a simple multivariate design. In both tests, the same participants are measured over and over. However, with repeated measures the same characteristic is measured with a different condition. For example, blood pressure is measured over the condition “time”. For simple multivariate design it is the characteristic that changes. For example, you could measure blood pressure, heart rate and respiration rate over time.
+
+        Reasons to use Repeated Measures ANOVA
+        When you collect data from the same participants over a period of time, individual differences (a source of between group differences) are reduced or eliminated.
+        Testing is more powerful because the sample size isn’t divided between groups.
+        The test can be economical, as you’re using the same participants.
+        Assumptions for Repeated Measures ANOVA
+        The results from your repeated measures ANOVA will be valid only if the following assumptions haven’t been violated:
+
+        There must be one independent variable and one dependent variable.
+        The dependent variable must be a continuous variable, on an interval scale or a ratio scale.
+        The independent variable must be categorical, either on the nominal scale or ordinal scale.
+        Ideally, levels of dependence between pairs of groups is equal (“sphericity”). Corrections are possible if this assumption is violated.
+        Repeated Measures ANOVA in SPSS: Steps
+        Step 1: Click “Analyze”, then hover over “General Linear Model.” Click “Repeated Measures.”
+        repeated measures anova 1
+
+        Step 2: Replace the “factor1” name with something that represents your independent variable. For example, you could put “age” or “time.”
+
+        Step 3: Enter the “Number of Levels.” This is how many times the dependent variable has been measured. For example, if you took measurements every week for a total of 4 weeks, this number would be 4.
+
+        Step 4: Click the “Add” button and then give your dependent variable a name.
+
+        Step 5: Click the “Add” button. A Repeated Measures Define box will pop up. Click the “Define” button.
+        repeated measures anova 2
+
+        Step 6: Use the arrow keys to move your variables from the left to the right so that your screen looks similar to the image below:
+        repeated measures anova 3
+
+        Step 7: Click “Plots” and use the arrow keys to transfer the factor from the left box onto the Horizontal Axis box.
+
+        Step 8: Click “Add” and then click “Continue” at the bottom of the window.
+        repeated measures anova 4
+
+        Step 9: Click “Options”, then transfer your factors from the left box to the Display Means for box on the right.
+
+        Step 10: Click the following check boxes:
+
+        Compare main effects.
+        Descriptive Statistics.
+        Estimates of Effect Size.
+        Step 11: Select “Bonferroni” from the drop down menu under Confidence Interval Adjustment.
+        Step 12: Click “Continue” and then click “OK” to run the test.
+        Back to Top
+
+        Sphericity
+        In statistics, sphericity (ε) refers to Mauchly’s sphericity test, which was developed in 1940 by John W. Mauchly, who co-developed the first general-purpose electronic computer.
+
+        Definition
+        Sphericity is used as an assumption in repeated measures ANOVA. The assumption states that the variances of the differences between all possible group pairs are equal. If your data violates this assumption, it can result in an increase in a Type I error (the incorrect rejection of the null hypothesis).
+
+        It’s very common for repeated measures ANOVA to result in a violation of the assumption. If the assumption has been violated, corrections have been developed that can avoid increases in the type I error rate. The correction is applied to the degrees of freedom in the F-distribution.
+
+        Mauchly’s Sphericity Test
+        Mauchly’s test for sphericity can be run in the majority of statistical software, where it tends to be the default test for sphericity. Mauchly’s test is ideal for mid-size samples. It may fail to detect sphericity in small samples and it may over-detect in large samples.
+        If the test returns a small p-value (p ≤.05), this is an indication that your data has violated the assumption. The following picture of SPSS output for ANOVA shows that the significance “sig” attached to Mauchly’s is .274. This means that the assumption has not been violated for this set of data.
+
+

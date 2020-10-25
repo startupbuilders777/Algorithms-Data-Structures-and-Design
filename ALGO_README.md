@@ -71,6 +71,324 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+-84) Using cumulative array for sums in 1D and 2D case tricks:
+    1D) sum between i and j inclsuive:
+        sum(j) - sum(i-1)
+        REMEMBER TO DO I-1 to make it INCLUSIVE!
+
+    2D)
+    Have a 2D cumulative array,
+    of size N+1, M+1, for NxM array
+    top row is all 0s.
+    left column is all 0s.
+    similar to cumualtive array. 
+    
+    2 coordinates is top left and bottom right. 
+    
+    (from snap interview)
+    SUM OF LARGE RECTANGE - SUM OF TOP RIGHT - SUM OF BOTTOM LEFT + SUM OF SMALL RECTANGLE. 
+    
+
+
+    topleft -> tlx, tly
+    bottomright -> brx, bry
+    
+    # because inclusive, not sure though, do lc to check below part.
+    tlx -= 1
+    tly -= 1
+
+    arr[brx][bry] - arr[brx][tly] - arr[tlx][bry]  + arr[tlx][tly]
+
+
+
+
+-83) Fenwick Trees youtube video explanation
+
+
+    Fenwick Tree youtube video ideas: 
+
+    1, -7, 15, 9, 4, 2, 0, 10
+    We keep grouping elements, first by 2, then by 4, then by 8
+ 
+    1, -7, 15, 9, 4, 2, 0, 10
+       -6, 24, 6, 10
+          18,   16
+              34
+    
+    Make fenwick tree indexed by 1 -> whatever lenght array we get, make fenwick array 1 size bigger.
+    8 blocks -> size 9 array. 
+    
+    INITIALIZATION: 
+    4 bits to represent 9 blocks. 
+    First node is always dummy node in fenwick tree, and represents 0.  
+    
+    Explained:
+    No number between 1 and 2 -> is there a number between 2 and 4 -> need 2 bits to represent 3,
+    so it goes into level 2
+    Between 4 and 8 are there numbers -> with 2 bits we can represent 
+                                        5 and 6 so they go to level 2.
+    We still have 7 and we need 3 bits to represent 7 -> so it goes to level 3.
+
+
+    Level 0 (use no bits)                                  0000
+    Level 1 (use 1 bit)          (1) 0001, (2)0010,       (4)0100,                    (8)1000
+    Leve  2 (use 2 bits)                           (3)0011         5(0101) 6(0110)
+    Level 3 (use 3 bits)                                                        7(0111)
+
+    Parent relationships of tree are following: 
+    Parent of 3 is 2,  
+    parent of 8 is 0, 
+    parent of 7 is 6, 
+    parent of 6 is 4, parent of 5 is 4
+    parent of 3 is 2
+    parent of 1 is 0. 
+    parent of 4 is 0
+    parent of 2 is 0
+    To go from number to parent -> remove the rightmost 1 or the rightmost 1 bit. 
+
+    so parent = i - (i & -i)
+        i is 7 -> parent is 6
+        7                -> 0111
+        -7 2s complement -> 1001
+                        and it -> 1
+        7 - 1 = 6
+        So that trick works -> parent = i - (i & -i)
+
+    We need to cumulatively sum everything in the array and put in fenwick tree. 
+    So for:
+    1, -7, 15, 9, 4, 2, 0, 10
+    
+    Fenwick array: 0, 1, -6, 9, 18, 22, 24, 24, 34
+    OK finally, 
+    you have to subtract the parent from the child in above fenwick array. 
+    From 34 you subtract 0. 
+    From 24 you subtract 24
+    from 24 you subtract 18
+    from 22 subtract 18
+    from 9 subtract -6
+    from 1 subtract 0. 
+
+    Use the trick of parent. 
+    Final fenwick array: 
+    0, 1, -6, 15, 18, 4, 6, 0, 34
+
+    To get sum from idx 0 to 6: -> its 24. 
+    fenwick tree indexed by +1, so to get indx 0-6, need to do 0 to 7 
+    from 7 go up the tree -> 0 + 6 + 18 + 0 -> 24
+
+    INITIALIZE FENWICK TREE IN O(N) time:
+
+    int n = length of array
+    int[] fw = new int[n+1];
+    fw[1] = arr[0];
+    for(int i = 1; i < n; i++) {
+        fw[i+1] = fw[i] + arr[i];
+    }
+
+    // now remove value of parent node from given node. 
+    for(int i = n; i >0 ; i--) {
+        parent = i - (i& -i);
+        if (parent >= 0) {
+            fw[i] -= fw[parent];
+        }
+    }
+
+
+    SUM OPERATION (LOGN operation):
+    Fenwick incremented by 1, so always add 1 before you start. 
+    int sum(int x) {
+        x ++;
+        int res = 0; 
+        while(x > 0) {
+            res += fw[x];
+            x = x - (x & -x)
+        } 
+    }
+
+    //Increment (LOG N)
+    // i is index, v is val.
+    // go top down tree 
+    // find parent -> do opposite to findnext node. 
+    void increment(int i, int val) {
+        i ++; //fenwick tree do + 1
+        while(i <= n ) {
+            fw[i] += val;
+            // find next node, not parent this time. 
+            i = i + (i&-i)
+        } 
+    }
+
+    LEETCODE 307 Range Sum Query: 
+
+    sumRange(int i, int j) {
+        // want sum inclusive.
+        // its i-1 because we want INCLUSIVE SUM, 
+        // THIS IS TRUE FOR 1D GRIDS AND 2D GRID SUMS.  
+        sum(j) - sum(i-1)
+
+    }
+    
+    void update(int i, int val) {
+        //change ith location to val
+        int diff = val - arr[i];
+        arr[i] = val;
+        increment(i, diff);
+    }
+
+
+
+
+
+
+-82)Bit Tries and solving XOR problems:
+    BIT TRIES -> stores a number in binary form. 
+    #######################################################################33
+    1 - Given an array of integers, we have to find 2 elements whose XOR is maximum
+
+    BIT TRIE OPERATIONS: 
+        2 types of queries for datastructure:
+        1. insert a number in data structure.
+        2. Given y, find maximum xor of y with all elements that have been inserted till now. 
+
+    insert(1) int variable consists of 32 bits
+    but lets think of number as 4 bits
+
+    Insert EXAMPLES:
+        1 is 0001 -> we have to insert in trie. 
+
+        Right now trie is empty. 
+        if 0 occurs move left, 1, move right. 
+
+          Insert 1 
+          since 0, go left from root node 
+          0 - left
+          1 - right
+  
+               /
+              /
+             /
+             \
+      
+          Insert 2:
+          0010
+               /
+              /
+             / \
+             \ /
+             
+          Now insert 3: 0011
+                /
+               /
+              / \ 
+              \ /\
+    
+    FIND QUERY:
+        find max xor with all elements inserted: 
+        Y: b1, b2, b3, b4, b5, where b1, b2, b3... are bits
+        if b1 is 0, so we are going to find number in trie whose MSB is 1.
+        if not, then just go other side.
+        
+        if b1 is 1, we are going to find number in trie whose most sig bit is 0
+        if not just go other side. 
+
+        Do this for every query. 
+
+
+    #include <bits/stdc++.h>
+    using namespace std;
+
+
+    class Node {
+        public:
+        child[2];
+        Node() {
+            childe[0] = NULL;
+            child[1] = NULL;
+        }
+
+    }
+
+    // Time Complexity -> N * log2(max(A[i]) )
+    // Worst case make NlogN nodes -> so space complexity NlogN
+    void insert(Node * root, int x) {
+        // contains 32 bits.    
+        // start from MSB and insert. 
+
+        for(int i = 32; i >= 0; i --) {
+            int bit = ((x >> i) & 1);
+            if(root->child[bit] == NULL) {
+                root->child[bit] = new Node();
+            }
+            root = root->child[bit];
+        }
+    }
+
+    // Time Complexity -> N * log2(max(A[i]) )
+    int maXxor(Node * root, int y) {
+
+        int ret = 0;
+        for(int i = 32; i >= 0; --i){
+
+            int bit = ((y>>i) & 1);
+            if(root->child[bit^1] == NULL) {
+                // if opposite bit not present,
+                // simply move where you can.
+                root = root->child[bit];
+            } else {
+                //if opposite bit present. 
+                // calculate its contribution. 
+                //The LL makes the integer literal of type long long.
+                //So 2LL, is a 2 of type long long.
+                //Without the LL, the literal would only be of type int.
+                //This matters when you're doing stuff like this:
+                //1   << 40
+                //1LL << 40
+                // 0^1 = 1; 2**i contribution
+                ret |= (1LL << i);
+                root = root->child[bit^1];
+            }
+            return ret;
+        }
+    }
+
+
+    int32_t main() {
+        int n;
+        cin >> n;
+        vector<int> arr(n);
+        Node * root = Node();
+        int ans = 0;
+
+        // Time Complexity -> N * log2(max(A[i]) )
+        // Insertion N times, search N times. 
+
+        // below is cool trick because we insert, and then search 
+        // at the same time all in one for loop.
+        // and we search on an bit trie that is building up each iteration. 
+        // very cool!
+
+        for(int i = 0; i < n; i++) {
+            cin >> arr[i]
+            int y = arr[i];
+            insert(Node, arr[i]);
+            int temp = maXxor(root, y);
+            ans = max(ans, temp);
+        }
+        cout << ans << endl;
+    }
+
+    #######################################################################33
+    2 - Given an array of integers, find the subarray with maximum XOR. 
+
+        Think of cumulatives and starting from beginning simialar to above problem. 
+
+        Similar to previous problem:
+        Cool XOR trick to solve problem:
+        -> F(L, R) is XOR subarray L to R
+        F(L, R) = F(1, R) ^ F(1, L-1)
+    */
+
+
 -81)MONTONIC QUEUE/STACK + CRITICAL ELEMENTS + LEFT RIGHT, THEN RIGHT LEFT TRICK:
     Sometimes you have to look at critically ordered elements left to right, then 
     right to left like product of array except self
@@ -83,7 +401,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     If there are no options for bi, put -1 in bi.
     Example
 
-    For a = [1, 4, 2, 1, 7, 6], the output should be
+    For a = [1, 4, 2, 1, 7, 6], the output should bbe
     nearestGreater(a) = [1, 4, 1, 2, -1, 4].
 
 
