@@ -71,6 +71,9 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+-85) think of the algo to do citadel problem -> round robin ALGORITHM!!!
+
+
 -84) Using cumulative array for sums in 1D and 2D case tricks:
     1D) sum between i and j inclsuive:
         sum(j) - sum(i-1)

@@ -35,11 +35,62 @@ But expect to go deep with numbers (throughput, latency, storage...).
 
 The interviewer went very deep with how to decide the number of servers, 
 database throughput capacity, cache memory and so on. A lot of discussion on tradeoffs.
+######################################3
+REST IDEMPOTENCY:
+
+Idempotent REST APIs
+In the context of REST APIs, when making multiple identical requests has the same effect as making a single request – then that REST API is called idempotent.
+
+When you design REST APIs, you must realize that API consumers can make mistakes. Users can write client code in such a way that there can be duplicate requests coming to the API.
+
+These duplicate requests may be unintentional as well as intentional some time (e.g. due to timeout or network issues). You have to design fault-tolerant APIs in such a way that duplicate requests do not leave the system unstable.
+
+An idempotent HTTP method is an HTTP method that can be called many times without different outcomes. It would not matter if the method is called only once, or ten times over. The result should be the same.
+Idempotence essentially means that the result of a successfully performed request is independent of the number of times it is executed. For example, in arithmetic, adding zero to a number is an idempotent operation.
+
+Idempotency with HTTP Methods
+If you follow REST principles in designing API, you will have automatically idempotent REST APIs for GET, PUT, DELETE, HEAD, OPTIONS and TRACE HTTP methods. Only POST APIs will not be idempotent.
+
+POST is NOT idempotent.
+GET, PUT, DELETE, HEAD, OPTIONS and TRACE are idempotent.
+Let’s analyze how the above HTTP methods end up being idempotent – and why POST is not.
+
+HTTP POST
+Generally – not necessarily – POST APIs are used to create a new resource on server. So when you invoke the same POST request N times, you will have N new resources on the server. So, POST is not idempotent.
+
+HTTP GET, HEAD, OPTIONS and TRACE
+GET, HEAD, OPTIONS and TRACE methods NEVER change the resource state on server. They are purely for retrieving the resource representation or meta data at that point of time. So invoking multiple requests will not have any write operation on server, so GET, HEAD, OPTIONS and TRACE are idempotent.
+
+HTTP PUT
+Generally – not necessarily – PUT APIs are used to update the resource state. If you invoke a PUT API N times, the very first request will update the resource; then rest N-1 requests will just overwrite the same resource state again and again – effectively not changing anything. Hence, PUT is idempotent.
+
+HTTP DELETE
+When you invoke N similar DELETE requests, first request will delete the resource and response will be 200 (OK) or 204 (No Content). Other N-1 requests will return 404 (Not Found). Clearly, the response is different from first request, but there is no change of state for any resource on server side because original resource is already deleted. So, DELETE is idempotent.
+
+Please keep in mind if some systems may have DELETE APIs like this:
+
+DELETE /item/last
+In the above case, calling operation N times will delete N resources – hence DELETE is not idempotent in this case. In this case, a good suggestion might be to change the above API to POST – because POST is not idempotent.
+
+POST /item/last
+Now, this is closer to HTTP spec – hence more REST compliant.
+
+References:
+
+Rfc 2616
+SO Thread
+
 
 ####################################
 HORIZONTAL AND VERTICAL SCALING:
 
-Horizontal and Vertical ScalingDiscussing about the concept of horizontal and vertical Scaling in System Design along with their characteristics, gains and drwabacksSystem Design Concepts
+Horizontal and Vertical Scaling
+
+Discussing about the concept of horizontal and vertical Scaling in System Design along with their 
+characteristics, gains and drwaback
+
+System Design Concepts
+
 May 16, 2020
 Saurav Prateek | Author
   Need for ScalingWhen you have a small system having less amount of load then it’s quite easy to maintain. You don’t have to think much about increasing computing power, handling large numbers of read/write requests, your server getting crashed and much more. But what happens when the load over your system increases. Now you will need to worry about the above mentioned problems. While designing a system one should keep in mind the amount of load which it has to bear and should meet the end user’s requirements at the same time. This is probably called Scaling. When such a situation occurs you have two things under your sleeves. Either you can increase the computation power of your underlying system or else you can increase the number of systems so that it can handle the increasing load. This brings us to our topic i.e. horizontal and vertical scaling.Horizontal ScalingIn order to handle the increasing load you can increase the number of machines. This process is known as Horizontal Scaling. The process has its own advantages and drawbacks. When you increase the number of machines you will need to have a Load Balancer which will ensure that the requests coming to your system are distributed uniformly over all the machines. We will be discussing Load Balancers in the next article. But your system can scale really well even the amount of load increases. You will just be needed to put extra machines according to the increasing load and route the requests efficiently to all the systems.
@@ -119,7 +170,9 @@ DISTRIBUTED PROGRAMMING:
 
 
     Consistency patterns
-    With multiple copies of the same data, we are faced with options on how to synchronize them so clients have a consistent view of the data. Recall the definition of consistency from the CAP theorem - Every read receives the most recent write or an error.
+    With multiple copies of the same data, we are faced with options on how to synchronize them so 
+    clients have a consistent view of the data. Recall the definition of consistency from the CAP theorem - 
+    Every read receives the most recent write or an error.
 
     Weak consistency
     After a write, reads may or may not see it. A best effort approach is taken.
@@ -145,7 +198,8 @@ DISTRIBUTED PROGRAMMING:
 
     Fail-over
     Active-passive
-    With active-passive fail-over, heartbeats are sent between the active and the passive server on standby. If the heartbeat is interrupted, the passive server takes over the active's IP address and resumes service.
+    With active-passive fail-over, heartbeats are sent between the active and the passive 
+    server on standby. If the heartbeat is interrupted, the passive server takes over the active's IP address and resumes service.
 
     The length of downtime is determined by whether the passive server is already running in 'hot' standby or whether it needs to start up from 'cold' standby. Only the active server handles traffic.
 
@@ -205,7 +259,11 @@ Source: DNS security presentation
 
 A Domain Name System (DNS) translates a domain name such as www.example.com to an IP address.
 
-DNS is hierarchical, with a few authoritative servers at the top level. Your router or ISP provides information about which DNS server(s) to contact when doing a lookup. Lower level DNS servers cache mappings, which could become stale due to DNS propagation delays. DNS results can also be cached by your browser or OS for a certain period of time, determined by the time to live (TTL).
+DNS is hierarchical, with a few authoritative servers at the top level. 
+Your router or ISP provides information about which DNS server(s) to contact 
+when doing a lookup. Lower level DNS servers cache mappings, which could become 
+stale due to DNS propagation delays. DNS results can also be cached by your browser 
+or OS for a certain period of time, determined by the time to live (TTL).
 
 NS record (name server) - Specifies the DNS servers for your domain/subdomain.
 MX record (mail exchange) - Specifies the mail servers for accepting messages.
@@ -244,7 +302,8 @@ Sites with a small amount of traffic or sites with content that isn't often upda
 Pull CDNs
 Pull CDNs grab new content from your server when the first user requests the content. You leave the content on your server and rewrite URLs to point to the CDN. This results in a slower request until the content is cached on the CDN.
 
-A time-to-live (TTL) determines how long content is cached. Pull CDNs minimize storage space on the CDN, but can create redundant traffic if files expire and are pulled before they have actually changed.
+A time-to-live (TTL) determines how long content is cached. Pull CDNs minimize 
+storage space on the CDN, but can create redundant traffic if files expire and are pulled before they have actually changed.
 
 Sites with heavy traffic work well with pull CDNs, as traffic is spread out more evenly with only recently-requested content remaining on the CDN.
 
@@ -351,7 +410,8 @@ LOAD BALANCING
 REVERSE PROXIES
 
     A reverse proxy is a web server that centralizes internal services and provides unified interfaces to the public. 
-    Requests from clients are forwarded to a server that can fulfill it before the reverse proxy returns the server's response to the client.
+    Requests from clients are forwarded to a server that can fulfill it before the reverse proxy 
+    returns the server's response to the client.
 
     Additional benefits include:
 
@@ -368,12 +428,17 @@ REVERSE PROXIES
     Videos
     Etc
     Load balancer vs reverse proxy
-    Deploying a load balancer is useful when you have multiple servers. Often, load balancers route traffic to a set of servers serving the same function.
-    Reverse proxies can be useful even with just one web server or application server, opening up the benefits described in the previous section.
+    Deploying a load balancer is useful when you have multiple servers. Often, load balancers route traffic 
+    to a set of servers serving the same function.
+
+    Reverse proxies can be useful even with just one web server or application server, 
+    opening up the benefits described in the previous section.
+
     Solutions such as NGINX and HAProxy can support both layer 7 reverse proxying and load balancing.
     Disadvantage(s): reverse proxy
     Introducing a reverse proxy results in increased complexity.
-    A single reverse proxy is a single point of failure, configuring multiple reverse proxies (ie a failover) further increases complexity.
+    A single reverse proxy is a single point of failure, configuring multiple 
+    reverse proxies (ie a failover) further increases complexity.
     Source(s) and further reading
     Reverse proxy vs load balancer
     NGINX architecture
@@ -761,7 +826,10 @@ REST VS RPC:
 CONSISTENT HASHING PART 1: 
 
 
-Consistent HashingExploring the concept of Consistent Hashing in System Design. Discussing the requirement for consistent hashing and drawbacks related to this conceptSystem Design Concepts
+Consistent Hashing
+
+Exploring the concept of Consistent Hashing in System Design. Discussing the 
+requirement for consistent hashing and drawbacks related to this conceptSystem Design Concepts
 May 16, 2020
 Saurav Prateek | Author
   IntroductionConsistent Hashing is a concept extensively used in Load Balancing. In a typical Load Balancer we use hashing in order to map the requests to their corresponding Servers. Here when we had to add or remove any Server then the Hash Values of all the earlier requests got modified which caused our cache to become obsolete. In order to avoid this problem we use the concept of Consistent Hashing. Using consistent hashing in our system we can avoid the change in the hash function of all the earlier Requests whenever any new server is added or removed. It allows only a small amount of requests to change hence making our cache very much in use.Understanding the ProblemSuppose you have a Load Balancer which distributes your requests among three servers : S1, S2 and S3. We have used a hash function to direct the requests to one of the servers in the system. The entire method used looks like this :
@@ -788,7 +856,11 @@ When the same 5 requests reach the System, it is directed in the following manne
 [ Request ID ] 62 ---> h(62) = 98 ---> 98%4 = 2 [ Server ID ]
 [ Request ID ] 92 ---> h(92) = 10 ---> 10%4 = 2 [ Server ID ]
 
-We can clearly observe that the destinations of almost all the requests have been changed. Hence by adding or removing even one server will cause the requests to be directed to a completely different server. This can have huge drawbacks. Suppose if a server stored some critical data in cache about a certain request in the hope of re-using it when that request visits again. Now the entire data in the cache is obsolete.
+We can clearly observe that the destinations of almost all the requests have been changed. 
+Hence by adding or removing even one server will cause the requests to be directed 
+to a completely different server. This can have huge drawbacks. Suppose if a server 
+stored some critical data in cache about a certain request in the hope of re-using 
+it when that request visits again. Now the entire data in the cache is obsolete.
 
 So our current method of Hashing is not quite reliable in order to direct the requests to our multiple servers. We need something which could cause a very less amount of change in the destination of the requests when a new server is added or removed. Here Consistent Hashing comes into play. Let’s see how it solves our current problem.Discussing Consistent HashingIt is a method which is independent of the number of servers present in the System. It hashes all the Servers to a hash ID which is plotted on a circular ring. This ring like structure allows a very minimal change in the requests when a server is added or removed.
 
@@ -808,13 +880,26 @@ Request : R5 ------> H1( R5 ) ------> Hashed Value : HR5
 
 Now they can be plotted on the circular pie as described below :
 
-Here every Request is served by the Server which is adjacent to it when we move in a clockwise manner. Hence Requests R1 and R2 will be served by Server S1, Requests R3 and R4 will be served by the Server S2 and Request R5 will be served by Server S3.
+Here every Request is served by the Server which is adjacent to it when we move in a clockwise manner. 
+Hence Requests R1 and R2 will be served by Server S1, Requests R3 and R4 will be served by the Server S2 
+and Request R5 will be served by Server S3.
 
-Suppose Server S1 got shut down due to some issue. Then Requests R1 and R2 which was earlier served by S1 will now be served by server S2 leaving all the other requests completely unchanged. This caused only those requests to change which was earlier served by the obsolete server. Rest of the requests were completely unaffected by the change in the number of servers. This is one of the major advantages of using Consistent Hashing in a system.Skewed Load in Consistent HashingEarlier when me removed Server S1 from the system Requests R1 and R2 were served by Server S2. Now requests R1, R2, R3 and R4 are served by Server S2. That means 4 out of 5 requests are served by a single server. The entire load is skewed on a single server and this can cause that System to wear out or shut down.
+Suppose Server S1 got shut down due to some issue. Then Requests R1 and R2 which was earlier served by S1 
+will now be served by server S2 leaving all the other requests completely unchanged. This caused only 
+those requests to change which was earlier served by the obsolete server. Rest of the requests were completely 
+unaffected by the change in the number of servers. This is one of the major advantages of using Consistent Hashing 
+in a system.
 
-What can be done to avoid this problem here. Instead of using a single hash function we can possibly use multiple Hash Functions to hash the servers. Suppose we used K hash functions. Now each server will have K points on the circular ring and then it will be less likely to have a skewed load over a single server.
+Skewed Load in Consistent HashingEarlier when me removed Server S1 from the system Requests R1 and R2 were 
+served by Server S2. Now requests R1, R2, R3 and R4 are served by Server S2. That means 4 out of 5 requests are 
+served by a single server. The entire load is skewed on a single server and this can cause that System to wear out or shut down.
 
-We can select the value of K accordingly in order to reduce the chance of having skewed load to none. Possibly log(N) or log(M) where N is the Number of available Servers and M is the number of Requests.
+What can be done to avoid this problem here. Instead of using a single hash function we can possibly 
+use multiple Hash Functions to hash the servers. Suppose we used K hash functions. Now each server will 
+have K points on the circular ring and then it will be less likely to have a skewed load over a single server.
+
+We can select the value of K accordingly in order to reduce the chance of having skewed load 
+to none. Possibly log(N) or log(M) where N is the Number of available Servers and M is the number of Requests.
 
 ############################################
 
@@ -1253,12 +1338,17 @@ that work together. Small teams with small services can plan more aggressively f
 Workers in the application layer also help enable asynchronism.
 
 Microservices
-Related to this discussion are microservices, which can be described as a suite of independently deployable, small, modular services. Each service runs a unique process and communicates through a well-defined, lightweight mechanism to serve a business goal. 1
+Related to this discussion are microservices, which can be described as a suite of 
+independently deployable, small, modular services. Each service runs a unique process and 
+communicates through a well-defined, lightweight mechanism to serve a business goal. 1
 
 Pinterest, for example, could have the following microservices: user profile, follower, feed, search, photo upload, etc.
 
 Service Discovery
-Systems such as Consul, Etcd, and Zookeeper can help services find each other by keeping track of registered names, addresses, and ports. Health checks help verify service integrity and are often done using an HTTP endpoint. Both Consul and Etcd have a built in key-value store that can be useful for storing config values and other shared data.
+Systems such as Consul, Etcd, and Zookeeper can help services find each other by keeping 
+track of registered names, addresses, and ports. Health checks help verify service 
+integrity and are often done using an HTTP endpoint. Both Consul and Etcd have a built in 
+key-value store that can be useful for storing config values and other shared data.
 
 Disadvantage(s): application layer
 Adding an application layer with loosely coupled services requires a different approach from an architectural, operations, and process viewpoint (vs a monolithic system).
