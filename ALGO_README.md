@@ -71,6 +71,11 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+-87)
+
+
+-86) monotonic stack vs monotonic queue and how to build a monotonic structure
+
 -85) think of the algo to do citadel problem -> round robin ALGORITHM!!!
 
 

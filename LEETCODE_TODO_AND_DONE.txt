@@ -76,3 +76,4 @@ read discussion for decode ways bottom up.
 
 Write notes for maximal square LC problem. 
 
+PUT HRT 2 MONOTONIC QUENE PROBLEM IN ALGO README + question

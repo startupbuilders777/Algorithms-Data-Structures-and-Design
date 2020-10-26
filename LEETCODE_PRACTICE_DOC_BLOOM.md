@@ -56,7 +56,6 @@ Bloomberg
 
 15	3Sum	25.30%
 
-138	Copy List with Random Pointer	30.60%
 199	Binary Tree Right Side View	50.50%
 22	Generate Parentheses	58.30%
 140	Word Break II	28.90%
