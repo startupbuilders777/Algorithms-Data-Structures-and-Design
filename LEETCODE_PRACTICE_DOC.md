@@ -1,33 +1,3 @@
-SNAP CHAT:
-
-Snapchat (26)
-36 Valid Sudoku
-289 Game of Life
-253 Meeting Rooms II
-269 Alien Dictionary
-403 Frog Jump
-37 Sudoku Solver
-314 Binary Tree Vertical Order Traversal
-127 Word Ladder
-146 LRU Cache
-140 Word Break II
-161 One Edit Distance
-377 Combination Sum IV
-96 Unique Binary Search Trees
-206 Reverse Linked List
-39 Combination Sum
-76 Minimum Window Substring
-155 Min Stack
-44 Wildcard Matching
-151 Reverse Words in a String
-402 Remove K Digits
-270 Closest Binary Search Tree Value
-527 Word Abbreviation
-40 Combination Sum II
-312 Burst Balloons
-439 Ternary Expression Parser
-635 Design Log Storage System
-
 ##########################
 STUDY GUIDE: 
 GO THROUGH ALL THE MONTONIC STACK/QUEUE LINKS IN CHROME ONETABS.
@@ -661,3 +631,105 @@ https://leetcode.com/discuss/career/448285/List-of-questions-sorted-by-common-pa
 Graph problem practice here:
 https://leetcode.com/discuss/general-discussion/655708/graph-problems-for-beginners-practice-problems-and-sample-solutions
 
+
+
+GOOGLE INTERVIEW QUESTIONS PART 1:
+Google Interview questions | Part 1 | 2020
+454
+pgmreddy's avatar
+pgmreddy
+1352
+Last Edit: 2 days ago
+
+13.0K VIEWS
+
+Jan - Jun 2020
+
+Non - Premium
+
+Keeping it simple.
+Leetcode List - https://leetcode.com/list/xb4m49lh (Only this list is updated, all others are old)
+Steps:
+1 . Click on above link
+2 . Click on [Clone] button
+3 . Go here to problem list
+4 . Click the Lists filter (beside Difficulty & Status filters)
+5 . Select the item that starts with pgmreddy name.
+6 . Now you can use the Difficulty filter with Easy/Medium/Hard
+All done.
+Premium (A leetcode list cannot be created, so below is the list)
+
+https://leetcode.com/problems/moving-average-from-data-stream/
+https://leetcode.com/problems/alien-dictionary/
+https://leetcode.com/problems/confusing-number-ii/
+https://leetcode.com/problems/campus-bikes-ii/
+https://leetcode.com/problems/group-shifted-strings/
+https://leetcode.com/problems/optimal-account-balancing/
+https://leetcode.com/problems/parallel-courses/
+https://leetcode.com/problems/search-in-a-sorted-array-of-unknown-size/
+https://leetcode.com/problems/sentence-similarity-ii/
+https://leetcode.com/problems/serialize-and-deserialize-n-ary-tree/
+https://leetcode.com/problems/the-maze-ii/
+Source - LeetCode /interview-question/ & /interview-experience/ pages via Google search
+
+
+GOOGLE INTERVIEW QUESTIONS PART 2:
+
+Jul - Oct 2020
+
+Non-Premium questions (LeetCode List)
+https://leetcode.com/list/5p5i7ub6
+Non-Premium questions
+https://leetcode.com/problems/binary-tree-maximum-path-sum/
+https://leetcode.com/problems/decode-string/
+https://leetcode.com/problems/decode-ways/
+https://leetcode.com/problems/edit-distance/
+https://leetcode.com/problems/find-and-replace-in-string/
+https://leetcode.com/problems/find-duplicate-subtrees/
+https://leetcode.com/problems/find-the-difference/
+https://leetcode.com/problems/first-missing-positive/
+https://leetcode.com/problems/knight-probability-in-chessboard/
+https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/
+https://leetcode.com/problems/largest-component-size-by-common-factor/
+https://leetcode.com/problems/maximum-depth-of-n-ary-tree/
+https://leetcode.com/problems/my-calendar-i/
+https://leetcode.com/problems/non-overlapping-intervals/
+https://leetcode.com/problems/number-of-atoms/
+https://leetcode.com/problems/number-of-islands/
+https://leetcode.com/problems/positions-of-large-groups
+https://leetcode.com/problems/possible-bipartition/
+https://leetcode.com/problems/rearrange-words-in-a-sentence/
+https://leetcode.com/problems/rectangle-overlap/
+https://leetcode.com/problems/reorganize-string/
+https://leetcode.com/problems/smallest-sufficient-team/
+https://leetcode.com/problems/substring-with-concatenation-of-all-words/
+https://leetcode.com/problems/sum-of-subarray-minimums/
+https://leetcode.com/problems/swim-in-rising-water/
+https://leetcode.com/problems/tiling-a-rectangle-with-the-fewest-squares/
+https://leetcode.com/problems/time-needed-to-inform-all-employees/
+https://leetcode.com/problems/unique-binary-search-trees/
+https://leetcode.com/problems/validate-stack-sequences/
+Premium questions
+https://leetcode.com/problems/wiggle-sort/
+https://leetcode.com/problems/optimize-water-distribution-in-a-village/
+https://leetcode.com/problems/sentence-screen-fitting/
+https://leetcode.com/problems/missing-element-in-sorted-array/
+https://leetcode.com/problems/encode-string-with-shortest-length/
+https://leetcode.com/problems/design-tic-tac-toe/
+Related links
+https://leetcode.com/explore/
+https://leetcode.com/interview/
+https://careers.google.com/jobs/
+https://code.dennyzhang.com/missing-element-in-sorted-array
+https://en.wikipedia.org/wiki/Activity_selection_problem
+https://news.ncsu.edu/2020/07/tech-job-interviews-anxiety/
+https://scikit-learn.org/stable/tutorial/machine_learning_map/index.html
+https://stackoverflow.com/questions/18387760/bingo-card-game-in-java
+https://www.interviewcake.com/24-hours-before-onsite-whiteboard-coding-interview
+https://www.interviewcake.com/coding-interview-meditation
+https://www.themuse.com/advice/star-interview-method
+Related Part 1 (Jan - Jun 2020)
+https://leetcode.com/discuss/general-discussion/726900
+Related LC completed scores who joined Google
+75 easy, 200 medium & 100 hard
+75 easy, 250 medium & 50 hard

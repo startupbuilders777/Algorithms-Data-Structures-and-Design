@@ -21,7 +21,7 @@ Use binary index tree/segment tree/merge sort algos
 '''
 
 '''
-
+NOT DONE
 So elements smaller and to the right
 '''
 

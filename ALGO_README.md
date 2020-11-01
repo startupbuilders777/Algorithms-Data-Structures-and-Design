@@ -71,10 +71,66 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
--87)
+-87)Optimizing binary tree questions with bottom up DP: 
+    One way to optimize these questions is to use post-order traversal.
+    Compute the value for the children then compute for parent sorta like DP:
+
+    921. Count Univalue Subtrees
+    中文English
+    Given a binary tree, count the number of uni-value subtrees.
+    
+    A Uni-value subtree means all nodes of the subtree have the same value.
+    
+    Example
+    Example1
+    
+    Input:  root = {5,1,5,5,5,#,5}
+    Output: 4
+    Explanation:
+                  5
+                 / \
+                1   5
+               / \   \
+              5   5   5
+    Example2
+    
+    Input:  root = {1,3,2,4,5,#,6}
+    Output: 3
+    Explanation:
+                  1
+                 / \
+                3   2
+               / \   \
+              4   5   6
+
+    Solution:
+    def countUnivalSubtrees(self, root):
+        count = 0
+        def helper(node):
+            nonlocal count 
+            if node is None:
+                return None
+            left_result = helper(node.left)
+            right_result = helper(node.right)
+            if left_result == False:
+                return False
+            if right_result == False:
+                return False
+            if left_result and left_result != node.val:
+                return False
+            if right_result and right_result != node.val:
+                return False
+            count += 1
+            return node.val
+        helper(root)
+        return count
+
+
 
 
 -86) monotonic stack vs monotonic queue and how to build a monotonic structure
+        LOOK AT HRT PROBLEM.
+
 
 -85) think of the algo to do citadel problem -> round robin ALGORITHM!!!
 
