@@ -6,6 +6,10 @@ MAKE GOOD NOTES.
 DO SAME FOR DSU in cp-algorithms.
 
 
+binarysearch.com has problems sorted by company. 
+speed through em. 
+
+
 ##########################
 
 DONE:

@@ -79,6 +79,19 @@ References:
 
 Rfc 2616
 SO Thread
+#############################################################################
+
+- For system design: System Design Primer and Designing Data Intensive Applications.
+
+- If you have time, read Grokking the system design interview but don't let it fool you. You will NOT have 
+time during an interview to go through all the steps listed on Grokking. Instead, ask the interviewers what 
+areas of the design they'd like to focus on, they will almost always tell you. Following the grokking blueprint 
+might actually work against you and make you seem unready for a senior role.
+
+
+
+- Get very good at designing APIs. They came up in all of my system design interviews. You don't need to focus 
+on a particular implementation (HTTP, RPC, etc). Just be ready to discuss inputs, outputs, error handling, etc.
 
 
 ####################################

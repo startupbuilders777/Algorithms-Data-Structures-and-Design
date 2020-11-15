@@ -1,0 +1,78 @@
+UDP Services
+UDP is a no-frills, lightweight transport protocol, providing minimal services. UDP is connectionless, so there is no handshaking before the two processes start to communicate. UDP provides an unreliable data transfer service—that is, when a process sends a message into a UDP socket, UDP provides no guarantee that the message will ever reach the receiving process. Furthermore, messages that do arrive at the receiving process may arrive out of order. UDP does not include a congestion-control mechanism, so the sending side of UDP can pump data into the layer below (the network layer) at any rate it pleases. (Note, however, that the actual end-to-end throughput may be less than this rate due to the limited transmission capacity of intervening links or due to congestion).
+
+
+When do DNS queries use TCP instead of UDP?
+DNS goes over TCP when the size of the request or the response is greater than a single packet such as with responses that have many records or many IPv6 responses or most DNSSEC responses.
+
+The maximum size was originally 512 bytes but there is an extension to the DNS protocol that allows clients to indicate that they can handle UDP responses of up to 4096 bytes.
+
+DNSSEC responses are usually larger than the maximum UDP size.
+
+Transfer requests are usually larger than the maximum UDP size and hence will also be done over TCP.
+
+
+
+HTTP with Persistent Connections
+Non-persistent connections have some shortcomings. First, a brand-new connec- tion must be established and maintained for each requested object. For each of these connections, TCP buffers must be allocated and TCP variables must be kept in both the client and server. This can place a significant burden on the Web server, which may be serving requests from hundreds of different clients simultaneously. Second, as we just described, each object suffers a delivery delay of two RTTs— one RTT to establish the TCP connection and one RTT to request and receive an object.
+
+With persistent connections, the server leaves the TCP connection open after sending a response. Subsequent requests and responses between the same client and server can be sent over the same connection. In particular, an entire Web page (in the example above, the base HTML file and the 10 images) can be sent over a single persistent TCP connection. Moreover, multiple Web pages residing on the same server can be sent from the server to the same client over a single persistent TCP connection. These requests for objects can be made back-to-back, without waiting for replies to pending requests (pipelining). Typically, the HTTP server closes a con- nection when it isn’t used for a certain time (a configurable timeout interval). When the server receives the back-to-back requests, it sends the objects back-to-back. The default mode of HTTP uses persistent connections with pipelining. We’ll quantita- tively compare the performance of non-persistent and persistent connections in the homework problems of Chapters 2 and 3. You are also encouraged to see [Heide- mann 1997; Nielsen 1997].
+
+
+NAT - Network Address Translation
+Short for Network Address Translation, an Internet standard that enables a local-area network (LAN) to use one set of IP addresses for internal traffic and a second set of addresses for external traffic. A NAT boxlocated where the LAN meets the Internet makes all necessary IP address translations.
+
+NAT serves three main purposes:
+
+Provides a type of firewallby hiding internal IP addresses
+Enables a company to use more internal IP addresses. Since they're used internally only, there's no possibility of conflict with IP addresses used by other companies and organizations.
+Allows a company to combine multiple ISDN connections into a single Internet connection.
+
+
+Network/Subnet splitting
+Subnet mask can be used to split a given network adress space into subnets.
+Example:
+
+Original Network:  128.6.34.0 / 255.255.255.0   
+
+can be split into 8 subnets by changing the Netmask to: 
+
+255.255.255.224 (or 11111111.11111111.11111111.11100000) (or /27)                                         
+
+Subnet:  128.6.34.0   / 255.255.255.224
+
+Subnet:  128.6.34.32  / 255.255.255.224
+
+Subnet:  128.6.34.64  / 255.255.255.224
+
+Subnet:  128.6.34.96  / 255.255.255.224
+
+Subnet:  128.6.34.128 / 255.255.255.224
+
+Subnet:  128.6.34.160 / 255.255.255.224
+
+Subnet:  128.6.34.192 / 255.255.255.224
+
+Subnet:  128.6.34.224 / 255.255.255.224
+Max number of hosts on each subnet: 30 = 32 - 2
+The gateway address should be set within each subnet.
+
+
+
+#######33
+
+
+HTTP with Non-Persistent Connections
+Let’s walk through the steps of transferring a Web page from server to client for the case of non-persistent connections. Let’s suppose the page consists of a base HTML file and 10 JPEG images, and that all 11 of these objects reside on the same server. Further suppose the URL for the base HTML file is
+
+http://www.someSchool.edu/someDepartment/home.index
+
+Here is what happens:
+
+The HTTP client process initiates a TCP connection to the server www.someSchool.edu on port number 80, which is the default port num- ber for HTTP. Associated with the TCP connection, there will be a socket at the client and a socket at the server.
+TheHTTPclientsendsanHTTPrequestmessagetotheserverviaitssocket.The request message includes the path name /someDepartment/home.index. (We will discuss HTTP messages in some detail below.)
+The HTTP server process receives the request message via its socket, retrieves the object /someDepartment/home.index from its storage (RAM or disk), encapsulates the object in an HTTP response message, and sends the response message to the client via its socket.
+The HTTP server process tells TCP to close the TCP connection. (But TCP doesn’t actually terminate the connection until it knows for sure that the client has received the response message intact.)
+The HTTP client receives the response message. The TCP connection termi- nates. The message indicates that the encapsulated object is an HTML file. The client extracts the file from the response message, examines the HTML file, and finds references to the 10 JPEG objects.
+The first four steps are then repeated for each of the referenced JPEG objects.
+

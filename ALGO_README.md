@@ -71,11 +71,712 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+-96) Largest Rectangle in Histogram with Pointer Segment Tree:
+
+    // Largest Rectangle in Histogram
+    // Stack solution, O(NlogN) solution
+
+    class SegTreeNode {
+    public:
+    int start;
+    int end;
+    int min;
+    SegTreeNode *left;
+    SegTreeNode *right;
+    SegTreeNode(int start, int end) {
+        this->start = start;
+        this->end = end;
+        left = right = NULL;
+    }
+    };
+
+    class Solution {
+    public:
+    int largestRectangleArea(vector<int>& heights) {
+        if (heights.size() == 0) return 0;
+        // first build a segment tree
+        SegTreeNode *root = buildSegmentTree(heights, 0, heights.size() - 1);
+        // next calculate the maximum area recursively
+        return calculateMax(heights, root, 0, heights.size() - 1);
+    }
+    
+    int calculateMax(vector<int>& heights, SegTreeNode* root, int start, int end) {
+        if (start > end) {
+        return -1;
+        }
+        if (start == end) {
+        return heights[start];
+        }
+        int minIndex = query(root, heights, start, end);
+        int leftMax = calculateMax(heights, root, start, minIndex - 1);
+        int rightMax = calculateMax(heights, root, minIndex + 1, end);
+        int minMax = heights[minIndex] * (end - start + 1);
+        return max( max(leftMax, rightMax), minMax );
+    }
+    
+    SegTreeNode *buildSegmentTree(vector<int>& heights, int start, int end) {
+        if (start > end) return NULL;
+        SegTreeNode *root = new SegTreeNode(start, end);
+        if (start == end) {
+            root->min = start;
+        return root;
+        } else {
+        int middle = (start + end) / 2;
+        root->left = buildSegmentTree(heights, start, middle);
+        root->right = buildSegmentTree(heights, middle + 1, end);
+        root->min = heights[root->left->min] < heights[root->right->min] ? root->left->min : root->right->min;
+        return root;
+        }
+    }
+    
+    int query(SegTreeNode *root, vector<int>& heights, int start, int end) {
+        if (root == NULL || end < root->start || start > root->end) return -1;
+        if (start <= root->start && end >= root->end) {
+        return root->min;
+        }
+        int leftMin = query(root->left, heights, start, end);
+        int rightMin = query(root->right, heights, start, end);
+        if (leftMin == -1) return rightMin;
+        if (rightMin == -1) return leftMin;
+        return heights[leftMin] < heights[rightMin] ? leftMin : rightMin;
+    }
+    };
+
+-95) NLOGN solution Largest Rectangle in Histogram with 
+    DIVID & CONQUER + SEGMENT TREES (Segment tree built with array): 
+
+    We can use Divide and Conquer to solve this in O(nLogn) time. 
+    The idea is to find the minimum value in the given array. 
+    Once we have index of the minimum value, the max area is maximum of following three values.
+    a) Maximum area in left side of minimum value (Not including the min value)
+    b) Maximum area in right side of minimum value (Not including the min value)
+    c) Number of bars multiplied by minimum value.
+    The areas in left and right of minimum value bar can be calculated recursively. 
+    If we use linear search to find the minimum value, then the worst case time 
+    complexity of this algorithm becomes O(n^2). In worst case, we always have (n-1) 
+    elements in one side and 0 elements in other side and if the finding minimum 
+    takes O(n) time, we get the recurrence similar to worst case of Quick Sort.
+
+    How to find the minimum efficiently? Range Minimum Query 
+    using Segment Tree can be used for this. We build segment tree of 
+    the given histogram heights. Once the segment tree is built, all 
+    range minimum queries take O(Logn) time. So over all
+    complexity of the algorithm becomes.
+
+    Overall Time = Time to build Segment Tree + Time to recursively find maximum area
+    Time to build segment tree is O(n). Let the time to recursively find max area be T(n). 
+    It can be written as following.
+    T(n) = O(Logn) + T(n-1)
+
+    The solution of above recurrence is O(nLogn). 
+    So overall time is O(n) + O(nLogn) which is O(nLogn).
+
+    C++ SOLN ###################################
+
+        // A Divide and Conquer Program to find maximum rectangular area in a histogram 
+        #include <bits/stdc++.h> 
+        using namespace std; 
+        
+        // A utility function to find minimum of three integers 
+        int max(int x, int y, int z) 
+        {  return max(max(x, y), z); } 
+        
+        // A utility function to get minimum of two numbers in hist[] 
+        int minVal(int *hist, int i, int j) 
+        { 
+            if (i == -1) return j; 
+            if (j == -1) return i; 
+            return (hist[i] < hist[j])? i : j; 
+        } 
+        
+        // A utility function to get the middle index from corner indexes. 
+        int getMid(int s, int e) 
+        {   return s + (e -s)/2; } 
+        
+        /*  A recursive function to get the index of minimum value in a given range of 
+            indexes. The following are parameters for this function. 
+        
+            hist   --> Input array for which segment tree is built 
+            st    --> Pointer to segment tree 
+            index --> Index of current node in the segment tree. Initially 0 is 
+                    passed as root is always at index 0 
+            ss & se  --> Starting and ending indexes of the segment represented by 
+                        current node, i.e., st[index] 
+            qs & qe  --> Starting and ending indexes of query range */
+        int RMQUtil(int *hist, int *st, int ss, int se, int qs, int qe, int index) 
+        { 
+            // If segment of this node is a part of given range, then return the 
+            // min of the segment 
+            if (qs <= ss && qe >= se) 
+                return st[index]; 
+        
+            // If segment of this node is outside the given range 
+            if (se < qs || ss > qe) 
+                return -1; 
+        
+            // If a part of this segment overlaps with the given range 
+            int mid = getMid(ss, se); 
+            return minVal(hist, RMQUtil(hist, st, ss, mid, qs, qe, 2*index+1), 
+                        RMQUtil(hist, st, mid+1, se, qs, qe, 2*index+2)); 
+        } 
+        
+        // Return index of minimum element in range from index qs (quey start) to 
+        // qe (query end).  It mainly uses RMQUtil() 
+        int RMQ(int *hist, int *st, int n, int qs, int qe) 
+        { 
+            // Check for erroneous input values 
+            if (qs < 0 || qe > n-1 || qs > qe) 
+            { 
+                cout << "Invalid Input"; 
+                return -1; 
+            } 
+        
+            return RMQUtil(hist, st, 0, n-1, qs, qe, 0); 
+        } 
+        
+        // A recursive function that constructs Segment Tree for hist[ss..se]. 
+        // si is index of current node in segment tree st 
+        int constructSTUtil(int hist[], int ss, int se, int *st, int si) 
+        { 
+            // If there is one element in array, store it in current node of 
+            // segment tree and return 
+            if (ss == se) 
+            return (st[si] = ss); 
+        
+            // If there are more than one elements, then recur for left and 
+            // right subtrees and store the minimum of two values in this node 
+            int mid = getMid(ss, se); 
+            st[si] =  minVal(hist, constructSTUtil(hist, ss, mid, st, si*2+1), 
+                            constructSTUtil(hist, mid+1, se, st, si*2+2)); 
+            return st[si]; 
+        } 
+        
+        /* Function to construct segment tree from given array. This function 
+        allocates memory for segment tree and calls constructSTUtil() to 
+        fill the allocated memory */
+        int *constructST(int hist[], int n) 
+        { 
+            // Allocate memory for segment tree 
+            int x = (int)(ceil(log2(n))); //Height of segment tree 
+            int max_size = 2*(int)pow(2, x) - 1; //Maximum size of segment tree 
+            int *st = new int[max_size]; 
+        
+            // Fill the allocated memory st 
+            constructSTUtil(hist, 0, n-1, st, 0); 
+        
+            // Return the constructed segment tree 
+            return st; 
+        } 
+        
+        // A recursive function to find the maximum rectangular area. 
+        // It uses segment tree 'st' to find the minimum value in hist[l..r] 
+        int getMaxAreaRec(int *hist, int *st, int n, int l, int r) 
+        { 
+            // Base cases 
+            if (l > r)  return INT_MIN; 
+            if (l == r)  return hist[l]; 
+        
+            // Find index of the minimum value in given range 
+            // This takes O(Logn)time 
+            int m = RMQ(hist, st, n, l, r); 
+        
+            /* Return maximum of following three possible cases 
+            a) Maximum area in Left of min value (not including the min) 
+            a) Maximum area in right of min value (not including the min) 
+            c) Maximum area including min */
+            return max(getMaxAreaRec(hist, st, n, l, m-1), 
+                    getMaxAreaRec(hist, st, n, m+1, r), 
+                    (r-l+1)*(hist[m]) ); 
+        } 
+        
+        // The main function to find max area 
+        int getMaxArea(int hist[], int n) 
+        { 
+            // Build segment tree from given array. This takes 
+            // O(n) time 
+            int *st = constructST(hist, n); 
+        
+            // Use recursive utility function to find the 
+            // maximum area 
+            return getMaxAreaRec(hist, st, n, 0, n-1); 
+        } 
+        
+        // Driver program to test above functions 
+        int main() 
+        { 
+            int hist[] =  {6, 1, 5, 4, 5, 2, 6}; 
+            int n = sizeof(hist)/sizeof(hist[0]); 
+            cout << "Maximum area is " << getMaxArea(hist, n); 
+            return 0; 
+        } 
+
+-94.7) Largest Rectangle in Histogram with Divide and Conquer
+    NO SEGMENT TREE: NLOGN worst case:
+
+
+    The idea is simple: for a given range of bars, the maximum 
+    area can either from left or right half of the bars, or from 
+    the area containing the middle two bars. For the last condition, 
+    expanding from the middle two bars to find a maximum area is O(n), 
+    which makes a typical Divide and Conquer solution with 
+    T(n) = 2T(n/2) + O(n). Thus the overall complexity is O(nlgn) 
+    for time and O(1) for space (or O(lgn) considering stack usage).
+
+    Following is the code accepted with 44ms. I posted this because 
+    I didn't find a similar solution, but only 
+    the RMQ idea which seemed less straightforward to me.
+
+    class Solution {
+        int maxCombineArea(const vector<int> &height, int s, int m, int e) {
+            // Expand from the middle to find the max area containing height[m] and height[m+1]
+            int i = m, j = m+1;
+            int area = 0, h = min(height[i], height[j]);
+            while(i >= s && j <= e) {
+                h = min(h, min(height[i], height[j]));
+                area = max(area, (j-i+1) * h);
+                if (i == s) {
+                    ++j;
+                }
+                else if (j == e) {
+                    --i;
+                }
+                else {
+                    // if both sides have not reached the boundary,
+                    // compare the outer bars and expand towards the bigger side
+                    if (height[i-1] > height[j+1]) {
+                        --i;
+                    }
+                    else {
+                        ++j;
+                    }
+                }
+            }
+            return area;
+        }
+        int maxArea(const vector<int> &height, int s, int e) {
+            // if the range only contains one bar, return its height as area
+            if (s == e) {
+                return height[s];
+            }
+            // otherwise, divide & conquer, the max area must be among the following 3 values
+            int m = s + (e-s)/2;
+            // 1 - max area from left half
+            int area = maxArea(height, s, m);
+            // 2 - max area from right half
+            area = max(area, maxArea(height, m+1, e));
+            // 3 - max area across the middle
+            area = max(area, maxCombineArea(height, s, m, e));
+            return area;
+        }
+    public:
+        int largestRectangleArea(vector<int> &height) {
+            if (height.empty()) {
+                return 0;
+            }
+            return maxArea(height, 0, height.size()-1);
+        }
+    };
+
+
+-94.5) Largest Rectangle in Histogram with DP:
+
+    To obtain the max area, we need to compare all the possible 
+    areas based on each height value. To get the max area 
+    for each height, we need to know the max widths, or the 
+    min index from the left and the max index from the right 
+    for each of the height. With that in mind, we can 
+    come down to the following code.
+    ALSO uses open close interval. 
+
+    (below soln not really O(N))
+    int largestRectangleArea(vector<int>& height) {
+        int n = height.size(), ans = 0, p;
+        vector<int> left(n,0), right(n,n);
+        for (int i = 1;i < n;++i) {
+            p = i-1;
+            while (p >= 0 && height[i] <= height[p])
+                p = left[p] - 1;
+            left[i] = p + 1;
+        }
+        for (int i = n-2;i >= 0;--i) {
+            p = i+1;
+            while (p < n && height[i] <= height[p])
+                p = right[p];
+            right[i] = p;
+        }
+        for (int i = 0;i < n;++i)
+            ans = max(ans,height[i]*(right[i]-left[i]));
+        return ans;
+    }
+
+    Using stack ensures O(N) worst case runtime
+
+    # O(n): using dp without stack 
+    class Solution:
+        def largestRectangleArea(self, heights: List[int]) -> int:
+            if not heights:
+                return 0
+
+            size = len(heights)
+            dp_l = [0] * size
+            dp_r = [0] * size
+
+            # find stop index from left
+            stack = []
+            for i in range(size):
+                dp_l[i] = i
+                while stack and heights[stack[-1]] >= heights[i]:
+                    dp_l[i] = stack.pop()
+                if dp_l[i] > 0 and heights[i] <= heights[dp_l[i] - 1]:
+                    dp_l[i] = dp_l[dp_l[i]]
+                stack.append(i)
+
+            # find stop index from right
+            stack = []
+            for i in range(size - 1, -1, -1):
+                dp_r[i] = i
+                while stack and heights[stack[-1]] >= heights[i]:
+                    dp_r[i] = stack.pop()
+                if dp_r[i] < size - 1 and heights[i] <= heights[dp_r[i] + 1]:
+                    dp_r[i] = dp_r[dp_r[i]]
+                stack.append(i)
+
+            # find max area
+            area = 0
+            for i in range(size):
+                area = max(area, heights[i] * (dp_r[i] - dp_l[i] + 1))
+
+            return area
+
+
+
+
+
+-94) MONOTONIC STACK + Largest rectangle in histogram
+
+    Given n non-negative integers representing the histogram's bar 
+    height where the width of each bar is 1, 
+    find the area of largest rectangle in the histogram.
+
+    Above is a histogram where width of each bar is 1, 
+    given height = [2,1,5,6,2,3].
+
+    The largest rectangle is shown in the 
+    shaded area, which has area = 10 unit.
+    Intuition (LOOK AT PROBLEM CONSTRAINTS):
+
+    Why could there be a better solution than O(n^2) ? 
+    How would we know that ?
+
+    Because if the length of the array is n, the largest possible 
+    rectangle has to have a height one of the elements of the array, 
+    that is to say, there are only n possible largest rectangles. 
+    So we don't really need to go through every pair of bars, 
+    but should rather search by the height of the bar.
+
+    Why Stack?
+    At each step we need the information of previously seen 
+    "candidate" bars - bars which give us hope. These are the bars 
+    of increasing heights. And since they'll need to be put in the 
+    order of their occurence, stack should come to your mind.
+
+    MONOTONIC STACK CONCEPTS:
+
+    ## Similar to Leetcode: 907. Sum Of Subarray Minimums ##
+    ## Similar to Leetcode: 85. maximum Rectangle ##
+    ## Similar to Leetcode: 402. Remove K Digits ##
+    ## Similar to Leetcode: 456. 132 Pattern ##
+    ## Similar to Leetcode: 1063. Number Of Valid Subarrays ##
+    ## Similar to Leetcode: 739. Daily Temperatures ##
+    ## Similar to Leetcode: 1019. Next Greater Node In LinkedList ##
+
+    LOGIC:
+    ## 1. Before Solving this problem, go through Monotone stack.
+    ## 2. Using Monotone Stack we can solve 
+    1) Next Greater Element 2) Next Smaller Element 
+    3) Prev Greater Element 4)Prev Smaller Element
+    ## 3. Using 'NSE' Monotone Stack concept, we can find width of rectangles, 
+    height obviously will be the minimum ofthose. Thus we can calculate the area
+    ## 4. As we are using NSE concept, adding 0 to the end, will make 
+    sure that stack is EMPTY at the end. ( so all theareas can be calculated while popping )
+        
+
+
+    META STRATEGY -> when algo becomes complicated/
+    has disjoint parts and you have to coordinate how disjointparts work
+    you are PROBABLY DOING IT WRONG. ITS A SMELL. wierd algoconstructions 
+    are usually wrong.         
+    */
+            
+    struct Pair {
+            int h;
+            int len;
+            Pair(int h, int len): h(h), len(len) {}
+        
+    };
+        
+    int largestRectangleArea(vector<int>& heights) {
+            
+            stack<Pair> st; 
+            int widthFromRight;
+            int currArea = 0;
+            
+            for(auto it = heights.begin(); it != heights.end(); it++) {    
+                int h = *it;            
+                int widthFromRight = 0;
+                while(st.size() > 0 && st.top().h >= h) {
+                    // start popping. 
+                    // the elements we pop actually form an increasing sequence
+                    // and you can get max area of increasing rectangles 
+                    // easily by accumulating!
+                    auto [h2, w] = st.top();
+                    widthFromRight += w;
+                    currArea = max(widthFromRight*h2, currArea);
+                    st.pop();
+                } 
+                
+                // multiply width and 
+                // height and compare with curr max. 
+                // the below line can be erased, and algo would still work
+                // because this shit gets computed anyway in the while loop below
+                currArea = max(h*(1+widthFromRight), currArea);
+                st.push(Pair(h, (1+widthFromRight)));
+            }
+            // elements left in stack are what?
+            // -> elements that form an increasing sequence 1, 2, 3
+            widthFromRight = 0;
+            while(st.size() > 0) { 
+                auto [h, w] = st.top();
+                widthFromRight += w;
+                currArea = max(widthFromRight*h, currArea);
+                st.pop();
+            }
+            return currArea;  
+        }
+    };
+
+
+    // More improved solutions:
+
+    /*
+    Explanation: As we check each height, we see if it is less than 
+    any height we've seen so far. If we've seen a larger height in 
+    our stack, we check and see what area that rectangle could have 
+    given us and pop it from the stack. We can continue this approach 
+    for each for each rectangle: finding the max area of any larger 
+    rectangle previously seen before adding this rectangle to the stack 
+    and thus limiting the height of any possible rectangle after.
+    */
+
+    int largestRectangleArea(vector<int>& heights) {
+            if(heights.size() == 0) return 0;
+            
+            stack<int> s;
+            int area = 0;
+            
+            for(int i = 0; i <= heights.size(); i++){
+                while(!s.empty() && (i == heights.size() || heights[s.top()] > heights[i])){
+                    int height = heights[s.top()];
+                    s.pop();
+                    int width = (!s.empty()) ? i - s.top() -1 : i;
+                    area = max(area, height * width);
+                }
+                s.push(i);
+            }
+            return area;
+    }
+
+    Another way: This solution works because a dummy 0 was inserted into vector.
+    JUST AS IN LINKED LISTS, USE DUMMY NODES TO SIMPLIFY, AND REDUCE 2 FOR LOOPS TO 1:
+
+        int largestRectangleArea(vector<int>& height) {
+            height.push_back(0);
+            const int size_h = height.size();
+            stack<int> stk;
+            int i = 0, max_a = 0;
+            while (i < size_h) {
+                if (stk.empty() || height[i] >= height[stk.top()]) stk.push(i++);
+                else {
+                    int h = stk.top();
+                    stk.pop();
+                    max_a = max(max_a, height[h] * (stk.empty() ? i : i - stk.top() - 1));
+                }
+            }
+            return max_a;
+        }
+
+
+
+
+
+-93) Bloomberg BINARY SEARCHING ON AN OBJECTIVE QUESTION. 
+     Calculate amt you can take out monthly that leads to balance 0
+    when balance also gets interest rate of 6%.
+
+    Just make guesses from 0 to totalamt     through binary searching,
+    and then check through math formula if 
+    taking out that specific monthly amount X will 
+    lead to balance of 0
+    when person dies. 
+
+    When do math approximations -> TRY BINARY SEARCH. 
+
+
+-92) HOW TO SORT PARTIALLY UNSORTED ARRAYS: ( SPLIT + JOIN)
+    Round 1: Given a sorted n-size array, there are k elements 
+    have been changed i.e. [1, 3, 5, 6, 4, 2, 12] (it might be changed from [1, 3, 5, 6, 7, 8, 12] with k = 2). Important to know is that k is unknown and k is much smaller than n. 
+    The task is to re-sort the entire array.
+    The interviewer wants O(n) solution. I bombed this one. In the end, the 
+    interviewer kind of fed the solution to me. What he suggested: 
+    a. break the array into two: one sorted array and one unsorted array e.g. [1, 3, 5, 12] 
+    and [6, 4, 2]. This takes O(n) 
+    b. Sort the unsorted array. This takes O(klogk) 
+    c. Merge two sorted arrays. This takes O(n). Because k is very small, so in the end O(n) + O(klogk) ~= O(n).
+        
+
+
+-91) 
+    Round 2
+    You have two arrays of odd length (same length). 
+    You should check if you can pair elements from both arrays such that 
+    xor of each pair is the same.
+    
+    Ex : [a, b, c] and [d, e, f] check we can find a pairing 
+         say (arrays actually have integers)
+    a xor e = v
+    b xor d = v
+    c xor f = v
+
+    SOLUTION:
+    O(N). XOR all => v. we can take advantage of the property that a^b=v => a^v=>b 
+        and use a hashset.
+
+
+
+-90) USING TREESETS AND TREE MAPS C++
+
+    Round 1
+    Design a data structure with two operations 1. addRange(int start, int end) 
+    and 2. contains(int point)
+    Here range means an interval, so the data structure contains information 
+    of all ranges added uptil that point and you can have interleaved queries 
+    of the form contains(int point) which returns true if the point 
+    is contained in any of the ranges or false otherwise.
+
+    The solution I thought of was to store the ranges/intervals as a 
+    list of sorted disjoint intervals (i.e merge overlapping intervals). 
+    Now when we get a contains query, we can perform binary 
+    search(interval with start point equal to or less than point) 
+    to find a potential interval that may contain it. addRange would 
+    be O(n) and contains would be O(logn). I believe there is a better 
+    solution with interval trees but interviewer said this solution 
+    was okay which I ended up coding.
+
+    USE sortedcontainers in python or
+    Q1:
+    Use a treemap => amortized O(logn) merge and O(logn) contains.
+    
+    STL map is inherently a binary search tree - just use map::find. 
+    Using container member functions, where they are present, 
+    is preferable to algorithms.
+
+    How to find all elements in a range in STL map(set)
+
+    If you are using std::map, it's already sorted, your 
+    can use lower_bound/upper_bound an example from cplusplus.com:
+
+    // map::lower_bound/upper_bound
+    #include <iostream>
+    #include <map>
+
+    int main ()
+    {
+        std::map<char,int> mymap;
+        std::map<char,int>::iterator itlow,itup;
+
+        mymap['a']=20;
+        mymap['b']=40;
+        mymap['c']=60;
+        mymap['d']=80;
+        mymap['e']=100;
+
+        itlow=mymap.lower_bound ('b');  // itlow points to b
+        itup=mymap.upper_bound ('d');   // itup points to e (not d!)
+
+        mymap.erase(itlow,itup);        // erases [itlow,itup)
+
+        // print content:
+        for (std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+            std::cout << it->first << " => " << it->second << '\n';
+
+        return 0;
+    }
+
+
+    
+-89) Round 1:
+
+    In this round i was asked a constructive problem. It goes like this:
+    Let's say we have a permutation P of length n(n = 5 here) = [3, 5, 1, 4, 2]
+    Now we delete elements from this permutation P from 1 to n in order and write their index to
+    another array Q. When an element is deleted, remaining elements are shifted to left by 1.
+    Initial: P = [3, 5, 1, 4, 2], Q = []
+    delete 1, P = [3, 5, 4, 2], Q = [3] (index of 1 was 3 so write 3(bcz it's index of 1) in Q)
+    delete 2, P = [3, 5, 4], Q = [3, 4]
+    delete 1, P = [5, 4], Q = [3,4,1]
+    delete 1, P = [5], Q = [3, 4, 1, 2]
+    delete 1, P = [], Q = [3, 4, 1, 2, 1]
+
+    Now given Q, we have to restore P.
+
+    I gave a Nlog^N solution using fenwick tree and binary search.
+    He asked me a follow up in which i have to optimize space.
+
+    How to use fenwick tree?
+    
+
+
+
+
+
+
+
+
+-88)  You are a traveling salesperson who travels 
+      back and forth between two cities (A and B). 
+      You are given a pair of arrays (revA and revB) of length n.
+
+    You can only sell goods in one city per day.
+    At the end of each day you can choose to travel to another 
+    city but it will cost a constant amount of money (travelCost).
+
+    Ex::
+    revA[] = {3, 7,2,100};
+
+    revB[] = {1,1,1,10};
+
+    travelCost = 2;
+    Find maximum profit.
+        int MaxProfitBySalesMan ( int arr1 [] , int arr2 [] , int n )
+        {
+            int dp [ 2 ] [ n ] ; 
+            dp [ 0 ] [ 0 ]  = arr1 [ 0 ] ; 
+            dp [ 1 ] [ 0 ]  = arr2 [ 0 ] ;
+            for ( int i = 1 ; i < n ; i ++ )
+            {
+                dp [ 0 ] [ i ] = max ( dp [ 0 ] [ i -  1 ] , dp [ 1 ][ i  - 1 ] - 2  ) + arr1 [ i ]  ; 
+                dp [ 1 ] [ i ] = max ( dp [ 1 ] [ i -  1 ] , dp [ 0 ][ i  - 1 ] - 2  ) + arr2 [ i ]  ;
+            }
+            return max ( dp [ 0] [ n - 1 ] , dp [ 1 ] [ n - 1 ] ) ;
+        }
+
+
+
 -87)Optimizing binary tree questions with bottom up DP: 
     One way to optimize these questions is to use post-order traversal.
     Compute the value for the children then compute for parent sorta like DP:
 
-    921. Count Univalue Subtrees
+    1.   Count Univalue Subtrees
     中文English
     Given a binary tree, count the number of uni-value subtrees.
     
@@ -130,6 +831,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 -86) monotonic stack vs monotonic queue and how to build a monotonic structure
         LOOK AT HRT PROBLEM.
+        
 
 
 -85) think of the algo to do citadel problem -> round robin ALGORITHM!!!
@@ -298,9 +1000,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         arr[i] = val;
         increment(i, diff);
     }
-
-
-
 
 
 

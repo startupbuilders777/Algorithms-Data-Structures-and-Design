@@ -1,0 +1,1181 @@
+###################################################################
+1) USING TREESETS AND TREE MAPS C++
+
+    Round 1
+    Design a data structure with two operations 1. addRange(int start, int end) 
+    and 2. contains(int point)
+    Here range means an interval, so the data structure contains information 
+    of all ranges added uptil that point and you can have interleaved queries 
+    of the form contains(int point) which returns true if the point 
+    is contained in any of the ranges or false otherwise.
+
+    The solution I thought of was to store the ranges/intervals as a 
+    list of sorted disjoint intervals (i.e merge overlapping intervals). 
+    Now when we get a contains query, we can perform binary 
+    search(interval with start point equal to or less than point) 
+    to find a potential interval that may contain it. addRange would 
+    be O(n) and contains would be O(logn). I believe there is a better 
+    solution with interval trees but interviewer said this solution 
+    was okay which I ended up coding.
+
+    USE sortedcontainers in python or
+    Q1:
+    Use a treemap => amortized O(logn) merge and O(logn) contains.
+    
+    STL map is inherently a binary search tree - just use map::find. 
+    Using container member functions, where they are present, 
+    is preferable to algorithms.
+
+    How to find all elements in a range in STL map(set)
+
+    If you are using std::map, it's already sorted, your 
+    can use lower_bound/upper_bound an example from cplusplus.com:
+
+    // map::lower_bound/upper_bound
+    #include <iostream>
+    #include <map>
+
+    int main ()
+    {
+        std::map<char,int> mymap;
+        std::map<char,int>::iterator itlow,itup;
+
+        mymap['a']=20;
+        mymap['b']=40;
+        mymap['c']=60;
+        mymap['d']=80;
+        mymap['e']=100;
+
+        itlow=mymap.lower_bound ('b');  // itlow points to b
+        itup=mymap.upper_bound ('d');   // itup points to e (not d!)
+
+        mymap.erase(itlow,itup);        // erases [itlow,itup)
+
+        // print content:
+        for (std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+            std::cout << it->first << " => " << it->second << '\n';
+
+        return 0;
+    }
+
+1.5) MULTIMAP USAGE + DELETE lowerbound and upperbound 
+
+    #include <iostream>
+    #include <map>
+    using namespace std;
+    
+    int main (){
+        multimap<string, string> MyMMap;
+        multimap<string, string>::iterator it, itlower, itupper;
+
+        MyMMap.insert(pair<string, string>("CAN", "Toronto"));
+        MyMMap.insert(pair<string, string>("IND", "Delhi"));
+        MyMMap.insert(pair<string, string>("JPN", "Tokyo"));
+        MyMMap.insert(pair<string, string>("USA", "New York"));
+        MyMMap.insert(pair<string, string>("USA", "Washington")); 
+
+        itlower = MyMMap.lower_bound("CAN");
+        itupper = MyMMap.upper_bound("JPN");
+        MyMMap.erase(itlower, itupper);
+
+        cout<<"MyMMap contains: \n ";
+        for(it = MyMMap.begin(); it != MyMMap.end(); ++it)
+            cout<<it->first<<"  "<<it->second<<"\n ";
+        return 0;
+    }
+    
+    
+    Output
+    MyMMap contains: 
+    USA  New York
+    USA  Washington
+
+
+
+
+2) Binary Search C++
+
+    Binary search is an important component in competitive programming 
+    or any algorithmic competition, having knowledge of shorthand functions 
+    reduces the time to code them. This searching only works when container 
+    is sorted. Related functions are discussed below.
+    ####
+    1.binary_search(start_ptr, end_ptr, num) : This function returns
+    boolean true if the element is present in the container, else returns false.
+
+    // C++ code to demonstrate the working of binary_search() 
+    
+    #include<bits/stdc++.h>  
+    using namespace std; 
+    
+    int main() 
+    { 
+        // initializing vector of integers 
+        vector<int> arr = {10, 15, 20, 25, 30, 35}; 
+        
+        // using binary_search to check if 15 exists 
+        if (binary_search(arr.begin(), arr.end(), 15)) 
+        cout << "15 exists in vector"; 
+        else 
+        cout << "15 does not exist"; 
+        
+        cout << endl; 
+        
+        // using binary_search to check if 23 exists 
+        if (binary_search(arr.begin(), arr.end(), 23)) 
+            cout << "23 exists in vector"; 
+        else 
+            cout << "23 does not exist"; 
+        
+        cout << endl;     
+    } 
+
+    Output:
+    15 exists in vector
+    23 does not exist
+
+    #####
+    2. lower_bound(start_ptr, end_ptr, num) : Returns pointer to 
+    “position of num” if container contains 1 occurrence of num. 
+    Returns pointer to “first position of num” if container contains 
+    multiple occurrence of num. Returns pointer to “position of next higher 
+    number than num” if container does not contain occurrence of num. 
+    Subtracting the pointer to 1st position i.e “vect.begin()” returns the actual index.
+
+    // C++ code to demonstrate the working of lower_bound() 
+    #include<bits/stdc++.h>  
+    using namespace std; 
+    
+    int main() 
+    { 
+        // initializing vector of integers 
+        // for single occurrence 
+        vector<int> arr1 = {10, 15, 20, 25, 30, 35}; 
+        
+        // initializing vector of integers 
+        // for multiple occurrences 
+        vector<int> arr2 = {10, 15, 20, 20, 25, 30, 35}; 
+        
+        // initializing vector of integers 
+        // for no occurrence 
+        vector<int> arr3 = {10, 15, 25, 30, 35};     
+        
+        // using lower_bound() to check if 20 exists 
+        // single occurrence 
+        // prints 2 
+        cout << "The position of 20 using lower_bound "
+                " (in single occurrence case) : "; 
+        cout << lower_bound(arr1.begin(), arr1.end(), 20)  
+                - arr1.begin(); 
+        
+        cout << endl; 
+        
+        // using lower_bound() to check if 20 exists 
+        // multiple occurrence 
+        // prints 2 
+        cout << "The position of 20 using lower_bound "
+                "(in multiple occurrence case) : "; 
+        cout << lower_bound(arr2.begin(), arr2.end(), 20)  
+                - arr2.begin(); 
+        
+        cout << endl; 
+        
+        // using lower_bound() to check if 20 exists 
+        // no occurrence 
+        // prints 2 ( index of next higher) 
+        cout << "The position of 20 using lower_bound "
+                "(in no occurrence case) : "; 
+        cout << lower_bound(arr3.begin(), arr3.end(), 20)  
+                - arr3.begin(); 
+        
+        cout << endl;     
+    } 
+    Output:
+
+    The position of 20 using lower_bound (in single occurrence case) : 2
+    The position of 20 using lower_bound (in multiple occurrence case) : 2
+    The position of 20 using lower_bound (in no occurrence case) : 2
+
+    #####
+    3. upper_bound(start_ptr, end_ptr, num) : Returns pointer to 
+    “position of next higher number than num” if container 
+    contains 1 occurrence of num. Returns pointer to “first position of next 
+    higher number than last occurrence of num” if container contains 
+    multiple occurrence of num. Returns pointer to “position of next 
+    higher number than num” if container does not contain occurrence of num. 
+    Subtracting the pointer to 1st position i.e “vect.begin()” returns the actual index.
+
+    // C++ code to demonstrate the working of upper_bound() 
+    #include<bits/stdc++.h>  
+    using namespace std; 
+    
+    int main() 
+    { 
+        // initializing vector of integers 
+        // for single occurrence 
+        vector<int> arr1 = {10, 15, 20, 25, 30, 35}; 
+        
+        // initializing vector of integers 
+        // for multiple occurrences 
+        vector<int> arr2 = {10, 15, 20, 20, 25, 30, 35}; 
+        
+        // initializing vector of integers 
+        // for no occurrence 
+        vector<int> arr3 = {10, 15, 25, 30, 35}; 
+        
+        
+        // using upper_bound() to check if 20 exists 
+        // single occurrence 
+        // prints 3 
+        cout << "The position of 20 using upper_bound"
+            " (in single occurrence case) : "; 
+        cout << upper_bound(arr1.begin(), arr1.end(), 20) 
+                - arr1.begin(); 
+        
+        cout << endl; 
+        
+        // using upper_bound() to check if 20 exists 
+        // multiple occurrence 
+        // prints 4 
+        cout << "The position of 20 using upper_bound "
+                "(in multiple occurrence case) : "; 
+        cout << upper_bound(arr2.begin(), arr2.end(), 20)  
+                - arr2.begin(); 
+        
+        cout << endl; 
+        
+        // using upper_bound() to check if 20 exists 
+        // no occurrence 
+        // prints 2 ( index of next higher) 
+        cout << "The position of 20 using upper_bound"
+                " (in no occurrence case) : "; 
+        cout << upper_bound(arr3.begin(), arr3.end(), 20)  
+            - arr3.begin(); 
+        
+        cout << endl;     
+    } 
+    Output:
+
+    The position of 20 using upper_bound (in single occurrence case) : 3
+    The position of 20 using upper_bound (in multiple occurrence case) : 4
+    The position of 20 using upper_bound (in no occurrence case) : 2
+
+
+
+
+
+3) MAP VS MULTIMAP AND USING COMPARATORS TO BUILD RED BLACK TREE IN MAP:
+    std::map takes up to four template type arguments, 
+            the third one being a comparator. E.g.:
+
+    struct cmpByStringLength {
+        bool operator()(const std::string& a, const std::string& b) const {
+            return a.length() < b.length();
+        }
+    };
+
+    // ...
+    std::map<std::string, std::string, cmpByStringLength> myMap;
+    Alternatively you could also pass a comparator to maps constructor.
+
+    Note however that when comparing by length you can 
+    only have one string of each length in the map as a key.
+
+
+    note that we can use multimap if we want to contain duplicated key
+
+
+    Since C++11, you can also use a lambda expression 
+        instead of defining a comparator struct:
+
+    auto comp = [](const string& a, const string& b) { return a.length() < b.length(); };
+    map<string, string, decltype(comp)> my_map(comp);
+
+    my_map["1"]      = "a";
+    my_map["three"]  = "b";
+    my_map["two"]    = "c";
+    my_map["fouuur"] = "d";
+
+    for(auto const &kv : my_map)
+        cout << kv.first << endl;
+
+
+
+4) Binary Search Algorithm in STL
+    This function returns Boolean true if the element is present in 
+    the given range, else Boolean false is returned. 
+    There are two variations of binary_search():
+
+    binary_search(first, last, value): this version returns true if there is an 
+                element present, satisfying the condition (!(a < value) &&!(value < a)) 
+                in the given range, i.e from first to last, in other words, operator(<) 
+                is used to check the equality of the two elements.
+
+    binary_search(first, last, value, compare_function) : 
+                this version return true if there is an element present 
+                in the given range, i.e from first to the last.
+
+
+    Note that first and last are iterators and the element 
+    pointed by last is excluded from the search.
+
+    Here we don't have to first sort element container, binary_search() 
+    will do all the work for us, we just have to 
+    give a range and a value which is to searched.
+
+    #include <iostream>    
+    #include <algorithm>
+    #include <vector>
+    using namespace std;
+
+    bool compare_string_by_length (string i,string j)
+    {
+        return (i.size() == j.size());
+    }
+
+    int main () 
+    {
+        int inputs[] = {7,8,4,1,6,5,9,4};
+        vector<int> v(inputs, inputs+8);
+        
+        cout<<binary_search(v.begin() , v.end() , 7 );  //prints 1 , Boolean true
+        
+        cout<<binary_search(v.begin() , v.end() , 217); //prints 0 , Boolean false
+        
+        /* compare_function can be used to search 
+        non numeric elements based on their properties */ 
+        
+        string s[] = { "test" , "abcdf" , "efghijkl" , "pop" };
+        
+        cout<<binary_search(s, s+4, "nickt" , compare_string_by_length);
+        /* search for the string in s which have same length as of "nicky" */
+
+    }
+
+
+
+
+
+######################################################################
+
+
+
+0) DETECT CYCLE IN DIRECTED GRAPH C++
+        #include <bits/stdc++.h> 
+        using namespace std; 
+        
+        enum Color {WHITE, GRAY, BLACK}; 
+        
+        // Graph class represents a directed graph using 
+        // adjacency list representation 
+        class Graph 
+        { 
+            int V; // No. of vertices 
+            list<int>* adj; // adjacency lists 
+        
+            // DFS traversal of the vertices reachable from v 
+            bool DFSUtil(int v, int color[]); 
+        public: 
+            Graph(int V);  // Constructor 
+        
+            // function to add an edge to graph 
+            void addEdge(int v, int w); 
+        
+            bool isCyclic(); 
+        }; 
+        
+        // Constructor 
+        Graph::Graph(int V) 
+        { 
+            this->V = V; 
+            adj = new list<int>[V]; 
+        } 
+        
+        // Utility function to add an edge 
+        void Graph::addEdge(int v, int w) 
+        { 
+            adj[v].push_back(w); // Add w to v's list. 
+        } 
+        
+        // Recursive function to find if there is back edge 
+        // in DFS subtree tree rooted with 'u' 
+        bool Graph::DFSUtil(int u, int color[]) 
+        { 
+            // GRAY :  This vertex is being processed (DFS 
+            //         for this vertex has started, but not 
+            //         ended (or this vertex is in function 
+            //         call stack) 
+            color[u] = GRAY; 
+        
+            // Iterate through all adjacent vertices 
+            list<int>::iterator i; 
+            for (i = adj[u].begin(); i != adj[u].end(); ++i) 
+            { 
+                int v = *i;  // An adjacent of u 
+        
+                // If there is 
+                if (color[v] == GRAY) 
+                return true; 
+        
+                // If v is not processed and there is a back 
+                // edge in subtree rooted with v 
+                if (color[v] == WHITE && DFSUtil(v, color)) 
+                return true; 
+            } 
+        
+            // Mark this vertex as processed 
+            color[u] = BLACK; 
+        
+            return false; 
+        } 
+        
+        // Returns true if there is a cycle in graph 
+        bool Graph::isCyclic() 
+        { 
+            // Initialize color of all vertices as WHITE 
+            int *color = new int[V]; 
+            for (int i = 0; i < V; i++) 
+                color[i] = WHITE; 
+        
+            // Do a DFS traversal beginning with all 
+            // vertices 
+            for (int i = 0; i < V; i++) 
+                if (color[i] == WHITE) 
+                if (DFSUtil(i, color) == true) 
+                    return true; 
+        
+            return false; 
+        } 
+        
+        // Driver code to test above 
+        int main() 
+        { 
+            // Create a graph given in the above diagram 
+            Graph g(4); 
+            g.addEdge(0, 1); 
+            g.addEdge(0, 2); 
+            g.addEdge(1, 2); 
+            g.addEdge(2, 0); 
+            g.addEdge(2, 3); 
+            g.addEdge(3, 3); 
+        
+            if (g.isCyclic()) 
+                cout << "Graph contains cycle"; 
+            else
+                cout << "Graph doesn't contain cycle"; 
+        
+            return 0; 
+        } 
+
+1) C++ BFS
+
+
+        // CPP program to implement BFS as per CLRS  
+        // algorithm. 
+        #include <bits/stdc++.h> 
+        using namespace std; 
+        
+        // Declaring the vectors to store color, distance 
+        // and parent 
+        vector<string> colour; 
+        vector<int> d; 
+        vector<int> p; 
+        
+        /* This function adds an edge to the graph. 
+        It is an undirected graph. So edges are  
+        added for both the nodes. */
+        void addEdge(vector <int> g[], int u, int v) 
+        { 
+            g[u].push_back(v); 
+            g[v].push_back(u); 
+        } 
+        
+        /* This function does the Breadth First Search*/
+        void BFSSingleSource(vector <int> g[], int s) 
+        { 
+            // The Queue used for the BFS operation 
+            queue<int> q; 
+        
+            // Pushing the root node inside the queue 
+            q.push(s);  
+        
+            /* Distance of root node is 0 & colour 
+            is gray as it is visited partially now */
+            d[s] = 0; 
+            colour[s] = "green"; 
+                
+            /* Loop to traverse the graph. Traversal 
+            will happen traverse until the queue is  
+            not empty.*/
+            while (!q.empty()) 
+            { 
+                /* Extracting the front element(node)  
+                and poping it out of queue. */
+                int u = q.front(); 
+                q.pop(); 
+        
+                cout << u << " "; 
+        
+                /* This loop traverses all the child nodes of u */
+                for (auto i = g[u].begin(); i != g[u].end(); i++) 
+                { 
+                    /* If the colour is white then the said node 
+                    is not traversed. */
+                    if (colour[*i] == "white") 
+                    { 
+                        colour[*i] = "green"; 
+                        d[*i] = d[u] + 1; 
+                        p[*i] = u; 
+        
+                        /* Pushing the node inside queue 
+                        to traverse its children. */
+                        q.push(*i);  
+                    } 
+                } 
+        
+                /* Now the node u is completely traversed 
+                and colour is changed to black. */
+                colour[u] = "dark_green"; 
+            } 
+        } 
+        
+        void BFSFull(vector <int> g[], int n) 
+        { 
+            /* Initially all nodes are not traversed. 
+            Therefore, the colour is white. */
+            colour.assign(n, "white"); 
+            d.assign(n, 0); 
+            p.assign(n, -1); 
+        
+            // Calling BFSSingleSource() for all white 
+            // vertices. 
+            for (int i = 0; i < n; i++)      
+                if (colour[i] == "white") 
+                    BFSSingleSource(g, i);  
+        } 
+        
+        // Driver Function 
+        int main() 
+        { 
+            // Graph with 7 nodes and 6 edges. 
+            int n = 7; 
+                
+            // The Graph vector 
+            vector <int> g[n]; 
+            
+            addEdge(g, 0, 1); 
+            addEdge(g, 0, 2); 
+            addEdge(g, 1, 3); 
+            addEdge(g, 1, 4); 
+            addEdge(g, 2, 5); 
+            addEdge(g, 2, 6); 
+        
+            BFSFull(g, n); 
+        
+            return 0; 
+        } 
+
+2) C++ TOPOLOGICAL SORT:
+
+        // A C++ program to print topological sorting of a DAG 
+        #include <iostream> 
+        #include <list> 
+        #include <stack> 
+        using namespace std; 
+        
+        // Class to represent a graph 
+        class Graph { 
+            int V; // No. of vertices' 
+        
+            // Pointer to an array containing adjacency listsList 
+            list<int>* adj; 
+        
+            // A function used by topologicalSort 
+            void topologicalSortUtil(int v, bool visited[], stack<int>& Stack); 
+        
+        public: 
+            Graph(int V); // Constructor 
+        
+            // function to add an edge to graph 
+            void addEdge(int v, int w); 
+        
+            // prints a Topological Sort of the complete graph 
+            void topologicalSort(); 
+        }; 
+        
+        Graph::Graph(int V) 
+        { 
+            this->V = V; 
+            adj = new list<int>[V]; 
+        } 
+        
+        void Graph::addEdge(int v, int w) 
+        { 
+            adj[v].push_back(w); // Add w to v’s list. 
+        } 
+        
+        // A recursive function used by topologicalSort 
+        void Graph::topologicalSortUtil(int v, bool visited[], 
+                                        stack<int>& Stack) 
+        { 
+            // Mark the current node as visited. 
+            visited[v] = true; 
+        
+            // Recur for all the vertices adjacent to this vertex 
+            list<int>::iterator i; 
+            for (i = adj[v].begin(); i != adj[v].end(); ++i) 
+                if (!visited[*i]) 
+                    topologicalSortUtil(*i, visited, Stack); 
+        
+            // Push current vertex to stack which stores result 
+            Stack.push(v); 
+        } 
+        
+        // The function to do Topological Sort. It uses recursive 
+        // topologicalSortUtil() 
+        void Graph::topologicalSort() 
+        { 
+            stack<int> Stack; 
+        
+            // Mark all the vertices as not visited 
+            bool* visited = new bool[V]; 
+            for (int i = 0; i < V; i++) 
+                visited[i] = false; 
+        
+            // Call the recursive helper function to store Topological 
+            // Sort starting from all vertices one by one 
+            for (int i = 0; i < V; i++) 
+                if (visited[i] == false) 
+                    topologicalSortUtil(i, visited, Stack); 
+        
+            // Print contents of stack 
+            while (Stack.empty() == false) { 
+                cout << Stack.top() << " "; 
+                Stack.pop(); 
+            } 
+        } 
+        
+        // Driver program to test above functions 
+        int main() 
+        { 
+            // Create a graph given in the above diagram 
+            Graph g(6); 
+            g.addEdge(5, 2); 
+            g.addEdge(5, 0); 
+            g.addEdge(4, 0); 
+            g.addEdge(4, 1); 
+            g.addEdge(2, 3); 
+            g.addEdge(3, 1); 
+        
+            cout << "Following is a Topological Sort of the given graph n"; 
+            g.topologicalSort(); 
+        
+            return 0; 
+        } 
+3) Find ARTICULATION POINTS aka CUT VERTICES in a graph
+
+    The idea is to use DFS (Depth First Search). In DFS, we follow vertices in 
+    tree form called DFS tree. In DFS tree, a vertex u is parent of another 
+    vertex v, if v is discovered by u (obviously v is an adjacent of u in graph). 
+    In DFS tree, a vertex u is articulation point if one of the 
+    following two conditions is true.
+
+    1) u is root of DFS tree and it has at least two children.
+    2) u is not root of DFS tree and it has a child v such that no vertex in 
+       subtree rooted with v has a back edge to one of the ancestors (in DFS tree) of u.
+
+    How to handle second case? The second case is trickier. 
+    We maintain an array disc[] to store discovery time of vertices. 
+    For every node u, we need to find out the earliest visited vertex 
+    (the vertex with minimum discovery time) that can be reached from 
+    subtree rooted with u. So we maintain an additional array low[] 
+    which is defined as follows.
+
+    low[u] = min(disc[u], disc[w]) 
+    where w is an ancestor of u and there is a back edge from 
+    some descendant of u to w.
+
+    // A C++ program to find articulation points in an undirected graph 
+        #include<iostream> 
+        #include <list> 
+        #define NIL -1 
+        using namespace std; 
+        
+        // A class that represents an undirected graph 
+        class Graph 
+        { 
+            int V;    // No. of vertices 
+            list<int> *adj;    // A dynamic array of adjacency lists 
+            void APUtil(int v, bool visited[], int disc[], int low[],  
+                        int parent[], bool ap[]); 
+        public: 
+            Graph(int V);   // Constructor 
+            void addEdge(int v, int w);   // function to add an edge to graph 
+            void AP();    // prints articulation points 
+        }; 
+        
+        Graph::Graph(int V) 
+        { 
+            this->V = V; 
+            adj = new list<int>[V]; 
+        } 
+        
+        void Graph::addEdge(int v, int w) 
+        { 
+            adj[v].push_back(w); 
+            adj[w].push_back(v);  // Note: the graph is undirected 
+        } 
+        
+        // A recursive function that find articulation points using DFS traversal 
+        // u --> The vertex to be visited next 
+        // visited[] --> keeps tract of visited vertices 
+        // disc[] --> Stores discovery times of visited vertices 
+        // parent[] --> Stores parent vertices in DFS tree 
+        // ap[] --> Store articulation points 
+        void Graph::APUtil(int u, bool visited[], int disc[],  
+                                            int low[], int parent[], bool ap[]) 
+        { 
+            // A static variable is used for simplicity, we can avoid use of static 
+            // variable by passing a pointer. 
+            static int time = 0; 
+        
+            // Count of children in DFS Tree 
+            int children = 0; 
+        
+            // Mark the current node as visited 
+            visited[u] = true; 
+        
+            // Initialize discovery time and low value 
+            disc[u] = low[u] = ++time; 
+        
+            // Go through all vertices aadjacent to this 
+            list<int>::iterator i; 
+            for (i = adj[u].begin(); i != adj[u].end(); ++i) 
+            { 
+                int v = *i;  // v is current adjacent of u 
+        
+                // If v is not visited yet, then make it a child of u 
+                // in DFS tree and recur for it 
+                if (!visited[v]) 
+                { 
+                    children++; 
+                    parent[v] = u; 
+                    APUtil(v, visited, disc, low, parent, ap); 
+        
+                    // Check if the subtree rooted with v has a connection to 
+                    // one of the ancestors of u 
+                    low[u]  = min(low[u], low[v]); 
+        
+                    // u is an articulation point in following cases 
+        
+                    // (1) u is root of DFS tree and has two or more chilren. 
+                    if (parent[u] == NIL && children > 1) 
+                    ap[u] = true; 
+        
+                    // (2) If u is not root and low value of one of its child is more 
+                    // than discovery value of u. 
+                    if (parent[u] != NIL && low[v] >= disc[u]) 
+                    ap[u] = true; 
+                } 
+        
+                // Update low value of u for parent function calls. 
+                else if (v != parent[u]) 
+                    low[u]  = min(low[u], disc[v]); 
+            } 
+        } 
+        
+        // The function to do DFS traversal. It uses recursive function APUtil() 
+        void Graph::AP() 
+        { 
+            // Mark all the vertices as not visited 
+            bool *visited = new bool[V]; 
+            int *disc = new int[V]; 
+            int *low = new int[V]; 
+            int *parent = new int[V]; 
+            bool *ap = new bool[V]; // To store articulation points 
+        
+            // Initialize parent and visited, and ap(articulation point) arrays 
+            for (int i = 0; i < V; i++) 
+            { 
+                parent[i] = NIL; 
+                visited[i] = false; 
+                ap[i] = false; 
+            } 
+        
+            // Call the recursive helper function to find articulation points 
+            // in DFS tree rooted with vertex 'i' 
+            for (int i = 0; i < V; i++) 
+                if (visited[i] == false) 
+                    APUtil(i, visited, disc, low, parent, ap); 
+        
+            // Now ap[] contains articulation points, print them 
+            for (int i = 0; i < V; i++) 
+                if (ap[i] == true) 
+                    cout << i << " "; 
+        } 
+        
+        // Driver program to test above function 
+        int main() 
+        { 
+            // Create graphs given in above diagrams 
+            cout << "\nArticulation points in first graph \n"; 
+            Graph g1(5); 
+            g1.addEdge(1, 0); 
+            g1.addEdge(0, 2); 
+            g1.addEdge(2, 1); 
+            g1.addEdge(0, 3); 
+            g1.addEdge(3, 4); 
+            g1.AP(); 
+        
+            cout << "\nArticulation points in second graph \n"; 
+            Graph g2(4); 
+            g2.addEdge(0, 1); 
+            g2.addEdge(1, 2); 
+            g2.addEdge(2, 3); 
+            g2.AP(); 
+        
+            cout << "\nArticulation points in third graph \n"; 
+            Graph g3(7); 
+            g3.addEdge(0, 1); 
+            g3.addEdge(1, 2); 
+            g3.addEdge(2, 0); 
+            g3.addEdge(1, 3); 
+            g3.addEdge(1, 4); 
+            g3.addEdge(1, 6); 
+            g3.addEdge(3, 5); 
+            g3.addEdge(4, 5); 
+            g3.AP(); 
+        
+            return 0; 
+        } 
+
+
+4) FIND BRIDGES AKA CUT EDGES in a graph:
+        We do DFS traversal of the given graph. In DFS tree an edge (u, v) (u is parent of v in DFS tree) 
+        is bridge if there does not exist any other alternative to reach u or an ancestor of u 
+        from subtree rooted with v. As discussed in the previous post, the value low[v] 
+        indicates earliest visited vertex reachable from subtree rooted with v. 
+        The condition for an edge (u, v) to be a bridge is, “low[v] > disc[u]”.
+
+            // A C++ program to find bridges in a given undirected graph 
+            #include<iostream> 
+            #include <list> 
+            #define NIL -1 
+            using namespace std; 
+            
+            // A class that represents an undirected graph 
+            class Graph 
+            { 
+                int V;    // No. of vertices 
+                list<int> *adj;    // A dynamic array of adjacency lists 
+                void bridgeUtil(int v, bool visited[], int disc[], int low[], 
+                                int parent[]); 
+            public: 
+                Graph(int V);   // Constructor 
+                void addEdge(int v, int w);   // to add an edge to graph 
+                void bridge();    // prints all bridges 
+            }; 
+            
+            Graph::Graph(int V) 
+            { 
+                this->V = V; 
+                adj = new list<int>[V]; 
+            } 
+            
+            void Graph::addEdge(int v, int w) 
+            { 
+                adj[v].push_back(w); 
+                adj[w].push_back(v);  // Note: the graph is undirected 
+            } 
+            
+            // A recursive function that finds and prints bridges using 
+            // DFS traversal 
+            // u --> The vertex to be visited next 
+            // visited[] --> keeps tract of visited vertices 
+            // disc[] --> Stores discovery times of visited vertices 
+            // parent[] --> Stores parent vertices in DFS tree 
+            void Graph::bridgeUtil(int u, bool visited[], int disc[],  
+                                            int low[], int parent[]) 
+            { 
+                // A static variable is used for simplicity, we can  
+                // avoid use of static variable by passing a pointer. 
+                static int time = 0; 
+            
+                // Mark the current node as visited 
+                visited[u] = true; 
+            
+                // Initialize discovery time and low value 
+                disc[u] = low[u] = ++time; 
+            
+                // Go through all vertices aadjacent to this 
+                list<int>::iterator i; 
+                for (i = adj[u].begin(); i != adj[u].end(); ++i) 
+                { 
+                    int v = *i;  // v is current adjacent of u 
+            
+                    // If v is not visited yet, then recur for it 
+                    if (!visited[v]) 
+                    { 
+                        parent[v] = u; 
+                        bridgeUtil(v, visited, disc, low, parent); 
+            
+                        // Check if the subtree rooted with v has a  
+                        // connection to one of the ancestors of u 
+                        low[u]  = min(low[u], low[v]); 
+            
+                        // If the lowest vertex reachable from subtree  
+                        // under v is  below u in DFS tree, then u-v  
+                        // is a bridge 
+                        if (low[v] > disc[u]) 
+                        cout << u <<" " << v << endl; 
+                    } 
+            
+                    // Update low value of u for parent function calls. 
+                    else if (v != parent[u]) 
+                        low[u]  = min(low[u], disc[v]); 
+                } 
+            } 
+            
+            // DFS based function to find all bridges. It uses recursive  
+            // function bridgeUtil() 
+            void Graph::bridge() 
+            { 
+                // Mark all the vertices as not visited 
+                bool *visited = new bool[V]; 
+                int *disc = new int[V]; 
+                int *low = new int[V]; 
+                int *parent = new int[V]; 
+            
+                // Initialize parent and visited arrays 
+                for (int i = 0; i < V; i++) 
+                { 
+                    parent[i] = NIL; 
+                    visited[i] = false; 
+                } 
+            
+                // Call the recursive helper function to find Bridges 
+                // in DFS tree rooted with vertex 'i' 
+                for (int i = 0; i < V; i++) 
+                    if (visited[i] == false) 
+                        bridgeUtil(i, visited, disc, low, parent); 
+            } 
+            
+            // Driver program to test above function 
+            int main() 
+            { 
+                // Create graphs given in above diagrams 
+                cout << "\nBridges in first graph \n"; 
+                Graph g1(5); 
+                g1.addEdge(1, 0); 
+                g1.addEdge(0, 2); 
+                g1.addEdge(2, 1); 
+                g1.addEdge(0, 3); 
+                g1.addEdge(3, 4); 
+                g1.bridge(); 
+            
+                cout << "\nBridges in second graph \n"; 
+                Graph g2(4); 
+                g2.addEdge(0, 1); 
+                g2.addEdge(1, 2); 
+                g2.addEdge(2, 3); 
+                g2.bridge(); 
+            
+                cout << "\nBridges in third graph \n"; 
+                Graph g3(7); 
+                g3.addEdge(0, 1); 
+                g3.addEdge(1, 2); 
+                g3.addEdge(2, 0); 
+                g3.addEdge(1, 3); 
+                g3.addEdge(1, 4); 
+                g3.addEdge(1, 6); 
+                g3.addEdge(3, 5); 
+                g3.addEdge(4, 5); 
+                g3.bridge(); 
+            
+                return 0; 
+            } 
+
+
+
+4) LINE SWEEPING ALGORITHM:
+
+        Given n line segments on the plane. It is required to check whether at least two of them intersect with each other. 
+        If the answer is yes, then print this pair of intersecting segments; it is enough to choose any of them among several answers.
+        This article describes an algorithm with the runtime time O(nlogn), which is based on the sweep line algorithm.
+
+        Algorithm
+        Let's draw a vertical line x=−∞ mentally and start moving this line to the right. In the course of its movement, 
+        this line will meet with segments, and at each time a segment intersect with our line it 
+        intersects in exactly one point (we will assume that there are no vertical segments).
+
+        sweep line and line segment intersection
+        Thus, for each segment, at some point in time, its point will appear on the sweep line, then with the movement 
+        of the line, this point will move, and finally, at some point, the segment will disappear from the line.
+
+        We are interested in the relative order of the segments along the vertical. Namely, we will store a list of 
+        segments crossing the sweep line at a given time, 
+        where the segments will be sorted by their y-coordinate on the sweep line.
+
+        relative order of the segments across sweep line
+        This order is interesting because intersecting segments will have the same y-coordinate at least at one time:
+
+        intersection point having same y-coordinate
+        We formulate key statements:
+
+        To find an intersecting pair, it is sufficient to consider only adjacent segments at each fixed position of the sweep line.
+            It is enough to consider the sweep line not in all possible real positions (−∞…+∞), but only in those positions when new 
+            segments appear or old ones disappear. In other words, it is enough to limit yourself only 
+            to the positions equal to the abscissas of the end points of the segments.
+        When a new line segment appears, it is enough to insert it to the desired location in the list obtained 
+            for the previous sweep line. We should only check for the intersection of the added segment 
+            with its immediate neighbors in the list above and below.
+        If the segment disappears, it is enough to remove it from the current list. After that, 
+            it is necessary check for the intersection of the upper and lower neighbors in the list.
+        Other changes in the sequence of segments in the list, except for 
+            those described, do not exist. No other intersection checks are required.
+        To understand the truth of these statements, the following remarks are sufficient:
+
+        Two disjoint segments never change their relative order.
+
+        In fact, if one segment was first higher than the other, and then became lower, 
+            then between these two moments there was an intersection of these two segments.
+        Two non-intersecting segments also cannot have the same y-coordinates.
+        From this it follows that at the moment of the segment appearance we can find the position for this segment in the queue, and we will 
+            not have to rearrange this segment in the queue any more: its order relative to other segments in the queue will not change.
+
+        Two intersecting segments at the moment of their intersection point will be neighbors of each other in the queue.
+        Therefore, for finding pairs of intersecting line segments is sufficient to check the intersection of all and only those pairs 
+            of segments that sometime during the movement of the sweep line at least once were neighbors to each other.
+
+        It is easy to notice that it is enough only to check the added segment with its upper and lower neighbors, as well as 
+            when removing the segment — its upper and lower neighbors (which after removal will become neighbors of each other).
+        It should be noted that at a fixed position of the sweep line, we must first add all the segments that start at 
+            this x-coordinate, and only then remove all the segments that end here.
+        Thus, we do not miss the intersection of segments on the vertex: i.e. such cases when two segments have a common vertex.
+        Note that vertical segments do not actually affect the correctness of the algorithm.
+        These segments are distinguished by the fact that they appear and disappear at the same time. However, due to the 
+            previous comment, we know that all segments will be added to the queue first, and only then they will be deleted. 
+            Therefore, if the vertical segment intersects with some other segment opened at that moment 
+            (including the vertical one), it will be detected.
+
+        In what place of the queue to place vertical segments? After all, a vertical segment does not have one 
+            specific y-coordinate, it extends for an entire segment along the y-coordinate. However, 
+            it is easy to understand that any coordinate from this segment can be taken as a y-coordinate.
+        Thus, the entire algorithm will perform no more than 2n tests on the intersection of a pair of segments, and 
+            will perform O(n) operations with a queue of segments (O(1) operations at the time of appearance and disappearance of each segment).
+
+        The final asymptotic behavior of the algorithm is thus O(nlogn).
+
+        Implementation:
+
+        const double EPS = 1E-9;
+
+        struct pt {
+            double x, y;
+        };
+
+        struct seg {
+            pt p, q;
+            int id;
+
+            double get_y(double x) const {
+                if (abs(p.x - q.x) < EPS)
+                    return p.y;
+                return p.y + (q.y - p.y) * (x - p.x) / (q.x - p.x);
+            }
+        };
+
+        bool intersect1d(double l1, double r1, double l2, double r2) {
+            if (l1 > r1)
+                swap(l1, r1);
+            if (l2 > r2)
+                swap(l2, r2);
+            return max(l1, l2) <= min(r1, r2) + EPS;
+        }
+
+        int vec(const pt& a, const pt& b, const pt& c) {
+            double s = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+            return abs(s) < EPS ? 0 : s > 0 ? +1 : -1;
+        }
+
+        bool intersect(const seg& a, const seg& b)
+        {
+            return intersect1d(a.p.x, a.q.x, b.p.x, b.q.x) &&
+                intersect1d(a.p.y, a.q.y, b.p.y, b.q.y) &&
+                vec(a.p, a.q, b.p) * vec(a.p, a.q, b.q) <= 0 &&
+                vec(b.p, b.q, a.p) * vec(b.p, b.q, a.q) <= 0;
+        }
+
+        bool operator<(const seg& a, const seg& b)
+        {
+            double x = max(min(a.p.x, a.q.x), min(b.p.x, b.q.x));
+            return a.get_y(x) < b.get_y(x) - EPS;
+        }
+
+        struct event {
+            double x;
+            int tp, id;
+
+            event() {}
+            event(double x, int tp, int id) : x(x), tp(tp), id(id) {}
+
+            bool operator<(const event& e) const {
+                if (abs(x - e.x) > EPS)
+                    return x < e.x;
+                return tp > e.tp;
+            }
+        };
+
+        set<seg> s;
+        vector<set<seg>::iterator> where;
+
+        set<seg>::iterator prev(set<seg>::iterator it) {
+            return it == s.begin() ? s.end() : --it;
+        }
+
+        set<seg>::iterator next(set<seg>::iterator it) {
+            return ++it;
+        }
+
+        pair<int, int> solve(const vector<seg>& a) {
+            int n = (int)a.size();
+            vector<event> e;
+            for (int i = 0; i < n; ++i) {
+                e.push_back(event(min(a[i].p.x, a[i].q.x), +1, i));
+                e.push_back(event(max(a[i].p.x, a[i].q.x), -1, i));
+            }
+            sort(e.begin(), e.end());
+
+            s.clear();
+            where.resize(a.size());
+            for (size_t i = 0; i < e.size(); ++i) {
+                int id = e[i].id;
+                if (e[i].tp == +1) {
+                    set<seg>::iterator nxt = s.lower_bound(a[id]), prv = prev(nxt);
+                    if (nxt != s.end() && intersect(*nxt, a[id]))
+                        return make_pair(nxt->id, id);
+                    if (prv != s.end() && intersect(*prv, a[id]))
+                        return make_pair(prv->id, id);
+                    where[id] = s.insert(nxt, a[id]);
+                } else {
+                    set<seg>::iterator nxt = next(where[id]), prv = prev(where[id]);
+                    if (nxt != s.end() && prv != s.end() && intersect(*nxt, *prv))
+                        return make_pair(prv->id, nxt->id);
+                    s.erase(where[id]);
+                }
+            }
+
+            return make_pair(-1, -1);
+        }
+
+        The main function here is solve(), which returns the number of found 
+        intersecting segments, or (−1,−1), if there are no intersections.
+        Checking for the intersection of two segments is carried out by the intersect () function, 
+        using an algorithm based on the oriented area of the triangle.
+        The queue of segments is the global variable s, a set<event>. Iterators that specify the 
+        position of each segment in the queue (for convenient removal of segments from the queue) 
+        are stored in the global array where.
+        Two auxiliary functions prev() and next() are also introduced, which return 
+        iterators to the previous and next elements (or end(), if one does not exist).
+        The constant EPS denotes the error of comparing two real numbers 
+        (it is mainly used when checking two segments for intersection).

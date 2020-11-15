@@ -1,0 +1,21 @@
+It's not really dependent on financial knowledge. I would suggest looking into 
+OS/concurrent/low-level stuff for the interviews.
+  
+Microsoft / Eng  Mr.Miyagi!
+Linux kernel internals dealing with concurrency, process scheduling, I/O handling, 
+networking, memory allocators. Kernel bypass for userspace processing of packets.
+
+Computer Architecture- Pipelining, cache coherence, branching, vectorization.
+
+C++ - metaprogramming with templates and constexpr, CRTP to allow static 
+polymorphism instead of dynamic, reducing virtual functions so that vtable
+lookups are reduced, RVO/NRVO, move semantics, reduced if statements to reduce 
+branching and jumps, expression templates, placement new and using preallocated 
+memory pools to avoid constantly using the memory allocator, cache friendly code 
+using performant STL containers like vector over non performing ones like map, 
+unordered map, avoid shared_ptr since reference counting is an expensive operation 
+and use unique_ptr only when needed, reduce use of C++ exceptions.
+
+Userspace level in Linux you should know non blocking I/O , 
+Interprocess Communication, shared memory.
+
