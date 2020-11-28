@@ -71,6 +71,673 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
+-102) 
+
+
+
+-101.7) Binary Search with chocolates:
+
+     Divide Chocolate
+     You have one chocolate bar that consists of some chunks. 
+     Each chunk has its own sweetness given by the array sweetness.
+
+     You want to share the chocolate with your K friends so you start 
+     cutting the chocolate bar into K+1 pieces using K cuts, 
+     each piece consists of some consecutive chunks.
+
+     Being generous, you will eat the piece with the minimum total 
+     sweetness and give the other pieces to your friends.
+
+     Find the maximum total sweetness of the piece you can 
+     get by cutting the chocolate bar optimally.
+
+      
+
+     Example 1:
+
+     Input: sweetness = [1,2,3,4,5,6,7,8,9], K = 5
+     Output: 6
+     Explanation: You can divide the chocolate to [1,2,3], [4,5], [6], [7], [8], [9]
+
+    class Solution {
+        public:
+            
+            int enough(const vector<int> & sweetness, int minSweet, int K) {
+                int res = 0;
+                int groups = 0;
+                for(auto & i: sweetness) {
+                    if(res + i >= minSweet) {
+                        groups += 1;
+                        res = 0;
+                    } else {
+                        res += i;
+                    }
+                }
+                if(groups >= K+1) 
+                    return true;
+                return false; 
+            }
+            
+            int maximizeSweetness(vector<int>& sweetness, int K) {
+                int low = *min_element(sweetness.begin(), sweetness.end());
+                int high = std::accumulate(sweetness.begin(), sweetness.end(), 0) + 1;
+                int mid;
+                
+                while(low < high) {
+                    mid =  low + (high - low)/2;
+                    if(enough(sweetness, mid, K)) {
+                        low = mid + 1;
+                    }  else {
+                        high = mid;
+                    }
+                }
+                return low - 1;
+            }
+    };
+
+    PYTHON SOLN:
+    def maximizeSweetness(self, A, K):
+        left, right = 1, sum(A) / (K + 1)
+        while left < right:
+            mid = (left + right + 1) / 2
+            cur = cuts = 0
+            for a in A:
+                cur += a
+                if cur >= mid:
+                    cuts += 1
+                    cur = 0
+            if cuts > K:
+                left = mid
+            else:
+                right = mid - 1
+        return right
+
+
+
+
+-101.5) Binary Search again: 
+
+     1.    Find the Smallest Divisor Given a Threshold
+
+     Share
+     Given an array of integers nums and an integer threshold, we will 
+     choose a positive integer divisor and divide all the array by it and 
+     sum the result of the division. Find the smallest divisor such that the 
+     result mentioned above is less than or equal to threshold.
+
+     Each result of division is rounded to the nearest integer greater 
+     than or equal to that element. (For example: 7/3 = 3 and 10/2 = 5).
+     It is guaranteed that there will be an answer.
+
+
+
+    class Solution {
+    public:
+        bool enough(vector<int>& nums, const int & threshold, const int & divisor) {
+            int res = 0;
+            for(auto & i : nums) {
+                // cieling
+                res += (i/divisor) + (i % divisor != 0);
+                if(res  > threshold){
+                    return false;
+                }
+            } 
+            return true;
+        }
+        
+        int smallestDivisor(vector<int>& nums, int threshold) {
+            int low = 1; 
+            int high = *max_element(nums.begin(), nums.end());
+            while(low < high) {   
+                int mid = low + (high - low)/2;
+                if(enough(nums, threshold, mid)) {
+                    // divisor worked go smaller. 
+                    high = mid;
+                } else {
+                    //divisior too small, need bigger. 
+                    low = mid + 1;
+                }
+            }
+            return low;
+        }
+    };
+
+
+
+-101) Binary Search VARIABLES HOW TO SET:
+    STUDY HOW Low, high, and the condiition in if statement for binary search
+    // both solutions below work. 
+
+    1.   Split Array Largest Sum
+    Share
+    Given an array nums which consists of non-negative integers and an integer m, 
+    you can split the array into m non-empty continuous subarrays.
+
+    Write an algorithm to minimize the largest sum among these m subarrays.
+    Example 1:
+    Input: nums = [7,2,5,10,8], m = 2
+    Output: 18
+
+    Solution: 
+
+    class Solution {
+        public:
+            
+            int enough(vector<int>& nums, int m, int k) {
+                int groups = 0;
+                int curr = 0;
+                for(auto & i : nums) {
+                    if(curr + i > k)  {
+                        groups += 1;
+                        curr = 0;
+                    }
+                    curr += i;
+                }
+                groups += 1; // last group
+                if(groups > m) {
+                    return false;
+                } 
+                return true; 
+            }
+            
+            int splitArray(vector<int>& nums, int m) {
+                // binary search because we only want the minimized value as answer 
+                int high = std::accumulate(nums.begin(), nums.end(), 0);
+                // low is actually the largest element in the array? 
+                int low = *max_element(nums.begin(), nums.end());
+                int ans = high;
+                
+                while(low < high) {
+                    
+                    int mid = low + (high - low)/2;
+                    if(enough(nums, m, mid)) {
+                        high = mid;
+                        ans = min(ans, mid);
+                    } else {
+                        low = mid+1; 
+                    }   
+                }
+                // returning low or high below also works!
+                // bc at end of loop low==high==mid -> enough
+                return ans;
+            }
+
+            int splitArray2(vector<int>& nums, int m) {
+                // binary search because we only want the minimized value as answer 
+                int high = std::accumulate(nums.begin(), nums.end(), 0);
+                // low is actually the largest element in the array? 
+                int low = *max_element(nums.begin(), nums.end());
+                int ans = high;
+                
+                while(low <= high) {
+                    
+                    int mid = low + (high - low)/2;
+                    // cout << "testing value " << mid << endl; 
+                    if(enough(nums, m, mid)) {
+                        // ok that worked. can we go smaller?
+                        high = mid-1;
+                        ans = min(ans, mid);
+                    } else {
+                        // we need it bigger. 
+                        low = mid+1; 
+                    }   
+                }
+                // only returning low or ans works here. cant return high
+                return ans;
+            }   
+    };
+
+
+
+
+
+-100) MOD TRICKS -> GET MOD IN BETWEEN [0, K]
+
+
+    /*
+    1.    Check If Array Pairs Are Divisible by k
+    Medium
+    Share
+    Given an array of integers arr of even length n and an integer k.
+    We want to divide the array into exactly n / 2 pairs such that the sum of each pair is divisible by k.
+    Return True If you can find a way to do that or False otherwise.
+
+        #include <bits/stdc++.h> 
+
+        class Solution {
+        public:
+            bool canArrange(vector<int>& arr, int k) {
+                unordered_multiset<int> s;
+                
+                for(auto & i : arr) {
+                    if(i < 0){ 
+                        // HOW TO MAKE NUMBER POSITIVE
+                        i += (abs(i)/k + (i%k != 0))*k;
+                    }
+                    // ANOTHER WAY  TO KEEP MODS BETWEEN [0, K-1 is just do following]
+                    // i = (i%k + k)%k
+                    if(s.find(k - i%k) != s.end()) {
+                        s.erase(s.find(k - i%k));
+                    } else {
+                        if(i%k == 0) {
+                            s.insert(k);
+                        }else {                
+                            s.insert(i%k);
+                        }
+                    }
+                }
+                if(s.size() == 0) {
+                    return true;
+                }
+                return false;
+            }
+        };
+
+
+    // VERY CLEAN SOLUTION
+
+    class Solution {
+    public:
+        bool canArrange(vector<int>& arr, int k) {
+            vector<int> freq(k);
+            
+            for (int x : arr)
+                freq[((x % k) + k) % k]++;
+            
+            if (freq[0] % 2)
+                return false;
+            
+            for (int i=1, j=k-1; i<j; i++, j--)
+                if (freq[i] != freq[j])
+                    return false;
+            
+            return true;
+        }
+    };
+
+    /*
+    FASTER CPP SOLUTIONS
+    */
+
+    class Solution {
+    public:
+        bool canArrange(vector<int>& arr, int k) {
+            vector<int> freq(k,0);
+            int n = arr.size();
+            for(int i = 0; i < n; ++i) {
+                if(arr[i] >= 0) {
+                    freq[arr[i] % k] = ((freq[arr[i] % k] + 1) % k);
+                }
+                else {
+                    int temp = k - abs(arr[i] % k);
+                    if(temp == k)
+                        temp = 0;
+                    freq[temp] = ((freq[temp] + 1) % k);
+                }
+            }
+
+            if(freq[0] % 2 != 0) 
+                return false;
+            for(int i = 1; i <= freq.size() / 2; i++){
+                if(freq[i] != freq[k - i]) return false;
+            }
+            return true;
+        }
+        
+    };
+
+    static const auto speedup = []() {
+            std::ios::sync_with_stdio(false); std::cin.tie(nullptr); cout.tie(nullptr); return 0;
+    }();
+
+
+
+-99) Use 2 MULTISET TREEMAPS instead of 2 Heaps for Median Finding Trick!!
+    1)   Sliding Window Median
+    (However slightly slower because of log(N) 
+    cost retrival of best elements vs PQ)
+    Window position                Median
+    ---------------               -----
+    [1  3  -1] -3  5  3  6  7       1
+    1 [3  -1  -3] 5  3  6  7       -1
+    1  3 [-1  -3  5] 3  6  7       -1
+    1  3  -1 [-3  5  3] 6  7       3
+    1  3  -1  -3 [5  3  6] 7       5
+    1  3  -1  -3  5 [3  6  7]      6
+
+        class Solution {
+        public:
+            void insertTree(int element, multiset<double> & l, multiset<double> & r) {
+                if(l.size() == r.size()) {
+                    // insert into left. 
+                    
+                    if(r.size() > 0 && *(r.begin()) < element) { 
+                        double temp = *(r.begin());
+                        
+                        // ERASING BY VALUE IS BUG FOR MULTISET BECAUSE IT REMOVES ALL COPIES
+                        // ONLY ERASE THE ITERATOR!! TO ERASE ONE. 
+                        r.erase(r.begin());
+                        r.insert(element);
+                        element = temp;
+                    }
+                    l.insert(element);
+                } else {
+                    // l is bigger, insert into right. 
+                    
+                    if( *(--l.end()) > element ) {
+                        double temp = *(--l.end()) ;
+                        l.erase(--l.end()); //COOL TIP, YOU CAN ERASE WITH EITHER VALUE OR ITERATOR
+                        l.insert(element);
+                        element = temp; 
+                    }
+                    
+                    r.insert(element);
+                }
+            }
+            
+            void deleteTree(int element, multiset<double> & l, multiset<double> & r ) {
+                // Find tree that contains element, remove, then rebalance. 
+                bool leftBigger = l.size() > r.size();
+                
+                auto leftSearch =l.find(element);  
+                if( leftSearch != l.end()) {
+                    l.erase(leftSearch);
+                    // if left is greater than right by 1 dont do anything    
+                    // if left is same size as right, move right element to left.  
+                    if(!leftBigger) {
+                        // move right to left. 
+                        auto rightEle = *(r.begin());
+                        r.erase(r.begin());
+                        l.insert(rightEle);
+                    }            
+                } else {
+                    // search right, has to contain it.  
+                    auto rightSearch = r.find(element);
+                    r.erase(rightSearch);
+                    
+                    // if left is same size as right do nothing
+                    // otherwise, move left to right. 
+                    
+                    if(leftBigger) {
+                        auto leftEle = *(--l.end());
+                        l.erase(--l.end());
+                        r.insert(leftEle);
+                    }
+                }
+            }
+            
+            
+            double calcMedian(const multiset<double> & l, const multiset<double> & r) {
+            // always ensure left has 1 more element than right. 
+            // then always return *(left.end() - 1)
+                
+                if(l.size() == r.size()) {
+                    
+                    return ( *(--l.end()) + *(r.begin()) ) / 2.0;  
+                }  else {
+                    return *(--l.end());
+                }
+            } 
+            
+            vector<double> medianSlidingWindow(vector<int>& nums, int k) {    
+                // keep 2 multsets. 
+                multiset<double> l;
+                multiset<double> r;
+                
+                int i = 0;
+                int j = 0;
+
+                while(j < k) {            
+                    insertTree(nums[j], l, r);
+                    j += 1;
+                }
+                
+                vector<double> res;
+                double med = calcMedian(l, r);
+                res.push_back(med);
+                
+                while(j != nums.size()) {            
+                    insertTree(nums[j], l, r);
+                    deleteTree(nums[i], l, r);
+                
+                    med = calcMedian(l, r);
+                    res.push_back(med);
+                    i += 1;
+                    j += 1;
+                }
+                return res;    
+            }
+        };
+
+
+    
+
+-98) C++ A Priority Queue USAGE VS BINARY TREE MAP USAGE: 
+    
+    1. Find K Pairs with Smallest Sums
+
+    You are given two integer arrays nums1 and nums2 
+    sorted in ascending order and an integer k.
+
+    Define a pair (u,v) which consists of one element from the first array and one element from the second array.
+
+    Find the k pairs (u1,v1),(u2,v2) ...(uk,vk) with the smallest sums.
+
+    Example 1:
+
+    Input: nums1 = [1,7,11], nums2 = [2,4,6], k = 3
+    Output: [[1,2],[1,4],[1,6]] 
+    Explanation: The first 3 pairs are returned from the sequence: 
+                [1,2],[1,4],[1,6],[7,2],[7,4],[11,2],[7,6],[11,4],[11,6]
+    Example 2:
+
+    Input: nums1 = [1,1,2], nums2 = [1,2,3], k = 2
+    Output: [1,1],[1,1]
+    Explanation: The first 2 pairs are returned from the sequence: 
+                [1,1],[1,1],[1,2],[2,1],[1,2],[2,2],[1,3],[1,3],[2,3]
+    Example 3:
+
+    Input: nums1 = [1,2], nums2 = [3], k = 3
+    Output: [1,3],[2,3]
+    Explanation: All possible pairs are returned from the sequence: [1,3],[2,3]
+
+    C++ SOLUTION A (fastest):
+
+    class Solution {
+        public:
+        vector<pair<int, int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+            vector<pair<int,int>> result;
+            if (nums1.empty() || nums2.empty() || k <= 0)
+                return result;
+            auto comp = [&nums1, &nums2](pair<int, int> a, pair<int, int> b) {
+                return nums1[a.first] + nums2[a.second] > nums1[b.first] + nums2[b.second];};
+            priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(comp)> min_heap(comp);
+            min_heap.emplace(0, 0);
+            while(k-- > 0 && min_heap.size())
+            {
+                auto idx_pair = min_heap.top(); min_heap.pop();
+                result.emplace_back(nums1[idx_pair.first], nums2[idx_pair.second]);
+                if (idx_pair.first + 1 < nums1.size())
+                    min_heap.emplace(idx_pair.first + 1, idx_pair.second);
+                if (idx_pair.first == 0 && idx_pair.second + 1 < nums2.size())
+                    min_heap.emplace(idx_pair.first, idx_pair.second + 1);
+            }
+            return result;
+        }
+    };
+
+
+
+    C++ SOLUTION B (slower):
+
+    struct compare
+    {
+        bool operator() (const pair<int, int> & a, const pair<int, int> & b)
+        {
+            return a.first + a.second >= b.first + b.second;
+        }
+    };
+
+    class Solution {
+    public:
+        vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+            
+            if (nums1.empty() || nums2.empty() || k == 0)
+                return {};
+                
+            priority_queue< pair<int, int>, vector<pair<int, int>>, compare > que;
+            
+            int N = nums1.size();
+            int M = nums2.size();
+            
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < M; j++)
+                {
+                    que.push({nums1[i], nums2[j]});       
+                }
+            }
+            
+            vector<vector<int>> ans;
+            
+            int count = min(k, (int)que.size());
+            
+            for (int s = 0; s < count; s++)
+            {
+                auto item = que.top();
+                que.pop();
+                
+                ans.push_back({});
+                ans.back().push_back(item.first);
+                ans.back().push_back(item.second);
+            }
+            
+            return ans;
+        }
+    };
+
+
+    class Solution {
+    public:
+        vector<vector<int>> kSmallestPairs(vector<int>& v1, vector<int>&v2, int k) {
+            map<int,vector<pair<int,int>>>mp;
+            int sz1=v1.size(),sz2=v2.size();
+            for(int i=0;i<sz1;++i){
+                for(int j=0;j<sz2;++j)
+                    mp[v1[i]+v2[j]].push_back({v1[i],v2[j]});
+            }
+
+            vector<vector<int>>res;
+            for(auto it=mp.begin();it!=mp.end();++it){
+                for(pair<int,int>p:it->second){
+                    if(res.size()==k)
+                    break;
+                    res.push_back({p.first,p.second});
+                }
+            }
+            return res;
+        }
+    };
+
+
+
+
+
+-97) INTERVAL QUESTIONS THAT CAN BE 
+     SOLVED BY EITHER SORTING BY START TIME OR END TIME
+
+    Hanging Banners
+    Question 212 of 858
+    You are given a list of list of integers 
+    intervals of the form [start, end] representing 
+    the starts and end points of banners you want to hang. 
+    Each banner needs at least one pin to stay up, and one 
+    pin can hang multiple banners. Return the smallest number 
+    of pins required to hang all the banners.
+
+    Note: The endpoints are inclusive, so if two banners are 
+    touching, e.g. [1, 3] and [3, 5], you can put a pin at 
+    3 to hang both of them.
+
+    intervals = [
+        [1, 4],
+        [4, 5],
+        [7, 9],
+        [9, 12]
+    ]
+    Output
+
+    2
+    Explanation
+
+    You can put two pins at 4 and 9 to hang all the banners..
+
+    Example 2
+    Input
+
+    intervals = [
+        [1, 10],
+        [5, 10],
+        [6, 10],
+        [9, 10]
+    ]
+    Output
+
+    1
+    Explanation
+
+    You can put one pin at 10.
+
+    // TWO WAYS TO SOLVE WOWOWO
+    // YOU CAN EITHER SORT BY START TIME LIKE BELOW
+    int solve1(vector<vector<int>>& intervals) {
+        /*
+        sort by start time, 
+
+        keep set of end times. 
+        update with smallest end time so far seen. 
+
+        if next interval is past the current smallest end time, pop all intervals and add a pin,
+        then restart algo. 
+        */
+        sort(intervals.begin(), intervals.end(), 
+             [](vector<int> a, vector<int> b)-> bool {return a[0] < b[0];} );
+        
+        int pins = 0;
+        int nearestEnd = -1;
+        
+        for(int i = 0; i != intervals.size(); ++i) {
+            
+            auto intv = intervals[i];
+            if(intv[0] > nearestEnd) {
+                pins += 1;
+                nearestEnd = intv[1];
+            } else {
+                // keep in set of intervals!
+                nearestEnd = min(nearestEnd, intv[1]);
+            }
+        }
+        return pins;
+    }
+
+    // YOU CAN SORT BY END TIME TOO LIKE BELOW: 
+
+    class Solution:
+        def solve(self, intervals):
+            intervals.sort(key=lambda i: i[1])
+            last = float("-inf")
+            ans = 0
+            for s, e in intervals:
+                if s <= last:
+                    continue
+                last = e
+                ans += 1
+            return ans
+
+
+
+
+
 -96) Largest Rectangle in Histogram with Pointer Segment Tree:
 
     // Largest Rectangle in Histogram
@@ -494,7 +1161,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     ## 1. Before Solving this problem, go through Monotone stack.
     ## 2. Using Monotone Stack we can solve 
     1) Next Greater Element 2) Next Smaller Element 
-    3) Prev Greater Element 4)Prev Smaller Element
+    2) Prev Greater Element 4)Prev Smaller Element
     ## 3. Using 'NSE' Monotone Stack concept, we can find width of rectangles, 
     height obviously will be the minimum ofthose. Thus we can calculate the area
     ## 4. As we are using NSE concept, adding 0 to the end, will make 
@@ -1231,9 +1898,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         return result
 
 
-
-
-
 -80) Union Find VS DFS for finding connected components pros/cons:
 
     '''
@@ -1374,10 +2038,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                 res[i] = c
         
         return "".join(res)
-
-
-
-
 
 
 
@@ -2775,8 +3435,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     Given an array A of integers, return the number of 
     (contiguous, non-empty) subarrays that have a sum divisible by K.
 
-    
-
     Example 1:
 
     Input: A = [4,5,0,-2,-3,1], K = 5
@@ -2921,6 +3579,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
 -50) Cool counting trick to count pairs: (Done in CodeSignal HARD)
+    ALSO RECALL THEORY THAT SORTEDNESS OF NUMBERS YIELDS COMBINATIONS NOT PERMUTATIONS 
+    In case you have a problem where you need to get all combinations! just enforce 
+    a sort on the list before picking elements. 
 
     Problem: A reverse is a number reversed. 
     So 20 reversed is 2, 420 reversed is 24, 56060 reversed is 6065

@@ -31,7 +31,8 @@ COMPLETED 105. Construct Binary Tree from Preorder and Inorder Traversal
 
 Take notes on 978. Longest Turbulent Subarray -> easy task
 
-Take quick notes on 1458. Max Dot Product of 2 subsequences in algo readme / how to write clean dp solns. 
+Take quick notes on 1458. Max Dot Product of 2 subsequences in algo readme 
+        / how to write clean dp solns. 
 
 TAKE QUICK NOTES ON 1155. Number of dice rolls with target sum. 
 TAKE QUICK NOTES AND REVIEW DISCUSSION FOR  1223. Dice Roll Simulation
@@ -45,12 +46,15 @@ Write notes on 911. Maximum size subarray sum equals K in most important problem
 Write notes about 3D surface area? 
 
 
-Fix all topolical sort -> the error is you are assuming that you can fill the visited set with the nodes of the first 
-path in all paths but actually each path in all paths can be different, so you have to deal with at the individual level. 
+Fix all topolical sort -> the error is you are assuming that you can fill 
+the visited set with the nodes of the first 
+path in all paths but actually each path in all paths can be different, 
+so you have to deal with at the individual level. 
 
 
 TODO: 
-WRITE notes on arithmetic, geometric sequences, useful sums formulas of consecvutive numbers, and modular arithmetic with powers, 
+WRITE notes on arithmetic, geometric sequences, useful sums formulas of 
+consecvutive numbers, and modular arithmetic with powers, 
 and prime factorization, how to count them. 
 
 
@@ -77,3 +81,7 @@ read discussion for decode ways bottom up.
 Write notes for maximal square LC problem. 
 
 PUT HRT 2 MONOTONIC QUENE PROBLEM IN ALGO README + question
+
+
+REVIEW SLIDING WINDOW MEDIAN, TRY WITH PYTHON AND READ NOTES. 
+

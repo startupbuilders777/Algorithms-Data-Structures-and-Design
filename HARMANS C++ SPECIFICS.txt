@@ -352,8 +352,878 @@
 
     }
 
+5) How to sort a vector but also keep track of indexes C++:
+
+    Using C++ 11 lambdas:
+
+    #include <iostream>
+    #include <vector>
+    #include <numeric>      // std::iota
+    #include <algorithm>    // std::sort, std::stable_sort
+
+    using namespace std;
+
+    template <typename T>
+    vector<size_t> sort_indexes(const vector<T> &v) {
+
+    // initialize original index locations
+    vector<size_t> idx(v.size());
+    iota(idx.begin(), idx.end(), 0);
+
+    // sort indexes based on comparing values in v
+    // using std::stable_sort instead of std::sort
+    // to avoid unnecessary index re-orderings
+    // when v contains elements of equal values 
+    stable_sort(idx.begin(), idx.end(),
+        [&v](size_t i1, size_t i2) {return v[i1] < v[i2];});
+
+    return idx;
+    }
+    Now you can use the returned index vector in iterations such as
+
+    for (auto i: sort_indexes(v)) {
+        cout << v[i] << endl;
+    }
+
+    You can also choose to supply your original index vector, 
+    sort function, comparator, or automatically reorder v 
+    in the sort_indexes function using an extra vector.
+
+    share  improve this answer  follow 
+    edited Feb 2 at 8:02
+
+    Guillaume Jacquenot
+    8,41855 gold badges3737 silver badges4646 bronze badges
+    answered Sep 13 '12 at 4:10
+
+    Łukasz Wiklendt
+    3,59022 gold badges1515 silver badges1515 bronze badges
+    4
+    Love this answer.If your compiler does not support lambdas, you can use a 
+    class: template<typename T> class CompareIndicesByAnotherVectorValues { 
+        std::vector<T>* _values; 
+        public: CompareIndicesByAnotherVectorValues(std::vector<T>* values) : _values(values) 
+        {} 
+        public: bool operator() (const int& a, const int& b) 
+        const { return (_values)[a] > (_values)[b]; } }; – Yoav Oct 18 '12 at 7:47 
+
+6) PRIORITY QUEUE EXAMINATION WITH CUSTOM CLASSES:
+
+    Hey guys i want to implement a priority queue which contains entries of type 'node'. 
+    The code is as follows....
+
+    struct node
+    {
+        int a;
+        int b;
+    };
+
+    bool cmp(const node& A,const node& B)
+    {
+        return (A.a<B.a) || (A.a==B.a && A.b>B.b);
+    }
+
+    /// main function starts 
+
+    priority_queue<node,vector<node>, cmp> Y;
+
+    But i am not able to compile with error... "type/value mismatch at argument 3 
+    in template parameter list for 'template<class _Tp, class _Sequence, class _Compare> 
+    class std::priority_queue"... Can anyone help me out...
 
 
+    The third template parameter of priority_queue expects a type (_functor_), 
+    not a function. Rather than doing it this way, it's easier to define the 
+    comparison operator inside the struct, then priority_queue will 
+    see it automatically:
+
+    struct node
+    {
+        int a;
+        int b;
+
+        bool operator <(const node& other) const
+        {
+            return (a<other.a) || (a==other.a && b>other.b);
+        }
+    };
+
+    If you still want to use the functor way, then you should define the functor class:
+
+    struct node
+    {
+        int a;
+        int b;
+    };
+
+    struct cmp
+    {
+        bool operator ()(const node& A,const node& B) const
+        {
+            return (A.a<B.a) || (A.a==B.a && A.b>B.b);
+        }
+    };
+
+    . . .
+    priority_queue<node,vector<node>, cmp> Y;
+
+    Member functions
+    (constructor)
+    Construct priority queue (public member function )
+    empty
+    Test whether container is empty (public member function )
+    size
+    Return size (public member function )
+    top
+    Access top element (public member function )
+    push
+    Insert element (public member function )
+    emplace 
+    Construct and insert element (public member function )
+    pop
+    Remove top element (public member function )
+    swap 
+    Swap contents (public member function )
+
+    USAGE:
+
+
+7) C++ A Priority Queue USAGE + BINARY TREE MAP USAGE: 
+    
+    1. Find K Pairs with Smallest Sums
+
+    You are given two integer arrays nums1 and nums2 
+    sorted in ascending order and an integer k.
+
+    Define a pair (u,v) which consists of one element from the first 
+    array and one element from the second array.
+
+    Find the k pairs (u1,v1),(u2,v2) ...(uk,vk) with the smallest sums.
+
+    Example 1:
+
+    Input: nums1 = [1,7,11], nums2 = [2,4,6], k = 3
+    Output: [[1,2],[1,4],[1,6]] 
+    Explanation: The first 3 pairs are returned from the sequence: 
+                [1,2],[1,4],[1,6],[7,2],[7,4],[11,2],[7,6],[11,4],[11,6]
+    Example 2:
+
+    Input: nums1 = [1,1,2], nums2 = [1,2,3], k = 2
+    Output: [1,1],[1,1]
+    Explanation: The first 2 pairs are returned from the sequence: 
+                [1,1],[1,1],[1,2],[2,1],[1,2],[2,2],[1,3],[1,3],[2,3]
+    Example 3:
+
+    Input: nums1 = [1,2], nums2 = [3], k = 3
+    Output: [1,3],[2,3]
+    Explanation: All possible pairs are returned from the sequence: [1,3],[2,3]
+
+    C++ SOLUTION A (fastest):
+
+    class Solution {
+        public:
+        vector<pair<int, int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+            vector<pair<int,int>> result;
+            if (nums1.empty() || nums2.empty() || k <= 0)
+                return result;
+            auto comp = [&nums1, &nums2](pair<int, int> a, pair<int, int> b) {
+                return nums1[a.first] + nums2[a.second] > nums1[b.first] + nums2[b.second];};
+            priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(comp)> min_heap(comp);
+            min_heap.emplace(0, 0);
+            while(k-- > 0 && min_heap.size())
+            {
+                auto idx_pair = min_heap.top(); min_heap.pop();
+                result.emplace_back(nums1[idx_pair.first], nums2[idx_pair.second]);
+                if (idx_pair.first + 1 < nums1.size())
+                    min_heap.emplace(idx_pair.first + 1, idx_pair.second);
+                if (idx_pair.first == 0 && idx_pair.second + 1 < nums2.size())
+                    min_heap.emplace(idx_pair.first, idx_pair.second + 1);
+            }
+            return result;
+        }
+    };
+
+
+
+    C++ SOLUTION B (slower):
+
+    struct compare
+    {
+        bool operator() (const pair<int, int> & a, const pair<int, int> & b)
+        {
+            return a.first + a.second >= b.first + b.second;
+        }
+    };
+
+    class Solution {
+    public:
+        vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+            
+            if (nums1.empty() || nums2.empty() || k == 0)
+                return {};
+                
+            priority_queue< pair<int, int>, vector<pair<int, int>>, compare > que;
+            
+            int N = nums1.size();
+            int M = nums2.size();
+            
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < M; j++)
+                {
+                    que.push({nums1[i], nums2[j]});       
+                }
+            }
+            
+            vector<vector<int>> ans;
+            
+            int count = min(k, (int)que.size());
+            
+            for (int s = 0; s < count; s++)
+            {
+                auto item = que.top();
+                que.pop();
+                
+                ans.push_back({});
+                ans.back().push_back(item.first);
+                ans.back().push_back(item.second);
+            }
+            
+            return ans;
+        }
+    };
+
+
+    class Solution {
+    public:
+        vector<vector<int>> kSmallestPairs(vector<int>& v1, vector<int>&v2, int k) {
+            map<int,vector<pair<int,int>>>mp;
+            int sz1=v1.size(),sz2=v2.size();
+            for(int i=0;i<sz1;++i){
+                for(int j=0;j<sz2;++j)
+                    mp[v1[i]+v2[j]].push_back({v1[i],v2[j]});
+            }
+
+            vector<vector<int>>res;
+            for(auto it=mp.begin();it!=mp.end();++it){
+                for(pair<int,int>p:it->second){
+                    if(res.size()==k)
+                    break;
+                    res.push_back({p.first,p.second});
+                }
+            }
+            return res;
+        }
+    };
+
+
+
+8) Set erase, can use both element as well as iterator is this for all containers? 
+    // erasing from set
+    #include <iostream>
+    #include <set>
+
+    int main ()
+    {
+        std::set<int> myset;
+        std::set<int>::iterator it;
+
+        // insert some values:
+        for (int i=1; i<10; i++) myset.insert(i*10);  // 10 20 30 40 50 60 70 80 90
+
+        it = myset.begin();
+        ++it;                                         // "it" points now to 20
+
+        myset.erase (it);
+
+        myset.erase (40);
+
+        it = myset.find (60);
+        myset.erase (it, myset.end());
+
+        std::cout << "myset contains:";
+        for (it=myset.begin(); it!=myset.end(); ++it)
+            std::cout << ' ' << *it;
+        std::cout << '\n';
+
+        return 0;
+    }
+
+
+11) HOW TO SUM ELEMENTS IN C++ VECTOR:
+
+    C++11 and higher
+    b. Automatically keeping track of the vector type even in case of future changes:
+
+    #include <numeric>
+
+    sum_of_elems = std::accumulate(vector.begin(), vector.end(),
+                                decltype(vector)::value_type(0));
+    Using std::for_each:
+
+    std::for_each(vector.begin(), vector.end(), [&] (int n) {
+        sum_of_elems += n;
+    });
+    Using a range-based for loop (thanks to Roger Pate):
+
+    for (auto& n : vector)
+        sum_of_elems += n;
+
+
+
+
+
+
+
+10) QUORA TRICKS: (https://www.quora.com/Competitive-Programming/What-are-some-cool-C++-tricks-to-use-in-a-programming-contest)
+    I’ve being practicing for ACM ICPC for about one year and I 
+    already gathered some C/C++ tricks that I use in almost every problem:
+
+    Loop in C-string:
+    char s[100]; 
+    for (int i = 0; s[i]; ++i) { ... } 
+    This is extremely useful (also avoids the strlen usage, that you 
+    could forget is O(n) and put on for condition).
+
+    Testing if not negative 1:
+    if (~x) { ... } 
+    In competitive programming we tend to write as little as possible, 
+    só a simple x ! = -1 can be shortened to 2 characters.
+
+    This works because negative numbers use two’s complement, so -1 
+    is represented as all ones in binary. The tilde (~) operation inverts 
+    all bits of the variable, so the -1 turns into a zero, and any other 
+    number turns into something not zero. The if condition is valid if it’s 
+    not zero, so ~x is valid for any value different than zero.
+
+    Least significant 1 bit
+    int lsb = x&-x; 
+    This is a very useful operation than returns the LSB (EDIT: the least 
+    significant bit with value 1) of a number. If you’re used to Fenwick Tree 
+    (aka Binary Indexed Tree, or just BIT) then you know how useful it is.
+
+    This also works because of two’s complement. If you AND any number and it’s 
+    negative you obtain the LSB. Very simple and fast.
+
+    More than one operation per line
+    if (dist[v] > dist[u] + w) 
+        dist[v] = dist[u] + w, q.push(v); 
+
+    Many people don’t know this, but you can have statements split 
+    by commas. This I tend to use in every problem I solve, it reduces 
+    the code and avoids the use of semicolons.
+
+    The only down side is that you can’t use with break, continue or 
+    return (not statements :/). So when I have to use any of these I have 
+    to add braces and semicolons.
+
+    Scanf on array
+    int a[100]; 
+    for (int i = 0; i < n; ++i) scanf("%d", a+i); 
+
+    This I don’t like very much because it doesn’t work for arrays 
+    with higher dimensions, but since most problems have at most 1D 
+    input it’s quite useful too (although I tend to use the &a[i], 
+    but my teammates use this trick).
+
+    Order array without losing original order
+    int a[100], p[100]; 
+    // receive input 
+    for (int i = 0; i < n; ++i) scanf("%d", &a[i]), p[i] = i; 
+    
+    sort(p, p+n, [=](int i, int j) { return a[i] < a[j]; }); 
+    This is extremely useful!
+
+    First you don’t lose the original order (for offline algorithms this can be necessary).
+
+    Second you can do the same for how many dimensions you have 
+    (for 2D points: x[] and y[]; or 3D: x[], y[] and z[]; or any number 
+    of arrays..) and you don’t have to create structures (lot’s of lines saved) 
+    or use tuple or pairs (these are annoying in competitive programming. Using 
+    pair of pair you have something like: x.first.second + x.second.second and 
+    you line goes extra large and hard to read).
+
+    Infinite
+    const int INF = 0x3f3f3f3f; 
+    This infinite constant is very useful too. I used to do something like x = 2e9; 
+    but I had to take care about not adding infinites (because of integer overflow) 
+    and stuff like this. This constant can be doubled without overflowing and also 
+    can be set very easily this way:
+
+
+    int dist[1000]; 
+    memset(dist, 63, sizeof(dist)); // 0x3f == 63 
+    For shortest path algorithms I always use this (I used to tend -1 version, 
+    but I had to do additional checks to verify if dist == -1 and if not..) 
+    and in CP BFS and SSSP are very common problems.
+
+    I think that’s all for now. If I remember any other trick I’ll edit this answer, 
+    but that’s all I can remember for now!
+
+#################################################################################################################3
+Code forces c++ tips and trick: (https://codeforces.com/blog/entry/74684)
+
+    C++ tips and tricks
+
+    By Golovanov399, 8 months ago, In English
+    Hello, codeforces.
+
+    I would like to tell you about some tricks and constructions I use in C++. They are not hidden or anything, moreover, most of them are from stl or maybe well known among software engineers, but I often see codes where something is done by hand in, say, 5 lines, while in stl there is a function which does the same.
+
+    The things below are filtered by my personal sense of non-popularity (so no __builtin functions) and usage frequency (so there almost surely are similar things I don't know about) and are not really sorted in any reasonable order. Let's begin.
+
+    all(x)
+    This may be an exception to the rule of non-popularity -- this is quite widely used, but some next items will depend on all(x), so I define it here. So, I talk about
+
+    #define all(x) (x).begin(), (x).end()
+    Now sorting a vector looks like sort(all(vec)) instead of sort(vec.begin(), vec.end()).
+
+    However, it's not all about this define. Imagine you need to build a convex hull of a set of points. Usually the code looks approximately as follows:
+
+    vector<Point> getConvexHull(vector<Point> pts) {
+        int min_pos = min_element(all(pts)) - pts.begin();
+        swap(pts[0], pts[min_pos]);
+        sort(pts.begin() + 1, pts.end(), &cmp);
+        // ...
+    }
+    And it might not come to one's mind that pts.begin() + 1 is the same as 1 + pts.begin(), and hence the code can be rewritten as
+
+    vector<Point> getConvexHull(vector<Point> pts) {
+        int min_pos = min_element(all(pts)) - pts.begin();
+        swap(pts[0], pts[min_pos]);
+        sort(1 + all(pts), &cmp);
+        // ...
+    }
+    Be, however, careful with this, because this reduces code readability significantly. Thanks to my teammates AndreySergunin and white2302 for showing me this 1 + all(...) trick.
+
+    std::unique
+    This is also well known, but not as well as I want, so I leave it here. std::unique(begin, end) goes from begin to end, removes consecutive duplicates and returns the end of the resulting iterator range. So, for example, if vec = {1, 1, 2, 2, 3, 2, 1}, then unique(all(vec)) makes it equal {1, 2, 3, 2, 1, ?, ?} (where ? is not known, but probably the last two symbols are 2 and 1) and returns vec.begin() + 5. Usually, to make a vector containing only its unique elements, one writes
+
+    sort(all(vec));
+    vec.resize(unique(all(vec)) - vec.begin());
+    or creates a function/define make_unique (which is, actually, also a name of some existing function in C++) which does so.
+
+    nxt()
+    I noticed that many Kotlin Heroes participants often have some functions in their templates like readLong(), readToken() and so on. I understand that this may be for the sake of similarity with C++ paradigm where you can just read stuff or maybe because val (n, k) = readLine()!!.split(' ').map(String::toInt) is too long and weird for writing it just to read two numbers. However, what doesn't often come to mind is that a similar function in C++ can simplify a lot of things (or maybe it's just a matter of taste). So the function may look as follows:
+
+    int nxt() {
+        int x;
+        cin >> x;
+        return x;
+    }
+    If a usual reading a graph looks like this:
+
+    int n, m;
+    cin >> n >> m;
+    for (int i = 0; i < m; ++i) {
+        int u, v;
+        cin >> u >> v;
+        --u, --v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    then with your little mriemd nxt() you can write the following:
+
+    int n = nxt(), m = nxt();
+    for (int i = 0; i < m; ++i) {
+        int u = nxt() - 1, v = nxt() - 1;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    However, be careful! If pts is a vector of points, then it's really better to read it in the following way:
+
+    for (int i = 0; i < (int)pts.size(); ++i) {
+        cin >> pts[i].x >> pts[i].y;
+    }
+    or at least in the following C++17 way:
+
+    for (auto& [x, y] : pts) {
+        cin >> x >> y;
+    }
+    But don't do the following:
+
+    for (int i = 0; i < (int)pts.size(); ++i) {
+        pts[i] = {nxt(), nxt()};
+    }
+    because in the last implementation the order of nxt() calls is not defined.
+
+    Also you may change the type to long long or even make the function template, but I haven't really ever felt I need the last.
+
+    Big thanks to my former teammates savinov and sokian for introducing this to me in their team template back in 2015 when I joined them. nxt() will return later in this blog.
+
+    std::fill and std::iota
+    Many of you know that if one wants to fill a piece of memory with a specific byte, they can use memset. It's quite fast and can be used to fill some (usually 1-dimensional) C-arrays by zeroes and minus ones. What if you want to fill a container by ones? The answer is as easy as pie:
+
+    fill(all(vec), 1);
+    And if you need to fill it by consecutive numbers, you can use std::iota. Now the constructor of a Dsu class with two optimizations may look as follows:
+
+    int n;
+    vector<int> parent, rank;
+
+    Dsu(int _n): n(_n), parent(_n), rank(_n) {
+        iota(all(parent), 0);
+    }
+    Here 0 denotes the value of *parent.begin(), and each next value is obtained from the previous one by the pre-increment.
+
+    std::generate
+    If you have a 0-ary function (that is, with no arguments) and want to fill a range by its calls, instead of writing a for loop you can call std::generate: filling a vector vec by random values (assume it's rand() calls) may look like
+
+    generate(all(vec), rand);
+    My favourite: to read n followed by n numbers you can write
+
+    int n = nxt();
+    vector<int> a(n);
+    generate(all(a), nxt);
+    or, if you don't need the value of n later, even
+
+    vector<int> a(nxt());
+    generate(all(a), nxt);
+    Bonus: the last three function have a _n analogs. Instead of the end iterator/pointer, fill_n, iota_n and generate_n take the size as the second argument. So if you want to read, say, first n numbers into a vector vec of size greater than n, you can use
+
+    generate_n(vec.begin(), n, nxt);
+    instead of a longer
+
+    generate(vec.begin(), vec.begin() + n, nxt);
+    Thanks to fdoer for telling this.
+
+    std::rotate
+    Assume you write a profile dp. Or a 3-layer bfs. Or something else, where you need sometimes to cyclically shift a vector by k. If k=1 then one can write a loop of swaps:
+
+    for (int i = 0; i < (int)vec.size() - 1; ++i) {
+        swap(vec[i], vec[i + 1]);
+    }
+    But if k>1 then the easiest way to do this manually is probably to create another vector, fill it accordingly and then set the initial vector to this. However a simple
+
+    rotate(vec.begin(), vec.begin() + k, vec.end());
+    can do the trick. This function works in such a way that after rotate(begin, middle, end) the element *middle becomes the first from begin to end.
+
+    std::merge
+    If you want to build a segment tree where each node contains a sorted list of values from the corresponding range then on its initialization you may need to merge two vectors several times (or if you implement your own merge sort). Some of you, probably, write some code like this:
+
+    for (int v = n - 1; v > 0; --v) {
+        int i = 0, j = 0;
+        while (i < (int)nodes[2 * v].size() || j < (int)nodes[2 * v + 1].size()) {
+            if (j == (int)nodes[2 * v + 1].size() || (i < (int)nodes[2 * v].size() && nodes[2 * v][i] < nodes[2 * v + 1][j])) {
+                nodes[v].push_back(nodes[2 * v][i++]);
+            } else {
+                nodes[v].push_back(nodes[2 * v + 1][j++]);
+            }
+        }
+    }
+    However, this code can be shortened:
+
+    for (int v = n - 1; v > 0; --v) {
+        nodes[v].resize(nodes[2 * v].size() + nodes[2 * v + 1].size());
+        merge(all(nodes[2 * v]), all(nodes[2 * v + 1]), nodes[v].begin());
+    }
+    Basically, std::merge takes 5 arguments: begin and end of one interval to merge, begin and end of the second interval to merge, and where to write the result. Don't forget to allocate the required memory (the purpose of .resize() in the code above)!
+
+    Create a set from a vector
+    Not many of us know, but if you want to create a std::set from a vector and find out that set doesn't have a constructor of vector, you may go write a loop with an ok face, like:
+
+    set<int> S;
+    for (int x : a) {
+        S.insert(x);
+    }
+    However, std::set has a constructor of two iterators, so one can write
+
+    set<int> S(all(a));
+    This is actually very natural and one can deduce that set should have such a constructor, but I, to my shame, didn't know it until white2302 told me this recently.
+
+    Check if set or map have a key
+    This may be the most well known of above (as well as the least time-saving trick), but I still see that some experienced guys do the subj like
+
+    if (S.find(key) != S.end()) {
+        // ...
+    }
+    However, set and map have a .count() method which returns 1 iff the key is in the container, otherwise 0:
+
+    if (S.count(key)) {
+        // ...
+    }
+    The reason why it is called so and has an int type is that std::multiset and std::multimap also have this method, and for them the method returns the count of elements, which may exceed 1, obviously. Thanks to my former students dimas.kovas and krock21 for enlightening me about this.
+
+    Of course, if you need to do something with the element, if it is present in the set (for example, erase it), it may be useful to actually call .find() method in order to erase by iterator, not by element (thus kind of caching one tree descent).
+
+    Check if an element occurs in a sorted sequence
+    Assume that you have, say, a sorted vector, and you want to check if it contains an element, but unlike the previous case, you don't care about the element itself. In this case you don't need to implement your own binary search like
+
+    bool has(const vector<int>& vec, int key) {
+        int l = 0, r = vec.size();
+        while (r > l + 1) {
+            int m = (l + r) / 2;
+            if (vec[m] <= key) {
+                l = m;
+            } else {
+                r = m;
+            }
+        }
+        return l + 1 == r && vec[l] == key; // not to fall on the empty vector
+    }
+    Instead, you can just use
+
+    if (binary_search(all(vec), key)) {
+        // ...
+    }
+    I think the function doesn't need any explanation (it returns bool, so there is really not much else one can extract from this). Thanks to some guy who used this method in some easy problem in an SRM.
+
+    std::partition_point
+    If we talk about binary search: assume you have a vector and a predicate p(x) so that p(x) = true for all elements of some prefix of vector vec and false on all others. To find the first place where p(x) doesn't hold one can simply use
+
+    int pos = partition_point(all(vec), p) - vec.begin();
+    In other words, partition_point(begin, end, p) returns the first iterator iter that p(*iter) = false, assuming that the condition above holds, that is, p is true on some prefix of [begin, end). I didn't use this in competitive programming (yet), but once wanted to use it for my job. Thanks to fdoer again for sharing his wisdom.
+
+    !!
+    Assume you want to use a function which maps 0 to 0 and every non-zero number to 1 (for example, to count non-zero numbers on all prefix subrectangles). The most observant of you may have notices that this is simply a cast to bool. The easiest bool casting operator is !! and it works like this:
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            pref[i + 1][j + 1] = pref[i][j + 1] + pref[i + 1][j] - pref[i][j] + !!a[i][j];
+        }
+    }
+    Afaik, a mnemonic rule to remember it (if needed) is "bang, bang, you're boolean".
+
+    Print a binary representation of a number
+    If you want to print, say, last 20 bits of a number, it's not necessary to write smth like
+
+    void show_binary(int n) {
+        for (int i = 0; i < 20; ++i) {
+            cout << !!(n & (1 << i));
+        }
+        cout << "\n";
+    }
+    Instead, one can simply write
+
+    cout << bitset<20>(n) << "\n";
+    However, you need to fix the number of bits to show (which is usually not a problem because in most of the cases you need it for debug purposes) and get used to the order where the lowest bit is the rightmost (which is actually a natural order for a binary representation of a number, but not so natural if you consider a mask as a sort of a boolean vector).
+
+    Also, if you want to print an octal or a hexadecimal representation of a number, you can simply write cout << oct << n << "\n" and cout << hex << n << "\n", respectively. To return back to normal decimal, use cout << dec.
+
+    lambda type deduction
+    Imagine you want to quickly write a lambda which calculates the number of ways to choose 2 elements from n. You may write something like this:
+
+    auto choose2 = [&](int n) {
+        if (n <= 1) {
+            return 0;
+        } else {
+            return 1ll * n * (n - 1) / 2;
+        }
+    };
+    and see that the compiler cannot deduce the type of your lambda: in one place you return int and in another place you return long long. Ok, you may think, let's show the type explicitly. without auto:
+
+    function<long long(int)> choose2 = [&](int n) {
+        if (n <= 1) {
+            return 0;
+        } else {
+            return 1ll * n * (n - 1) / 2;
+        }
+    };
+    To your surprise, the error doesn't disappear. You are not very happy, you replace 0 by 0ll and move forward feeling that you could surely have done this using some language tools.
+
+    Indeed, in the very first version you could actually explicitly specify the output type by a simple arrow:
+
+    auto choose2 = [&](int n) -> long long {
+        if (n <= 1) {
+            return 0;
+        } else {
+            return 1ll * n * (n - 1) / 2;
+        }
+    };
+    Big thanks to my friends and colleagues Wild_Hamster, ArtDitel and fdoer again for showing me this construction (not only in this context, however).
+
+    Introducing variables inside an if statement
+    Imagine the following: you have a function f(), which takes time to be computed, and if its value satisfies some condition, you want to somehow use it. You don't want to write
+
+    if (is_good(f())) {
+        use_somehow(f());
+    }
+    since it costs two calls of f. You may write something like this:
+
+    int x = f();
+    if (is_good(x)) {
+        use_somehow(x);
+    }
+    but this is not very clean and leaves a variable which is not used then, maybe under a potentially useful name. To avoid this, one can wrap all this into a block like this:
+
+    {
+        int x = f();
+        if (is_good(x)) {
+            use_somehow(x);
+        }
+    }
+    but a shorter version would do the following:
+
+    if (int x = f(); is_good(x)) {
+        use_somehow(x);
+    }
+    This is possible since C++17.
+
+    The smallest element from three
+    I bet many, many of you at least once wrote something like
+
+    int x = min(min(a, b), c);
+    feeling that something you do in your life is not right (while you type this, you usually have time to think about such things). Things get worse if you want to get a minimum of four elements:
+
+    int x = min(min(min(a, b), c), d);
+    (the order or arguments and the way to regroup them does not matter). You may have written a variadic template in your, well, template, to call something like min(a, b, c, ...), but you may do this without any prewritten code. Just watch:
+
+    int x = min({a, b, c, d});
+    Credits to the Jinotega twitter for this.
+
+    I'm sure I forgot something. I also feel that this blog is like a quick start guide into stl. Still, I hope a lot of you will find something useful here. C++, as every other language (programming or natural), is evolving, after all, and we should keep our eyes on how we can use it efficiently.
+
+
+##############################################################################################
+
+C++ STYLE GUIDE:
+
+
+Competitive C++ Manifesto: A Style Guide
+There are many style guides for C++ out there, but we can't really use them as competitive programmers. We just want to write our code correctly as fast as possible! Trying to hack people here on codeforces, I realized there is a need for a style guide! Our goal is to write correct, fast, clear and consistent code.
+
+Disclaimer
+This is not a rulebook. You can integrate parts of it into your coding style. Don't overthink it, especially during a contest!
+
+I'm going to use this guide for myself and to teach my students. I'm planning to make some good stuff in the future following these principles! Stay tuned!
+
+Compiler
+Make use of C++17. Use -Wall -Wextra -Wshadow flags for compilation, and try to eliminate all of the warning messages, this will prevent you from having some silly bugs. There are more debugging flags like -fsanitize=undefined which helps you eliminate bugs such as array out-of-range access and integer overflow during runtime. For more information, check out "Read More" section.
+
+Naming
+C++ libraries use snake_case for functions and classes, in order to differentiate the user-defined code from the standard library, we will use CamelCase.
+
+Types use UpperCamelCase: Point, SegTree
+Functions and variables use lowerCamelCase: someMethod, someVariable
+Macros and constants use all capital letters seperated by _: SOME_MACRO, MAX_N, MOD
+Use meaningful names or at least meaningful enough for you.
+Example
+#define LOCAL
+const double PI = 3.14;
+
+struct MyPoint {
+    int x, y;
+    bool someProperty;
+    
+    int someMethod() {
+        return someProperty ? x : y;
+    }
+};
+Note
+Using snake_case is fine, but be consistent!
+
+Comments
+In competitive programming, you usually don't want to write long comments, but in case you do want to write some comments, write them using // instead of /* */. Using // enables you to comment out a chunk of code with /* */ while debugging, and /* /* ... */ */ is a bug!
+
+Example
+/* commenting out a block of code - no problem!
+ 
+// some comment about the function below...
+void someFunction() {
+    // do something
+}
+
+*/
+Spacing
+Control flow statements are if / else / for / while / ...
+
+Indent using 2 or 4 spaces uniformly. Avoid using tabs since it might make the code stretched out in different websites (e.g. Codeforces) and also in print (e.g. ICPC). Set your editor to emit spaces when you hit the tab key.
+Braces always open on the same line but close on a new line.
+Preferably always use braces for control flow statement blocks even if it's currently only one line.
+else should start on the same line after closing brace of if block.
+Keep lines a reasonable length, some say 80 columns!
+There should be exactly one blank line between methods. This helps you to organize your code better.
+There should be no blank line after an opening brace or before a closing brace.
+Binary operations should be spaced from both sides.
+Unary operations should only be spaced from the left side.
+Brackets <> [] {} are a part of their identifier like a[5], vector<int> or pair{1, 2}.
+Parentheses should only be spaced from outside like (-a[3] + b) * (c + d).
+Semicolons and commas should only be spaced from the right side.
+Question marks and colons should be spaced from both sides (unlike English!). The only exceptions are labels like public: or switch cases case 10:.
+There should not be any extra spaces at the end of each line.
+Add a single newline character at the end of the file.
+There should be exactly one space after control flow statements like if (flag).
+In contrast to control flow statements, function calls should not be spaced like func(arg).
+Preprocess statements should be written like #define SOME_MACRO and #include <iostream>.
+Templates should be written like template <typename T> and a new line.
+Scope resolution operator :: is a part of the identifier and should not be spaced.
+Pointer and reference are a part of the type, space accordingly! Like int* ptr and const string& str. To avoid bugs, declare only one pointer per line.
+. and -> operator should not be spaced. When -> is used to show return type (like in lambda expressions) it should be spaced from both sides.
+Lambda expressions should be written like [](int x) -> int { return x + 1; }. The return type can be omitted most of the times. Feel free to expand the body exactly like a function if it has more than 1 line of code.
+When overloading operators, treat them like functions, no spacing in the name like bool operator!();
+Ellipsis ... should only be spaced from the left side.
+Example
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int DIFF = 10;
+
+template <typename T>
+struct Point {
+    T x, y;
+    
+    Point(T _x, T _y) : x(_x), y(_y) {}
+    
+    friend ostream& operator<<(ostream& os, const Point& p) {
+        return os << "(" << p.x << ", " << p.y << ")";
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    vector<Point<int>> v;
+    for (int i = 0; i < 5; ++i) {
+        v.push_back({i, i + DIFF});
+    }
+    for (auto p : v) {
+        if (p.x + DIFF == p.y) {
+            cout << p << '\n';
+        } else {
+            cout << "huh!?\n"; // will never get printed!
+        }
+    }
+}
+Output
+(0, 10)
+(1, 11)
+(2, 12)
+(3, 13)
+(4, 14)
+Competitive Coding Recommendations
+Use #include <bits/stdc++.h> instead of many includes.
+Use using namespace std; instead of typing std:: every time.
+Use using instead of typedef, for example using ll = long long;. Rationale: It's more consistent with the style of modern C++.
+Use struct instead of class. Rationale: It defaults to public, and you don't need encapsulation in competitive programming!
+Don't use too many macros but don't be afraid of using macros! Rationale: It's not easy to debug and read a code full of ugly macros. but we're hackers after all!
+Use const for defining a constant instead of #define. Rationale: consts have a type, and they are evaluated at compile time.
+To avoid bugs, you can use curly braces for each case of switch statement.
+Use auto to increase readability and decrease code size.
+Use braced initializer lists.
+Use emplace and emplace_back for containers when dealing with pairs and tuples. Rationale: (elem1, elem2, ...) instead of ({elem1, elem2, ...}).
+Use lambda functions! They're especially useful when passing functions as arguments like in sort. Don't repeat yourself, use lambda functions in your code instead of copy/pasting.
+Use nullptr instead of NULL or 0.
+Boolean values are true and false!
+Use ios::sync_with_stdio(false); and cin.tie(nullptr); for a faster I/O using cin/cout.
+Use builtin functions starting with __builtin.
+GCD and LCM are available in C++17 under gcd and lcm.
+Use C++11 for-each style for loops for (auto& elem : vec).
+Use C++17 binding style like for (auto& [key, val] : dic) and auto [x, y] = myPoint;
+Use C++17 template argument deduction pair p{1, 2.5}; instead of pair<int, double> p{1, 2.5};.
+
+If you have a lot of nested loops and conditions, refactor! You probably should be using functions.
+Never use goto! But be brave enough to use goto when you want to break from several nested loops (in case you just can't refactor it)!
+Some websites like codeforces use the flag -DONLINE_JUDGE to compile your code, this means that you can remove your cerrs or your debug functions automatically or redirect input/output to file instead of stdin/stdout, etc.
+#ifdef ONLINE_JUDGE
+#define cerr if (false) cerr
+#endif 
+// Alternatively this can be done using a local -DLOCAL flag
+// when compiling on your machine, and using #ifndef LOCAL instead.
+Prefer using normal operators like !, &&, ||, ^, ... instead of their alternative representations not, and, or, xor, .... Rationale: We're not coding in python!
+Break down your code into different smaller functions. Your code will be cleaner and easier to debug.
+Don't try to be too clever!
+Don't reinvent the wheel! — Make use of standard library!
+Use common sense and be consistent!
 
 
 ######################################################################
