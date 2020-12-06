@@ -1,3 +1,657 @@
+1) Binary Trees And when to process null nodes: 
+    AKA VERY WIERD RECURSION TREE
+
+   Pseudo-Palindromic Paths in a Binary Tree
+
+   Given a binary tree where node values are digits from 1 to 9. 
+   A path in the binary tree is said to be pseudo-palindromic if 
+   at least one permutation of the node values in the path is a palindrome.
+
+   Return the number of pseudo-palindromic paths going from the root node to leaf nodes.
+
+   Example 1:
+
+   Input: root = [2,3,1,3,1,null,1]
+   Output: 2 
+   Explanation: The figure above represents the given binary tree. 
+   There are three paths going from the root node to leaf nodes: the 
+   red path [2,3,3], the green path [2,1,1], and the path [2,3,1]. 
+   Among these paths only red path and green path are pseudo-palindromic 
+   paths since the red path [2,3,3] can be rearranged in [3,2,3] (palindrome) 
+   and the green path [2,1,1] can be rearranged in [1,2,1] (palindrome).
+   Example 2:
+
+   Input: root = [2,1,1,1,3,null,null,null,null,null,1]
+   Output: 1 
+   Explanation: The figure above represents the given binary tree. 
+   There are three paths going from the root node to leaf nodes: 
+   the green path [2,1,1], the path [2,1,3,1], and the path [2,1]. 
+   Among these paths only the green path is pseudo-palindromic 
+   since [2,1,1] can be rearranged in [1,2,1] (palindrome).
+   Example 3:
+
+   Input: root = [9]
+   Output: 1
+
+    SOLUTION:
+    
+    
+    In the following problem, we have to process entire paths of binary tree,
+    so we can't recurse on every child, except the child that exists:
+    aka the normal check only for nullptr at top cant be used.
+    you have to look 1 level ahead and check for children in the base case
+    and only recurse on the side with children: 
+
+
+    class Solution {
+    public:
+        int pseudoPalindromicPaths (TreeNode* root) {
+            // count it up!
+            unordered_map<int, int> m;
+            int count = helper(root, m);
+            return count; 
+        }
+        
+        int palinCheck(const unordered_map<int, int>& m) {
+            bool odd = false; // only  
+            for(const auto & [key, value] : m) {
+                if(value % 2 != 0 && odd) {
+                    return false;
+                }  else if(value % 2 != 0 ) {
+                    odd = true;
+                }
+            }
+            return true;    
+        }
+        
+        int helper(TreeNode* node, unordered_map<int, int>& m) {
+            m[node->val] = m.find(node->val) != m.end() ? m[node->val] + 1 : 1;
+            int res = 0;
+            if(node->left == nullptr && node->right == nullptr) {            
+            res = palinCheck(m); 
+            }
+            
+            if(node->left) {
+                res += helper(node->left, m);
+            }
+            
+            if(node->right) {
+                res += helper(node->right, m);
+            }
+            
+            m[node->val] -= 1; 
+            return res; 
+        }
+        
+    };
+
+    BETTER SOLUTION: USE XOR AND CONSTANT SPACE TO KEEP TRACK OF VALUES WE VISITED: 
+    // THEN CHECK IF ONE BIT IS ACTIVE BUT CHECKING IF ITS A POWER OF 2!!
+
+
+    class Solution:
+        def pseudoPalindromicPaths (self, root: TreeNode) -> int:
+            def preorder(node, path):
+                nonlocal count
+                if node:
+                    # compute occurences of each digit 
+                    # in the corresponding register
+                    path = path ^ (1 << node.val)
+                    # if it's a leaf, check if the path is pseudo-palindromic
+                    if node.left is None and node.right is None:
+                        # check if at most one digit has an odd frequency
+                        if path & (path - 1) == 0:
+                            count += 1
+                    else:                    
+                        preorder(node.left, path)
+                        preorder(node.right, path) 
+            
+            count = 0
+            preorder(root, 0)
+            return count
+
+1.2) Morris Traversal Review:
+
+    To do post order traversal or inorder traversal 
+    on a binary tree iteratively (or doing any dfs, 
+    where you want to vist root node last). 
+    you need to USE A FLAG!! (LOOK at morris traversal for cool funs!)
+
+        def postorderTraversal(self, root):
+            traversal, stack = [], [(root, False)]
+            while stack:
+                node, visited = stack.pop()
+                if node:
+                    if visited:
+                        # add to result if visited
+                        traversal.append(node.val)
+                    else:
+                        # post-order
+                        stack.append((node, True))
+                        stack.append((node.right, False))
+                        stack.append((node.left, False))
+
+            return traversal
+
+        def inorderTraversal(self, root):
+            result, stack = [], [(root, False)]
+
+            while stack:
+                cur, visited = stack.pop()
+                if cur:
+                    if visited:
+                        result.append(cur.val)
+                    else:
+                        stack.append((cur.right, False))
+                        stack.append((cur, True))
+                        stack.append((cur.left, False))
+
+            return result
+        
+        def preorderTraversal(self, root):
+            ret = []
+            stack = [root]
+            while stack:
+                node = stack.pop()
+                if node:
+                    ret.append(node.val)
+                    stack.append(node.right)
+                    stack.append(node.left)
+            return ret
+
+
+1.6) MORRIS INORDER TRAVERSAL:
+    (https://www.youtube.com/watch?v=wGXB9OWhPTg) 2 times speed 
+
+    DONT USE A STACK OR ANYTHING ELSE. IT RUINS THE O(1) CONSTANT SPACE 
+    WE ARE TRYING TO ACHIEVE WITH MORRIS TRAVERSAL
+
+    basically we keep going to the left node, until we reach the leftmost node.
+    while we do this, we set the backlinks for the node that ends our 
+    inorder  traversal at the current level we are processing
+    and we go deeper in the levels and continue to process left and save backlinks 
+    we create the backlinks for the rightmost node on the left side because we 
+    want a way to go back to the root node once we are on the very left side. 
+    on the very left side we have processed left, then we process current node, 
+    then when we process the right node the magic happens, the right node either 
+    causes us to process it, then we go right, and that will take us to the root 
+    which is a level above where we need to be to continue to do the inorder traversals. 
+
+    we also have to do cleanup after we have jumped up the level, so we check its left, its 
+    rightmost points to us because we were set as a backlink, delete the backlink
+
+    class Solution {
+    public:
+        vector<int> inorderTraversal(TreeNode* root) {
+            vector<int> nodes;
+            while (root) {
+                if (root -> left) {
+                    TreeNode* pre = root -> left;
+                    while (pre -> right && pre -> right != root) {
+                        // go to rightmost node on left side
+                        // sometimes the rightmost node leads back to root!
+                        pre = pre -> right;
+                    }
+                    if (!pre -> right) {
+                        // rightmost node doesnt have back connection to root of left, set it. 
+                        pre -> right = root;
+                        // go left and continue to set the backlinks, until you cant go left no more!
+                        root = root -> left;
+                    } else {
+                        // revert back the changes of the back ptr. 
+                        pre -> right = NULL;
+                        nodes.push_back(root -> val); // insert rightmost node on left side. 
+                        root = root -> right;
+                    }
+                } else {
+                    // okay insert current node then go to right side to continue inorder
+                    nodes.push_back(root -> val);
+                    // below statement either goes right of root, or traverses a backlink back to root!
+                    root = root -> right;
+                }
+            }
+            return nodes;
+        }
+    };
+
+
+
+1.7) Morris Traversal INORDER -> Review Continued:
+
+    Morris Traversal
+        Have you ever wanted to do In-order traversal in O(1) space? 
+        So have I! Too bad it doesn’t exist…..
+
+        def find_predecessor(node):
+            tmp = node.left
+            while tmp.right and tmp.right != node:
+                tmp = tmp.right
+            return tmp
+        
+        def morris_traversal(root):
+            ans = []
+            curr = root
+            while curr:
+                if not curr.left:
+                    ans.append(curr)
+                    curr = curr.right
+                else:
+                    pred = find_predecessor(curr)
+                    if pred.right == None:
+                        pred.right = curr
+                        curr = curr.left
+                    else:
+                        pred.right = None
+                        ans.append(current)
+                        current = current.right
+            return ans
+
+        The find_predecessor function finds the inorder predecessor of a node. Then, 
+        in our traversal, we use the right pointers to store where we need 
+        to get back to at all times. This way, we don’t need a stack nor recursion.
+
+
+1.8 Morris Traversal Preorder:
+
+    public class Solution {
+        public List<Integer> preorderTraversal(TreeNode root) {
+            List<Integer> res = new ArrayList<>();
+            if (root == null)
+                return res;
+            TreeNode cur = root;
+            while (cur != null) {
+                if (cur.left == null) {
+                    res.add(cur.val);
+                    cur = cur.right;
+                } else {
+                    TreeNode prev = cur.left;
+                    while (prev.right != null && prev.right != cur)
+                        prev = prev.right;
+                    if (prev.right == null) {
+                        res.add(cur.val);
+                        prev.right = cur;
+                        cur = cur.left;
+                    } else {
+                        prev.right = null;
+                        cur = cur.right;
+                    }
+                }
+            }
+            return res;
+        }
+    }
+    A good explanation here gives implementation of Morris Traversal InOrder algorithm. 
+    The PreOrder algorithm can be achieved by tweaking the code very slightly: rather than 
+    visit cur when we restore the tree(which is generally the second time we are at node cur), 
+    we visit it the first time we encounter it, which is when we have to modify.
+
+    The space complexity for Morris Traversal is O(1) obviously. The time complexity is actually 
+    O(N) which is a little more subtle. The outer while loop is executed O(N) iterations obviously, 
+    depending on the position of root in the InOrder serialization of the tree. 
+    In each such iteration, we have to find the left predecessor for cur, which 
+    is the costly part. Trivially you would think that gives us O(NlgN) per height 
+    of the tree. But if you think aggregately, you will see these:
+
+    For each node, we do find left predecessor on it only twice.
+    Throughout these two find left predecessor inner while loops, each edge of 
+    the tree get traversed at most twice.
+    You might have to draw a tree and doodle some trace to convince yourself this. 
+    Since a tree has N-1 edges, with N as the number of nodes, we 
+    know that the time complexity is O(N).
+
+1.9 Morris Preorder Traversal:
+
+    class Solution {
+    public:
+        vector<int> preorderTraversal(TreeNode* root) {
+            
+            vector<int>v;
+            if (!root) return v;
+            
+            TreeNode* curr = root;
+            
+            while (curr) {
+                if (!curr->left) {
+                    v.push_back(curr->val);
+                    curr = curr->right;
+                } else {
+                    TreeNode* pre = curr->left;
+
+                    while (pre->right && pre->right != curr)
+                        pre = pre->right;
+
+                    if (pre->right == curr) {
+                        pre->right = NULL;
+                        curr = curr->right;
+                    } else {
+                        v.push_back(curr->val);
+                        pre->right = curr;
+                        curr = curr->left;
+                    }
+                }
+            }
+            
+            return v;
+        }
+    };
+
+
+
+
+2) Morris Preorder Traversal (CONSTANT SPACE TREE TRAVERSAL!!): 
+
+   Sum Root to Leaf Numbers
+   
+   Given a binary tree containing digits from 0-9 only, each root-to-leaf path could represent a number.
+
+   An example is the root-to-leaf path 1->2->3 which represents the number 123.
+
+   Find the total sum of all root-to-leaf numbers.
+
+   Note: A leaf is a node with no children.
+
+   Example:
+
+    3 Solutions: 
+    Iterative Preorder Traversal -> With stack O(N) time, O(H) space complexity 
+    Recursive Preorder Traversal -> O(N) and O(H)
+    
+    Best approach: Morris Preorder Traversal (Time O(N) space O(1)): 
+    Trade in performance to save space. 
+
+    The idea of Morris algorithm is to set the temporary link between the node and its 
+    predecessor: predecessor.right = root. So one starts from the node, computes 
+    its predecessor and verifies if the link is present.
+
+    There is no link? Set it and go to the left subtree.
+    There is a link? Break it and go to the right subtree.
+
+    There is one small issue to deal with : what if there is no left child, i.e. 
+    there is no left subtree? Then go straightforward to the right subtree.
+
+    class Solution:
+        def sumNumbers(self, root: TreeNode):
+            root_to_leaf = curr_number = 0
+            
+            while root:  
+                # If there is a left child,
+                # then compute the predecessor.
+                # If there is no link predecessor.right = root --> set it.
+                # If there is a link predecessor.right = root --> break it.
+                if root.left: 
+                    # Predecessor node is one step to the left 
+                    # and then to the right till you can.
+                    predecessor = root.left 
+                    steps = 1
+                    while predecessor.right and predecessor.right is not root: 
+                        predecessor = predecessor.right 
+                        steps += 1
+
+                    # Set link predecessor.right = root
+                    # and go to explore the left subtree
+                    if predecessor.right is None:
+                        curr_number = curr_number * 10 + root.val                    
+                        predecessor.right = root  
+                        root = root.left  
+                    # Break the link predecessor.right = root
+                    # Once the link is broken, 
+                    # it's time to change subtree and go to the right
+                    else:
+                        # If you're on the leaf, update the sum
+                        if predecessor.left is None:
+                            root_to_leaf += curr_number
+                        # This part of tree is explored, backtrack
+                        for _ in range(steps):
+                            curr_number //= 10
+                        predecessor.right = None
+                        root = root.right 
+                        
+                # If there is no left child
+                # then just go right.        
+                else: 
+                    curr_number = curr_number * 10 + root.val
+                    # if you're on the leaf, update the sum
+                    if root.right is None:
+                        root_to_leaf += curr_number
+                    root = root.right
+                            
+            return root_to_leaf
+
+
+2.5) Morris Post Order Traversal (not really post order, just reversed preorder, garbage soln): 
+
+    In pre-order Morris Traverse, we always check whether the current 
+    pointer can go left, finding out the predecessor, 
+    linking its right pointer to current pointer.
+
+    In post-order Morris Traverse, we just flip the logic (do not need 
+    to a bunch of reverse). Instead of trying go left, we tries to go right.
+
+    Moreover, we use a deque to collect the answer.
+
+    class Solution:
+        def go_right(self, curr, ans):
+            if not curr.right:
+                ans.appendleft(curr.val)
+                return False
+            
+            after = curr.right
+            
+            while after.left and after.left != curr:
+                after = after.left
+                
+            if after.left == curr:
+                after.left = None
+                return False
+            else:
+                ans.appendleft(curr.val)
+                after.left = curr
+                return True
+            
+            
+        def postorderTraversal(self, root: TreeNode) -> List[int]:
+            if not root:
+                return []
+            
+            from collections import deque
+            ans = deque()
+            curr = root
+            
+            while curr:
+                if self.go_right(curr, ans):
+                    curr = curr.right
+                else:
+                    curr = curr.left
+                    
+            return list(ans)
+
+2.6) Morris True Post Order:
+    class Solution {
+    public:
+        vector<int> postorderTraversal(TreeNode* root) {
+            vector<int> nodes;
+            TreeNode* dummy = new TreeNode(0);
+            dummy -> left = root;
+            TreeNode* cur = dummy;
+            while (cur) {
+                if (cur -> left) {
+                    TreeNode* pre = cur -> left;
+                    while (pre -> right && (pre -> right != cur)) {
+                        pre = pre -> right;
+                    }
+                    if (!(pre -> right)) {
+                        pre -> right = cur;
+                        cur = cur -> left;
+                    } else {
+                        reverseAddNodes(cur -> left, pre, nodes);
+                        pre -> right = NULL;
+                        cur = cur -> right;
+                    }
+                } else {
+                    cur = cur -> right;
+                }
+            }
+            return nodes;
+        }
+    private:
+        void reverseNodes(TreeNode* start, TreeNode* end) {
+            if (start == end) {
+                return;
+            }
+            TreeNode* x = start;
+            TreeNode* y = start -> right;
+            TreeNode* z;
+            while (x != end) {
+                z = y -> right;
+                y -> right = x;
+                x = y;
+                y = z;
+            }
+        }
+        void reverseAddNodes(TreeNode* start, TreeNode* end, vector<int>& nodes) {
+            reverseNodes(start, end);
+            TreeNode* node = end;
+            while (true) {
+                nodes.push_back(node -> val);
+                if (node == start) {
+                    break;
+                }
+                node = node -> right;
+            }
+            reverseNodes(end, start);
+        }
+    };
+
+2.7) Morris Post Order:
+
+    public class Solution {
+        // Important, when you pop a node, ensure its children are traversed.
+        public List<Integer> postorderTraversal(TreeNode root) {
+            Stack<TreeNode> s = new Stack();
+            List<Integer> ans = new ArrayList<Integer>();
+            TreeNode cur = root;
+            
+            while (cur != null || !s.empty()) {
+                while (!isLeaf(cur)) {
+                    s.push(cur);
+                    cur = cur.left;
+                }
+                
+                if (cur != null) ans.add(cur.val);
+                
+                while (!s.empty() && cur == s.peek().right) {
+                    cur = s.pop();
+                    ans.add(cur.val);
+                }
+                
+                if (s.empty()) cur = null; else cur = s.peek().right;
+            }
+            
+            return ans;
+        }
+        
+        private boolean isLeaf(TreeNode r) {
+            if (r == null) return true;
+            return r.left == null && r.right == null;
+        }
+    }
+
+
+
+3) Morris Post Order Traversal:
+
+    GET ALL THEE CORRECT POST ORDERS, AND WRITE MORE NOTES FROM HERE:
+    https://leetcode.com/problems/binary-tree-postorder-traversal/discuss
+
+
+    How do we perform Postorder traversal. We'll use above concept with minor changes to 
+    achieve postorder traversal. First lets have a dummy node and make whole tree as left 
+    child of dummy node and make right child empty. [ why? Bec if we assume there is no right 
+    child of root then prinitng left child and then root become postorder traversal, Right ;) ] 
+    Now what next? Are we finished, No... only performing inorder on new tree does not make any 
+    sense, it still printing inorder traversal of original tree followed by dummy node.
+
+
+    //This is Post Order :children before node( L ,R , N)
+    void morrisPostorderTraversal(Node *root){
+
+        // Making our tree left subtree of a dummy Node
+        Node *dummyRoot = new Node(0);
+        dummyRoot->left = root;
+
+        //Think of P as the current node 
+        Node *p = dummyRoot, *pred, *first, *middle, *last;
+        while(p!=NULL){        
+
+            if(p->left == NULL){
+                p = p->right;
+            } else{
+                /* p has a left child => it also has a predeccessor
+                make p as right child predeccessor of p    
+                */
+                pred = p->left;
+                while(pred->right!=NULL && pred->right != p){
+                    pred = pred->right;
+                }
+
+                if(pred->right == NULL){ 
+
+                    // predeccessor found for first time
+                    // modify the tree
+
+                    pred->right = p;    
+                    p = p->left;
+
+                }else {                          
+
+                // predeccessor found second time
+                // reverse the right references in chain from pred to p
+                    first = p;
+                    middle = p->left;              
+                    while(middle!=p){            
+                        last = middle->right;
+                        middle->right = first;
+                        first = middle;
+                        middle = last;
+                    }
+
+                    // visit the nodes from pred to p
+                    // again reverse the right references from pred to p    
+                    first = p;
+                    middle = pred;
+                    while(middle!=p){
+
+                        cout<<" "<<middle->data;  
+                        last = middle->right;          
+                        middle->right = first;
+                        first = middle;
+
+                        middle = last;
+                    }
+
+                    // remove the pred to node reference to restore the tree structure
+                    pred->right = NULL;    
+                    p = p-> right;
+                }
+            }
+        }    
+    }   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ##########################################################
 LCA - Intro (https://cp-algorithms.com/graph/lca.html)
     (USE THE IMAGE IN THE TUTORIAL TO HELP SEE EXAMPLE)
@@ -218,14 +872,6 @@ LCA - Lowest Common Ancestor - Binary Lifting
         up.assign(n, vector<int>(l + 1));
         dfs(root, root);
     }
-
-
-
-
-
-
-
-
 
 
 ##########################################################

@@ -94,6 +94,28 @@ public:
     }
 };
 
+
+// VERY CLEAN SOLUTION
+
+class Solution {
+public:
+    bool canArrange(vector<int>& arr, int k) {
+        vector<int> freq(k);
+        
+        for (int x : arr)
+            freq[((x % k) + k) % k]++;
+        
+        if (freq[0] % 2)
+            return false;
+        
+        for (int i=1, j=k-1; i<j; i++, j--)
+            if (freq[i] != freq[j])
+                return false;
+        
+        return true;
+    }
+};
+
 /*
 FASTER CPP SOLUTIONS
 
@@ -129,6 +151,7 @@ public:
 static const auto speedup = []() {
 		std::ios::sync_with_stdio(false); std::cin.tie(nullptr); cout.tie(nullptr); return 0;
 }();
+
 
 
 // FASTEST SOLUTION:

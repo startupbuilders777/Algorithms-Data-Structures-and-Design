@@ -71,8 +71,156 @@ TOPICS TO UNDERSTAND:
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
--102) 
+-104) FIND RIGHT INTERVAL C++ WITH PRIORITY QUEUE (fast solution):
+      (2 ARRAY INTERVAL SOLUTIONS WITH SORTED START END TIMES + POINTERS)
 
+    
+
+
+
+
+
+-103) FIND RIGHT INTERVAL C++ WITH PRIORITY QUEUE (slow solution):
+    Find Right Interval
+    Medium
+    You are given an array of intervals, where 
+    intervals[i] = [starti, endi] and each starti is unique.
+
+    The right interval for an interval i is an interval j 
+    such that startj >= endi and startj is minimized.
+
+    Return an array of right interval indices for each interval i. 
+    If no right interval exists for interval i, then put -1 at index i.
+
+    Example 1:
+
+    Input: intervals = [[1,2]]
+    Output: [-1]
+    Explanation: There is only one interval in the collection, so it outputs -1.
+    Example 2:
+
+    Input: intervals = [[3,4],[2,3],[1,2]]
+    Output: [-1,0,1]
+    Explanation: There is no right interval for [3,4].
+    The right interval for [2,3] is [3,4] since start0 = 3 is the smallest start that is >= end1 = 3.
+    The right interval for [1,2] is [2,3] since start1 = 2 is the smallest start that is >= end2 = 2.
+    Example 3:
+
+    Input: intervals = [[1,4],[2,3],[3,4]]
+    Output: [-1,2,-1]
+    Explanation: There is no right interval for [1,4] and [3,4].
+    The right interval for [2,3] is [3,4] since start2 = 3 is the smallest start that is >= end1 = 3.
+
+
+    class Solution {
+        public:
+            vector<int> findRightInterval(vector<vector<int>>& intervals) {
+                // sort by start time. 
+                // then just choose the right interval as you go through? 
+                /*
+                sorting + binary search?
+                sorting + heap?
+                sorting + treemap? 
+                sorting + 2 arrays [ayyy the best soln ]
+                
+                The reason we shoud seek something faster than heap/treemap is because
+                we are dealing with static data that doesnt change, and those structures are used 
+                for dynamic data, hence 2 array soln. 
+                */    
+                
+                //loop through intervals and save the index as part of tuple!
+                for(int i = 0; i != intervals.size(); ++i) {
+                    intervals[i].push_back(i);
+                }
+                
+                sort(intervals.begin(), intervals.end(), [](auto x, auto y) { return x[0] < y[0];});
+                
+                // sort by largest finish time at top!
+                // IF YOU LOOK AT CMP, TO DO LEAST TO GREATEST, YOU ACTUALLY HAVE TO INVERSE
+                // so its not a[1] < b[1] like in sort function above but a[1] > b[1]
+                auto cmp = [](vector<int> a, vector<int>  b) {return a[1] > b[1];};
+                priority_queue< vector<int>, vector< vector<int> >, decltype(cmp)> pq(cmp);
+                
+                vector<int> res;
+                res.resize(intervals.size());
+                
+                for(int i = 0; i!= intervals.size(); ++i) {
+                    vector<int> inte = intervals[i];
+                    
+                    while(pq.size() > 0 && pq.top()[1] <= inte[0]) {
+                        res[pq.top()[2]] = inte[2];
+                        pq.pop();
+                    }
+                    pq.push(inte);
+                }
+                
+                while(pq.size() > 0) {
+                    res[pq.top()[2]] = -1;
+                    pq.pop();
+                }
+                return res; 
+            }
+    };
+
+
+
+
+
+-102) BINARY SEARCH AND THE TEMPLATES: 
+
+        1.   Peak Index in a Mountain Array
+        Let's call an array arr a mountain if the following properties hold:
+        arr.length >= 3
+        There exists some i with 0 < i < arr.length - 1 such that:
+        arr[0] < arr[1] < ... arr[i-1] < arr[i]
+        arr[i] > arr[i+1] > ... > arr[arr.length - 1]
+        Given an integer array arr that is guaranteed to be a mountain, 
+        return any i such that arr[0] < arr[1] < ... arr[i - 1] < arr[i] > arr[i + 1] > ... > arr[arr.length - 1].
+
+        Example 1:
+
+        Input: arr = [0,1,0]
+        Output: 1
+        Example 2:
+
+        Input: arr = [0,2,1,0]
+        Output: 1
+
+        class Solution {
+            public:
+            int peakIndexInMountainArray(vector<int>& arr) {
+                int low = 0;
+                int high = arr.size();
+
+                while(low < high) {
+                    int mid = low + (high - low)/2;
+                    
+                    /*
+                    if(mid - 1 < 0) {
+                        low = low+1;
+                        continue;
+                    }    
+                    if(mid + 1 >= arr.size()) {
+                        high = high-1; 
+                        continue;
+                    }
+                    */
+                    
+                    int left = arr[mid-1];
+                    int right= arr[mid+1];
+                    
+                    if(left < arr[mid] && arr[mid] < right) {
+                        // search right side 
+                        low = mid + 1;
+                    } else if(left < arr[mid] && arr[mid] > right) {
+                        return mid; 
+                    } else if(left > arr[mid] && arr[mid] > right) {
+                        high = mid;
+                    } 
+                }
+                return -9999999; // should never reach this. 
+            }
+        };
 
 
 -101.7) Binary Search with chocolates:
@@ -10082,6 +10230,80 @@ Cool Notes Part 0.5: Sliding Window with a deque
                    left = mid + 1
            return left
 
+###################################################################################
+###################################################################################
+
+BINARY SEARCH DIFFERENT TEMPLATES AND THEIR USE CASES!!!!!!
+
+Tip
+Personally,
+If I want find the index, I always use while (left < right)
+If I may return the index during the search, I'll use while (left <= right)
+
+
+I like you tip, summary of 2 most frequently used binary search templates.
+one is return index during the search:
+
+while lo <= hi:
+  mid = (lo+hi)/2
+  if nums[mid] == target:
+    return mid
+  if nums[mid] > target:
+    hi = mid-1
+  else:
+    lo = mid+1
+return -1
+
+Another more frequently used binary search template is for searching lowest 
+element satisfy function(i) == True (the array should satisfy function(x) == False 
+for 0 to i-1, and function(x) == True for i to n-1, and it is up to the question to 
+define the function, like in the find peak element problem, function(x) can be nums[x] < nums[x+1] ), 
+there are 2 ways to write it:
+
+while lo <= hi:
+  mid = (lo+hi)/2
+  if function(mid):
+    hi = mid-1
+  else:
+    lo = mid+1
+return lo
+
+or
+
+while lo <  hi:
+  mid = (lo+hi)/2
+  if function(mid):
+    hi = mid
+  else:
+    lo = mid+1
+return lo
+
+No matter which one you use, just be careful about updating the hi and lo, which 
+could easily lead to infinite loop. Some binary question is searching a floating 
+number and normally the question will give you a precision, in which case you 
+don't need to worry too much about the infinite loop but your while 
+condition will become something like "while lo+1e-7<hi"
+
+
+For people who are wondering about the section of the post,
+
+"If I want find the index, I always use while (left < right)
+If I may return the index during the search, I'll use while (left <= right)"
+
+Let's use the array a = [1,2,3] as an example, where we're searching for key = 3
+
+If we know the index definitely exists, then we use while l < r
+
+We first search 2, notice that 2 < key. So we set l = res = mid+1. 
+We break the loop since l == r and return res. Because res is the 
+only possible answer left, and since we know the index exists, we just return that.
+
+Now if we don't know if the index exists, then we set l = mid+1 and 
+only set res if a[mid] == key. We still have to check the final 
+possibility, because we don't know whether or not that index contains the key.
+
+
+
 
 
 
@@ -12189,7 +12411,71 @@ COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
                 exp *= 10
             return arr
 
-    INPLACE QUICKSORT:
+    ITERATIVE inplace O(1) QUICKSORT EXAMPLE 1: 
+
+        def quick_sort(arr):
+            # This quicksort can easily be modified so that it happens
+            # in place and no extra space is used.
+        
+            # If the array is empty, it is already sorted.
+            if not arr:
+                return []
+        
+            # Otherwise, sort from indices 0 to (len(arr) - 1) inclusive.
+            else:
+                return quick_sort_iterative(arr, 0, len(arr) - 1)
+        
+        def quick_sort_iterative(arr, left, right):
+            # We do iterative quick sort with the use of a stack.
+            stack = []
+            stack.append(left)
+            stack.append(right)
+            # Continue while we still have an unsorted portion.
+            while stack:
+                r = stack.pop()
+                l = stack.pop()
+                # Move everything less than pivot left of it, and
+                # everything greater to the right of it.
+                pivot = quick_sort_partition(arr, l, r)
+                # If there is stuff left of it that needs to be
+                # sorted
+                if pivot - 1 > l:
+                    stack.append(l)
+                    stack.append(pivot - 1)
+                # If there is stuff right of it that needs to be
+                # sorted
+                if pivot + 1 < r:
+                    stack.append(pivot + 1)
+                    stack.append(r)
+            return arr
+        
+        def quick_sort_partition(arr, left, right):
+            # Right now we are implementing randomized quicksort,
+            # but we could just as easily skip the first two lines
+            # and just always use the first element in the list as a
+            # pivot.
+            random_index = random.choice(range(left, right + 1))
+            arr[left], arr[random_index] = arr[random_index], arr[left]
+            pivot = arr[left]
+            orig_left = left
+            left += 1
+            # Do the switching that is required.
+            while True:
+                while left <= right and arr[left] <= pivot:             
+                    left += 1         
+                
+                while right >= left and arr[right] >= pivot:
+                    right -= 1
+                
+                if right <= left:
+                    break
+                arr[left], arr[right] = arr[right], arr[left]
+            arr[orig_left], arr[right] = arr[right], arr[orig_left]
+            return right
+
+        
+
+    INPLACE QUICKSORT 2:
 
         def sub_partition(array, start, end, idx_pivot):
 
@@ -12225,8 +12511,13 @@ COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
             quicksort(array, start, i - 1)
             quicksort(array, i + 1, end)
 
-    INPLACE MERGE SORT
+    INPLACE MERGE SORT O(N^2) example
 
+        '''
+        Now, merge sort on the other hand is pretty hard to do in place. 
+        I’ll leave it for future Nishanth to explore it 
+        further, but here’s a simple O(n^2) sort .
+        '''
         def merge_sort(xs):
             """Inplace merge sort of array without recursive. The basic idea
             is to avoid the recursive call while using iterative solution. 
@@ -12611,35 +12902,7 @@ GRAPH TRAVERSAL ALL TYPES:
                     if neighbor not in visited:
                         q.append(neighbor)
 
-    BFS Traversal, Distance And Path Included
-        def BFS_distance_path_variation(node):
-            q = deque()
-            q.append(node)
-            visited = {}
-            distance = {}
-            parent = {}
-            distance[node] = 0
-            parent[node] = None
-            while len(q) > 0:
-                current = q.popleft()
-                if current not in visited:
-                    visited[current] = 1:
-                    for neighbor in current.neighbors:
-                        if neigbor not in visited:
-                            q.append(neighbor)
-                            if neighbor not in distance:
-                                distance[neighbor] = distance[current] + 1
-                                parent[neighbor] = current
-                            else:
-                                '''
-                                TWO TERNARYS BELOW
-                                '''
-                                parent[neighbor] = current \
-                                if distance[current] + 1 < distance[neighbor] else \
-                                parent[neighbor]
-                                distance[neighbor] = distance[current] + 1 if \
-                                distance[current] + 1 < distance[neighbor] else \
-                                distance[neighbor]
+
 
     Topological Sort
 
