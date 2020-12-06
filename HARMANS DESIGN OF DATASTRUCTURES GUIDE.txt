@@ -252,6 +252,14 @@ Fenwick Intro:
     Leve  2 (use 2 bits)                           (3)0011         5(0101) 6(0110)
     Level 3 (use 3 bits)                                                        7(0111)
 
+    LEVEL 0 NODES STORE VALUES FROM [0 to 2^(i-1) - 1]
+    node 1 stores interval -> [0,0]
+    node 2 stores interval -> [0, 1]
+    node 4 stores interval -> [0, 3]
+    node 8 stores interval -> [0, 7]
+    
+    kids store in between spaces. 
+
     Parent relationships of tree are following: 
     Parent of 3 is 2,  
     parent of 8 is 0, 
@@ -351,6 +359,288 @@ Fenwick Intro:
         arr[i] = val;
         increment(i, diff);
     }
+
+    OK LETS GO OVER ANOTHER YOUTUBE VIDEO: 
+    https://www.youtube.com/watch?v=CWDQJGaN1gY
+
+
+    FENWICK TREE WHAT THE INDEXES MEAN, WHAT PARENTS MEAN, WHAT INTERVALS EACH IDX REFERS TO:
+    GUIDEEEE:
+
+    idx 0 stores value 0 [BECAUSE FENWICK TREE IS ONE INDEXED STRUCTURE]
+
+    idx 1 stores interval ranging from [start:0, size: 2^0 ] aka [0,0] -> because 1 = 0 + 2^0
+    idx 2 stores interval range from [start:0, size: 2^1] aka [0, 1] -> because 2 = 0 + 2^1
+    idx 3 stores interval range from [start:2^1, size: 2^0  ] aka [2, 2] because 3 = 2^1 + 2^0 
+                and we start the interval from the larger exponent
+    idx 4 stores range [start: 2^0, size: 2^2] aka [0, 3] because 4 = 0 + 2^2 
+    5 -> 2^2 + 2^0 -> so [start: 2^2, size: 2^0] aka [4, 4]
+    6 -> 2^2 + 2^1 -> so[start: 2^2, size: 2^1] aka [4, 5]
+    7 -> 2^2 + 2^1 + 2^0 -> so [start: 4 + 2, size -> 1] aka [6, 6]
+
+    8 -> 0 + 2^3 so [start: 0, size -> 8], aka [0, 7]
+    9 -> 2^3 + 2^0 so [start: 8, size 1] aka [8, 8]
+    10 -> 2^3 + 2^1 so [start: 8, size 2] aka [8, 9 ]
+    11 -> 2^3 + 2^1 + 2^0 so [start: 10, size: 1 ] -> [10, 10]
+
+    OK GIVE ME SUM FROM 0 TO 5
+    start from index 6 take value, go to parent -> 4 -> then go to parent sum all of em: 
+    what are those intervals?
+    6 -> [4, 5]
+    4 -> [0, 3] 
+    0 -> 0
+    STOP
+    WE COVERED THE INTERVAL [0, 5]
+
+    SUM FROM O TO 9
+    start from 10th index in fenwick: 
+    10 -> parent is 8 -> parent is 0 
+    [8, 9] + [0, 7] + [0]
+    THE INTERVAL COVERS [0, 9]
+    
+
+
+#################################################################################################
+Fenwick Trees (https://cp-algorithms.com/data_structures/fenwick.html)
+
+    Let, f be some reversible function and A be an array of integers of length N.
+
+    Fenwick tree is a data structure which:
+
+    calculates the value of function f in the given range [l,r] (i.e. f(Al,Al+1,…,Ar)) in O(logn) time;
+    updates the value of an element of A in O(logn) time;
+    requires O(N) memory, or in other words, exactly the same memory required for A;
+    is easy to use and code, especially, in the case of multidimensional arrays.
+    Fenwick tree is also called Binary Indexed Tree, or just BIT abbreviated.
+
+    The most common application of Fenwick tree is calculating the sum of a 
+    range (i.e. f(A1,A2,…,Ak)=A1+A2+⋯+Ak).
+
+    Fenwick tree was first described in a paper titled "A new data structure for 
+    cumulative frequency tables" (Peter M. Fenwick, 1994).
+
+
+    One-based indexing approach
+    For this approach we change the requirements and definition for T[] and g() a 
+    little bit. We want T[i] to store the sum of [g(i)+1;i]. This changes the 
+    implementation a little bit, and allows for a similar nice definition for g(i):
+
+    def sum(int r):
+        res = 0
+        while (r > 0):
+            res += t[r]
+            r = g(r)
+        return res
+
+    def increase(int i, int delta):
+        for all j with g(j) < i <= j:
+            t[j] += delta
+            
+    The computation of g(i) is defined as: toggling of the last set 1 bit 
+
+    The last set bit can be extracted using i & (−i), so the operation can be expressed as:
+    g(i)=i−(i & (−i).
+    
+    And it's not hard to see, that you need to change all values T[j] in 
+    the sequence i, h(i), h(h(i)), … when you want to update A[j], where h(i) is defined as:
+    h(i)=i+(i & (−i)).
+
+    As you can see, the main benefit of this approach is that the binary operations 
+    complement each other very nicely.
+
+    The following implementation can be used like the other implementations, 
+    however it uses one-based indexing internally.
+
+    struct FenwickTreeOneBasedIndexing {
+        vector<int> bit;  // binary indexed tree
+        int n;
+
+        FenwickTreeOneBasedIndexing(int n) {
+            this->n = n + 1;
+            bit.assign(n + 1, 0);
+        }
+
+        FenwickTreeOneBasedIndexing(vector<int> a)
+            : FenwickTreeOneBasedIndexing(a.size()) {
+            for (size_t i = 0; i < a.size(); i++)
+                add(i, a[i]);
+        }
+
+        int sum(int idx) {
+            int ret = 0;
+            for (++idx; idx > 0; idx -= idx & -idx)
+                ret += bit[idx];
+            return ret;
+        }
+
+        int sum(int l, int r) {
+            return sum(r) - sum(l - 1);
+        }
+
+        void add(int idx, int delta) {
+            for (++idx; idx < n; idx += idx & -idx)
+                bit[idx] += delta;
+        }
+    };
+
+    Range operations
+    A Fenwick tree can support the following range operations:
+
+    Point Update and Range Query
+
+    Range Update and Point Query
+    
+    Range Update and Range Query
+    
+    1. Point Update and Range Query
+        This is just the ordinary Fenwick tree as explained above.
+
+
+    2. Range Update and Point Query
+        Using simple tricks we can also do the reverse operations: 
+        increasing ranges and querying for single values.
+
+        Let the Fenwick tree be initialized with zeros. Suppose that we want 
+        to increment the interval [l,r] by x. We make two point update operations 
+        on Fenwick tree which are add(l, x) and add(r+1, -x).
+
+        If we want to get the value of A[i], we just need to take the prefix sum 
+        using the ordinary range sum method. To see why this is true, 
+        we can just focus on the previous increment operation again. 
+        If i<l, then the two update operations have no effect on the 
+        query and we get the sum 0. If i∈[l,r], then we get the answer 
+        x because of the first update operation. And if i>r, then the 
+        second update operation will cancel the effect of first one.
+
+        The following implementation uses one-based indexing.
+
+        void add(int idx, int val) {
+            for (++idx; idx < n; idx += idx & -idx)
+                bit[idx] += val;
+        }
+
+        void range_add(int l, int r, int val) {
+            add(l, val);
+            add(r + 1, -val);
+        }
+
+        int point_query(int idx) {
+            int ret = 0;
+            for (++idx; idx > 0; idx -= idx & -idx)
+                ret += bit[idx];
+            return ret;
+        }
+        
+        Note: of course it is also possible to increase
+        a single point A[i] with range_add(i, i, val).
+
+    3. Range Updates and Range Queries
+        To support both range updates and range queries we will use two BITs 
+        namely B1[] and B2[], initialized with zeros.
+
+        Suppose that we want to increment the interval [l,r] by the value x. 
+        Similarly as in the previous method, we perform two point updates 
+        on B1: add(B1, l, x) and add(B1, r+1, -x). And we also update B2. 
+        The details will be explained later.
+
+        def range_add(l, r, x):
+            add(B1, l, x)
+            add(B1, r+1, -x)
+            add(B2, l, x*(l-1))
+            add(B2, r+1, -x*r))
+
+        After the range update (l,r,x) the range sum query should return the following values:
+        
+        
+        
+        sum[0,i]= 0 if i < l
+                = x*(i-(l-1)) if l <= i <= r
+                = x*(r-l+1) if i > r
+        
+        sum[0,i] = sum(B1, i)*i - sum(B2, i)
+        = {
+            0*i - 0 if i < l
+            x*i - x*(l-1)   if l <= i <= r
+            0*i - (x*(l-1) - x*r)   if i > r
+        }
+
+
+
+
+        We can write the range sum as difference of two terms, where we use B1 for first term 
+        and B2 for second term. The difference of the queries will give us prefix sum over [0,i].
+        
+        
+        
+        sum[0,i]=sum(B1,i)⋅i−sum(B2,i)=⎧⎩⎨0⋅i−0x⋅i−x⋅(l−1)0⋅i−(x⋅(l−1)−x⋅r)i<ll≤i≤ri>r
+
+        The last expression is exactly equal to the required terms. Thus we can 
+        use B2 for shaving off extra terms when we multiply B1[i]×i.
+
+        We can find arbitrary range sums by computing the prefix sums for l−1 and 
+        r and taking the difference of them again.
+
+        def add(b, idx, x):
+            while idx <= N:
+                b[idx] += x
+                idx += idx & -idx
+
+        def range_add(l,r,x):
+            add(B1, l, x)
+            add(B1, r+1, -x)
+            add(B2, l, x*(l-1))
+            add(B2, r+1, -x*r)
+
+        def sum(b, idx):
+            total = 0
+            while idx > 0:
+                total += b[idx]
+                idx -= idx & -idx
+            return total
+
+        def prefix_sum(idx):
+            return sum(B1, idx)*idx -  sum(B2, idx)
+
+        def range_sum(l, r):
+            return prefix_sum(r) - prefix_sum(l-1)
+
+
+    Practice Problems
+        UVA 12086 - Potentiometers
+        LOJ 1112 - Curious Robin Hood
+        LOJ 1266 - Points in Rectangle
+        Codechef - SPREAD
+        SPOJ - CTRICK
+        SPOJ - MATSUM
+        SPOJ - DQUERY
+        SPOJ - NKTEAM
+        SPOJ - YODANESS
+        SRM 310 - FloatingMedian
+        SPOJ - Ada and Behives
+        Hackerearth - Counting in Byteland
+        DevSkills - Shan and String
+        Codeforces - Little Artem and Time Machine
+        Codeforces - Hanoi Factory
+        SPOJ - Tulip and Numbers
+        SPOJ - SUMSUM
+        SPOJ - Sabir and Gifts
+        SPOJ - The Permutation Game Again
+        SPOJ - Zig when you Zag
+        SPOJ - Cryon
+        SPOJ - Weird Points
+        SPOJ - Its a Murder
+        SPOJ - Bored of Suffixes and Prefixes
+        SPOJ - Mega Inversions
+        Codeforces - Subsequences
+        Codeforces - Ball
+        GYM - The Kamphaeng Phet's Chedis
+        Codeforces - Garlands
+        Codeforces - Inversions after Shuffle
+        GYM - Cairo Market
+        Codeforces - Goodbye Souvenir
+        SPOJ - Ada and Species
+        Codeforces - Thor
+        Latin American Regionals 2017 - Fundraising
 
 
 
