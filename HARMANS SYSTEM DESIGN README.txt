@@ -1,5 +1,172 @@
 
+SCRAPE NOTES FROM THIS -> https://github.com/naniroot/naniz-hugo-site/blob/master/content/posts/system_design_interviews_cheatsheet.md
 
+OK L6 INTERVIEW PREP:
+
+Giving back - how I cleared L6 System Design - Part 1
+Red Hat  flung
+  608 Comments
+Part 2 is out : https://www.teamblind.com/post/rBrt5bV8
+
+Edit 5: I know I promised to reply to every comment/question but I left it at 90 comments and now it's 450 and grows faster than I can reply. I'll have to be selective. Sorry.
+
+Edit 4: I will be posting the links of part 2 of SD and future coding post here.
+
+Edit 3: "This is booky knowledge and not real life experience stuff". DDIA is condensed experience. Nishtala et al are as close to *relevant* real life experience as it gets. In fact, I had the feeling some of the experience of my interviewers was irrelevant experience in scaling glorified CRUD apps which had left them stale on knowledge. It's a balance, but I stand by my hints here if your goal is to clear the SD interview. This method got me 3 SH and 1 H in F/G interviews so like it or not, it gets the job done.
+
+Edit 2: Some people feel this is too much detail and you never get asked these things. Wrong. It's all up to you to steer the conversation. The question is pretty vague. The key is to identify unassisted the main pain point(s) of the problem and once you do, dive as deep as possible after you cover the high level design. It is not uncommon that the detail you waved away turns your high-level design to dead end. Everything that I mentioned as examples here were actually brought up in my interviews. Less preparation could get you there but, as I mentioned, I go for the jugular.
+
+Edit: Throw your questions in the comments. I'll get to everyone of them eventually, I promise. DMs also are welcome but it needs to be something you can't put on the comments.
+
+1. Intro
+
+I spent 6 months preparing overall. In the evenings before going to sleep I'd spend some time on Blind to get my hopes up and see a joke or two. There are some assholes here and there on Blind, but the majority are good people. I love you all. So now that I'm 'across the river' I decided to give back and provide some hints specifically on the System Design rounds.
+
+I interviewed at Amazon, Twitter, Google, Facebook, Databricks and Elastic for L6 (or L6 equivalent). I cleared them all with exception of Twitter. I cleared Google and Facebook first then had 'emergency' interviews with the rest of the companies to ensure I was well-placed for the inevitable lowballing dance. One Friday I had half-onsite with Elastic in the morning and half-onsite with Twitter in the evening. I completely messed up the System Design for Twitter and that killed my prospects. I regret that though, as I liked Twitter.
+
+I am not a genius, I'm just a hardworking tenacious guy. Don't let anyone tell you you're not smart enough for L6. It's all about mustering the motivation, channeling the work and executing it well.
+
+I made the decision to try 6 months ago, and I prepared throughout that time while being at work. So my preparation hints will suppose long-term prep. If you're expecting a two-week crash course this is not for you.
+
+I'm conscious some of this intro will read like a flex - it is genuinely not - but I'm sure the context will be helpful to many so I decided to make that tradeoff ;)
+
+2. Content
+
+Where do you start? Get the Designing Data Intensive Applications book. This will fill your theoretical gaps. Read it slowly. *Do not make fake progress*. If you don't understand something stop, use the references, research the subjects, get out of the book and back. There is *nothing* useless for you in that book. Nothing too much. It's all for you cover to cover. Properly grasping that book is half of the whole work. Part 1 is super useful to teach you how to pick data stores. Part 2 will dispel your fears of sharding and choosing a replication mechanism. Part 3 will give you a full idea on how to piece a big system together from smaller systems. The separation of System of record and derived data is key to understand there.
+
+When you think you're done with DDIA, if I wake you up in the middle of the night you should be able to explain to me how LSMT-based databases use Red Black Trees to keep a sorted log in memory and why they do that, and then get back to sleep. I'm serious.
+
+Next up, pay for Grokking the system design interview.
+
+I know that Grokking can be too shallow. Nevertheless, I want you to be able to recite the solutions in Grokking down to the smallest details. Details are more important than the big picture for L6. Do you think your done with typeahead suggestions? Did you mention exponential moving average on how you weigh results? No? Failed.
+
+You can leave the pastebin and bitly and that easy crap uncovered, but I'll need you to recite the other grokking solutions to the smallest details. Take extra care on the geospatial problems. If I show up at your lunch and ask you about quad trees I want you to be able to estimate the index size on the spot. You can't? Not ready yet.
+
+Next up: videos. InfoQ and @scale videos about real life systems. Look up Nathan Bronson and suck up all his videos on Tao, Caches etc. Look up Nishtala and the memcache video. Look up Kulkarni and the Facebook live video. Look up Susheel Aroskar and his Zuul push video <- ultra useful.
+
+Again, never make fake progress. Take this last one: Aroskar's Zuul push. He mentions Apache Netty. Read up on it, understand it. Go deeper, understand epoll and its red black trees. Go deeper and understand the TIMED-WAIT trick in TCP protocol which saves some web sockets connections. Another thing: he mentions some load balancers can't handle websockets. Why? Go figure it out. I did and I impressed my Facebook interviewer as I went deep until I was stopped as the interviewer lost it. L6 means depth, depth, depth. If you draw me a block that says 'Server' and leave it at that I'll slap you back to L3.
+
+Now I went the extra mile. But I wasn't targeting barely making it - I was targeting mind-blowing performance. If you want the hardcore stuff, let me know and I'll give you content for that as well. If you're up for anecdotes, a Google interviewer challenged me on Paxos when I mentioned Spanner to him. I drew the multi-Paxos detailed flow for him with estimated latencies supposing a 5-replica configuration with the pivot replica on north-east US. He smiled and said 'ok' (Strong hire).
+
+Next up, the Google SRE book. Did you say you're not interviewing for SRE? Don't care. You don't need it all. You do need the chapter on Non-Abstract Large System Design. You need to be able to recite that in your sleep. Especially the estimations part. You don't have NALSD interview? *rolls eyes* Don't care, learn the NALSD chapter or fail.
+
+3. Speaking of Estimations
+
+Ultra important. If you can't handle these, you're most likely ducked. How do you prepare for them? Practice power of 10 calculations. See how the NALSD chapter does it. Practice with fake numbers. Drag the units with you and reduce them when dividing/multiplying.
+
+When calculating storage, consider cold storage. Also consider e.g. cassandra needs ±30% free space to do compacting (see, I told you to properly learn LSTMs in Part 1 of DDIA), also keep in mind that only ±85% of the disk space is usable (OS files, formatting tables etc.), also keep in mind that 3-5% of disks die in a year so account for that, also keep in mind that you need to multiply by replication factor, also keep in mind that cassandra says no more than 2TB disks otherwise it gets slow.
+
+Have a strong grasp on the -bound concepts. Is something storage-bound (Log dumps)? Is something cpu-bound (live stream encoding)? Is something RAM bound (in-memory timeline serving)? Once you grasp those you design tiers with separate scaling techniques. That's why you need numbers, not to show off your math but to figure the -bound part and then decide how to scale a specific tier.
+
+I'll wrap up this part here. In the second part I'll get into some sample walk-throughs of some popular questions. Then I'll give a you a detailed plan on how to spend the 45 minutes. I did 9 System Design interviews in the space of 5 weeks so it's fresh in my head.
+
+Now you might think this is a lot of work. It is. It depends on how much you want the job. Want it badly? Throw in the effort then, that's all it takes. Was it worth the effort for me? Yes.
+
+Old TC: 175K USD, New TC: 593k USD
+
+
+Giving back - how I cleared L6 System Design - Part 2
+Red Hat  flung
+  48 Comments
+This is part 2 of a series. Here is part 1 which has a long intro: https://www.teamblind.com/post/Giving-back---how-I-cleared-L6-System-Design---Part-1-4yufM3RY
+
+0. Preface
+
+Let me touch on some points from Part 1 flood of comments:
+
+Is Nathan Bronson a porn star? I'm not sure if Nathan Bronson of Facebook has a side gig but I meant the other non-porn star Bronson.
+
+YOE? 10. Don't let YOE hold you back though. I've always been somehow the youngest of my peers at something. Age? Early 30s.
+
+Did I have coding rounds? Of course. I will write about that but it will have to wait. Plenty of coding hints on Blind on how to leetcode but I think the shortage is on SDI content so I want to plug that first.
+
+How did I manage the time? I had a method which I'll share eventually.
+
+---- end preface ----
+
+- Back of the envelope calculations (BOTEC)
+
+You expected something else? Sit down... I thought hard and I think this is something many people secretly fear and feel weak on. So since my goal in this effort is to genuinely help people, I think this is where my contribution is most valuable.
+
+You might think why do we even need BOTEC? Short version is to size tiers. What? Size? Tiers? Sizing as a verb here means to estimate how many machines/disks/etc. you will need. Tiers in this context means the typical tier in any system development. For example, a logging/counting system can have three tiers: 1. the collection tier, 2. the aggregation tier and 3. the storage tier.
+
+Another way you can use BOTEC is to figure out if something can fit in one machine or not, mostly memory wise. Most of the time it is self-evident, but 10 seconds of BOTEC should confirm it.
+
+Example: How do you serve the timelines of 1 Million people efficiently? Well how many posts do you expect to have readily available per person? Let's say 10. Ok. If we store the IDs only (say 64 bit) we can use a redis native list to store list of posts:
+
+8 bytes/post * 10 post/timeline=80 bytes/timeline (post goes away)
+1 Million timelines * 80 bytes/timeline = 10^6*10^1*8=8*10^(6+1) bytes (timeline goes away)
+
+so 80 million bytes means 80 MB - easily goes into one machine's RAM.
+
+This was an easy example however note two things: always drag the units with you: bytes/post, post/timeline and reduce when possible. It's extremely helpful to not get lost. Second, always use powers of 10 to not miss a zero here and a zero there.
+
+Here's the real life version of that.
+-64 bit ID per post - 8 bytes/post
+-800 posts/timeline
+-500 million timelines
+-replication factor of 3
+
+800 posts / timeline * 8 bytes/post = (post goes away) 8*10^2 * 8 bytes/timeline= 64 * 10^2 bytes/timeline
+
+500 million timelines* 64 * 10^2 bytes/timeline = (timeline goes away) 5 * 10^2 * 10^6 * 64 * 10 ^2 bytes= 5*64 * 10 ^(2+6+2) bytes= 300 * 10^10 = 3 *10^12 bytes = 3 TBs
+
+3TBs * 3 (unitless replication factor) = ±10 TB. Considering 64 GB ram/machine out of which 50 can be considered usable you have 10 TB/(50GB/machine) = 10* 10^12 Bytes /(5*10^9)Bytes/machine= 2 *10^3 =2000 Machines (Bytes goes away, 1 over 1 over machine becomes machine).
+
+The temptation here is to stop being pedantic with units but I suggest you don't. These can get messy so stick to it.
+
+This tier can be considered to be memory-bound.
+
+Look up Raffi Krikorian's Timelines at Scale on infoQ to see him talk about this at more length.
+
+Usually you have different tiers with different scaling mechanisms. Do your calculations early to get a feeling of what is going to be the bounding factor, then plan ahead to scale that accordingly.
+
+Here's an example of a QPS-bound tier. You're told you'll have to log 100 billion events per day. Ok. That sounds like a lot. Let's turn that into per second. Is that a calculator you took out? *takes it and throws out the window*
+
+100 * 10^9 events/day [divided by] 86400 seconds/day
+round to a convenient number
+100 * 10^9 events/day [divided by] 80000 seconds/day=
+10^11/(8*10^4) events/second (1 over day goes away)=1/8 *(10^7)Events/sec= 10/8 Million QPS=~1.2 Million QPS
+
+This looks to be a QPS bound tier. To size it, divide it by some (numerically convenient) number that can be handled by one machine and you get the number of machines.
+
+Same goes for storage sizing. Keep in mind the replication factor in storage and the amount of time you will be storing for. Look up datastax capacity planning for cassandra numbers, they're super useful.
+
+And last but not least here are some numbers I used to reference quite often. They're taken from various sources and I used them without causing dropped jaws, so it should be safe.
+
+- Compress 1KB with Zippy - 0.003 ms
+- Send 1KB over 1Gbps 0.01 ms
+- Read 4MB of sequential memory is 1 ms
+- Read 4MB of sequential SSD is 20 ms
+- Read 4MB of sequential HDD is 80 ms
+- One single disk seek is 10 ms
+- Inter-datacenter roundtrip 150ms
+- Inter-datacenter bandwidth ±100 Gbps
+- Video is roughly 10 MB/minute
+- A server can have 100-150GB of usable RAM
+- Cassandra is best used with 1-2TB storage / node
+- A 1Gbps link can handle max of 125 MB /s
+- Cassandra cluster can handle 10-15000 reqs/s/node and grows linearly with number of nodes
+- 720p video - 1.5Mbps
+- 340 video - 150Kbps
+
+End of part 2
+
+
+Thanks a lot for putting both the posts together. Would you mind sharing a structured (non-negotiable/not to be skipped list) for your approach? The reason am asking for this because reading about SDI seems to be an endless exercise. For example, from the limited knowledge I have the way I see it there are multiple aspects to it:
+
+* Distributed systems basics (most of which might be covered in DDIA) - anything else you'd suggest?
+* Advanced concepts for distributed systems (e.g. how exactly consensus work under the covers) - what exactly should we look at? Any relevant blog links?
+* Algorithms which are pivotal to specific systems (Quadtree/Geohash for Uber, Google Maps, Tinder etc; Tries for Typeahead suggestions; Leaky bucket for rate limiting etc) - Was there any list which you went through which you can share?
+* White papers which explain famous technologies under the hood (e.g. GFS, BigTable, Kafka, Paxos, Dynamo etc) - Can you share your list ?
+* If we break down a simple system into multiple parts, each aspect has a lot of technologies that can come in : Client-Server (Netty/Poly..) ; Load Balancing (NGINX /Netscaler..), Data Processing (Spark, Flink..); Storage (Cassandra, DynamoDB etc. ) - Again did you have a list that you went through or you can share?
+
+I feel overwhelmed with the amount of breadth this topic has and feel lost at times. Any guidance would help!
+
+
+
+
+#############################################
 WRITE NOTES FOR THIS -> https://hakibenita.com/sql-tricks-application-dba
 
 My approach for solving system design in an interview:

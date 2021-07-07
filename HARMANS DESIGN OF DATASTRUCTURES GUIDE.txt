@@ -408,7 +408,7 @@ Fenwick Intro:
     We need next because when we update certain nodes that enclose an interval such as 
     node 6 encloses ->  [4, 5] we should update 
     node 8 that encloses [0, 7] which is the start of a seperate subbranch and has parent of idx 0
-    since node 6 is in node 8 if you know what i mean. 
+    since node 6's interval is in node 8's interval if you know what i mean. 
 
     doing next jumps around in fenwick tree to other intervals that enclose you!!!!!!!!!!!!!!!!!!!!
 

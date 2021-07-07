@@ -640,6 +640,162 @@
 
 
 
+##############################################################################
+RESERVOIR SAMPLING:
+
+    Reservoir sampling is a family of randomized algorithms for randomly choosing k 
+    samples from a list of n items, where n is either a very large or unknown number. 
+    Typically n is large enough that the list doesn’t fit into main memory. 
+    For example, a list of search queries in Google and Facebook.
+
+    So we are given a big array (or stream) of numbers (to simplify), and we need 
+    to write an efficient function to randomly select k numbers where 1 <= k <= n.
+    Let the input array be stream[].
+
+    A simple solution is to create an array reservoir[] of maximum 
+    size k. One by one randomly select an item from stream[0..n-1]. 
+    If the selected item is not previously selected, then put it in 
+    reservoir[]. To check if an item is previously selected or not, we need 
+    to search the item in reservoir[]. The time complexity of this algorithm 
+    will be O(k^2). This can be costly if k is big. Also, this is not efficient 
+    if the input is in the form of a stream.
+
+    It can be solved in O(n) time. The solution also suits well for input 
+    in the form of stream. The idea is similar to this post. 
+    Following are the steps.
+
+    1) Create an array reservoir[0..k-1] and copy first k items of stream[] to it.
+    2) Now one by one consider all items from (k+1)th item to nth item.
+    …a) Generate a random number from 0 to i where i is index of current item 
+        in stream[]. Let the generated random number is j.
+    …b) If j is in range 0 to k-1, replace reservoir[j] with arr[i]
+
+
+    # An efficient Python3 program  
+    # to randomly select k items 
+    # from a stream of items 
+    import random 
+    # A utility function  
+    # to print an array 
+    def printArray(stream,n): 
+        for i in range(n): 
+            print(stream[i],end=" "); 
+        print(); 
+    
+    # A function to randomly select 
+    # k items from stream[0..n-1]. 
+    def selectKItems(stream, n, k): 
+            i=0;  
+            # index for elements 
+            # in stream[] 
+            
+            # reservoir[] is the output  
+            # array. Initialize it with 
+            # first k elements from stream[] 
+            reservoir = [0]*k; 
+            for i in range(k): 
+                reservoir[i] = stream[i]; 
+            
+            # Iterate from the (k+1)th 
+            # element to nth element 
+            while(i < n): 
+                # Pick a random index 
+                # from 0 to i. 
+                j = random.randrange(i+1); 
+                
+                # If the randomly picked 
+                # index is smaller than k, 
+                # then replace the element 
+                # present at the index 
+                # with new element from stream 
+                if(j < k): 
+                    reservoir[j] = stream[i]; 
+                i+=1; 
+            
+            print("Following are k randomly selected items"); 
+            printArray(reservoir, k); 
+        
+    # Driver Code 
+    
+    if __name__ == "__main__": 
+        stream = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; 
+        n = len(stream); 
+        k = 5; 
+        selectKItems(stream, n, k); 
+    
+    # This code is contributed by mits 
+
+
+
+
+    How does this work?
+    Imagine the following "dating" game show. The contestant, a bachelorette, is seated 
+    at a table with an empty chair. The host introduces the first suitor; the bachelorette has 
+    to invite him to sit with her and be her current "date". Next, the host introduces the second 
+    suitor. Now the girl gets the choice of whether she will keep her current "date" or replace him 
+    with the new suitor. She can use a variety of means to make her decision, such as asking 
+    questions, or making the two suitors compete in some way. After that, the host introduces 
+    the third suitor, and again the girl can choose to either keep or replace her current "date." 
+    After showing n suitors this way, the game show ends, and the girl goes on a real date 
+    with the suitor she kept at the end, the "winner" of the show.
+
+    Imagine one contestant who simply flips a coin to decide whether or not to swap her current 
+    "date". Is this "fair" to the suitors, i.e., is the probability distribution of the winner 
+    uniform over all the suitors? The answer is no, because it is much more likely for the last 
+    few suitors to win than the first few suitors. The very first suitor is most unfortunate of all, 
+    since if he wants to go on a date with the girl, he has to survive n-1 coin flips. The last 
+    suitor has the best chances--he only needs to win a single coin flip.
+
+    So, what kind of procedure should the girl use if she wants to give all the suitors an equal
+    chance, 1/n? First of all, she has to swap to the last suitor with probability 1/n, 
+    since the last suitor wins if and only if she decides to swap on the last step. Now 
+    what about the second-to-last suitor? In order for him to win, she has to decide to 
+    swap on the (n-1)th step, and then also decide to not swap on the nth step. This happens 
+    with probability  (pn−1) * (n-1)/n, where  pn−1  is the probability that she swaps on the (n-1)th 
+    step and (n-1)/n is the probability she does not swap on the nth step. Solving for
+
+    pn−1 (n-1)/n = 1/n
+
+    we get  pn−1  = 1/(n-1). Continuing the pattern, we see that her swap 
+    probability on the kth step is 1/k.
+
+    That is the algorithm for reservoir sampling.
+
+
+
+
+    To prove that this solution works perfectly, we must prove that 
+    the probability that any item stream[i] where 0 <= i < n will be in 
+    final reservoir[] is k/n. Let us divide the proof in two cases 
+    as first k items are treated differently.
+
+
+    Case 1: For last n-k stream items, i.e., for stream[i] where k <= i < n
+    For every such stream item stream[i], we pick a random index from 0 to i and 
+    if the picked index is one of the first k indexes, we replace 
+    the element at picked index with stream[i]
+
+    To simplify the proof, let us first consider the last item. The probability that the 
+    last item is in final reservoir = The probability that one of the first k indexes is 
+    picked for last item = k/n (the probability of picking one of the k items from a list of size n)
+
+    Let us now consider the second last item. The probability that the second last 
+    item is in final reservoir[] = 
+    [Probability that one of the first k indexes is picked in iteration for stream[n-2]] X 
+    [Probability that the index picked in iteration for stream[n-1] is not same as 
+    index picked for stream[n-2] ] = [k/(n-1)]*[(n-1)/n] = k/n.
+
+    Similarly, we can consider other items for all stream items from 
+    stream[n-1] to stream[k] and generalize the proof.
+
+    Case 2: For first k stream items, i.e., for stream[i] where 0 <= i < k
+    The first k items are initially copied to reservoir[] and may be removed 
+    later in iterations for stream[k] to stream[n].
+    The probability that an item from stream[0..k-1] is in final array = Probability that 
+    the item is not picked when items stream[k], stream[k+1], …. stream[n-1] are 
+    considered = [k/(k+1)] x [(k+1)/(k+2)] x [(k+2)/(k+3)] x … x [(n-1)/n] = k/n
+
+
 
 
 

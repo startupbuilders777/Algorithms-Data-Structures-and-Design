@@ -12488,12 +12488,15 @@ COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
             i = start + 1
             j = start + 1
 
+            # i refers to first big element, j refers to last big element. 
             while j <= end:
                 if array[j] <= pivot:
                     array[j], array[i] = array[i], array[j]
                     i += 1
                 j += 1
 
+            # it swaps with i-1 because i-1 is the end of the smaller elements, 
+            # and i refers to first big element
             array[start], array[i - 1] = array[i - 1], array[start]
             return i - 1
 
