@@ -70,12 +70,88 @@ TOPICS TO UNDERSTAND:
 
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
+-105) SUDOKU SOLVER back tracking.
+    Write a program to solve a Sudoku puzzle by filling the empty cells.
+
+    A sudoku solution must satisfy all of the following rules:
+
+    Each of the digits 1-9 must occur exactly once in each row.
+    Each of the digits 1-9 must occur exactly once in each column.
+    Each of the digits 1-9 must occur exactly once in each of the 9 3x3 sub-boxes of the grid.
+    The '.' character indicates empty cells.
+    Do you know why heap wouldnt improve the performance here?
+    constant time because theres only 9 rows and 9 cols. 
+
+
+
+    class Solution:
+        def solveSudoku(self, board: List[List[str]]) -> None:
+            rows = [[0 for j in range(10)] for i in range(9)]
+            cols = [[0 for j in range(10)]for i in range(9)]
+            boxes = [[0 for j in range(10)] for i in range(9)]
+
+            def boxidx(r, c):
+                return 3*(r//3) + c//3
+
+            pos = []
+            for ri, row in enumerate(board): 
+                for ci, ele in enumerate(row):
+                    if ele != ".":
+                        ele = int(ele)
+                        rows[ri][ele] = 1
+                        cols[ci][ele] = 1
+                        boxes[boxidx(ri, ci)][ele] = 1
+                    else:
+                        # keep track of these elements we set. 
+                        # actually if we are allowed to modify the board in place.. lets just do that
+                        # iterate the board.
+                        pos.append((ri, ci))
+
+            def setVal(i, j, val):
+                if rows[i][val] != 1 and cols[j][val] != 1 and boxes[boxidx(i, j)][val] != 1:
+                    # set it in all of them. 
+                    board[i][j] = str(val)
+                    rows[i][val] = 1
+                    cols[j][val] = 1
+                    boxes[boxidx(i, j)][val] = 1
+                    return True 
+                return False
+
+            def unsetVal(i, j, val):
+                board[i][j] = "."
+                rows[i][val] = 0
+                cols[j][val] = 0
+                boxes[boxidx(i, j)][val] = 0
+
+            def solve(i):
+                if i == len(pos):
+                    return True 
+                (ri, ci) = pos[i]
+                for num in range(1, 10):
+                    check = setVal(ri, ci, num)
+                    if check:
+                        res = solve(i+1)
+                        if res:
+                            return True
+                        else:
+                            unsetVal(ri,ci, num)
+            solve(0)
+            return board
+
+
+
 
 -104) FIND RIGHT INTERVAL C++ WITH PRIORITY QUEUE (fast solution):
       (2 ARRAY INTERVAL SOLUTIONS WITH SORTED START END TIMES + POINTERS)
+    fck 2 array ? bc sorting does nlogn work anyway.
 
-    
+    Just sort the starts (with attached original indexes), then binary search the ends in them.
+    import bisect
 
+    class Solution:
+        def findRightInterval(self, intervals):
+            starts = sorted([I[0], i] for i, I in enumerate(intervals)) + [[float('inf'), -1]]
+            return [starts[bisect.bisect(starts, [I[1]])][1] for I in intervals]
 
 
 
@@ -6863,6 +6939,84 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                     p = p * nums[i]
                 return output
 
+1.96)
+    https://leetcode.com/problems/subarray-sum-equals-k/description/ 
+    Variation to just give true or false Did both solutions using Prefix sum and sliding window.
+
+    Nested List weighted sum
+    Coding1:
+
+    K closest points to Origin solved in 20 mins using quick select.
+    Variation of Robot room cleaner - This is where I struggled. 
+    I only had 15 mins left to answer this, Interviewer was not letting me 
+    finish my code unless I give them a clear explanation. I could not finish the code. 
+    Gave the answer verbally that I will use DFS and backtracking to go back when the robot is stuck.
+
+    Coding 2:
+
+    https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/description/
+    https://leetcode.com/problems/powx-n/description/
+    Gave optimal answers for all of them and explained my thought process thoroughly. 
+    I think I made it up for my earlier coding round here.
+
+1.97)  GREEDY SEARCHING INSTEAD OF BINARY SEARCH! 
+       ABUSING INCREASING VALUES IN ONE DIRECT AND DECREASING IN OTHER DIRECTION. 
+       AKA ABUSING CRITICAL POINTS.  
+        
+        Write an efficient algorithm that searches for a value target in an m x n 
+        integer matrix matrix. This matrix has the following properties:
+
+        Integers in each row are sorted in ascending from left to right.
+        Integers in each column are sorted in ascending from top to bottom.
+
+        1   4  7 11 15
+        2   5  8 12 19
+        3   6  9 16 22
+        10 13 14 17 24
+        18 21 23 26 30
+
+        ^ search for 5 in here. 
+
+
+        This isnt binary search. 
+
+
+    Actually its abusing the sort in both the rows and cols to achieve O(N+M) complexity
+
+    instead of binary seraching each row to do O(n*log(m)) complexity which is worse. 
+
+    Both the top right and bottm left cols will have 
+
+
+    We start search the matrix from top right corner, initialize the current 
+    position to top right corner, if the target is greater than the value in current 
+    position, then the target can not be in entire row of current position because 
+    the row is sorted, if the target is less than the value in current position, 
+    then the target can not in the entire column because the column is sorted too. 
+    We can rule out one row or one column each time, so the time complexity is O(m+n).
+
+    public class Solution {
+        public boolean searchMatrix(int[][] matrix, int target) {
+            if(matrix == null || matrix.length < 1 || matrix[0].length <1) {
+                return false;
+            }
+            int col = matrix[0].length-1;
+            int row = 0;
+            while(col >= 0 && row <= matrix.length-1) {
+                if(target == matrix[row][col]) {
+                    return true;
+                } else if(target < matrix[row][col]) {
+                    col--;
+                } else if(target > matrix[row][col]) {
+                    row++;
+                }
+            }
+            return false;
+        }
+    }
+
+
+
 2) Back tracking
     => For permutations, need some intense recursion 
         (recurse on all kids, get all their arrays, and append our chosen element to everyones array, return) 
@@ -6872,6 +7026,10 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     => To get all subsets, count from 0 to 2^n, and use bits to choose elements.
     => When doing DP, check to see if you are dealing with permutations or combinations type solutions, and 
         adjust your DP CAREFULLY ACCORDING TO THAT -> AKA CHECK COIN CHANGE 2
+
+2.1) How do you do LCA? explain now. 
+
+
 
 2.3) Graphs =>
     Try BFS/DFS/A star search
@@ -6918,6 +7076,36 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     Prim's algorithm will grow a solution from a random vertex by adding 
     the next cheapest vertex, the vertex that is not currently in the 
     solution but connected to it by the cheapest edge.    
+
+
+2.3101) Meta onsite know these thigns. 
+        Phone
+        (1) https://leetcode.com/problems/max-area-of-island/editorial/
+        (2) https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/description/
+
+        Virtual Onsite
+        Coding 1
+        https://leetcode.com/problems/powx-n/description/
+        https://leetcode.com/problems/kth-largest-element-in-an-array/description/
+
+        Coding 2
+        https://leetcode.com/problems/binary-search-tree-iterator/description/
+        Slight Variation of https://leetcode.com/problems/shortest-path-in-binary-matrix/description/ to return the path, the lc question is to return distance.
+
+        System design
+        Design a system to search statuses
+
+        Behavioral
+        usual fluff about project, manager and peers.
+
+        I see that the editorial for some of the questions like:
+
+        Find kth largest number
+        Find k closest points to origin
+        Suggest using quick select algorithm which has O(n^2) time complexity in the worst case. 
+        Do they still prefer that over a heap solution? What's the acceptance criteria 
+        for such questions for people who interviewed at META?
+
 
 2.311) KRUSKALS WITH AND WITHOUT Disjoint set union
 
@@ -8072,6 +8260,58 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 8) Do preprocessing work before you start solving problem to improve efficiency
 
 9) Use Counter in python to create a multiset. 
+
+9.1) Basic Calculator 3 Review:
+
+    The expression string contains only non-negative integers, +, -, *, / operators, 
+    open ( and closing parentheses ) and empty spaces.
+
+
+        class Solution(object):
+
+            def calculate(self, s):
+                """
+                Time    O(n)
+                Space   O(n)
+                80 ms, faster than 22.22%
+                """
+                arr = []
+                for c in s:
+                    arr.append(c)
+                return self.helper(arr)
+
+            def helper(self, s):
+                if len(s) == 0:
+                    return 0
+                stack = []
+                sign = '+'
+                num = 0
+                while len(s) > 0:
+                    c = s.pop(0)
+                    if c.isdigit():
+                        num = num*10+int(c)
+                    if c == '(':
+                        # do recursion to calculate the sum within the next (...)
+                        num = self.helper(s)
+                    if len(s) == 0 or (c == '+' or c == '-' or c == '*' or c == '/' or c == ')'):
+                        if sign == '+':
+                            stack.append(num)
+                        elif sign == '-':
+                            stack.append(-num)
+                        elif sign == '*':
+                            stack[-1] = stack[-1]*num
+                        elif sign == '/':
+                            stack[-1] = int(stack[-1]/float(num))
+                        sign = c
+                        num = 0
+                        if sign == ')':
+                            break
+                return sum(stack)
+
+
+
+9.5) dynamic programming patterns -> https://leetcode.com/discuss/study-guide/4988261/dynamic-programming-patterns
+
 
 10) Use dynamic programming for optimal substructure, subsequence questions
     -> Top down is easier to reason because you just memoize solutions youve seen before. 
@@ -9384,6 +9624,191 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
 
             cout << dp[n][0];
         }
+
+
+
+56) POW(X, N) and binary exponentiation
+
+    Implement pow(x, n), which calculates x raised to the power n (i.e., xn).
+    Example 1:
+
+    Input: x = 2.00000, n = 10
+    Output: 1024.00000
+    Example 2:
+
+    Input: x = 2.10000, n = 3
+    Output: 9.26100
+    Example 3:
+
+    Input: x = 2.00000, n = -2
+    Output: 0.25000
+    Explanation: 2-2 = 1/22 = 1/4 = 0.25
+
+                """
+                Lets implement binary exponentiation...
+                instead of 7*7*7*7*7.. 14 times how about log(14) performance!!
+                x = 7^14
+                14 is    1110
+                ok so we can do 
+                7^2 * 7^4 * 7^8
+                    7^2^2.  (7^2^2)^2  
+                a ^ (b+c+d) = a^b a^c a^d
+                we want to acheive log(n) using bin exp
+                7^2 = 7 * 7 
+                7^4 = 7^2
+                7^8 = 7^4 * 7^4 
+
+                Then just multiply the terms you want essentially right!
+
+                If power is negative..
+
+                7^-4 = 7^-2 * 7^-2
+                actually just do the postiveis and set 7 to 1/7 bruh to start.         
+                """
+
+                class Solution:
+                    def myPow(self, x: float, n: int) -> float:
+                        power = x
+
+                        if n < 0: 
+                            n = -n
+                            power = 1/power
+                        
+                        res = 1 
+
+                        while n:
+                            is_set = n & 1
+                            if is_set:
+                                res = res * power 
+                            power = power * power 
+                            n = n >> 1
+                        return res 
+
+
+
+Cool Notes Part 0.4 ##################################
+ ################################## ##################################
+
+SORTED CONTAINERS USAGE PYTHON.
+
+        READ DOCUMTATION FOR SORTED DICT:
+        https://grantjenks.com/docs/sortedcontainers/sorteddict.html#sorteddict
+
+        demonstrated in below prblem.
+
+        Binary Tree Map:
+
+        651 · Binary Tree Vertical Order Traversal
+
+        Description
+        Given a binary tree, return the vertical order traversal of its 
+        nodes' values. (ie, from top to bottom, column by column).
+
+        If two nodes are in the same row and column, the order should be from left to right.
+
+        For each node at position (row, col), its left and right children will be at positions 
+        (row + 1, col - 1) and (row + 1, col + 1) respectively. The root of the tree is at (0, 0).
+
+        Inpurt:  {3,9,20,#,#,15,7}
+        Output: [[9],[3,15],[20],[7]]
+        Explanation:
+         3
+        /\
+        /  \
+        9  20
+            /\
+        /  \
+        15   7
+        Example2
+
+        Input: {3,9,8,4,0,1,7}
+        Output: [[4],[9],[3,0,1],[8],[7]]
+        Explanation:
+            3
+            /\
+        /  \
+        9   8
+        /\  /\
+        /  \/  \
+        4  01   7
+
+        from collections import defaultdict, deque
+        from sortedcontainers import SortedDict
+
+        class Solution:
+            """
+            @param root: the root of tree
+            @return: the vertical order traversal
+            """
+            def vertical_order_okay(self, root: TreeNode) -> List[List[int]]:
+                """
+                Keep track of what level youre on!
+                going left makes it negative.. going right is positive. 
+
+                -3,-2,-1,0,1,2
+
+                The above solution uses preorder traversal but that is wrong..
+                it works for a lot of cases, but just messes up the ordering within 
+                the vertical.
+                """
+                res = defaultdict(list)
+                
+                # if you do preorder traversal, it should keep the verticals ordered. 
+                # ^ THIS IS A VERY INCORRECT ASSUMPTION
+                
+                start = float("inf")  #10000000
+                end = float("-inf") # -1000000
+                # ^ ALSO USING FLOAT HERE CAN FUCK STUFF UP UNLESS YOU GUARD FOR IT!
+                # OTHERWISE SHOULD USE NONE HERE SO THAT RANGE FUNCTION ERRORS BELOW. 
+                def helper(node, col):
+                    nonlocal start
+                    nonlocal end 
+
+                    if node is None:
+                        return 
+                    
+                    start = min(start, col)
+                    end = max(end, col)
+
+                    res[col].append(node.val)
+                    helper(node.left, col-1)
+                    helper(node.right, col+1)
+
+                if root is None: 
+                    # otherwise it will try to use inf in the range function so guard!
+                    return []
+                    
+                helper(root, 0)
+
+                # convert res to dictionary 
+                ans = []
+                for i in range(int(start), int(end+1) ):
+                    ans.append(res[i])
+                return ans
+
+
+            def vertical_order(self, root: TreeNode) -> List[List[int]]:
+                # use bfs for proper ordering of the vertical leveling. 
+                d = deque([(root, 0)])
+                res = SortedDict()
+
+
+                while len(d) > 0:
+                    
+                    n, col = d.popleft()
+
+                    if n:
+                        res.setdefault(col, [])
+                            
+                        res[col].append(n.val)
+                        d.append((n.left, col-1))
+                        d.append((n.right, col+1))
+                # print(list(res.values()) )
+                # sorted containers will do the sorting of the keys for you!
+
+                
+                # if you dont do list() it will return a SortedDictValuesView -> need to type cast it.
+                return list(res.values())
 
 
 #############################################################################

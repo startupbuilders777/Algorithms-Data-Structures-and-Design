@@ -32,6 +32,31 @@ Ray tracing: Given a set of objects in space, produce a data structure that effi
 
 WRITE NOTES ON COMPUTATIONAL GEOMETRY IN NOTES SECTION HERE.
 
+-7) Review permutations, combinations, pascals triangle. 
+    pascals triangle and the combination term 
+    Review bionmial theorem:
+    https://www.cuemath.com/algebra/binomial-theorem/
+
+    And expansion of terms. 
+
+    Combinatorics
+    Generating Functions 
+    Solving recurrences using generating functions 
+
+    Counting principle, 
+    Bijjection principle, 
+    Double counting 
+    Combinations and subsets
+    Multinomial coefficents
+
+    Binomial coefficients
+    https://www.math.kit.edu/iag6/lehre/co2015s/media/script.pdf
+
+
+    Permuations in a circle
+    
+
+
 -6) GCD of multiple numbers follows following rule: 
     The GCD of three or more numbers equals the product of the prime factors 
     common to all the numbers, but it can also be calculated by repeatedly 
