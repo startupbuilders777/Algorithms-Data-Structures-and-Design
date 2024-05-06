@@ -6379,6 +6379,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 0.05) To solve a difficult 3D problem or 2D problem. Solve the lower dimension first, 
      and then use it to guide your solution for higher dimensions. 
      Such as max area of rectangle of 1's.
+     Also think of other leetcode problems you did and just copy paste the ideas lol 
+    Maximal Rectangle can use strategies from largest histogram leetcode problem. 
+    
 
 0.1) When doing string splitting, there are helper functions 
      but sometimes its better to for loop through the 
@@ -6565,6 +6568,10 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
       hash map abuse to work (try thinking of it bottom up, base case, direction,
       to help you think of hash map abuse or a greedy soln). 
 
+      also TRY binary SEARCH, BINARY SEARCH CAN fit into anywhere!!
+
+
+
 0.5) Preprocess and do a running comparison between 2 containers. 
     For instance, to do certain problems you need to sort a list and then compare the sorted list 
     to another list to determine ways to do sliding window/2pointer type techniques. 
@@ -6740,7 +6747,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
      you thought were rules, find the true constraints!
      Look at 621) Task Scheduler. It looked complicated but we just 
      kept getting more greedy to get the most optimal MATHEMATICAL SOLUTION.
-     USE MATH AND ANALYSIS TO GET THE BEST SOLUTION!
+     USE MATH AND ANALYSIS TO GET THE BEST SOLUTION! + use binary SEARCHHCHCHC
 
 
 0.8) Sometimes you will get TLE with the bottom up solution. 
@@ -6785,7 +6792,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         2 pointer/2 index solutions. For instance,
         2 SUM for ordered arrays can be 
         solved in O(N) (OR even O(log N) if you implement 
-        binary searching 2 pointers)
+        binary searching 2 pointers -> ACTUALLY no i think its still o(N))
 
         # binary search        
         def twoSum(self, numbers, target):
@@ -6963,6 +6970,11 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
        ABUSING INCREASING VALUES IN ONE DIRECT AND DECREASING IN OTHER DIRECTION. 
        AKA ABUSING CRITICAL POINTS.  
         
+        -> TO COME UP WITH THESE SOLUTIONS YOU MUST TRACE OUR A BUNCH OF EXAMPLES 
+        AND SEE IF THE ALGO WORKS IN YOUR HEAD BEFORE YOU WRITE IT OUT!!
+        -> USE ALL YOUR TECHNIQUIES AND THINKING AS YOU TRACE..
+        -> HERE CRITICIAL POINTS WERE BOTTOM LEFT AND TOP RIGHT..
+
         Write an efficient algorithm that searches for a value target in an m x n 
         integer matrix matrix. This matrix has the following properties:
 
@@ -6982,9 +6994,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
     Actually its abusing the sort in both the rows and cols to achieve O(N+M) complexity
-
     instead of binary seraching each row to do O(n*log(m)) complexity which is worse. 
-
     Both the top right and bottm left cols will have 
 
 
@@ -7029,6 +7039,17 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 2.1) How do you do LCA? explain now. 
 
+    class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        if not root or root == p or root == q:
+        return root
+
+        l = self.lowestCommonAncestor(root.left, p, q)
+        r = self.lowestCommonAncestor(root.right, p, q)
+
+        if l and r:
+            return root
+        return l or r
 
 
 2.3) Graphs =>
@@ -7081,12 +7102,38 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 2.3101) Meta onsite know these thigns. 
         Phone
         (1) https://leetcode.com/problems/max-area-of-island/editorial/
-        (2) https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/description/
-
+        (2) https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/description/ -> REQUIRES bfs + tracking left and right with -1 and +1
         Virtual Onsite
         Coding 1
         https://leetcode.com/problems/powx-n/description/
-        https://leetcode.com/problems/kth-largest-element-in-an-array/description/
+        
+        https://leetcode.com/problems/kth-largest-element-in-an-array/description/ -> quick select or heap OR COUNTING SORT?
+        Time complexity:
+        QUICK SELECT:
+        O(N) on average
+        O(N^2) in the worst case, always choose the smallest or biggest, function runs in O(N) and need to call N times -> N * O(N) = O(N^2)
+        COUNTING SORT:
+        O(N + M), N is the len of nums, and M is maxVal - minVal
+        class Solution:
+            def findKthLargest(self, nums: List[int], k: int) -> int:
+                """
+                if heap len > k and heap[0] < num, heapop and then heappush
+                """
+                
+                max_n = max(nums)
+                min_n = min(nums)
+                counts = [0] * (max_n - min_n  + 1)
+                for num in nums:
+                    counts[num - min_n] += 1
+                delta = k
+                for idx in range(len(counts) - 1, -1, -1):
+                    delta -= counts[idx]
+                    if delta <= 0:
+                        return idx + min_n
+                raise "SHEEET"
+
+
+
 
         Coding 2
         https://leetcode.com/problems/binary-search-tree-iterator/description/
@@ -7400,16 +7447,174 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
 
+2.322) 
+
+    US Based role, recruiter reached out and practised around 3 week prior to phone screen.
+
+    Got asked around 15 min behavior questions before the coding round. Only one question was asked. 
+    The exact question cannot be found in leetcode but it's similer to this:
+
+    https://leetcode.com/problems/sliding-window-median/description/
+    Instead of a 1D sliding window, I was asked to apply a 2D sliding window as if the 1D array
+    was a (m * n) array, with a k sliding window on the pixals around it.
+
+    It took me around 40 minutes to write everything. The result is only 20 lines eventually 
+    so initially I was quite defeted as I thought I missed a easy question. The code was 
+    passing all the dry runs during the interview, but after the interview I realized that some 
+    special cases it would fail. I was stopped around 40 minute markd and he continued 
+    asking around 10 minutes about it's time complexity which I answered about right but he also hinted a lot.
+
+    The feedback from the recruiter mentioned that I communicated well to the interviewer and was quick on grabbing the hints.
+    
+
+    Normal median finding is with 2 heaps right? yes. 
+    or wait.. 
+
+
+    Giving back to community.
+
+    I gave my Meta Phone Screen today. Waiting for the result.
+
+    Questions I received :
+    https://leetcode.com/problems/nested-list-weight-sum/
+    https://leetcode.com/problems/valid-word-abbreviation/description/
 
 
 
 
+2.3222) READ THIS QUICKLY DP:
+            Unlocking the Power of Dynamic Programming: Principles, Practice, and Significance
+            Dynamic Programming (DP) stands as a cornerstone technique in algorithm design, offering a 
+            systematic approach to solving optimization problems efficiently. Its essence lies in breaking 
+            down complex problems into simpler subproblems, solving them independently, and then combining 
+            their solutions to derive the optimal solution for the main problem. 
 
+            Understanding the Inner Workings of Dynamic Programming:
+            1. Optimal Substructure:
 
+            DP problems exhibit optimal substructure, implying that an optimal solution for the main problem can be constructed from optimal solutions to its subproblems.
 
+            This characteristic allows us to decompose the main problem into smaller, 
+            manageable subproblems, facilitating a divide-and-conquer strategy for problem-solving.
+            2. Overlapping Subproblems:
 
+            Another critical aspect of DP is the presence of overlapping subproblems, 
+            where the same subproblem is encountered and solved multiple times during the computation process.
+            DP leverages this repetition by storing the solutions to overlapping subproblems in a data structure, 
+            thus avoiding redundant computations and enhancing efficiency.
+            
+            Core Steps in Dynamic Programming:
+            1. Identify Subproblems:
 
+            Begin by identifying the subproblems that exhibit optimal substructure, 
+            breaking down the main problem into smaller, solvable components.
+            These subproblems are usually interrelated and contribute to solving the overarching problem.
+            
+            2. Formulate Recurrence Relations:
 
+            Define recurrence relations that express the solution to each subproblem in terms of solutions to its smaller subproblems.
+            These recurrence relations serve as the foundation for DP solutions, providing a 
+            structured way to compute optimal solutions iteratively.
+            
+            3. Memoization or Tabulation:
+
+            DP implementations often employ memoization or tabulation techniques.
+            Memoization involves storing the solutions to subproblems in a cache (such as a dictionary or array) to avoid recomputation.
+            Tabulation, on the other hand, is a bottom-up approach where solutions to subproblems are computed iteratively and stored in a table-like structure.
+
+            4. Construct Optimal Solution:
+
+            Once all subproblems are solved, and their solutions are stored via memoization or tabulation, construct the optimal solution to the main problem using these precomputed solutions.
+            This step typically involves tracing back through the DP table or cache to derive the optimal path or outcome.
+            Memoization Approach:
+            Memoization is a top-down approach to DP, where solutions to subproblems are stored in a cache (such as a dictionary or an array) to avoid redundant computations. It's particularly effective when solving recursive problems with overlapping subproblems. Here's a step-by-step guide to the memoization approach:
+
+            1. Identify Subproblems:
+
+            Begin by identifying the subproblems within the main problem that exhibit optimal substructure.
+            These subproblems should be distinct and reusable, contributing to the solution of the main problem.
+            2. Define Recursive Function:
+
+            Create a recursive function that represents the problem-solving logic, 
+            taking parameters that define the current state or subproblem.
+            Within the recursive function, incorporate base cases to handle trivial or terminating conditions.
+            3. Implement Memoization Cache:
+
+            Initialize a cache (e.g., a dictionary or an array) to store solutions to subproblems.
+            Before computing the solution to a subproblem, check if it already exists in the cache. 
+            If so, return the cached solution instead of recomputing.
+            4. Recursion with Memoization:
+
+            Modify the recursive function to utilize memoization. Upon computing the solution to a subproblem, store it in the cache for future reference.
+            When encountering a subproblem that has already been solved and cached, retrieve the solution from the cache to avoid redundant computations.
+            5. Return Optimal Solution:
+
+            As the recursive calls unwind, the optimal solution to the main problem is constructed using the solutions stored in the memoization cache.
+            Return the final optimal solution computed by the memoization-enhanced recursive function.
+
+            Tabulation Approach:
+            Tabulation is a bottom-up approach to DP, where solutions to subproblems are computed 
+            iteratively and stored in a table-like structure (such as an array or matrix). 
+            It's suitable for problems with well-defined states and optimal substructure. 
+            Here's a detailed guide to the tabulation approach:
+
+            1. Define DP Table:
+
+            Begin by defining a DP table, typically a multi-dimensional array or matrix, to store solutions to subproblems.
+            Determine the dimensions of the table based on the problem's states or parameters.
+            2. Initialize Base Cases:
+
+            Populate the initial rows or columns of the DP table with base case values that represent trivial or starting conditions.
+            Base cases serve as the foundation for computing solutions to larger subproblems.
+            3. Iterative Computation:
+
+            Iterate through the DP table in a systematic order, filling in entries based on solutions to smaller subproblems.
+            Follow a specific order of computation that ensures dependencies between subproblems are addressed correctly.
+            4. Update DP Table:
+
+            As solutions to subproblems are computed iteratively, update the DP table with the computed values.
+            Ensure that each entry in the DP table represents the optimal solution to the corresponding subproblem.
+            5. Derive Optimal Solution:
+
+            Once the DP table is fully populated with solutions to all subproblems, 
+            the optimal solution to the main problem is derived from the final entries of the DP table.
+            Traverse the DP table or follow a predefined path to extract the optimal solution.
+            Comparison and Use Cases:
+            Memoization: Ideal for problems with recursive structures and overlapping subproblems, 
+            where the focus is on solving specific subproblems efficiently and reusing their solutions.
+
+            Tabulation: Suited for problems with well-defined states or parameters, where a systematic and 
+            iterative approach to computing solutions is preferred, leading to a structured 
+            DP table representing optimal solutions.
+
+            Both memoization and tabulation are powerful techniques in DP, offering different approaches to 
+            problem-solving based on the problem's characteristics and requirements. Understanding when to
+            apply each technique is key to leveraging Dynamic Programming effectively across a diverse range of optimization problems.
+
+            DP ALSO USES FINITE STATE MACHIENS TO TRAVERSE DIFFERENT STATES WITHIN SUBPROBLEMS, LEVERAGE IT. 
+            
+            Practice Questions for Dynamic Programming Mastery:
+            70. Climbing Stairs
+            322. Coin Change
+            300. Longest Increasing Subsequence
+            53. Maximum Subarray
+            198. House Robber
+            62. Unique Paths
+            72. Edit Distance
+            5. Longest Palindromic Substring
+            123. Best Time to Buy and Sell Stock III
+            122. Best Time to Buy and Sell Stock II
+            139. Word Break
+            91. Decode Ways
+            96. Unique Binary Search Trees
+            55. Jump Game
+            1143. Longest Common Subsequence
+            10. Regular Expression Matching
+            13. Paint House
+            518. Coin Change II
+            338. Counting Bits
+            647. Palindromic Substrings
+            64. Minimum Path Sum
 
 
 
@@ -7459,9 +7664,16 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
     Edge type of uv | start times         | end times
     Tree edge       | start[u] < start[v] | end[u] > end[v]
-    Back edge       | start[u] > start[v] | end[u] < end[v]
-    Forward edge    | start[u] < start[v] | end[u] > end[v]
-    Cross edge      | start[u] > start[v] | end[u] > end[v]
+    Back edge       | start[u] > start[v] | end[u] < end[v]  (THIS IS JUST THE OPPOSITE TIMESTAMPS AS TREE/FORWARD ENDGE)
+    Forward edge    | start[u] < start[v] | end[u] > end[v]   (START AND FORWARD HAVE THE SAME TIME STAMPS!!!)
+    Cross edge      | start[u] > start[v] | end[u] > end[v] (THIS IS JUST ALL OTHER CASES! BUT THE EDGE U VISITED STARTED BEFORE U. )
+
+    TREE/FORWARD EDGE -> STARTED AFTER YOU AND ENDED EARLIER THAN YOU.
+
+    BACK EDGE -> STARTED BEFORE YOU, AND ENDED AFTER YOU.
+
+    CROSS EDGE -> STARTED BEFORE YOU, AND ENDED BEFORE YOU.
+
 
 2.33) Construct the Rooted Tree by using start and finish time of its 
       DFS traversal: 
@@ -7590,49 +7802,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         where w is an ancestor of u and there is a back edge from 
         some descendant of u to w.
 
-2.39) Articulation points and Biconnected graphs:
-    In graph theory, a biconnected component (sometimes known as a 2-connected component) 
-    is a maximal biconnected subgraph. Any connected graph decomposes into a 
-    tree of biconnected components called the block-cut tree of the graph. 
-    The blocks are attached to each other at shared vertices called 
-    cut vertices or articulation points. Specifically, a 
-    cut vertex is any vertex whose removal 
-    increases the number of connected components.
-
-    biconnected graph -> if any one vertex were to be removed, 
-    the graph will remain connected. 
-    Therefore a biconnected graph has no articulation vertices.
-    
-    We obviously need two passes. In the first pass, we want to figure out which 
-    vertex we can see from each vertex through back edges, if any. 
-    In the second pass we want to visit vertices in the opposite 
-    direction and collect the minimum bi-component ID 
-    (i.e. earliest ancestor accessible from any descendants).
-
-    AP Pseudocode:
-
-    time = 0
-    visited[i] = false for all i
-    GetArticulationPoints(u)
-        visited[u] = true
-        u.st = time++
-        u.low = u.st    //keeps track of highest ancestor reachable from any descendants
-        dfsChild = 0    //needed because if no child then removing this node doesn't decompose graph
-        for each ni in adj[i]
-            if not visited[ni]
-                GetArticulationPoints(ni)
-                ++dfsChild
-                parents[ni] = u
-                u.low = Min(u.low, ni.low)  //while coming back up, get the lowest reachable ancestor from descendants
-            else if ni <> parent[u] //while going down, note down the back edges
-                u.low = Min(u.low, ni.st)
-
-        //For dfs root node, we can't mark it as articulation point because 
-        //disconnecting it may not decompose graph. So we have extra check just for root node.
-        if (u.low = u.st and dfsChild > 0 and parent[u] != null) or (parent[u] = null and dfsChild > 1)
-            Output u as articulation point
-            Output edges of u with v.low >= u.low as bridges
-            Output u.low as bicomponent ID
 
 2.4) CUT VERTEX AKA ARTICULATION POINT finding:
         u --> The vertex to be visited next 
@@ -7694,7 +7863,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                         ap[u] = True    
                         
                     # Update low value of u for parent function calls     
-                elif v != parent[u]:  # found backedge!
+                elif v != parent[u]:  # found backedge! 
                     low[u] = min(low[u], disc[v]) 
 
 
@@ -7757,6 +7926,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                       
             elif v != parent[u]: # Update low value of u for parent function calls. 
                 low[u] = min(low[u], disc[v]) 
+
 
 2.55) MATRIX Problems Tips:
       Try reversing. Try transposing. Try circular sorting. 
@@ -7918,6 +8088,8 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
             print("G", g)
             print("Inorder count", inorder_count)
             
+            # this is a bfs? do you need to do bfs with inorder stuff for topo to work?.. 
+            # i dont think it matters..
             d = deque(root_nodes)
             visited = set()
             while d:
@@ -8309,10 +8481,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                 return sum(stack)
 
 
-
-9.5) dynamic programming patterns -> https://leetcode.com/discuss/study-guide/4988261/dynamic-programming-patterns
-
-
 10) Use dynamic programming for optimal substructure, subsequence questions
     -> Top down is easier to reason because you just memoize solutions youve seen before. 
     -> Check for optimal substructure ( A given problems has Optimal Substructure Property 
@@ -8397,6 +8565,22 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         -> Learn how to also JUST have PREV without Next space optimization
            by being smart about how you iterate over data
 
+    You have a weight W and you want to put items with wt and value to maximize total value!
+    ...
+
+        I think recurrence looks like this: process each item, and weights..
+        Fill in lower weights first, then fille higher onces. Weight 0 = Value 0 base case. 
+        OPT[W, i] = max { OPT[W - wt, i-1] + val, 
+                        OPT[W, i-1] 
+                        }
+
+        return OPT[W, N] 
+        (we are 1 index ahead here if you think about it, same in python code below, goes to n+1, and W+1 instead of n and W, 
+        we are 1 index ahead by subtracting 1 for val[i-1], this way best soln is K[N][W])
+
+        Also the reason W is inner loop and item is outer loop in code below is if you think about it, we neeed to know 
+        all the weighhts for current item, before we can go to next item, to successuly process next item..
+
     # n is number of items. 
     def knapSack(W, wt, val, n): 
         K = [[0 for x in range(W + 1)] for x in range(n + 1)] 
@@ -8418,11 +8602,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     For this to work, we have to iterate capacity (inner for-loop) in the 
     opposite direction so we that we don't use the values that 
     were updated in the same iteration 
-
-    TO REMEMBER HOW TO DO BOTTOM PROBLEM, FOR DP REMEMBER THAT YOU ARE FILLING 
-    A 2D GRID. HOW SHOULD THE GRID BE FILLED WITH PENCIL AND PAPER? 
-    THATS HOW YOU FIGURE IT OUT 
-    (aka what are the entries in the map if you did topdown?)
     
     from collections import namedtuple
 
@@ -8436,7 +8615,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                 value = best_value[w - item.weight] + item.value
                 if value > best_value[w]:
                     best_value[w] = value
-                    previous_item[w] = item
+                    previous_item[w] = item  # Always can save stuff like item chosen, when updates are made. 
 
         cur_weight = capacity
         taken = []
@@ -8454,6 +8633,10 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     Djikstras is general BFS for graphs with different sized edges. 
 
 12.5) Know expand around center to find/count palindroms in a string:
+    
+    Count all even and odd palindromes in a string
+
+
     class Solution(object):
         def countSubstrings(self, s):
             # Find all even and odd substrings. 
@@ -8664,6 +8847,31 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         Thus if two pointers start from head and X, respectively, one first reaches E, the other also reaches E. 
         In my solution, since fast starts at head.next, we need to move slow one step forward in the beginning of part 2
 
+
+        Intuition
+        To resolve the problem of finding out the cycle’s starting point, 
+        we can use the two-pointer technique, which is efficient and doesn't require extra memory for storage.
+
+        The intuition behind this algorithm involves a faster runner (the fast pointer) 
+        and a slower runner (the slow pointer), both starting at the head of the linked list. 
+        The fast pointer moves two steps at a time while the slow pointer moves only one. 
+        If a cycle exists, the fast pointer will eventually lap the slow pointer 
+        within the cycle, indicating that a cycle is present.
+
+        Once they meet, we can find the start of the cycle. To do this, we set up another pointer, 
+        called ans, at the head of the list and move it at the same pace as the slow pointer. 
+        The place where ans and the slow pointer meet again will be the starting node of the cycle.
+
+        Why does this work? If we consider that the distance from the list head to the cycle 
+        entrance is x, and the distance from the entrance to the meeting point is y, with the 
+        remaining distance back to the entrance being z, we can make an equation. Since the fast 
+        pointer travels the distance of x + y + n * (y + z) (where n is the number of laps made) 
+        and slow travels x + y, and fast is twice as fast as slow, then we can deduce that x = n * (y + z) - y, -> x = nl - d
+        which simplifies to x = (n - 1) * (y + z) + z. This shows that starting a pointer at the 
+        head (x distance to the entrance) and one at the meeting point (z distance to the entrance) 
+        and moving them at the same speed will cause them to meet exactly at the entrance of the cycle.
+
+
         Algorithm
         Use two references slow, fast, initialized to the head
         Increment slow and fast until they meet
@@ -8695,6 +8903,10 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                         return None
                 return slow
 
+
+
+
+
 22.8) Find kth to last element of linked list
 
         Algorithm
@@ -8702,7 +8914,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         Give fast a headstart, incrementing it once if k = 1, twice if k = 2, ...
         Increment both pointers until fast reaches the end
         Return the value of slow
-
 
 
 1)  TREE DFS:
@@ -8716,6 +8927,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 23.5) 2 STACKS == QUEUE TECHNIQUE!
       push onto one, if you pop and empty, 
       dump first one into second one!
+
+      push into one stack, pop from the other stack. 
+
 
 24) TWO HEAPS TECHNIQUE!!!
 
@@ -8732,6 +8946,12 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         find the smallest number in the second half. At any time, the 
         median of the current list of numbers can be calculated from 
         the top element of the two heaps.
+
+        As youre pushing elements maintain the invariant, half the numbers in max heap half in min heap
+
+        and max heap contains the smallest numbers, and min heap contains the largest numbers. 
+
+
 
         Ways to identify the Two Heaps pattern:
         Useful in situations like Priority Queue, Scheduling
@@ -8954,35 +9174,83 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         reduce this new problem to the more general version of the problem we solved earlier.
 
 
-
-
-1)  Use loop invarients when doing 2 pointer solutions, greedy solutions, etc. to think about, and help
+29.6)  Use loop invarients when doing 2 pointer solutions, greedy solutions, etc. to think about, and help
     interviewer realize that your solution works!!!
 
-2)  Derieive mathematical relationships between numbers in array, and solve for a solution. Since
+29.7)  Derieive mathematical relationships between numbers in array, and solve for a solution. Since
     there was a mathematical relationship, xor can prolly be used for speedup. 
     For instance: Find the element that appears once
 
         Given an array where every element occurs three times, except one element which occurs only once. 
 
-        Soln: Add each number once and multiply the sum by 3, we will get thrice the sum of each 
+        SHITTY Soln: Add each number once and multiply the sum by 3, we will get thrice the sum of each 
         element of the array. Store it as thrice_sum. Subtract the sum of the whole array 
         from the thrice_sum and divide the result by 2. The number we get is the required 
         number (which appears once in the array).
         How do we add each number once though? we cant use a set. 
         XOr? wtf?
 
-3)  DP is like traversing a DAG. it can have a parents array, dist, and visited set. SOmetimes you need to backtrack
-    to retrieve parents so remember how to do that!!!!. 
+        
+        CORRECT SOLN:
 
-4)  Do bidirectional BFS search if you know S and T and you are finding the path! 
+        Use two variables, ones and twos, to track the bits that appear an odd and 
+        even number of times, respectively. In each iteration, XOR the current element 
+        with ones to update ones with the bits that appear an odd number of times then 
+        use a bitwise AND operation between ones and the current element to find the common 
+        bits that appear three times. These common bits are removed from both ones and twos 
+        using a bitwise AND operation with the negation of the common bits. 
+        Finally, ones contains the element that appears only once.
+
+        # Python3 code to find the element that 
+        # appears once
+
+        def getSingle(arr, n):
+            ones = 0
+            twos = 0
+            
+            for i in range(n):
+                # one & arr[i]" gives the bits that
+                # are there in both 'ones' and new
+                # element from arr[]. We add these
+                # bits to 'twos' using bitwise XOR
+                twos = twos ^ (ones & arr[i])
+                
+                # one & arr[i]" gives the bits that
+                # are there in both 'ones' and new
+                # element from arr[]. We add these
+                # bits to 'twos' using bitwise XOR
+                ones = ones ^ arr[i]
+                
+                # The common bits are those bits 
+                # which appear third time. So these
+                # bits should not be there in both 
+                # 'ones' and 'twos'. common_bit_mask
+                # contains all these bits as 0, so
+                # that the bits can be removed from
+                # 'ones' and 'twos'
+                common_bit_mask = ~(ones & twos)
+                
+                # Remove common bits (the bits that 
+                # appear third time) from 'ones'
+                ones &= common_bit_mask
+                
+                # Remove common bits (the bits that
+                # appear third time) from 'twos'
+                twos &= common_bit_mask
+            return ones
+
+
+29.8)  DP is like traversing a DAG. it can have a parents array, dist, and visited set. SOmetimes you need to backtrack
+    the DP updates to retrieve parents so remember how to do that!!!!. 
+
+29.9)  Do bidirectional BFS search if you know S and T and you are finding the path! 
     (i think its good for early termination in case there is no path)
 
-5)  For linked list questions, draw it out. Dont think about it. Then figur eout how you are rearranging the ptrs.
+30)  For linked list questions, draw it out. Dont think about it. Then figur eout how you are rearranging the ptrs.
     and how many new variables you need. ALSO USE DUMMY POINTERS to not deal with modifying head pointer case. 
 
 
-6)  Linear Algorithms:
+31)  Linear Algorithms:
     Bracket Matching => Use stack
     Postfix Calculator and Conversion
         Prefix calculator => 2 + 6 * 3 => this needs binary tree to do i think! with extra mem
@@ -9032,9 +9300,45 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         get new subarrays and update current_min_running_length_of_subarray. 
 
 
+31.5)
 
+        Bloomberg - I was asked to design a class which replicated browser history. I tried implementing it with dictionaries, 
+        but still could not meet O(1) complexity. This was nothing but a modification of LRU Cache. I 
+        was uncomfortable with implementing linked list in python, the whole idea of linked list and its 
+        addresses seemed daunting to me. Weakpoints - Linked List, Pointers
 
-7)  Heapify is cool. Python heapify implementation that is O(N) implemented below: 
+        Simon LLC - Design a HashMap. Started by creating buckets, but failed to explain hash collision, 
+        and hash function. Intuitively, was near to the correct explanation, but thinking it through and 
+        cohesively putting it in words under a time ticking clock became challenging. Weakpoints - 
+        Time Management, Hash Collision, Internal Working of HashMap
+
+        Palantir - A forest was given, had to find nodes which had only one parent. Follow up questions, 
+        like finding ancestor, and farthest ancestor. Weakpoints - Complexity, I had used a set in the program, 
+        and gave complexity as O(1), but actually in the program, from the set I had created a list, and the 
+        actual time complexity should’ve been O(n).
+
+        Microsoft - 30 min coding interview, Inorder successor in a binary search tree, this was on 
+        the tips with recursion, but when they asked me to do it in iterative manner, 
+        I struggled, and realized, I still lacked clarity on few concepts. Weakpoints - Iterative tree traversals
+
+        Doordash - Final 2 hour coding round. Each round had one question each. In the first round 
+        was asked to design a in design memory file system. In another round, was asked to design 
+        auto complete suggestion system. Both were applications of trie. First round went smooth, 
+        second round had a few hiccups, I was unable to handle the edge 
+        cases. Weakpoints - Critical thinking to accommodate edge cases
+
+        My other weakpoint that I had discovered was tackling behavorial questions. 
+        It wasn't until, I started answering using the STAR method that my answers became better. 
+        There were some recruiter rounds where they asked me behavorial questions, 
+        and I was unprepared, hadn't researched much about the company, and it costed 
+        me opportunities. A great link to a behavioral guide can be 
+        found here https://leetcode.com/discuss/interview-question/1729926/a-guide-for-behavioral-round
+
+        All these interviews were making me more aware of my weakness, at the heavy cost of losing 
+        out on great opportunities. While my friends had started interviewing for Facebook, 
+        I was even skeptical of applying. A recruiter had reached out to me, and I took a leap of faith, and applied.
+
+32)  Heapify is cool. Python heapify implementation that is O(N) implemented below: 
     UNDERSTAND IT.
         # Single slash is simple division in python. 2 slashes is floor division in python
         # only the root of the heap actually has depth log2(len(a)). Down at the nodes one above a leaf - 
@@ -9055,7 +9359,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
                     A[child], A[(child-1)//2] = A[(child-1)//2], A[child]
                     child = child *2 + 1
 
-8)  Understand counting sort, radix sort.
+33)  Understand counting sort, radix sort.
         Counting sort is a linear time sorting algorithm that sort in O(n+k) 
         time when elements are in range from 1 to k.        
         What if the elements are in range from 1 to n2? 
@@ -9067,7 +9371,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
         Look at section below for impls.
 
 
-9)  To do post order traversal or inorder traversal 
+34)  To do post order traversal or inorder traversal 
     on a binary tree iteratively (or doing any dfs, where you want to vist root node last). 
     you need to USE A FLAG!! (LOOK at morris traversal for cool funs!)
 
@@ -9114,7 +9418,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
             return ret
 
 
-10) When you need to keep a set of running values such as mins, and prev mins, 
+35) When you need to keep a set of running values such as mins, and prev mins, 
     you can keep all the runnign mins in a datastructre and as your algorithm traverses the datastructure, 
     update the datastructure for the running value as well in the same way to maintaing consistency!
     For instance, min stack: 
@@ -9129,7 +9433,7 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     maintain the running min.
 
 
-11) In some questions you can 
+36) In some questions you can 
     do DFS or BFS from a root node to a specific 
     child node and you end up traversing a tree, 
     either the DFS tree or BFS Tree. 
@@ -9625,6 +9929,65 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
             cout << dp[n][0];
         }
 
+55.5) FOR THE PROBLEM ABOVE:
+
+        790. Domino and Tromino Tiling
+        Medium
+        Topics
+        Companies
+        You have two types of tiles: a 2 x 1 domino shape and a tromino shape. 
+        You may rotate these shapes. -> TROMINO looks like 
+        domino look like -> aa
+
+        tromino look lik -> aa
+                             a 
+
+        Given an integer n, return the number of ways to tile an 2 x n board. 
+        Since the answer may be very large, return it modulo 109 + 7.
+
+        In a tiling, every square must be covered by a tile. Two tilings are different if and 
+        only if there are two 4-directionally adjacent cells on the board such that exactly 
+        one of the tilings has both squares occupied by a tile.
+
+        Example 1:
+
+        Input: n = 3
+        Output: 5
+        Explanation: The five different ways are show above.
+        Example 2:
+
+        Input: n = 1
+        Output: 1
+        
+        Constraints:
+        1 <= n <= 1000
+
+        dp[i] denotes the number of ways to tile an 2 * (i + 1) board, note that dp is 0-indexed.
+        Intuitively, dp[0] = 1 and dp[1] = 2
+        dpa[i] denotes the number of ways to tile an 2 * i board and 1 more square in that row (partially filled)
+        Intuitively, dpa[0] = 0 and dpa[1] = 1
+        I just explained the case where in i-th column, 2nd row is filled. But it should be noted that the two cases(the other is in i-th column, 1st row is filled) are symmetric and the numbers are both dpa[i], you may imagine dpb[i] = dpa[i] for the second case where i-th column 1st row is filled.
+
+        class Solution(object):
+            def numTilings(self, n):
+                dp, dpa = [1, 2] + [0] * n, [1] * n
+                for i in range(2, n):
+                    dp[i] = (dp[i - 1] + dp[i - 2] + dpa[i - 1] * 2) % 1000000007
+                    dpa[i] = (dp[i - 2] + dpa[i - 1]) % 1000000007
+                return dp[n - 1]
+
+        SIMPLIFIES TO:
+
+
+        class Solution(object):
+            def numTilings(self, n):
+                dp = [1, 2, 5] + [0] * n
+                for i in range(3, n):
+                    dp[i] = (dp[i - 1] * 2 + dp[i - 3]) % 1000000007
+                return dp[n - 1]
+
+
+
 
 
 56) POW(X, N) and binary exponentiation
@@ -9684,7 +10047,49 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
                             n = n >> 1
                         return res 
 
+57) Articulation points and Biconnected graphs:
+    In graph theory, a biconnected component (sometimes known as a 2-connected component) 
+    is a maximal biconnected subgraph. Any connected graph decomposes into a 
+    tree of biconnected components called the block-cut tree of the graph. 
+    The blocks are attached to each other at shared vertices called 
+    cut vertices or articulation points. Specifically, a 
+    cut vertex is any vertex whose removal 
+    increases the number of connected components.
 
+    biconnected graph -> if any one vertex were to be removed, 
+    the graph will remain connected. 
+    Therefore a biconnected graph has no articulation vertices.
+    
+    We obviously need two passes. In the first pass, we want to figure out which 
+    vertex we can see from each vertex through back edges, if any. 
+    In the second pass we want to visit vertices in the opposite 
+    direction and collect the minimum bi-component ID 
+    (i.e. earliest ancestor accessible from any descendants).
+
+    AP Pseudocode:
+
+    time = 0
+    visited[i] = false for all i
+    GetArticulationPoints(u)
+        visited[u] = true
+        u.st = time++
+        u.low = u.st    //keeps track of highest ancestor reachable from any descendants
+        dfsChild = 0    //needed because if no child then removing this node doesn't decompose graph
+        for each ni in adj[i]
+            if not visited[ni]
+                GetArticulationPoints(ni)
+                ++dfsChild
+                parents[ni] = u
+                u.low = Min(u.low, ni.low)  //while coming back up, get the lowest reachable ancestor from descendants
+            else if ni <> parent[u] //while going down, note down the back edges
+                u.low = Min(u.low, ni.st)
+
+        //For dfs root node, we can't mark it as articulation point because 
+        //disconnecting it may not decompose graph. So we have extra check just for root node.
+        if (u.low = u.st and dfsChild > 0 and parent[u] != null) or (parent[u] = null and dfsChild > 1)
+            Output u as articulation point
+            Output edges of u with v.low >= u.low as bridges
+            Output u.low as bicomponent ID
 
 Cool Notes Part 0.4 ##################################
  ################################## ##################################
@@ -9959,7 +10364,9 @@ Cool Notes Part 0.5: Sliding Window with a deque
 
     Correctly initialize the boundary variables left and right to specify search space. 
     Only one rule: set up the boundary to include all possible elements;
+    
     Decide return value. Is it return left or return left - 1? 
+
     Remember this: after exiting the while loop, left is the minimal k​ satisfying the condition function;
     Design the condition function. This is the most difficult and most beautiful part. Needs lots of practice.
     Below I'll show you guys how to apply this powerful template to many LeetCode problems.
@@ -10726,15 +11133,397 @@ only possible answer left, and since we know the index exists, we just return th
 Now if we don't know if the index exists, then we set l = mid+1 and 
 only set res if a[mid] == key. We still have to check the final 
 possibility, because we don't know whether or not that index contains the key.
+######################################################
+#############################################################################
 
 
+COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPLES PART 1
 
+    Dynamic Programming (DP) is a powerful algorithmic technique used to solve a wide range of optimization problems. It's a cornerstone of technical interviews, and LeetCode provides an extensive collection of DP problems to help you master this crucial skill. In this comprehensive guide, we'll explore LeetCode's top DP problems, dissecting their statements, approaches, solution strategies (Top-Down and Bottom-Up), and identifying similar problems across various DP patterns.
 
+    Minimum Cost Climbing Stairs (Problem #746)
+    Problem Statement: You are given an array cost where cost[i] represents the cost of climbing the i-th stair. You can start climbing from either the 0-th or 1-st stair. Each time you can either climb one or two steps. Return the minimum cost to reach the top of the floor.
+
+    Approach:
+    This problem exhibits a classic Dynamic Programming pattern where the minimum cost to reach a stair is the minimum of the costs of reaching the previous two stairs plus the cost of the current stair.
+
+    Top-Down Approach (Recursive with Memoization):
+    We define a recursive function minCostClimbingStairsTopDown, which takes the current index n and the array cost as inputs.
+    Within this function, we recursively call itself for the previous two stairs (if they exist) and memoize the results to avoid redundant calculations.
+    Finally, we return the minimum cost to reach the n-th stair.
+    def minCostClimbingStairsTopDown(cost, n, memo):
+        if n <= 1:
+            return cost[n]
+        if memo[n] != -1:
+            return memo[n]
+        memo[n] = min(minCostClimbingStairsTopDown(cost, n-1, memo), minCostClimbingStairsTopDown(cost, n-2, memo)) + cost[n]
+        return memo[n]
+
+    def minCostClimbingStairs(cost):
+        n = len(cost)
+        memo = [-1] * n
+        return min(minCostClimbingStairsTopDown(cost, n-1, memo), minCostClimbingStairsTopDown(cost, n-2, memo))
+    Bottom-Up Approach (Iterative):
+    We initialize a DP array dp of size n+1 to store the minimum cost to reach each stair.
+    We start by assigning the costs of the first two stairs to the first two elements of the DP array.
+    Then, we iterate through the remaining stairs and compute the minimum cost to reach each stair by considering the minimum of the costs of the previous two stairs plus the cost of the current stair.
+    Finally, we return the minimum cost to reach either the last or second last stair, as these are the possible starting points.
+    def minCostClimbingStairsBottomUp(cost):
+        n = len(cost)
+        dp = [0] * (n+1)
+        dp[0], dp[1] = cost[0], cost[1]
+        for i in range(2, n):
+            dp[i] = min(dp[i-1], dp[i-2]) + cost[i]
+        return min(dp[n-1], dp[n-2])
+    Example Usage:
+    cost = [10, 15, 20]
+    print(minCostClimbingStairsBottomUp(cost))  # Output: 15
+    Similar Problems:
+
+    Problem 70: Climbing Stairs - Given n stairs, you can climb 1 or 2 steps at a time. Determine the number of distinct ways to reach the top.
+    Top-Down Approach (Recursive with Memoization):
+    def climbStairsTopDown(n, memo):
+    if n <= 1:
+        return 1
+    if memo[n] != -1:
+        return memo[n]
+    memo[n] = climbStairsTopDown(n-1, memo) + climbStairsTopDown(n-2, memo)
+    return memo[n]
+
+    def climbStairs(n):
+    memo = [-1] * (n + 1)
+    return climbStairsTopDown(n, memo)
+    Bottom-Up Approach (Iterative):
+    def climbStairsBottomUp(n):
+    if n <= 1:
+        return 1
+    dp = [0] * (n + 1)
+    dp[0], dp[1] = 1, 1
+    for i in range(2, n + 1):
+        dp[i] = dp[i - 1] + dp[i - 2]
+    return dp[n]
+    Problem 322: Coin Change - Given an amount n and a list of coin denominations, determine the minimum number of coins needed to make up that amount.
+    Top-Down Approach (Recursive with Memoization):
+    def coinChangeTopDown(coins, amount, memo):
+    if amount < 0:
+        return -1
+    if amount == 0:
+        return 0
+    if memo[amount] != float('inf'):
+        return memo[amount]
+    for coin in coins:
+        subproblem = coinChangeTopDown(coins, amount - coin, memo)
+        if subproblem >= 0:
+            memo[amount] = min(memo[amount], 1 + subproblem)
+    return memo[amount] if memo[amount] != float('inf') else -1
+
+    def coinChange(coins, amount):
+    memo = [float('inf')] * (amount + 1)
+    return coinChangeTopDown(coins, amount, memo)
+    Analysis:
+
+    Both the Top-Down and Bottom-Up approaches have a time complexity of O(n) and a space complexity of O(n), where n is the number of stairs.
+    These approaches efficiently compute the minimum cost to reach the top of the stairs by considering the optimal substructure property of the problem.
+    Merging Intervals
+    Problem Statement: Given a collection of intervals, merge all overlapping intervals.
+
+    Approach:
+    The key to solving merging interval problems lies in identifying the optimal solution for each interval by considering the best from the left and right sides, then merging them as necessary.
+
+    Top-Down Approach (Recursive with Memoization):
+    We define a recursive function mergeIntervalsTopDown, which takes the collection of intervals intervals, the start index start, the end index end, and a memoization table memo.
+    Within this function, we recursively call itself for different partitions of the intervals and memoize the results to avoid redundant calculations.
+    Finally, we return the merged intervals for the given range.
+    def mergeIntervalsTopDown(intervals, start, end, memo):
+        if start == end:
+            return intervals[start][0], intervals[start][1]
+        if memo[start][end]:
+            return memo[start][end]
+        for i in range(start, end):
+            left_start, left_end = mergeIntervalsTopDown(intervals, start, i, memo)
+            right_start, right_end = mergeIntervalsTopDown(intervals, i+1, end, memo)
+            if left_end >= right_start:
+                memo[start][end] = left_start, right_end
+                return memo[start][end]
+        memo[start][end] = intervals[start][0], intervals[end][1]
+        return memo[start][end]
+
+    def merge(intervals):
+        n = len(intervals)
+        if n == 0:
+            return []
+        memo = [[None]*n for _ in range(n)]
+        return mergeIntervalsTopDown(intervals, 0, n-1, memo)
+    Bottom-Up Approach (Iterative):
+    We start by sorting the intervals based on the start times.
+    Then, we initialize an empty list merged to store the merged intervals.
+    We iterate through the sorted intervals and merge overlapping intervals by comparing the start and end times.
+    Finally, we return the list of merged intervals.
+    def mergeIntervalsBottomUp(intervals):
+        if not intervals:
+            return []
+        intervals.sort(key=lambda x: x[0])
+        merged = []
+        for interval in intervals:
+            if not merged or interval[0] > merged[-1][1]:
+                merged.append(interval)
+            else:
+                merged[-1][1] = max(merged[-1][1], interval[1])
+        return merged
+    Example Usage:
+    intervals = [[1,3],[2,6],[8,10],[15,18]]
+    print(merge(intervals))  # Output: [[1,6],[8,10],[15,18]]
+    Similar Problems:
+
+    Problem 57: Insert Interval - Given a set of non-overlapping intervals sorted by their start times, insert a new interval into the intervals (merge if necessary).
+    Top-Down Approach:
+    def insertInterval(intervals, newInterval):
+        merged = []
+        i = 0
+        while i < len(intervals) and intervals[i][1] < newInterval[0]:
+            merged.append(intervals[i])
+            i += 1
+        while i < len(intervals) and intervals[i][0] <= newInterval[1]:
+            newInterval = [min(newInterval[0], intervals[i][0]), max(newInterval[1], intervals[i][1])]
+            i += 1
+        merged.append(newInterval)
+        merged.extend(intervals[i:])
+        return merged
+    Bottom-Up Approach:
+    def insertInterval(intervals, newInterval):
+        merged = []
+        i = 0
+        while i < len(intervals) and intervals[i][1] < newInterval[0]:
+            merged.append(intervals[i])
+            i += 1
+        while i < len(intervals) and intervals[i][0] <= newInterval[1]:
+            newInterval = [min(newInterval[0], intervals[i][0]), max(newInterval[1], intervals[i][1])]
+            i += 1
+        merged.append(newInterval)
+        merged.extend(intervals[i:])
+        return merged
+    Problem 253: Meeting Rooms II - Given an array of meeting time intervals, determine the minimum number of conference rooms required.
+    Top-Down Approach:
+    import heapq
+
+    def minMeetingRooms(intervals):
+        if not intervals:
+            return 0
+        intervals.sort(key=lambda x: x[0])
+        rooms = []
+        heapq.heappush(rooms, intervals[0][1])
+        for interval in intervals[1:]:
+            if interval[0] >= rooms[0]:
+                heapq.heappop(rooms)
+            heapq.heappush(rooms, interval[1])
+        return len(rooms)
+    Bottom-Up Approach:
+    import heapq
+
+    def minMeetingRooms(intervals):
+        if not intervals:
+            return 0
+        intervals.sort(key=lambda x: x[0])
+        rooms = []
+        heapq.heappush(rooms, intervals[0][1])
+        for interval in intervals[1:]:
+            if interval[0] >= rooms[0]:
+                heapq.heappop(rooms)
+            heapq.heappush(rooms, interval[1])
+        return len(rooms)
+    Analysis:
+
+    The Top-Down approach has a time complexity of O(n^2) and a space complexity of O(n^2) due to the memoization table.
+    The Bottom-Up approach has a time complexity of O(n log n) and a space complexity of O(n) due to the sorting of intervals.
+
+    Both approaches efficiently merge overlapping intervals while considering the optimal substructure property of the problem.
+    Dynamic Programming on Strings
+    Problem Statement: Dynamic Programming on strings involves solving problems that require processing or comparing strings optimally.
+
+    Approach:
+    Most problems in this category involve building a 2D DP table to store intermediate results, where the value at dp[i][j] represents the optimal solution considering substrings s1[:i] and s2[:j].
+
+    Example Problem: Longest Common Subsequence (Problem #1143)
+    Problem Statement: Given two strings text1 and text2, return the length of their longest common subsequence.
+
+    Approach:
+    We build a 2D DP table dp where dp[i][j] represents the length of the longest common subsequence of text1[:i] and text2[:j].
+
+    If text1[i-1] == text2[j-1], we extend the common subsequence by 1: dp[i][j] = dp[i-1][j-1] + 1.
+    Otherwise, we take the maximum length of common subsequences from either deleting a character from text1 or text2: dp[i][j] = max(dp[i-1][j], dp[i][j-1]).
+    Similar Problems:
+
+    Problem 516: Longest Palindromic Subsequence - Given a string s, find the length of the longest palindromic subsequence in s.
+    Problem 72: Edit Distance - Given two words word1 and word2, find the minimum number of operations required to convert word1 to word2.
+    Code Implementation:
+
+    def longestCommonSubsequence(text1: str, text2: str) -> int:
+        m, n = len(text1), len(text2)
+        dp = [[0] * (n + 1) for _ in range(m + 1)]
+
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if text1[i - 1] == text2[j - 1]:
+                    dp[i][j] = dp[i - 1][j - 1] + 1
+                else:
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+
+        return dp[m][n]
+    Example Usage:
+    text1 = "abcde"
+    text2 = "ace"
+    print(longestCommonSubsequence(text1, text2))  # Output: 3 (LCS: "ace")
+    Analysis:
+
+    The time complexity of the DP solution is O(m * n), where m and n are the lengths of text1 and text2, respectively.
+    The space complexity is also O(m * n) due to the DP table.
+    This approach efficiently finds the longest common subsequence between two strings by leveraging dynamic programming techniques.
+    Decision Making
+    Problem Statement: Decision-making problems involve determining whether to include or exclude the current state to optimize a given objective.
+
+    Approach:
+    These problems usually involve constructing a DP table where dp[i][j] represents the maximum value or minimum cost achievable up to the i-th state by considering j options.
+
+    Example Problem: House Robber (Problem #198)
+    Problem Statement: You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, and the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected, and it will automatically contact the police if two adjacent houses were broken into on the same night. Determine the maximum amount of money you can rob tonight without alerting the police.
+
+    Approach:
+    We use a DP approach to calculate the maximum amount of money that can be robbed up to the i-th house while considering two options: either robbing the current house or skipping it.
+
+    If we choose to rob the i-th house, we add its value to the maximum loot from the previous non-adjacent house.
+    If we choose to skip the i-th house, we take the maximum loot up to the i-1-th house.
+    Similar Problems:
+
+    Problem 213: House Robber II - Similar to Problem #198, but the houses are arranged in a circular manner.
+    Problem 121: Best Time to Buy and Sell Stock - Given an array of stock prices, find the maximum profit that can be obtained by buying and selling at most once.
+    House Robber II (Problem #213)
+    Problem Statement: Similar to Problem #198, but the houses are arranged in a circular manner.
+
+    Approach:
+    To solve this problem, we can use dynamic programming to find the maximum loot that can be obtained while considering two cases:
+
+    Robbing the houses from the first to the second-to-last house.
+    Robbing the houses from the second to the last house.
+    We then return the maximum loot obtained from these two cases.
+
+    Top-Down Approach:
+    def rob(nums):
+        if len(nums) == 1:
+            return nums[0]
+        return max(robHelper(nums[:-1]), robHelper(nums[1:]))
+
+    def robHelper(nums):
+        if not nums:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+        dp = [0] * len(nums)
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+        for i in range(2, len(nums)):
+            dp[i] = max(dp[i - 1], dp[i - 2] + nums[i])
+        return dp[-1]
+    Bottom-Up Approach:
+    def rob(nums):
+        if len(nums) == 1:
+            return nums[0]
+        return max(robHelper(nums[:-1]), robHelper(nums[1:]))
+
+    def robHelper(nums):
+        if not nums:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+        dp = [0] * len(nums)
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+        for i in range(2, len(nums)):
+            dp[i] = max(dp[i - 1], dp[i - 2] + nums[i])
+        return dp[-1]
+    Similar Problems:
+
+    Problem 198: House Robber - You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed.
+    Problem 337: House Robber III - The third problem in the house robber series, where houses are arranged in a binary tree.
+    Best Time to Buy and Sell Stock (Problem #121)
+    Problem Statement: Given an array of stock prices, find the maximum profit that can be obtained by buying and selling at most once.
+
+    Approach:
+    To solve this problem, we can use dynamic programming to keep track of the maximum profit that can be obtained by buying and selling the stock at each day.
+
+    Top-Down Approach:
+    def maxProfit(prices):
+        def helper(index, bought):
+        if index >= len(prices):
+            return 0
+        if (index, bought) in memo:
+            return memo[(index, bought)]
+
+        if bought:
+            # If currently holding a stock, we can either sell it or skip this day
+            sell_today = prices[index] + helper(index + 1, False)
+            skip_today = helper(index + 1, True)
+            memo[(index, bought)] = max(sell_today, skip_today)
+        else:
+            # If not holding a stock, we can either buy a stock or skip this day
+            buy_today = -prices[index] + helper(index + 1, True)
+            skip_today = helper(index + 1, False)
+            memo[(index, bought)] = max(buy_today, skip_today)
+        
+        return memo[(index, bought)]
+
+    if not prices:
+        return 0
+
+    memo = {}
+    return helper(0, False)
+    Example usage:
+    prices = [7, 1, 5, 3, 6, 4]
+    print(maxProfit(prices)) # Output should be 5
+
+    Bottom-Up Approach:
+    def maxProfit(prices):
+        if not prices:
+            return 0
+        max_profit = 0
+        min_price = prices[0]
+        for price in prices[1:]:
+            max_profit = max(max_profit, price - min_price)
+            min_price = min(min_price, price)
+        return max_profit
+    Similar Problems:
+
+    Problem 122: Best Time to Buy and Sell Stock II - You may complete as many transactions as you like (i.e., buy one and sell one share of the stock multiple times).
+    Problem 123: Best Time to Buy and Sell Stock III - You may complete at most two transactions.
+    Code Implementation:
+
+    def rob(nums: List[int]) -> int:
+        n = len(nums)
+        if n == 0:
+            return 0
+        if n == 1:
+            return nums[0]
+        
+        dp = [0] * n
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+        
+        for i in range(2, n):
+            dp[i] = max(dp[i - 1], dp[i - 2] + nums[i])
+        
+        return dp[-1]
+    Example Usage:
+    nums = [2,7,9,3,1]
+    print(rob(nums))  # Output: 12 (Rob houses 1, 3, and 5 for a total of 12)
+    Analysis:
+
+    The time complexity of the DP solution is O(n), where n is the number of houses.
+    The space complexity is O(n) due to the DP array.
+    This approach efficiently determines the maximum loot that can be obtained without alerting the police by employing dynamic programming principles.
 
 
 ###################################################################################
 ###################################################################################
-COOL NOTES PART 0.90: DYNAMIC PROGRAMMING PATTERNS, ILLUSTRATIONS, AND EXAMPLES: 
+COOL NOTES PART 0.90: DYNAMIC PROGRAMMING PATTERNS, ILLUSTRATIONS, AND EXAMPLES PART 2: 
 
     Patterns
     Minimum (Maximum) Path to Reach a Target
