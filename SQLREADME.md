@@ -376,7 +376,8 @@ SELECT
 | 234     | 2018-10-04 |
 ```
 
-**Task:** Write a query that gets the number of retained users per month. In this case, retention for a given month is defined as the number of users who logged in that month who also logged in the immediately previous month. 
+**Task:** Write a query that gets the number of retained users per month. In this case, retention for a 
+given month is defined as the number of users who logged in that month who also logged in the immediately previous month. 
 * * *
 ***Solution:***
 
@@ -426,7 +427,8 @@ LEFT JOIN
 
 ### Part 2: 
 
-**Task:** Now we’ll take retention and turn it on its head: Write a query to find many users last month *did not* come back this month. i.e. the number of churned users.  
+**Task:** Now we’ll take retention and turn it on its head: Write a query to find many users 
+last month *did not* come back this month. i.e. the number of churned users.  
 * * *
 ***Solution:***
 
@@ -482,7 +484,8 @@ Note that there are solutions to this problem that can use `LEFT` or `RIGHT` joi
 
 ## #4: Cumulative Sums 
 
-**Acknowledgement:** This problem was inspired by Sisense’s[“Cash Flow modeling in SQL”](https://www.sisense.com/blog/cash-flow-modeling-in-sql/) blog post 
+**Acknowledgement:** This problem was inspired by Sisense’s[“Cash Flow modeling in SQL”](https://www.sisense.com/blog/cash-flow-modeling-in-sql/)
+blog post 
 
 **Context:** Say we have a table `transactions` in the form:
 
@@ -591,7 +594,10 @@ GROUP BY
 | .. | ..       | ..           | ..           | ..                  |
 ```
 
-**Task: **Write a query to get the response time per email (`id`) sent to `zach@g.com` . Do not include `id`s that did not receive a response from [zach@g.com](mailto:zach@g.com). Assume each email thread has a unique subject. Keep in mind a thread may have multiple responses back-and-forth between [zach@g.com](mailto:zach@g.com) and another email address. 
+**Task: **Write a query to get the response time per email (`id`) sent to `zach@g.com` . 
+Do not include `id`s that did not receive a response from [zach@g.com](mailto:zach@g.com). Assume 
+each email thread has a unique subject. Keep in mind a thread may have multiple responses 
+back-and-forth between [zach@g.com](mailto:zach@g.com) and another email address. 
 * * *
 ***Solution:***
 
@@ -1189,6 +1195,8 @@ limit 5;
 rowid is persistent within a session
 I.e., if we delete the first 5 rows we now have row IDs 6…N
 Do not rely on row ID
+
+
 In particular, do not use it as a key
 
 Conditionals

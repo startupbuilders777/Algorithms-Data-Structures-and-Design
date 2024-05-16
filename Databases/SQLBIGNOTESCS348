@@ -46,6 +46,7 @@ GROUP BY a.student_id, a.grade
 ORDER BY a.student_id
 
 
+# HOW TO GET A CUMULATE COLUMN EXAMPLE!!
 
 SELECT a.day as 'day', SUM(b.value) as 'cumulative_value' 
 FROM registrations a, registrations b
@@ -1440,3 +1441,309 @@ SELECT col1, col2, col3, MAX(col4)
 GROUP BY col1, col2, col3, MAX(col4)
 Having an aggregate (MAX etc) with other columns without a GROUP BY makes no sense because the query becomes ambiguous.
 */
+
+
+#####################
+###########################
+
+
+######
+######
+################################
+
+CHAT GPT LEARNING WINDOW FUNCTIONS
+
+Of course! SQL window functions are powerful tools for performing calculations across a set of rows related to the current row within a query result set. They're commonly used for tasks like calculating running totals, ranking rows based on certain criteria, and calculating moving averages. Here's a guide to help you understand and use SQL window functions effectively:
+
+Basic Syntax:
+sql
+Copy code
+<function_name>(expression) OVER (
+    [PARTITION BY partition_expression]
+    [ORDER BY order_expression [ASC | DESC]]
+    [ROWS | RANGE frame_specification]
+)
+<function_name>: The name of the window function you're using (e.g., SUM, AVG, ROW_NUMBER, RANK, etc.).
+expression: The column or expression to perform the calculation on.
+PARTITION BY: Optional clause to divide the result set into partitions, and the function is applied separately to each partition.
+ORDER BY: Optional clause to specify the order of rows within each partition.
+ROWS or RANGE: Specifies the window frame as a set of rows (ROWS) or a logical range (RANGE) for the function to operate on.
+
+Common Window Functions:
+Aggregate Functions: SUM, AVG, MIN, MAX, COUNT
+Ranking Functions: ROW_NUMBER(), RANK(), DENSE_RANK(), NTILE(n)
+Analytic Functions: LEAD(), LAG(), FIRST_VALUE(), LAST_VALUE()
+
+Examples:
+Calculating Running Totals:
+
+
+SELECT date, amount,
+       SUM(amount) OVER (ORDER BY date) AS running_total
+FROM sales;
+Ranking Rows:
+
+
+
+SELECT employee_id, salary,
+       RANK() OVER (ORDER BY salary DESC) AS salary_rank
+FROM employees;
+
+
+Calculating Differences Between Rows:
+
+
+
+SELECT date, revenue,
+       revenue - LAG(revenue) OVER (ORDER BY date) AS revenue_difference
+FROM daily_revenue;
+
+
+Partitioning:
+Use PARTITION BY to partition the result set into groups based on one or more columns.
+Functions are applied separately within each partition.
+
+
+
+Ordering:
+Use ORDER BY to specify the order of rows within each partition.
+Required for functions like LAG, LEAD, and ranking functions.
+
+
+Window Frame:
+Determines the range of rows used by the function.
+Specified with ROWS or RANGE.
+
+Useful for defining a moving window for functions like SUM or AVG.
+
+1. Running Total
+Question: Given a table Orders containing order_id, customer_id, order_date, and order_amount, return the cumulative sum of order_amount for each customer, ordered by customer_id and order_date.
+
+Solution:
+
+sql
+Copy code
+SELECT order_id, customer_id, order_date, order_amount,
+       SUM(order_amount) OVER (PARTITION BY customer_id ORDER BY order_date) AS cumulative_amount
+FROM Orders
+ORDER BY customer_id, order_date;
+2. Top N Salary
+Question: Given a table Employee containing employee_id, employee_name, and salary, find the top 3 highest salaries and return the result sorted by salary in descending order.
+
+Solution:
+
+sql
+Copy code
+SELECT employee_id, employee_name, salary
+FROM (
+    SELECT employee_id, employee_name, salary,
+           ROW_NUMBER() OVER (ORDER BY salary DESC) AS salary_rank
+    FROM Employee
+) AS ranked_employees
+WHERE salary_rank <= 3;
+3. Moving Average
+Question: Given a table Stocks containing stock_symbol, trade_date, and closing_price, calculate the 3-day moving average of closing prices for each stock.
+
+Solution:
+
+sql
+Copy code
+SELECT stock_symbol, trade_date, closing_price,
+       AVG(closing_price) OVER (PARTITION BY stock_symbol ORDER BY trade_date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS moving_average
+FROM Stocks;
+4. Rank Scores
+Question: Given a table Scores containing student_id and score, rank the students according to their scores. If multiple students have the same score, they should have the same rank, with the next rank skipped.
+
+Solution:
+
+sql
+Copy code
+SELECT student_id, score,
+       DENSE_RANK() OVER (ORDER BY score DESC) AS rank
+FROM Scores;
+5. Lead and Lag
+Question: Given a table Logs containing log_id, log_date, and num_visits, calculate the difference in the number of visits between the current day and the previous day for each log entry.
+
+Solution:
+
+sql
+Copy code
+SELECT log_id, log_date, num_visits,
+       num_visits - LAG(num_visits, 1, 0) OVER (ORDER BY log_date) AS visit_difference
+FROM Logs;
+
+
+These examples demonstrate various use cases of SQL window functions. Understanding these functions and their syntax will help you tackle similar problems during your interview. Feel free to ask if you have any questions about these examples!
+
+
+
+
+
+
+1. Percentile
+Question: Given a table Sales containing sales_id, product_id, sale_date, and sale_amount, calculate the 90th percentile of sale_amount for each product.
+
+Solution:
+SELECT product_id,
+       PERCENTILE_CONT(0.9) WITHIN GROUP (ORDER BY sale_amount) OVER (PARTITION BY product_id) AS percentile_90
+FROM Sales;
+
+
+2. Consecutive Dates
+Question: Given a table Activity containing user_id, activity_date, and activity_type, find the longest consecutive sequence of days where each user performed the same activity type.
+
+Solution:
+
+SELECT user_id, activity_type, MIN(activity_date) AS start_date, MAX(activity_date) AS end_date,
+       COUNT(*) AS consecutive_days
+FROM (
+    SELECT user_id, activity_type, activity_date,
+           ROW_NUMBER() OVER (PARTITION BY user_id, activity_type ORDER BY activity_date) -
+           ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY activity_date) AS grp
+    FROM Activity
+) AS sub
+GROUP BY user_id, activity_type, grp
+ORDER BY consecutive_days DESC
+LIMIT 1;
+
+
+3. Median Salary
+Question: Given a table Employee containing employee_id, department_id, and salary, find the median salary for each department.
+
+Solution:
+
+SELECT department_id,
+       PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY salary) OVER (PARTITION BY department_id) AS median_salary
+FROM Employee;
+
+
+4. Moving Total
+Question: Given a table Orders containing order_id, customer_id, order_date, and order_amount, 
+calculate the 7-day moving total of order_amount for each customer.
+
+Solution:
+
+
+SELECT order_id, customer_id, order_date, order_amount,
+       SUM(order_amount) OVER (PARTITION BY customer_id ORDER BY order_date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS moving_total
+FROM Orders;
+
+
+5. Dense Rank by Group
+Question: Given a table Scores containing student_id, subject_id, and score, rank students within each subject based on their scores. If two students have the same score, they should have the same rank, with no gaps between ranks.
+
+Solution:
+
+SELECT student_id, subject_id, score,
+       DENSE_RANK() OVER (PARTITION BY subject_id ORDER BY score DESC) AS dense_rank
+FROM Scores;
+
+
+These additional examples should give you a deeper understanding of how window functions can be applied to solve various types of problems in SQL. Let me know if you need further clarification on any of these examples!
+
+explain more window function examples
+ChatGPT
+Absolutely! Let's delve deeper into each example, explaining the logic and usage of window functions:
+
+1. Percentile
+Question Explanation: The task is to calculate the 90th percentile of sale_amount for each product. This means finding the value below which 90% of the data falls.
+
+Solution Breakdown:
+
+PERCENTILE_CONT(0.9) WITHIN GROUP: This function calculates the percentile value within a specified group.
+PARTITION BY product_id: This partitions the data by product_id, ensuring that the percentile is calculated separately for each product.
+
+
+2. Consecutive Dates
+Question Explanation: The goal is to find the longest consecutive sequence of days where each user performed the same activity type.
+
+Solution Breakdown:
+
+The inner subquery calculates a group identifier (grp) for consecutive dates and activity types for each user.
+ROW_NUMBER() is used to generate a sequence number for each row within the partition.
+By subtracting the row numbers grouped by user and activity type from those grouped only by user, we can create a group identifier (grp) for consecutive activity dates.
+
+The outer query then aggregates the results by user, activity type, and grp, finding the start and end dates of each consecutive sequence and counting the number of consecutive days.
+Finally, the result is ordered by the number of consecutive days in descending order, and the longest consecutive sequence is selected using LIMIT 1.
+
+
+3. Median Salary
+Question Explanation: The task is to find the median salary for each department.
+
+Solution Breakdown:
+
+PERCENTILE_CONT(0.5) WITHIN GROUP: This function calculates the median (50th percentile) value within a specified group.
+PARTITION BY department_id: This partitions the data by department_id, ensuring that the median is calculated separately for each department.
+
+
+4. Moving Total
+Question Explanation: The objective is to calculate the 7-day moving total of order_amount for each customer.
+
+Solution Breakdown:
+
+SUM(order_amount) OVER (PARTITION BY customer_id ORDER BY order_date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW): 
+This calculates the sum of order_amount for each customer over a window of 7 days (the current row and the preceding 6 rows) ordered by order_date.
+
+
+5. Dense Rank by Group
+Question Explanation: The task is to rank students within each subject based on their scores, ensuring no gaps between ranks for students with the same score.
+
+Solution Breakdown:
+
+DENSE_RANK() OVER (PARTITION BY subject_id ORDER BY score DESC): This assigns a dense rank to students within each subject, ordered by score in descending order.
+PARTITION BY subject_id: This ensures that the ranking is done separately for each subject.
+These explanations should provide a clearer understanding of how each solution utilizes window functions to achieve the desired results. Let me know if you have any further questions!
+
+
+Sure! DENSE_RANK() and RANK() are both SQL window functions used for ranking rows within a partition. However, they differ in how they handle ties (i.e., when multiple rows have the same value being ranked).
+
+Here's a comparison between DENSE_RANK() and RANK():
+
+DENSE_RANK()
+Assigns consecutive ranks to rows within the partition.
+If there are ties, it leaves no gaps in the ranking sequence.
+The next rank after a tie is the rank immediately following the tied ranks.
+Example: If there are two rows tied for the second rank, the next rank assigned will be 3, not 4.
+RANK()
+Assigns ranks to rows within the partition but may leave gaps in the ranking sequence.
+If there are ties, all tied rows are assigned the same rank, and the next rank after the tie is the next sequential rank.
+Example: If there are two rows tied for the second rank, the next rank assigned will be 4, not 3.
+Let's illustrate the difference with an example:
+
+Consider the following dataset:
+
+diff
+Copy code
+student_id | score
+-----------+------
+     1     |  85
+     2     |  90
+     3     |  85
+     4     |  75
+     5     |  90
+Using DENSE_RANK(), the ranking would be:
+
+markdown
+Copy code
+student_id | score | dense_rank
+-----------+-------+------------
+     1     |  85   |     1
+     3     |  85   |     1
+     2     |  90   |     2
+     5     |  90   |     2
+     4     |  75   |     3
+Using RANK(), the ranking would be:
+
+diff
+Copy code
+student_id | score | rank
+-----------+-------+-----
+     1     |  85   |  1
+     3     |  85   |  1
+     2     |  90   |  3
+     5     |  90   |  3
+     4     |  75   |  5
+As you can see, DENSE_RANK() produces consecutive ranks (1, 2, 3, etc.) without any gaps, whereas RANK() 
+leaves gaps in the ranking sequence when there are ties. Both functions have their use cases depending on
+whether you want to account for ties explicitly or not.
+

@@ -70,6 +70,226 @@ TOPICS TO UNDERSTAND:
 
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
+
+-110)
+
+
+
+
+-109) Kth largest element using counting sort because why not:
+
+    class Solution:
+        def findKthLargest(self, nums: List[int], k: int) -> int:
+            """
+            if heap len > k and heap[0] < num, heapop and then heappush
+            """
+            
+            max_n = max(nums)
+            min_n = min(nums)
+            counts = [0] * (max_n - min_n  + 1)
+            for num in nums:
+                counts[num - min_n] += 1
+            delta = k
+            for idx in range(len(counts) - 1, -1, -1):
+                delta -= counts[idx]
+                if delta <= 0:
+                    return idx + min_n
+            raise "SHEEET"
+
+-108) Sliding window example subtracting K from K-1:
+        ALSO A REVIEW ON COUNTING -> LEARN 3 WAY INTERSECTION VENN DIAGRAM COUNTING!
+
+        992. Subarrays with K Different Integers
+        Given an integer array nums and an integer k, return the number of good subarrays of nums.
+
+        A good array is an array where the number of different integers in that array is exactly k.
+
+        For example, [1,2,3,1,2] has 3 different integers: 1, 2, and 3.
+        A subarray is a contiguous part of an array.
+        
+
+        Example 1:
+
+        Input: nums = [1,2,1,2,3], k = 2
+        Output: 7
+        Explanation: Subarrays formed with exactly 2 different integers: [1,2], [2,1], [1,2], [2,3], [1,2,1], [2,1,2], [1,2,1,2]
+        Example 2:
+
+        Input: nums = [1,2,1,3,4], k = 3
+        Output: 3
+        Explanation: Subarrays formed with exactly 3 different integers: [1,2,1,3], [2,1,3], [1,3,4].
+        
+
+        Constraints:
+
+        1 <= nums.length <= 2 * 104
+        1 <= nums[i], k <= nums.length
+
+        class Solution:
+            def subarraysWithKDistinct(self, nums: List[int], k: int) -> int:
+                def helper(nums, k):
+                    i = 0 
+                    j = 0 
+                    if k == 0:
+                        return 0 
+
+                    distinct = {}
+                    cnt = 0
+                    while True: 
+                        while j < len(nums):
+                            if nums[j] in distinct:
+                                distinct[nums[j]] += 1        
+                            
+                            elif len(distinct.keys()) == k:
+                                # cannot insert this right!
+                                # count pairs and break..
+                                # we cant insert this element yet.. 
+                                break
+                            else:
+                                distinct[nums[j]] = 1
+                            j+= 1
+                        while i < j:
+                            cnt += j - i 
+                            toRemove = nums[i]
+                            distinct[toRemove] -=  1
+                            i += 1
+                            if distinct[toRemove] == 0:
+                                del distinct[toRemove]
+                                break
+                                # ok should be fixed.
+                            # window should be fixed..
+                        
+                        if i == j == len(nums):
+                            break 
+                            
+                    return cnt 
+
+                return helper(nums, k) - helper(nums, k-1)
+
+
+-107.5) LCA traversing from child to parent:
+
+        class Solution:
+            def findSmallestRegion(self, regions: List[List[str]], region1: str, region2: str) -> str:
+                """
+                """
+                # CREATE a reverse graph ... 
+                g = defaultdict(list)
+
+                for region in regions:
+                    
+                    parent = region[0]
+                    for i in range(1, len(region)):
+                        g[ region[i] ] = parent 
+
+                # now get a set of all the parents for region 1 and store it.
+                # then climb up region 2 and see if you see it..
+                marked = set()
+                def find_parents(reg):
+                    if reg in marked:
+                        # found lca
+                        return reg
+
+                    marked.add(reg)
+                    parent = g.get(reg, None)
+                    
+                    if parent is None:
+                        return None
+
+                    return find_parents(parent)
+
+                res1 = find_parents(region1)
+                res2 = find_parents(region2)
+                print("res1, res2",res1, res2)
+                return res1 or res2
+
+
+
+-107) Find median in datastrea:
+
+        class MedianFinder:
+
+            def __init__(self):
+                """
+                Use 1 MAXHEAP for bottom half of numbers.
+                Use 1 MINHEAP for top half of numbers. 
+                """
+                self.low = []  # maxheap
+                self.high = [] # minheap
+                
+
+            def addNum(self, num: int) -> None:            
+                if len(self.low) == len(self.high):
+                    # insert into low!
+                    # same size, insert into low.
+                    # compare against high, if its smaller, add to low, 
+                    # if bigger, pop high, insert into high, put popped element o fhigh into low
+                    insert = num
+                    if len(self.high) > 0 and self.high[0] < num:
+                        insert = heapq.heappop(self.high)
+                        heapq.heappush(self.high, num)
+                        
+                    heapq.heappush(self.low, -insert)             
+                else:
+                    insert = num
+                    if  -self.low[0] > num:
+                        insert = -(heapq.heappop(self.low))
+                        heapq.heappush(self.low, -num)
+                        
+                    heapq.heappush(self.high, insert)
+                
+            def findMedian(self) -> float:
+                if len(self.low) == len(self.high):
+                    # print("self.low", self.low)
+                    # convert maxh val from neg -> pos    
+                    med = (-self.low[0] + self.high[0])/2
+                    return med
+                else:
+                    return -self.low[0]
+
+
+-106) Djiksta Cheapest flight within K stops:
+
+        from collections import defaultdict
+        from heapq import *
+
+        class Solution:
+            def create_graph(self, flights):
+                g = defaultdict(list)
+                
+                for flight in flights:
+                    s, d, cost = flight
+                    g[s].append((d, cost))
+            
+                return g
+            
+            
+            def findCheapestPrice(self, n: int, flights: List[List[int]], src: int, dst: int, K: int) -> int:
+                # Modified Djikstra, aka BFS
+                
+                g = self.create_graph(flights)
+                
+                pq = []
+                heappush(pq, [0, K+1, src])
+                
+                while pq:
+                    
+                    cost, k, node = heappop(pq)
+                    
+                    print("popped node", (cost, k, node))
+                    
+                    if node == dst:
+                        return cost
+                    
+                    if k == 0:
+                        continue
+                    
+                    for kid, kid_w in g[node]:
+                        heappush(pq, [cost + kid_w, k-1, kid])
+                        
+                return -1
+
+
 -105) SUDOKU SOLVER back tracking.
     Write a program to solve a Sudoku puzzle by filling the empty cells.
 
@@ -746,6 +966,37 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     Define a pair (u,v) which consists of one element from the first array and one element from the second array.
 
     Find the k pairs (u1,v1),(u2,v2) ...(uk,vk) with the smallest sums.
+
+
+    class Solution:
+        def kSmallestPairs(self, nums1: List[int], nums2: List[int], k: int) -> List[List[int]]:
+            from heapq import heappush, heappop
+            m = len(nums1)
+            n = len(nums2)
+
+            ans = []
+            visited = set()
+
+            minHeap = [(nums1[0] + nums2[0], (0, 0))]
+            visited.add((0, 0))
+            count = 0
+
+            while k > 0 and minHeap:
+                val, (i, j) = heappop(minHeap)
+                ans.append([nums1[i], nums2[j]])
+
+                if i + 1 < m and (i + 1, j) not in visited:
+                    heappush(minHeap, (nums1[i + 1] + nums2[j], (i + 1, j)))
+                    visited.add((i + 1, j))
+
+                if j + 1 < n and (i, j + 1) not in visited:
+                    heappush(minHeap, (nums1[i] + nums2[j + 1], (i, j + 1)))
+                    visited.add((i, j + 1))
+                k = k - 1
+            
+            return ans
+
+
 
     Example 1:
 
@@ -1625,10 +1876,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
     How to use fenwick tree?
     
-
-
-
-
 
 
 
@@ -2702,6 +2949,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         return maxQ
 
 
+        REVIEW LEETCODE PROBLEM 1383 MAXIMUM PERFORMANCE OF TEAM ITS SIMILAR TO THIS FOR BETTER CONTEXT.
+
+
 
 
 -71) Interval Problem Type Intuition, and Line Sweeping
@@ -3666,6 +3916,13 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     Explanation: There are 7 subarrays with a sum divisible by K = 5:
     [4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]
 
+    
+    arri + .. arrj % k == 0 
+    arri.. arrj1 % k=  - arrx + arry % k
+    
+    0 4 9 9 7 4 5
+    0 4 1 1 2 1 0     
+
 
     class Solution(object):
         def subarraysDivByK(self, A, K):
@@ -3859,7 +4116,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     count = 0
     for k,v in m.items():
         count += v*(v-1)/2
-    count += len(differences)
+    count += len(differences) # WHY DO WE NEED TO DO THIS 2024??
     return count
 
     
@@ -4930,6 +5187,35 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                     # then profit would increase by the current price
         
     '''
+    HARMAN TOP DOWN:
+
+    class Solution:
+    # TOP DOWN ACCEPTED SOLUTION
+    def maxProfit(self, prices: List[int]) -> int:
+        
+        @lru_cache(maxsize=None)
+        def helper(i, bought, cooldown):
+            
+            if i == len(prices):
+                return 0
+            
+            if bought == -1 and not cooldown:
+                return helper(i+1, prices[i], False)
+            
+            if bought == -1 and cooldown:
+                return helper(i+1, -1, False)
+            
+            if prices[i] < bought:
+                return helper(i+1, prices[i], False)
+            
+            if prices[i] > bought:
+                return max(helper(i+1, -1, True) + (prices[i] - bought), helper(i+1, bought, False) )
+            
+            if prices[i] == bought:
+                return helper(i+1, bought, False)
+            
+        return helper(0, -1, False)
+
 
 
 -30) To create bottom up -> think of recursive solution. The parameters it needs!
@@ -4947,7 +5233,210 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
      -> An easy space optimization is using only the previous/next rather than saving all the states 
         because the recurrence formula may only require the previous versions of all the states. 
 
-    
+-29.9)  
+
+        16. 3Sum Closest
+        Attempted
+        Medium
+        Topics
+        Companies
+        Given an integer array nums of length n and an integer target, find three integers in nums such that the sum is closest to target.
+
+        Return the sum of the three integers.
+
+        You may assume that each input would have exactly one solution.
+
+        
+
+        Example 1:
+
+        Input: nums = [-1,2,1,-4], target = 1
+        Output: 2
+        Explanation: The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+        Example 2:
+
+        Input: nums = [0,0,0], target = 1
+        Output: 0
+        Explanation: The sum that is closest to the target is 0. (0 + 0 + 0 = 0).
+        
+
+        Constraints:
+
+        3 <= nums.length <= 500
+        -1000 <= nums[i] <= 1000
+        -104 <= target <= 104
+
+
+
+        The two pointers pattern requires the array to be sorted, so we do that first. As our BCR is O(n2)\mathcal{O}(n^2)O(n 
+        2
+        ), the sort operation would not change the overall time complexity.
+
+        In the sorted array, we process each value from left to right. For value v, we need to find a pair which sum, ideally, is equal to target - v. We will follow the same two pointers approach as for 3Sum, however, since this 'ideal' pair may not exist, we will track the smallest absolute difference between the sum and the target. The two pointers approach naturally enumerates pairs so that the sum moves toward the target.
+
+
+        class Solution:
+            def threeSumClosest(self, nums: List[int], target: int) -> int:
+                diff = float("inf")
+                nums.sort()
+                for i in range(len(nums)):
+                    lo, hi = i + 1, len(nums) - 1
+                    while lo < hi:
+                        sum = nums[i] + nums[lo] + nums[hi]
+                        if abs(target - sum) < abs(diff):
+                            diff = target - sum
+                        if sum < target:
+                            lo += 1
+                        else:
+                            hi -= 1
+                    if diff == 0:
+                        break
+                return target - diff
+
+
+
+-29.5)  259. 3Sum Smaller
+        Medium
+        Topics
+        Companies
+        Given an array of n integers nums and an integer target, find the number of 
+        index triplets i, j, k with 0 <= i < j < k < n that satisfy the condition nums[i] + nums[j] + nums[k] < target.
+
+        Example 1:
+
+        Input: nums = [-2,0,1,3], target = 2
+        Output: 2
+        Explanation: Because there are two triplets which sums are less than 2:
+        [-2,0,1]
+        [-2,0,3]
+        Example 2:
+
+        Input: nums = [], target = 0
+        Output: 0
+        Example 3:
+
+        Input: nums = [0], target = 0
+        Output: 0
+
+
+        Intuition
+
+        Let us try sorting the array first. For example, 
+        nums=[3,5,2,8,1]nums = [3,5,2,8,1]nums=[3,5,2,8,1] becomes [1,2,3,5,8][1,2,3,5,8][1,2,3,5,8].
+
+        Let us look at an example nums=[1,2,3,5,8]nums = [1,2,3,5,8]nums=[1,2,3,5,8], and target=7target = 7target=7.
+
+        [1, 2, 3, 5, 8]
+        ↑           ↑
+        left       right
+        Let us initialize two indices, leftleftleft and rightrightright pointing to the first and last element respectively.
+
+        When we look at the sum of first and last element, it is 1+8=91 + 8 = 91+8=9, which is ≥target\geq target≥target. 
+        That tells us no index pair will ever contain the index rightrightright. 
+        So the next logical step is to move the right pointer one step to its left.
+
+        [1, 2, 3, 5, 8]
+        ↑        ↑
+        left    right
+        Now the pair sum is 1+5=61 + 5 = 61+5=6, which is less than targettargettarget.
+        How many pairs with one of the index=leftindex = leftindex=left that satisfy the condition? 
+        You can tell by the difference between rightrightright and leftleftleft which is 333, 
+        namely (1,2),(1,3),(1,2), (1,3),(1,2),(1,3), and (1,5)(1,5)(1,5). Therefore, we move leftleftleft one step to its right.
+
+
+        class Solution {
+            public int threeSumSmaller(int[] nums, int target) {
+                Arrays.sort(nums);
+                int sum = 0;
+                for (int i = 0; i < nums.length - 2; i++) {
+                    sum += twoSumSmaller(nums, i + 1, target - nums[i]);
+                }
+                return sum;
+            }
+
+            private int twoSumSmaller(int[] nums, int startIndex, int target) {
+                int sum = 0;
+                int left = startIndex;
+                int right = nums.length - 1;
+                while (left < right) {
+                    if (nums[left] + nums[right] < target) {
+
+                    // IMPORTANT
+                    // TRICKY PART HERE
+                    // IF THREESUM < TARGET, THEN BECAUSE THEE ARRAY IS SORTED
+                    // ALL NUMBERS IN BETWEEN WILL ALSO BE LESS OR EQUAL TO K
+                    // AND THEREFORE BE VALID ANSWERS
+
+                        sum += right - left;
+                        left++;
+                    } else {
+                        right--;
+                    }
+                }
+                return sum;
+            }
+        }
+
+
+-29.8) three sum counting (Valid Triangles.)
+
+        611. Valid Triangle Number
+        Attempted
+        Medium
+        Topics
+        Companies
+        Given an integer array nums, return the number of triplets chosen from 
+        the array that can make triangles if we take them as side lengths of a triangle.
+
+        Example 1:
+
+        Input: nums = [2,2,3,4]
+        Output: 3
+        Explanation: Valid combinations are: 
+        2,3,4 (using the first 2)
+        2,3,4 (using the second 2)
+        2,2,3
+        Example 2:
+
+        Input: nums = [4,2,3,4]
+        Output: 4
+        
+
+        Constraints:
+
+        1 <= nums.length <= 1000
+        0 <= nums[i] <= 1000
+
+
+        Approach 3: Linear Scan
+        Algorithm
+
+        As discussed in the last approach, once we sort the given numsnumsnums array, we need to find the right limit of the index kkk for a pair of indices (i,j)(i, j)(i,j) chosen to find the countcountcount of elements satisfying nums[i]+nums[j]>nums[k]nums[i] + nums[j] > nums[k]nums[i]+nums[j]>nums[k] for the triplet (nums[i],nums[j],nums[k])(nums[i], nums[j], nums[k])(nums[i],nums[j],nums[k]) to form a valid triangle.
+
+        We can find this right limit by simply traversing the index kkk's values starting from the index k=j+1k=j+1k=j+1 for a pair (i,j)(i, j)(i,j) chosen and stopping at the first value of kkk not satisfying the above inequality. Again, the countcountcount of elements nums[k]nums[k]nums[k] satisfying nums[i]+nums[j]>nums[k]nums[i] + nums[j] > nums[k]nums[i]+nums[j]>nums[k] for the pair of indices (i,j)(i, j)(i,j) chosen is given by k−j−1k - j - 1k−j−1 as discussed in the last approach.
+
+        Further, as discussed in the last approach, when we choose a higher value of index jjj for a particular iii chosen, we need not start from the index j+1j + 1j+1. Instead, we can start off directly from the value of kkk where we left for the last index jjj. This helps to save redundant computations.
+
+        Thus, if we are able to find this right limit value of kkk(indicating the element just greater than nums[i]+nums[j]nums[i] + nums[j]nums[i]+nums[j]), we can conclude that all the elements in numsnumsnums array in the range (j+1,k−1)(j+1, k-1)(j+1,k−1)(both included) satisfy the required inequality. Thus, the countcountcount of elements satisfying the inequality will be given by (k−1)−(j+1)+1=k−j−1(k-1) - (j+1) + 1 = k - j - 1(k−1)−(j+1)+1=k−j−1.
+
+
+            public class Solution {
+                public int triangleNumber(int[] nums) {
+                    int count = 0;
+                    Arrays.sort(nums);
+                    for (int i = 0; i < nums.length - 2; i++) {
+                        int k = i + 2;
+                        for (int j = i + 1; j < nums.length - 1 && nums[i] != 0; j++) {
+                            while (k < nums.length && nums[i] + nums[j] > nums[k])
+                                k++;
+                            count += k - j - 1;
+                        }
+                    }
+                    return count;
+                }
+            }
+
+
 
 
 -29) 3 POINTER PERFORMANCE OPTIMIZATION FOR O(N^2)
@@ -5123,6 +5612,19 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                     node.left=None
                 node=node.right
 
+-21.5) DP SOLUTION TO LIS:
+
+    class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        dp = [1] * len(nums)
+        for i in range(1, len(nums)):
+            for j in range(i):
+                if nums[i] > nums[j]:
+                    dp[i] = max(dp[i], dp[j] + 1)
+
+        return max(dp)
+
+    Compare this with nlogn soln for LIS...
 
 
 
@@ -5191,6 +5693,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         while white <= blue:
             if nums[white] == 0:
                 nums[red], nums[white] = nums[white], nums[red]
+                # We could have never swapped blue in because we are going left to right and the blue if statement would hit first.
                 white += 1
                 red += 1
             elif nums[white] == 1:
@@ -5347,7 +5850,20 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
         You can also solve with constant space by 
         looking at rising and falling slopes
-        
+
+        EXPLANATION:
+
+        Approach 4: Single Pass Approach with Constant Space
+        Algorithm
+
+        This approach relies on the observation (as demonstrated in the figure below as well) that in order to distribute the candies as per the given criteria using the minimum number of candies, the candies are always distributed in terms of increments of 1. Further, while distributing the candies, the local minimum number of candies given to a student is 1. Thus, the sub-distributions always take the following form: 1, 2, 3, ..., n\text{1, 2, 3, ..., n}1, 2, 3, ..., n or n,..., 2, 1\text{n,..., 2, 1}n,..., 2, 1. Which, can simply be added using the formula n(n+1)/2n(n+1)/2n(n+1)/2.
+
+        Now, we can view the given rankings as some rising and falling slopes. Whenever the slope is rising, the distribution takes the form: 1, 2, 3, ..., m\text{1, 2, 3, ..., m}1, 2, 3, ..., m. Similarly, a falling slope takes the form: k,..., 2, 1\text{k,..., 2, 1}k,..., 2, 1. A challenge that arises now is that the local peak point can be included in only one of the slopes. Should we include the local peak point, n, in the rising slope or the in falling slope?
+
+        In order to decide, we can observe that in order to satisfy both the right neighbor and the left neighbor criteria, the peak point's count needs to be the max. of the counts determined by the rising and the falling slopes. Thus, in order to determine the number of candies required, the peak point needs to be included in the slope which contains more number of points. The local valley point can also be included in only one of the slopes, but this issue can be resolved easily, since the local valley point will always be assigned a candy count of 1 (which can be subtracted from the next slope's count calculations).
+
+        Coming to the implementation, we maintain two variables oldSlope and newSlope to determine the occurrence of a peak or a valley. We also use up and down variables to keep a track of the count of elements on the rising slope and on the falling slope respectively (without including the peak element). We always update the total count of candies at the end of a falling slope following a rising slope (or a mountain). The leveling of the points in rankings also works as the end of a mountain. At the end of the mountain, we determine whether to include the peak point in the rising slope or in the falling slope by comparing the up and down variables up to that point. Thus, the count assigned to the peak element becomes: max(up, down) + 1. At this point, we can reset the up and down variables indicating the start of a new mountain.
+
         class Solution:
             def candy(self, ratings):
                 if not ratings:
@@ -5370,6 +5886,43 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                     count -= min(down, up) - 1
 
                 return count
+
+        Another constant space soln:
+
+            def candy(self, ratings):
+                if len(ratings) <= 1:
+                    return len(ratings)
+                candies = 0
+                up = 0
+                down = 0
+                oldSlope = 0
+                for i in range(1, len(ratings)):
+                    newSlope = (
+                        1
+                        if ratings[i] > ratings[i - 1]
+                        else (-1 if ratings[i] < ratings[i - 1] else 0)
+                    )
+                    # slope is changing from uphill to flat or downhill
+                    # or from downhill to flat or uphill
+                    if (oldSlope > 0 and newSlope == 0) or (
+                        oldSlope < 0 and newSlope >= 0
+                    ):
+                        candies += self.count(up) + self.count(down) + max(up, down)
+                        up = 0
+                        down = 0
+                    # slope is uphill
+                    if newSlope > 0:
+                        up += 1
+                    # slope is downhill
+                    elif newSlope < 0:
+                        down += 1
+                    # slope is flat
+                    else:
+                        candies += 1
+                    oldSlope = newSlope
+                candies += self.count(up) + self.count(down) + max(up, down) + 1
+                return candies
+
 
 -17.8)  BE SMART ABOUT GRAPH ROOT FINDING, AND ITERATING:
         
@@ -5531,7 +6084,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
             node = head
             
             while node:
-                nxt = node.next
+                nxt = node.next  # SAVE THE NEXT NODE FOR FUTURE USE THEN NULLIFY IT TO STOP LOOPS
                 node.next = None # STOP THE LOOPS
                 if isOdd:
                     odd.next = node
@@ -6195,6 +6748,9 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                 if not placed:
                     piles.append(nums[num])
             return len(piles)
+
+        Look at this problem: [10, 9, 2, 5, 3, 7, 101, 18]
+        ->  Soln -> [2, 3, 7, 101]
             
     # SOLUTION WITH BINSEARCH      
     def lengthOfLIS(self, l: List[int]) -> int:
@@ -6323,6 +6879,14 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                     return False
             return check_palin(lp)
 
+-4.5) find middle of linked list:
+    class Solution(object):
+        def middleNode(self, head):
+            slow = fast = head
+            while fast and fast.next:
+                slow = slow.next
+                fast = fast.next.next
+            return slow
 
 -4) Python generator for converting binary to value, but 
     binary is encoded as a linked list:
@@ -10091,6 +10655,638 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
             Output edges of u with v.low >= u.low as bridges
             Output u.low as bicomponent ID
 
+
+58) K closest points to origin:
+
+    h=[]
+
+    for x,y in points:
+        dist=math.sqrt(x**2+y**2)
+        if len(h)<k:
+            heapq.heappush(h,(-dist,[x,y]))
+        else:
+            heapq.heappushpop(h,(-dist,[x,y]))
+    return [h[i][1] for i  in range(k)]
+
+
+    You must also know Quick selection soln as well!
+
+    Not the best partition algo find a better one. 
+
+    class Solution:
+        def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
+            # QUICK SELECT?
+            # kth CLOSEST POINT + points greater than k right..
+            #hmm not a sorted list can i do quick seleecT? yes
+            lst = []
+            for idx, [x, y] in enumerate(points):
+                lst.append( [x**2 + y**2, idx] )
+
+            # quick select.
+            # we want smallest values...
+            
+            left_elements = []
+            right_elements = []
+            soln = []
+            
+            while k != 0:
+                pivot = random.randint(0, len(lst) - 1)
+                pivot_val = lst[pivot]
+
+                for i in lst:
+                    if i[0] <= pivot_val[0]:
+                        left_elements.append(i)
+                    else:
+                        right_elements.append(i)            
+
+                if len(left_elements) <= k:
+                    lst = right_elements
+                    k = k - len(left_elements)
+                    soln += left_elements
+                    left_elements = []
+                    right_elements = []
+                else:
+                    lst = left_elements
+                    left_elements = []
+            
+            return list(map(lambda x: points[x[1]], soln + left_elements))
+
+
+59)
+        Given an integer array sorted in non-decreasing order, there is exactly one integer 
+        in the array that occurs more than 25% of the time, return that integer.
+
+        
+
+        Example 1:
+
+        Input: arr = [1,2,2,6,6,6,6,7,10]
+        Output: 6
+        Example 2:
+
+        Input: arr = [1,1]
+        Output: 1
+
+        I think you can solve this with boyer moore voting algo.. 
+
+
+        class Solution:
+            def findSpecialInteger(self, arr: List[int]) -> int:
+                n = len(arr)
+                candidates = [arr[n // 4], arr[n // 2], arr[3 * n // 4]]
+                target = n / 4
+                
+                for candidate in candidates:
+                    left = bisect_left(arr, candidate)
+                    right = bisect_right(arr, candidate) - 1
+                    if right - left + 1 > target:
+                        return candidate
+                    
+                return -1
+
+        BOYER MOOR VOTING ALGO SOLN:
+
+        class Solution {
+                bool valid(int candidate, vector<int> &nums, int req)
+                {
+                    int count = 0;
+                    for(int num : nums)
+                        count += candidate == num;
+                    return count > req;
+                }
+                
+            public:
+                int findSpecialInteger(vector<int>& arr) {
+                    int first = 0;
+                    int second = 0;
+                    int third = 0;
+                    
+                    int c1 = 0, c2 = 0, c3 = 0;
+                    
+                    
+                    for(int num : arr)
+                    {
+                        if(num == first)
+                            ++c1;
+                        else if(num == second)
+                            ++c2;
+                        else if(num == third)
+                            ++c3;
+                        else if(c1 == 0)
+                        {
+                            first = num;
+                            c1 = 1;
+                        }
+                        else if(c2 == 0)
+                        {
+                            second = num;
+                            c2 = 1;
+                        }
+                        else if(c3 == 0)
+                        {
+                            third = num;
+                            c3 = 1;
+                        }
+                        else
+                        {
+                            --c1, --c2, --c3;
+                        }
+                    }
+                    
+                    int req = arr.size() / 4;
+                    if(valid(first, arr, req)) return first;
+                    if(valid(second, arr, req)) return second;
+                    if(valid(third, arr, req)) return third;
+                    return -1;
+                }
+            };
+
+60) 2D PREFIX GRID FOR PREFIX SUMS GOOD TO MEMORIZE THIS ALGO:
+
+        First understand 1D prefix sum array..
+
+        The prefix sum array starts at 0 and has N+1 elements if 
+        original array has N elements. 
+        int sum = 0;
+        for(int i=0;i<n;i++){
+            sum+=arr[i];
+            prefix[i]=sum;
+        }
+
+        Then you can compute the sum between i and j as sum[j] - sum[i-1] Right?
+        yes. 
+        So the total sum is actually   sum[N] (or sum[N] - sum[0]) as such!
+
+        For this array
+        1 6 4 2 5 3
+        0 1 2 3 4 5
+
+        Prefix sum:
+        0, 1, 7, 11, 13, 18, 21
+        0  1  2  3    4   5  6
+        to get sum from index 1 to index 4 in original array do (6+4+2+5):
+        Prefix[5] - Prefix[2 - 1] (Point to include - stuff we dont want in sum)
+        == 18 - 1 = 17
+        but the indices add 1 to go from original to prefix array for htis shit. 
+
+        NOW LETS THINK IN 2D:
+
+        3 0 1 4 2
+        5 6 3 2 1
+        1 2 0 1 5
+        4 1 0 1 7
+        1 0 3 0 5
+
+
+        vector<vector<int>> prefix(n+1,vector<int>(m+1,0));
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=m;j++){
+            prefix[i][j]=prefix[i][j-1]+prefix[i-1][j]-prefix[i-1][j-1]+grid[i-1][j-1];
+            }
+        }
+
+        0 0  0  0  0  0 
+        0 3  3  4  8  10 
+        0 8  14 18 24 27 
+        0 9  17 21 28 36 
+        0 13 22 26 34 49 
+        0 14 23 30 38 58
+
+        We can now query any rectangle here and get a sum!
+        
+        Have to look at a 3x3 SQUARE in prefix sum to get a 2x2 SQUARE sum
+        reason being 
+        We have to deal with coordinate representing r2c2 and also the coordinate that is outside the square 
+        we want which is r1-1 and c1-1 
+        look at below algo also look at the last binary search problem in template more prefix sums. 
+
+        while(query--){
+            int r1,c1; cin>>r1>>c1;
+            int r2,c2; cin>>r2>>c2;
+            // 0 based indexing so need increase
+            r1++; c1++; r2++; c2++;
+
+            cout<<prefix[r2][c2]-prefix[r1-1][c2]-prefix[r2][c1-1]+prefix[r1-1][c1-1];
+            cout<<endl;
+        }
+
+
+61) Union find practice:
+
+        200. Number of Islands
+        Solved
+        Medium
+        Topics
+        Companies
+        Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), 
+        return the number of islands.
+
+        An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. 
+        You may assume all four edges of the grid are all surrounded by water.
+
+        
+
+        Example 1:
+
+        Input: grid = [
+        ["1","1","1","1","0"],
+        ["1","1","0","1","0"],
+        ["1","1","0","0","0"],
+        ["0","0","0","0","0"]
+        ]
+        Output: 1
+        Example 2:
+
+        Input: grid = [
+        ["1","1","0","0","0"],
+        ["1","1","0","0","0"],
+        ["0","0","1","0","0"],
+        ["0","0","0","1","1"]
+        ]
+        Output: 3
+
+
+
+        YOU CAN DO THIS WITH DFS OR BFS.
+
+        LETS TRY UNION FIND:
+
+
+        class Solution:
+            def numIslands(self, grid: List[List[str]]) -> int:
+                
+                rank = {}
+                parent = {}
+                components = 0 
+
+                for i, row in enumerate(grid):
+                    for j, val in enumerate(grid[i]):
+                        # print(i, row, j, val)
+                        if val == "1":
+                            rank[(i, j) ] = 1
+                            parent[(i, j)] = (i, j)
+                            components += 1
+
+                def union(a, b):
+                    nonlocal components
+                    pa = find(a)
+                    pb = find(b)
+                    if pa == pb :
+                        return 
+                    if rank[pb] > rank[pa]:
+                        pb, pa, = pa, pb
+
+                    parent[pb] = pa
+                    if rank[pb] == rank[pa]:
+                        rank[pa] += 1  
+
+                    components -= 1         
+                
+                def find(a):
+                    if parent[a] != a:
+                        parent[a] = find(parent[a]) 
+                        return parent[a]
+                    return a 
+                    
+                dirs = [(+1, 0), (-1, 0), (0, +1), (0, -1)]
+
+                visited = set()
+
+                for i, row in enumerate(grid):
+                    for j, val in enumerate(row):
+                        if val == "1":
+                            for direction in dirs:
+                                x, y = direction
+                                if i + x >= 0 and i + x < len(grid) and j + y >= 0 and j+y < len(grid[0]) :
+                                    if grid[i+x][j+y] == "1":
+                                        union((i,j), (i + x, j + y) )
+                
+                #component_set = set()
+                #for key, value in parent.items():
+                #    component_set.add(find(key))
+                #return len(component_set)
+                # faster way is tokeep track of number of components as well!
+
+                return components
+
+
+
+62) DFAs to sovle problems:
+
+    Approach 2: Deterministic Finite Automaton (DFA)
+    Intuition
+
+    Let's now view Approach 1 from a different angle. There were 3 boolean variables, and they can be 
+    either true or false. Each time we read a character in the string, we either stayed in the current 
+    state (boolean variables stayed the same) or we transitioned into a new state (boolean variables changed).
+    What we've described above is a lot like a deterministic finite automaton. A DFA is a finite number of 
+    states with transition rules to move between them. However, keep in mind that the state depends on 
+    more than just those 3 boolean variables; it also depends on whether we have encountered a + or -. We will discuss this in more detail later.
+
+    Never heard of a DFA before?
+
+    DFA's are useful for solving many problems, including advanced dynamic programming problems such as 1411. 
+    Number of Ways to Paint N X 3 Grid. So if you're not yet familiar with them, we recommend that you read up on them. It will be worth it!
+
+    DFAs share a lot of similarities with the trie data structure. Recall that a trie is used to 
+    represent a dictionary of words, in a space-efficient manner. To check whether or not a word is 
+    in the dictionary, we would simultaneously traverse through the word and the trie. If we end at a 
+    node that is marked as a valid end-point, then we would return true. Otherwise, if we get "stuck", 
+    or end at a node that is not an end-point, we would return false. It's the same for a DFA: we start 
+    at a "root" node, and then check each character one by one, checking whether or not there is a valid transition we can make.
+
+    There are a few key differences between DFA's and tries, so keep these in mind while reading through the remainder of this section.
+
+    While a trie can only represent a finite number of strings (the given dictionary), a DFA can represent an infinite number of different strings.
+    While a trie can only move down the implicit tree, a DFA can essentially "loopback" to a higher level, or stay on the same level, or even the same node.
+    A trie is a type of tree, and a DFA is a type of directed graph.
+    Other than that, you can lean on your existing knowledge of tries to wrap your head around this new data structure.
+
+    Algorithm
+
+    The first step is to design our DFA. Picture the DFA as a directed graph, where each node is a state, 
+    and each edge is a transition labeled with a character group (digit, exponent, sign, or dot). There are two key steps to designing it.
+
+    Identify all valid combinations that the aforementioned boolean variables can be in. 
+    Each combination is a state. Draw a circle for each state, and label what it means.
+
+    For each state, consider what a character from each group would mean in the context of that state. 
+    Each group will either cause a transition into another state, or it will signify that the string is invalid. 
+    For each valid transition, draw a directed arrow between the two states and write the group next to the arrow.
+    Try this on your own before reading any further! Take a few minutes and try to design the DFA. Keep in mind 
+    that a state can point to itself. For example, with the input "12345", if we were to use the first approach, after the first character, none of the boolean variables change, so the state should not change. Therefore, the node should have an edge that points to itself, labeled by "digit". Another hint: the start node should have 3 outgoing edges labeled "digit", "sign", and "dot".
+
+
+        65. Valid Number
+        Attempted
+        Hard
+        Topics
+        Companies
+        Given a string s, return whether s is a valid number.
+
+        For example, all the following are valid numbers: "2", "0089", "-0.1", "+3.14", "4.", "-.9", "2e10", "-90E3", "3e+7", "+6e-1", "53.5e93", "-123.456e789", while the following are not valid numbers: "abc", "1a", "1e", "e3", "99e2.5", "--6", "-+3", "95a54e53".
+
+        Formally, a valid number is defined using one of the following definitions:
+
+        An integer number followed by an optional exponent.
+        A decimal number followed by an optional exponent.
+        An integer number is defined with an optional sign '-' or '+' followed by digits.
+
+        A decimal number is defined with an optional sign '-' or '+' followed by one of the following definitions:
+
+        Digits followed by a dot '.'.
+        Digits followed by a dot '.' followed by digits.
+        A dot '.' followed by digits.
+        An exponent is defined with an exponent notation 'e' or 'E' followed by an integer number.
+
+        The digits are defined as one or more digits.
+
+
+        With our constructed DFA, our algorithm will be:
+
+        Initialize the DFA as an array of hash tables. Each hash table's keys will be a 
+        character group, and the values will be the state it should transition to. We can use 
+        the indexes of the array to handle state transitions. Set the currentState = 0.
+
+        Iterate through the input. For each character, first determine what group it belongs to. 
+        Then, check if that group exists in the current state's hash table. If it does,
+         transition to the next state. Otherwise, return false.
+
+        At the end, check if we are currently in a valid end state: 1, 4, or 7.
+
+        If you're having trouble with your implementation, try to go through your DFA with a 
+        complicated case such as -123.456E+789. Follow along with your designed DFA, and if 
+        there is a bug, check which edge case went wrong and adjust the graph accordingly. 
+        Once your DFA is correctly designed, the coding part will be less challenging.
+
+        # DFA
+        https://leetcode.com/problems/valid-number/editorial/
+    
+        class Solution(object):
+            def isNumber(self, s):
+                # This is the DFA we have designed above
+                dfa = [
+                    {"digit": 1, "sign": 2, "dot": 3},
+                    {"digit": 1, "dot": 4, "exponent": 5},
+                    {"digit": 1, "dot": 3},
+                    {"digit": 4},
+                    {"digit": 4, "exponent": 5},
+                    {"sign": 6, "digit": 7},
+                    {"digit": 7},
+                    {"digit": 7},
+                ]
+
+                current_state = 0
+                for c in s:
+                    if c.isdigit():
+                        group = "digit"
+                    elif c in ["+", "-"]:
+                        group = "sign"
+                    elif c in ["e", "E"]:
+                        group = "exponent"
+                    elif c == ".":
+                        group = "dot"
+                    else:
+                        return False
+
+                    if group not in dfa[current_state]:
+                        return False
+
+                    current_state = dfa[current_state][group]
+
+                return current_state in [1, 4, 7]
+
+
+63) DFA part 2:
+
+    1411. Number of Ways to Paint N × 3 Grid
+        Hard
+        Topics
+        Companies
+        Hint
+        You have a grid of size n x 3 and you want to paint each cell of the grid with exactly
+        one of the three colors: Red, Yellow, or Green while making sure that no two adjacent 
+        cells have the same color (i.e., no two cells that share vertical or horizontal sides have the same color).
+
+        Given n the number of rows of the grid, return the number of ways you can paint this grid. 
+        As the answer may grow large, the answer must be computed modulo 109 + 7.
+
+        
+        Example 1:
+
+
+        Input: n = 1
+        Output: 12
+        Explanation: There are 12 possible way to paint the grid as shown.
+        this is because:
+
+        RYG RYR GRY... GYG 
+
+        3 choices for first one.. then 2 choices for next one, then 2 choices again right? yes.  == 12 counting theroy!
+        _ _ _
+        2 
+        - - -
+        To count.. -> fill first row -> then -> fill next row right based on above row?   So a state is RYG or whatever 12 states in each row!  
+
+        any of these 12 states -> forces a different state an allowed set of states  -> and the same for next row.. 
+
+
+
+        
+        Example 2:
+
+        
+
+
+        Input: n = 5000
+        Output: 30228214
+
+
+        Explanation
+        Two pattern for each row, 121 and 123.
+        121, the first color same as the third in a row.
+        123, one row has three different colors.
+
+        We consider the state of the first row,
+        pattern 121: 121, 131, 212, 232, 313, 323.
+        pattern 123: 123, 132, 213, 231, 312, 321.
+        So we initialize a121 = 6, a123 = 6.
+
+        We consider the next possible for each pattern:
+        Patter 121 can be followed by: 212, 213, 232, 312, 313
+        Patter 123 can be followed by: 212, 231, 312, 232
+
+        121 => three 121, two 123
+        123 => two 121, two 123
+
+        So we can write this dynamic programming transform equation:
+        b121 = a121 * 3 + a123 * 2
+        b123 = a121 * 2 + a123 * 2
+
+        We calculate the result iteratively
+        and finally return the sum of both pattern a121 + a123
+
+        def numOfWays(self, n):
+            a121, a123, mod = 6, 6, 10**9 + 7
+            for i in xrange(n - 1):
+                a121, a123 = a121 * 3 + a123 * 2, a121 * 2 + a123 * 2
+            return (a121 + a123) % mod
+
+
+
+64) Boyer moor voting problem II
+
+    Given an integer array of size n, find all elements that appear more than ⌊ n/3 ⌋ times.
+
+        Example 1:
+
+        Input: nums = [3,2,3]
+        Output: [3]
+        Example 2:
+
+        Input: nums = [1]
+        Output: [1]
+        Example 3:
+
+        Input: nums = [1,2]
+        Output: [1,2]
+
+    class Solution:
+
+        def majorityElement(self, nums):
+            if not nums:
+                return []
+            
+            # 1st pass
+            count1, count2, candidate1, candidate2 = 0, 0, None, None
+            for n in nums:
+                if candidate1 == n:
+                    count1 += 1
+                elif candidate2 == n:
+                    count2 += 1
+                elif count1 == 0:
+                    candidate1 = n
+                    count1 += 1
+                elif count2 == 0:
+                    candidate2 = n
+                    count2 += 1
+                else:
+                    count1 -= 1
+                    count2 -= 1
+            
+            # 2nd pass
+            result = []
+            for c in [candidate1, candidate2]:
+                if nums.count(c) > len(nums)//3:
+                    result.append(c)
+
+            return result
+
+
+
+65) 1539. Kth Missing Positive Number (Binary Search)
+        Attempted
+        Easy
+        Topics
+        Companies
+        Hint
+        Given an array arr of positive integers sorted in a strictly increasing order, and an integer k.
+
+        Return the kth positive integer that is missing from this array.
+
+
+
+        Example 1:
+
+        Input: arr = [2,3,4,7,11], k = 5
+        Output: 9
+        Explanation: The missing positive integers are [1,5,6,8,9,10,12,13,...]. The 5th missing positive integer is 9.
+        Example 2:
+
+        Input: arr = [1,2,3,4], k = 2
+        Output: 6
+        Explanation: The missing positive integers are [5,6,7,...]. The 2nd missing positive integer is 6.
+
+        class Solution:
+            def findKthPositive(self, arr: List[int], k: int) -> int:
+                """
+                To find the kth missing one..
+                just start counting from 1. 
+                and keep track. 
+                You can also I guess.. binary search for it .
+                Check the last element.. and see how off it is.. how many misisng numbers should there be at this value?
+                if theres more than K?you gutta keep going left. 
+                check mid point see how many missing should be from here? 
+                once you find the left and right of the binary search then...
+                go from left and keep adding 1 until you find it? ig?
+                """ 
+                l = 0 
+                r = len(arr)
+                def missing_amt(idx, number):
+                    # at array idx how many are missing ? are 0 missing? 
+                    return number - (idx + 1)
+
+                while l < r:
+                    
+                    mid = l + (r-l) // 2    
+                    # check a condition
+                    val = arr[mid]
+                    missing = missing_amt(mid, val)
+                    # how many are missing at this point
+                    if missing < k:
+                        # shift to right side 
+                        l = mid + 1
+                    elif missing > k:
+                        r = mid 
+                    else:
+                        break
+
+                return l + k
+
+
+
+
+
 Cool Notes Part 0.4 ##################################
  ################################## ##################################
 
@@ -10370,6 +11566,10 @@ Cool Notes Part 0.5: Sliding Window with a deque
     Remember this: after exiting the while loop, left is the minimal k​ satisfying the condition function;
     Design the condition function. This is the most difficult and most beautiful part. Needs lots of practice.
     Below I'll show you guys how to apply this powerful template to many LeetCode problems.
+
+    "Remember this: after exiting the while loop, left is the minimal k satisfying the condition function" 
+    This is not 100% accurate. In the case that left == array size after exiting the loop, 
+    no element in the array satisfy the condition function.
 
 
     Excellent work! Many people think sorted array is a must to apply 
@@ -10891,10 +12091,14 @@ Cool Notes Part 0.5: Sliding Window with a deque
 
        Ok so sort it, [1,1,3]
        -> now 1,1 1,3 1,3 -> 0, 2, 2
-       Number of pairs is 3 x 2  _ _ <- using space theory. 
+       Number of pairs is 3 * 2  / 2!  = 6/2 = 3   3*2  permutations / 2! to remove perms.  
        Lets binary search the space. 
        min -> difference between 1st and 2nd pair.
            -> largest diff -> 1st and last pair
+
+
+    how many pairs between index 0 and index 4?
+    [1,1,3,5,7]
 
         Enough function 
         
@@ -10924,7 +12128,7 @@ Cool Notes Part 0.5: Sliding Window with a deque
         [1,3,6,10,15, END]
          ^         ^
         Lets say dist is 11 so ptrs end up like above. 
-        Count is 4-0-1 = 3 pairs
+        Count is 4-0-1 = 3 pairs = 2 + 1
         
         [1,3,6,10,15,END]
            ^       ^
@@ -10942,8 +12146,9 @@ Cool Notes Part 0.5: Sliding Window with a deque
             while i < n or j < n:
                 while j < n and nums[j] - nums[i] <= distance:  # move fast pointer
                     j += 1
-                count += j - i - 1  # count pairs
-                i += 1  # move slow pointer
+                count += j - i - 1  # count pairs  # this counts pairs in sliding window like 1+2+3+4+5 == n*(n-1)/2 pairs
+                                    # j is on the first element that fails the abve condition for the reason for (-1)
+                i += 1  # move slow pointer # we finally moved i so we can start counting more pairs from here!.
             return count >= k
         
         Obviously, our search space should be [0, max(nums) - min(nums)]. 
@@ -11062,6 +12267,169 @@ Cool Notes Part 0.5: Sliding Window with a deque
                    left = mid + 1
            return left
 
+
+
+    YOU CAN ALSO USE THE TEMPLATE TO MAXIMIZE THINGS!
+    HERE IS AN EXAMPLE FROM THE COMMENTS IN THE POST:
+    1231: Divide chocolate:
+
+        You have one chocolate bar that consists of some chunks. 
+        Each chunk has its own sweetness given by the array sweetness.
+
+        You want to share the chocolate with your k friends so you start cutting the 
+        chocolate bar into k + 1 pieces using k cuts, each piece consists of some consecutive chunks.
+
+        Being generous, you will eat the piece with the minimum
+        total sweetness and give the other pieces to your friends.
+
+        Find the maximum total sweetness of the piece you can get 
+        by cutting the chocolate bar optimally.
+
+        Example 1:
+
+        Input: sweetness = [1,2,3,4,5,6,7,8,9], k = 5
+        Output: 6
+        Explanation: You can divide the chocolate to [1,2,3], [4,5], [6], [7], [8], [9]
+        Example 2:
+
+        Input: sweetness = [5,6,7,8,9,1,2,3,4], k = 8
+        Output: 1
+        Explanation: There is only one way to cut the bar into 9 pieces.
+        Example 3:
+
+        Input: sweetness = [1,2,2,1,2,2,1,2,2], k = 2
+        Output: 5
+        Explanation: You can divide the chocolate to [1,2,2], [1,2,2], [1,2,2]
+
+        THIS SOLUTION WORKS!
+        class Solution:
+            def maximizeSweetness(self, sweetness: List[int], k: int) -> int:
+                def possible(sweetness_limit: int) -> bool:
+                    total_sweetness = 0
+                    shared_with = 0
+                    
+                    for sweet in sweetness:
+                        total_sweetness += sweet
+                        
+                        if total_sweetness > sweetness_limit:
+                            total_sweetness = 0
+                            shared_with += 1
+
+                    # if at the current sweetness_limit we are choosing
+                    # we haven't been successful in cutting the chocolate
+                    # into k+1 pieces then that means we should try a lower sweetness to divide it by,
+                    # because that would allow more cuts to be made as less subarray sums(cut chocolate pieces)
+                    # will be able to fit in the current `sweetness_limit`
+                    return shared_with > k
+                
+                low = min(sweetness) # the lowest is by taking the least sweetest chunk and dividing by that
+                high = sum(sweetness) # the max we could cut the chocolate is by 1 piece that accounts for all the sweetness
+                
+                while low < high:
+                    # mid is potential optimal sweetness
+                    mid = low + (high - low) // 2
+                    
+                    if not possible(mid):
+                        high = mid
+                    else:
+                        low = mid + 1
+                return low
+
+
+        THIS SOLUTION WORKS TOO, ONLY DIFFERRENCE IS HIGH IS SUM() + 1 THIS SOLUTION FROM ORIGINAL AUTHOR
+
+        class Solution:
+            def maximizeSweetness(self, nums: List[int], K: int) -> int:        
+                def feasible(threshold) -> bool:
+                    count = 0
+                    total = 0
+                    for num in nums:
+                        total += num
+                        if total >= threshold:
+                            total = 0
+                            count += 1
+                            if count > K:
+                                return True
+                    return False
+
+                left, right = 0, sum(nums) + 1
+                while left < right:
+                    mid = left + (right - left) // 2
+                    if not feasible(mid):
+                        right = mid
+                    else:
+                        left = mid + 1
+                return left - 1
+
+        REASON FOR SUM() + 1
+
+        I think it's because your approach/template is assuming the search space to be left closed right open, [l, r). 
+        If you specify l to be the min and r to be the max of a potential answer, there is a chance you might 
+        miss the max potential answer. While searching for the min k such that it meets some condition as you 
+        mentioned in all the questions above, your template won't miss it since as long as we meets condition, 
+        we squeeze the search space to left, the new search space will become [l, m) so it won't get to 
+        the max potential answer, which is the initialized r. But if you want to search for max k such condition is met, 
+        you are squeezing the search space to right to [m, r) and this can possibly lead to your answer off by one. 
+        Why we are returning left - 1 at the end as I mentioned in last reply. It's because when condition meets, 
+        we will have left = mid + 1 (think it as mid = left - 1), 
+        nums[left] will definitely not equal to the target when the loop ends (left == right), so we need to return left -1.
+
+        If I alter your solution in one part which is change right to sum(nums)+1, it passes all test cases.
+        Let me know if I have anything stated wrong. I am happy to further discuss with you.
+
+
+    1292. Maximum Side Length of a Square with Sum Less than or Equal to Threshold
+
+        Given a m x n matrix mat and an integer threshold, return the maximum side-length 
+        of a square with a sum less than or equal to threshold or return 0 if there is no such square.
+
+        Example 1:
+
+
+        Input: mat = [[1,1,3,2,4,3,2],
+                      [1,1,3,2,4,3,2],
+                      [1,1,3,2,4,3,2]], threshold = 4
+        Output: 2
+        Explanation: The maximum side length of square with sum less than 4 is 2 as shown.
+        Example 2:
+
+        Input: mat = [[2,2,2,2,2],[2,2,2,2,2],[2,2,2,2,2],[2,2,2,2,2],[2,2,2,2,2]], threshold = 1
+        Output: 0
+
+        
+        Algorithm:
+        Build a (m+1)x(n+1) matrix of prefix sums of given matrix where prefix[i][j] = sum(mat[:i][:j]). 
+        And search for maximum k such that sum(mat[i:i+k][j:j+k]) not exceeding threshold. Notice:
+
+        prefix[i+1][j+1] = prefix[i][j+1] + prefix[i+1][j] - prefix[i][j] + mat[i][j].
+        sum(mat[i:i+k][j:j+k]) = prefix[i+k][j+k] - prefix[i][j+k] - prefix[i+k][j] + prefix[i][j].
+
+            def maxSideLength(self, mat, threshold: int) -> int:
+                m, n = len(mat), len(mat[0])
+                prefix = [[0 for _ in range(n + 1)] for _ in range(m + 1)]
+                for i in range(1, m + 1):
+                    for j in range(1, n + 1):
+                        prefix[i][j] = mat[i - 1][j - 1] + prefix[i - 1][j] + prefix[i][j - 1] - prefix[i - 1][j - 1]
+
+                def candidate(k) -> bool:
+                    for i in range(k, m + 1):
+                        for j in range(k, n + 1):
+                            if prefix[i][j] + prefix[i - k][j - k] - prefix[i - k][j] - prefix[i][j - k] <= threshold:
+                                return True
+                    return False
+
+                left, right = 0, min(m, n) + 1      # its min(m, n) + 1 because we want open right interval for this to work!
+                                                    # also cause we return left -1 in the end?
+                while left < right:
+                    mid = left + (right - left) // 2
+                    if not candidate(mid):
+                        right = mid
+                    else:
+                        left = mid + 1
+                return left - 1
+
+
+
 ###################################################################################
 ###################################################################################
 
@@ -11142,18 +12510,25 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
     Dynamic Programming (DP) is a powerful algorithmic technique used to solve a wide range of optimization problems. It's a cornerstone of technical interviews, and LeetCode provides an extensive collection of DP problems to help you master this crucial skill. In this comprehensive guide, we'll explore LeetCode's top DP problems, dissecting their statements, approaches, solution strategies (Top-Down and Bottom-Up), and identifying similar problems across various DP patterns.
 
     Minimum Cost Climbing Stairs (Problem #746)
-    Problem Statement: You are given an array cost where cost[i] represents the cost of climbing the i-th stair. You can start climbing from either the 0-th or 1-st stair. Each time you can either climb one or two steps. Return the minimum cost to reach the top of the floor.
+    Problem Statement: You are given an array cost where cost[i] represents the cost of climbing the i-th stair. 
+    You can start climbing from either the 0-th or 1-st stair. Each time
+     you can either climb one or two steps. Return the minimum cost to reach the top of the floor.
 
     Approach:
-    This problem exhibits a classic Dynamic Programming pattern where the minimum cost to reach a stair is the minimum of the costs of reaching the previous two stairs plus the cost of the current stair.
+    This problem exhibits a classic Dynamic Programming pattern where the minimum cost to reach a stair 
+    is the minimum of the costs of reaching the previous two stairs plus the cost of the current stair.
 
     Top-Down Approach (Recursive with Memoization):
-    We define a recursive function minCostClimbingStairsTopDown, which takes the current index n and the array cost as inputs.
-    Within this function, we recursively call itself for the previous two stairs (if they exist) and memoize the results to avoid redundant calculations.
+    We define a recursive function minCostClimbingStairsTopDown, which takes the current index n and 
+    the array cost as inputs.
+    Within this function, we recursively call itself for the previous two stairs (if they exist) 
+    and memoize the results to avoid redundant calculations.
+
     Finally, we return the minimum cost to reach the n-th stair.
+    
     def minCostClimbingStairsTopDown(cost, n, memo):
-        if n <= 1:
-            return cost[n]
+        if n <= 1: # 2 BASE cases encoded here!
+            return cost[n] 
         if memo[n] != -1:
             return memo[n]
         memo[n] = min(minCostClimbingStairsTopDown(cost, n-1, memo), minCostClimbingStairsTopDown(cost, n-2, memo)) + cost[n]
@@ -11163,11 +12538,14 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
         n = len(cost)
         memo = [-1] * n
         return min(minCostClimbingStairsTopDown(cost, n-1, memo), minCostClimbingStairsTopDown(cost, n-2, memo))
+    
+
     Bottom-Up Approach (Iterative):
     We initialize a DP array dp of size n+1 to store the minimum cost to reach each stair.
     We start by assigning the costs of the first two stairs to the first two elements of the DP array.
     Then, we iterate through the remaining stairs and compute the minimum cost to reach each stair by considering the minimum of the costs of the previous two stairs plus the cost of the current stair.
     Finally, we return the minimum cost to reach either the last or second last stair, as these are the possible starting points.
+    
     def minCostClimbingStairsBottomUp(cost):
         n = len(cost)
         dp = [0] * (n+1)
@@ -11175,65 +12553,82 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
         for i in range(2, n):
             dp[i] = min(dp[i-1], dp[i-2]) + cost[i]
         return min(dp[n-1], dp[n-2])
+    
     Example Usage:
     cost = [10, 15, 20]
     print(minCostClimbingStairsBottomUp(cost))  # Output: 15
+
+
     Similar Problems:
 
     Problem 70: Climbing Stairs - Given n stairs, you can climb 1 or 2 steps at a time. Determine the number of distinct ways to reach the top.
     Top-Down Approach (Recursive with Memoization):
     def climbStairsTopDown(n, memo):
-    if n <= 1:
-        return 1
-    if memo[n] != -1:
+        if n <= 1:
+            return 1
+        if memo[n] != -1:
+            return memo[n]
+        memo[n] = climbStairsTopDown(n-1, memo) + climbStairsTopDown(n-2, memo)
         return memo[n]
-    memo[n] = climbStairsTopDown(n-1, memo) + climbStairsTopDown(n-2, memo)
-    return memo[n]
 
     def climbStairs(n):
-    memo = [-1] * (n + 1)
-    return climbStairsTopDown(n, memo)
+        memo = [-1] * (n + 1)
+        return climbStairsTopDown(n, memo)
+
+
     Bottom-Up Approach (Iterative):
     def climbStairsBottomUp(n):
-    if n <= 1:
-        return 1
-    dp = [0] * (n + 1)
-    dp[0], dp[1] = 1, 1
-    for i in range(2, n + 1):
-        dp[i] = dp[i - 1] + dp[i - 2]
-    return dp[n]
-    Problem 322: Coin Change - Given an amount n and a list of coin denominations, determine the minimum number of coins needed to make up that amount.
+        if n <= 1:
+            return 1
+        dp = [0] * (n + 1)
+        dp[0], dp[1] = 1, 1
+        for i in range(2, n + 1):
+            dp[i] = dp[i - 1] + dp[i - 2]
+        return dp[n]
+        
+    Problem 322: Coin Change - Given an amount n and a list of coin denominations, 
+    determine the minimum number of coins needed to make up that amount.
+    
     Top-Down Approach (Recursive with Memoization):
     def coinChangeTopDown(coins, amount, memo):
-    if amount < 0:
-        return -1
-    if amount == 0:
-        return 0
-    if memo[amount] != float('inf'):
-        return memo[amount]
-    for coin in coins:
-        subproblem = coinChangeTopDown(coins, amount - coin, memo)
-        if subproblem >= 0:
-            memo[amount] = min(memo[amount], 1 + subproblem)
-    return memo[amount] if memo[amount] != float('inf') else -1
+        if amount < 0:
+            return -1
+        if amount == 0:
+            return 0
+        if memo[amount] != float('inf'):
+            return memo[amount]
+        for coin in coins:
+            subproblem = coinChangeTopDown(coins, amount - coin, memo)
+            if subproblem >= 0:
+                memo[amount] = min(memo[amount], 1 + subproblem)
+        return memo[amount] if memo[amount] != float('inf') else -1
 
     def coinChange(coins, amount):
-    memo = [float('inf')] * (amount + 1)
-    return coinChangeTopDown(coins, amount, memo)
+        memo = [float('inf')] * (amount + 1)
+        return coinChangeTopDown(coins, amount, memo)
+
     Analysis:
 
-    Both the Top-Down and Bottom-Up approaches have a time complexity of O(n) and a space complexity of O(n), where n is the number of stairs.
-    These approaches efficiently compute the minimum cost to reach the top of the stairs by considering the optimal substructure property of the problem.
+    Both the Top-Down and Bottom-Up approaches have a time complexity of O(n) and a
+    space complexity of O(n), where n is the number of stairs.
+    These approaches efficiently compute the minimum cost to reach the top of the stairs by 
+    considering the optimal substructure property of the problem.
+   
+   
     Merging Intervals
     Problem Statement: Given a collection of intervals, merge all overlapping intervals.
 
     Approach:
-    The key to solving merging interval problems lies in identifying the optimal solution for each interval by considering the best from the left and right sides, then merging them as necessary.
+    The key to solving merging interval problems lies in identifying the optimal solution 
+    for each interval by considering the best from the left and right sides, then merging them as necessary.
 
     Top-Down Approach (Recursive with Memoization):
-    We define a recursive function mergeIntervalsTopDown, which takes the collection of intervals intervals, the start index start, the end index end, and a memoization table memo.
-    Within this function, we recursively call itself for different partitions of the intervals and memoize the results to avoid redundant calculations.
+    We define a recursive function mergeIntervalsTopDown, which takes the collection of 
+    intervals intervals, the start index start, the end index end, and a memoization table memo.
+    Within this function, we recursively call itself for different partitions of the intervals and
+     memoize the results to avoid redundant calculations.
     Finally, we return the merged intervals for the given range.
+    
     def mergeIntervalsTopDown(intervals, start, end, memo):
         if start == end:
             return intervals[start][0], intervals[start][1]
@@ -11254,11 +12649,13 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
             return []
         memo = [[None]*n for _ in range(n)]
         return mergeIntervalsTopDown(intervals, 0, n-1, memo)
+
     Bottom-Up Approach (Iterative):
     We start by sorting the intervals based on the start times.
     Then, we initialize an empty list merged to store the merged intervals.
     We iterate through the sorted intervals and merge overlapping intervals by comparing the start and end times.
     Finally, we return the list of merged intervals.
+    
     def mergeIntervalsBottomUp(intervals):
         if not intervals:
             return []
@@ -11270,12 +12667,16 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
             else:
                 merged[-1][1] = max(merged[-1][1], interval[1])
         return merged
+    
     Example Usage:
     intervals = [[1,3],[2,6],[8,10],[15,18]]
     print(merge(intervals))  # Output: [[1,6],[8,10],[15,18]]
+    
     Similar Problems:
 
-    Problem 57: Insert Interval - Given a set of non-overlapping intervals sorted by their start times, insert a new interval into the intervals (merge if necessary).
+    Problem 57: Insert Interval - Given a set of non-overlapping intervals sorted by their start times, 
+    insert a new interval into the intervals (merge if necessary).
+
     Top-Down Approach:
     def insertInterval(intervals, newInterval):
         merged = []
@@ -11289,6 +12690,7 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
         merged.append(newInterval)
         merged.extend(intervals[i:])
         return merged
+    
     Bottom-Up Approach:
     def insertInterval(intervals, newInterval):
         merged = []
@@ -11302,10 +12704,20 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
         merged.append(newInterval)
         merged.extend(intervals[i:])
         return merged
+    
+    
     Problem 253: Meeting Rooms II - Given an array of meeting time intervals, determine the minimum number of conference rooms required.
     Top-Down Approach:
     import heapq
 
+    Sort the given meetings by their start time.
+    Initialize a new min-heap and add the first meeting's ending time to the heap. We simply need to keep track of the ending times as that tells us when a meeting room will get free.
+    For every meeting room check if the minimum element of the heap i.e. the room at the top of the heap is free or not.
+    If the room is free, then we extract the topmost element and add it back with the ending time of the current meeting we are processing.
+    If not, then we allocate a new room and add it to the heap.
+    After processing all the meetings, the size of the heap will tell us the number of rooms allocated. This will be the minimum number of rooms needed to accommodate all the meetings.
+
+
     def minMeetingRooms(intervals):
         if not intervals:
             return 0
@@ -11317,6 +12729,7 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
                 heapq.heappop(rooms)
             heapq.heappush(rooms, interval[1])
         return len(rooms)
+    
     Bottom-Up Approach:
     import heapq
 
@@ -11331,6 +12744,7 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
                 heapq.heappop(rooms)
             heapq.heappush(rooms, interval[1])
         return len(rooms)
+
     Analysis:
 
     The Top-Down approach has a time complexity of O(n^2) and a space complexity of O(n^2) due to the memoization table.
@@ -11338,6 +12752,7 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
 
     Both approaches efficiently merge overlapping intervals while considering the optimal substructure property of the problem.
     Dynamic Programming on Strings
+
     Problem Statement: Dynamic Programming on strings involves solving problems that require processing or comparing strings optimally.
 
     Approach:
@@ -11369,41 +12784,61 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
                     dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
 
         return dp[m][n]
+
     Example Usage:
     text1 = "abcde"
     text2 = "ace"
+
     print(longestCommonSubsequence(text1, text2))  # Output: 3 (LCS: "ace")
+    
     Analysis:
 
-    The time complexity of the DP solution is O(m * n), where m and n are the lengths of text1 and text2, respectively.
+    The time complexity of the DP solution is O(m * n), where m and n are the lengths of 
+    text1 and text2, respectively.
     The space complexity is also O(m * n) due to the DP table.
-    This approach efficiently finds the longest common subsequence between two strings by leveraging dynamic programming techniques.
+    This approach efficiently finds the longest common subsequence between
+    two strings by leveraging dynamic programming techniques.
+    
+
+
     Decision Making
-    Problem Statement: Decision-making problems involve determining whether to include or exclude the current state to optimize a given objective.
+    Problem Statement: Decision-making problems involve determining whether to include 
+    or exclude the current state to optimize a given objective.
 
     Approach:
-    These problems usually involve constructing a DP table where dp[i][j] represents the maximum value or minimum cost achievable up to the i-th state by considering j options.
+    These problems usually involve constructing a DP table where dp[i][j] represents the maximum 
+    value or minimum cost achievable up to the i-th state by considering j options.
 
     Example Problem: House Robber (Problem #198)
-    Problem Statement: You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, and the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected, and it will automatically contact the police if two adjacent houses were broken into on the same night. Determine the maximum amount of money you can rob tonight without alerting the police.
+    Problem Statement: You are a professional robber planning to rob houses along a street. Each house 
+    has a certain amount of money stashed, and the only constraint stopping you from robbing each of 
+    them is that adjacent houses have security systems connected, and it will automatically contact 
+    the police if two adjacent houses were broken into on the same night. Determine the maximum 
+    amount of money you can rob tonight without alerting the police.
 
     Approach:
-    We use a DP approach to calculate the maximum amount of money that can be robbed up to the i-th house while considering two options: either robbing the current house or skipping it.
+    We use a DP approach to calculate the maximum amount of money that can be robbed up to the 
+    i-th house while considering two options: either robbing the current house or skipping it.
 
     If we choose to rob the i-th house, we add its value to the maximum loot from the previous non-adjacent house.
     If we choose to skip the i-th house, we take the maximum loot up to the i-1-th house.
     Similar Problems:
 
     Problem 213: House Robber II - Similar to Problem #198, but the houses are arranged in a circular manner.
-    Problem 121: Best Time to Buy and Sell Stock - Given an array of stock prices, find the maximum profit that can be obtained by buying and selling at most once.
+    Problem 121: Best Time to Buy and Sell Stock - Given an array of stock prices, 
+                 find the maximum profit that can be obtained by buying and selling at most once.
+    
+    
     House Robber II (Problem #213)
     Problem Statement: Similar to Problem #198, but the houses are arranged in a circular manner.
 
     Approach:
-    To solve this problem, we can use dynamic programming to find the maximum loot that can be obtained while considering two cases:
+    To solve this problem, we can use dynamic programming to find the 
+    maximum loot that can be obtained while considering two cases:
 
     Robbing the houses from the first to the second-to-last house.
     Robbing the houses from the second to the last house.
+    
     We then return the maximum loot obtained from these two cases.
 
     Top-Down Approach:
@@ -11423,7 +12858,9 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
         for i in range(2, len(nums)):
             dp[i] = max(dp[i - 1], dp[i - 2] + nums[i])
         return dp[-1]
+    
     Bottom-Up Approach:
+    
     def rob(nums):
         if len(nums) == 1:
             return nums[0]
@@ -11440,42 +12877,48 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
         for i in range(2, len(nums)):
             dp[i] = max(dp[i - 1], dp[i - 2] + nums[i])
         return dp[-1]
+   
+   
     Similar Problems:
 
     Problem 198: House Robber - You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed.
     Problem 337: House Robber III - The third problem in the house robber series, where houses are arranged in a binary tree.
+    
     Best Time to Buy and Sell Stock (Problem #121)
     Problem Statement: Given an array of stock prices, find the maximum profit that can be obtained by buying and selling at most once.
 
     Approach:
-    To solve this problem, we can use dynamic programming to keep track of the maximum profit that can be obtained by buying and selling the stock at each day.
+    To solve this problem, we can use dynamic programming to keep track of the maximum 
+    profit that can be obtained by buying and selling the stock at each day.
 
     Top-Down Approach:
     def maxProfit(prices):
         def helper(index, bought):
-        if index >= len(prices):
-            return 0
-        if (index, bought) in memo:
-            return memo[(index, bought)]
+            if index >= len(prices):
+                return 0
+            if (index, bought) in memo:
+                return memo[(index, bought)]
 
-        if bought:
-            # If currently holding a stock, we can either sell it or skip this day
-            sell_today = prices[index] + helper(index + 1, False)
-            skip_today = helper(index + 1, True)
-            memo[(index, bought)] = max(sell_today, skip_today)
-        else:
-            # If not holding a stock, we can either buy a stock or skip this day
-            buy_today = -prices[index] + helper(index + 1, True)
-            skip_today = helper(index + 1, False)
-            memo[(index, bought)] = max(buy_today, skip_today)
-        
-        return memo[(index, bought)]
+            if bought:
+                # If currently holding a stock, we can either sell it or skip this day
+                sell_today = prices[index] + helper(index + 1, False)
+                skip_today = helper(index + 1, True)
+                memo[(index, bought)] = max(sell_today, skip_today)
+            else:
+                # If not holding a stock, we can either buy a stock or skip this day
+                buy_today = -prices[index] + helper(index + 1, True)
+                skip_today = helper(index + 1, False)
+                memo[(index, bought)] = max(buy_today, skip_today)
+            
+            return memo[(index, bought)]
 
     if not prices:
         return 0
 
     memo = {}
     return helper(0, False)
+
+
     Example usage:
     prices = [7, 1, 5, 3, 6, 4]
     print(maxProfit(prices)) # Output should be 5
@@ -11490,9 +12933,12 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
             max_profit = max(max_profit, price - min_price)
             min_price = min(min_price, price)
         return max_profit
+
     Similar Problems:
 
-    Problem 122: Best Time to Buy and Sell Stock II - You may complete as many transactions as you like (i.e., buy one and sell one share of the stock multiple times).
+    Problem 122: Best Time to Buy and Sell Stock II - You may complete as many transactions as you 
+    like (i.e., buy one and sell one share of the stock multiple times).
+
     Problem 123: Best Time to Buy and Sell Stock III - You may complete at most two transactions.
     Code Implementation:
 
@@ -11511,6 +12957,8 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
             dp[i] = max(dp[i - 1], dp[i - 2] + nums[i])
         
         return dp[-1]
+
+
     Example Usage:
     nums = [2,7,9,3,1]
     print(rob(nums))  # Output: 12 (Rob houses 1, 3, and 5 for a total of 12)
@@ -11518,7 +12966,79 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
 
     The time complexity of the DP solution is O(n), where n is the number of houses.
     The space complexity is O(n) due to the DP array.
-    This approach efficiently determines the maximum loot that can be obtained without alerting the police by employing dynamic programming principles.
+    This approach efficiently determines the maximum loot that can be obtained without alerting 
+    the police by employing dynamic programming principles.
+#########################
+############################################################
+✅Most Frequently Asked Dynamic Programming Questions | Practice Well
+
+    Here is the list of 10 dynamic programming questions that are commonly asked by interviewers (I made this list while preparing for interviews):
+
+    Dice Throw Problem: Given n dice each with m faces, numbered from 1 to m, find the number of ways to get sum X. 
+    X is the summation of values on each face when all the dice are thrown.
+
+    Coin Change: You are given n types of coin denominations of values v(1) < v(2) < ... < v(n) (all integers). Assume v(1) = 1, 
+    so you can always make change for any amount of money C. Give an algorithm 
+    which makes change for an amount of money C with as few coins as possible.
+
+    Counting Boolean Parenthesizations: You are given a boolean expression consisting of a string of the symbols 
+    'true', 'false', 'and', 'or', and 'xor'. Count the number of ways to parenthesize the expression 
+    such that it will evaluate to true. For example, there is only 1 way to parenthesize 'true and false xor true' 
+    such that it evaluates to true.
+
+    Subset Sum Problem: Given a set of non-negative integers, and a value sum, determine if 
+    there is a subset of the given set with sum equal to given sum.
+
+    Minimum Number of Jumps: Given an array of integers where each element represents the maximum number of 
+    steps that can be made forward from that element, find the minimum number of jumps to reach the 
+    end of the array (starting from the first element).
+
+
+    Two-Person Traversal of a Sequence of Cities: You are given an ordered sequence of n cities, 
+    and the distances between every pair of cities. You must partition the cities into two subsequences 
+    (not necessarily contiguous) such that person A visits all cities in the first subsequence (in order), 
+    person B visits all cities in the second subsequence (in order), and such that the sum of the 
+    total distances travelled by A and B is minimized. Assume that person A and person B start 
+    initially at the first city in their respective subsequences.
+
+    Balanced Partition: You have a set of n integers each in the range 0 ... K. 
+    Partition these integers into two subsets such that you minimize |S1 - S2|, where S1 and S2 denote the 
+    sums of the elements in each of the two subsets.
+
+
+    Optimal Strategy for a Game: Consider a row of n coins of values v(1) ... v(n), where n is even. 
+    We play a game against an opponent by alternating turns. In each turn, a player selects either 
+    the first or last coin from the row, removes it from the row permanently, and
+    receives the value of the coin. Determine the maximum possible amount 
+    of money we can definitely win if we move first.
+
+
+    Maximum Value Contiguous Subsequence: Given a sequence of n real numbers A(1) ... A(n), 
+    determine a contiguous subsequence A(i) ... A(j) for which the sum of elements in the subsequence is maximized.
+
+    Edit Distance: Given two text strings A of length n and B of length m, you 
+    want to transform A into B with a minimum number of operations of the following types: 
+    delete a character from A, insert a character into A, or change some character in A into a 
+    new character. The minimal number of such operations required to transform A into B 
+    is called the edit distance between A and B.
+
+    You can also include the type which requires traversing through the array and then solving 
+    subproblems in left side and right side. Eg - Matrix Chain Multiplication, Egg Dropping problems etc.
+    Some examples from leetcode:
+
+    https://leetcode.com/problems/burst-balloons/
+    https://leetcode.com/problems/scramble-string/
+    https://leetcode.com/problems/parsing-a-boolean-expression/
+
+
+    Wish u Good Luck Mates !!
+
+###################################################################################
+###################################################################################
+
+
+
+
 
 
 ###################################################################################
@@ -12752,6 +14272,14 @@ COOL NOTES PART 1: DYNAMIC PROGRAMMING RECURRENCES EXAMPLES:
     singleton set {i}: 1 << i
     Membership test: x & (1 << i) != 0
 
+
+
+##############
+################################
+
+TODO: ADD TRAVELING SALESMAN PROBLEM WITH BITMASK SOUTION HERE..
+
+
 #######################################
 ##########################################
 
@@ -13118,6 +14646,106 @@ COOL NOTES 2: EXPRESSION PARSING PROBLEMS
                 return st.top();
             }
 
+########################
+##########################  
+
+COOL NOTES PART -4.69 ARRAY STUFF
+
+
+    Intermediate Level:
+
+    Implement an algorithm to rotate an NxN matrix by 90 degrees.
+        Technique: Transpose and reverse or use of extra space.
+
+    Implement an algorithm to find pairs in an array that sum up to a specific target.
+        Technique: Two-pointer approach or hash table.
+
+    Implement an algorithm to perform a cyclic rotation in a given array.
+        Technique: Cyclic Sort.
+
+    Find the "celebrity" in a party using a given array of people.
+        Technique: Two-pointer approach.
+
+    Implement an algorithm to find the contiguous subarray with the largest sum (Kadane's algorithm).
+        Technique: Dynamic Programming.
+
+    Implement an algorithm to merge two sorted arrays.
+        Technique: Merge Sort or Two-pointer approach.
+
+    Implement an algorithm to search for an element in a rotated sorted array.
+        Technique: Modified Binary Search.
+
+    Implement an algorithm to find the intersection of two arrays.
+        Technique: Hashing or Two-pointer approach.
+
+    Implement an algorithm to find the majority element in an array.
+        Technique: Boyer-Moore Voting Algorithm.
+
+    Implement an algorithm to find the longest increasing subsequence in an array.
+        Technique: Dynamic Programming.
+    Advanced Level:
+
+    Implement an algorithm to find the first missing positive integer in an unsorted array.
+        Technique: Cyclic Sort.
+
+    Implement an algorithm to sort an array of 0s, 1s, and 2s (Dutch National Flag problem).
+        Technique: Dutch National Flag algorithm or Two-pointer approach.
+
+    Implement an algorithm to find the longest subarray with at most two distinct elements.
+        Technique: Sliding Window.
+
+    Implement an algorithm to find the median of two sorted arrays.
+        Technique: Binary Search.
+
+    Implement an algorithm to rotate an array to the right by k steps without using extra space.
+        Technique: Reverse the array in parts.
+
+    Implement an algorithm to find the shortest subarray with a sum at least K.
+        Technique: Sliding Window.
+
+    Implement an algorithm to find the equilibrium index of an array.
+        Technique: Prefix Sum.
+
+    Implement an algorithm to find the peak element in an array.
+        Technique: Binary Search.
+
+    Implement an algorithm to count the number of subarrays with a given sum.
+        Technique: Prefix Sum.
+
+    Implement an algorithm to find the contiguous subarray with equal numbers of 0s and 1s.
+        Technique: Prefix Sum or Hashing.
+    Expert Level:
+
+    Implement an algorithm to efficiently find the maximum product of three numbers in an array.
+        Technique: Sorting or finding max/min elements.
+
+    Implement an algorithm to find the length of the longest subarray with sum divisible by k.
+        Technique: Prefix Sum and Hashing.
+
+    Implement an algorithm to find the minimum window in an array that contains all elements of another array.
+        Technique: Sliding Window.
+
+    Implement an algorithm to find the longest increasing subarray with absolute difference less than or equal to a given number.
+        Technique: Sliding Window.
+
+    Implement an algorithm to find the smallest subarray with sum greater than a given value.
+        Technique: Sliding Window.
+
+    Implement an algorithm to find the minimum number of platforms needed for a set of train arrivals and departures.
+        Technique: Merge Intervals or Sorting.
+
+    Implement an algorithm to find the maximum length subarray with sum less than or equal to a given sum.
+        Technique: Sliding Window.
+
+    Implement an algorithm to find the subarray with the least average.
+        Technique: Sliding Window.
+
+    Implement an algorithm to efficiently rotate an NxN matrix by 90 degrees in place.
+        Technique: Transpose and reverse.
+
+    Implement an algorithm to find the longest subarray with at most K distinct elements.
+        Technique: Sliding Window or Hashing.
+    These categorizations should provide you with an overview of the types of techniques commonly used for each question at different difficulty levels. Keep in mind that the optimal approach might vary based on specific constraints and requirements of the problem.
 
 
 #######################################################
@@ -13245,6 +14873,83 @@ COOL NOTES PART -4: Graph Algorithms
         INF    INF      0      1
         INF    INF    INF      0
 
+    DJIKSTRA CLEAN:
+
+        def dijkstra(G, s, w=None):
+
+            def get_weight(u, v):
+                return w[u, v] if w else 1
+
+            dist = {s: 0}
+            entries = {}
+            pq = []
+            for v in G[s]:
+                d = get_weight(s, v)
+                entry = [d, v, True]
+                dist[v] = d
+                entries[v] = entry
+                heappush(pq, entry)
+
+            while pq:
+                u_dist, u, valid = heappop(pq)
+                if valid:
+                    for v in G[u]:
+                        new_dist = u_dist + get_weight(u, v)
+                        if not v in dist or new_dist < dist[v]:
+                            dist[v] = new_dist
+                            entry = [new_dist, v, True]
+                            if v in entries:
+                                entries[v][2] = False
+                            entries[v] = entry
+                            heappush(pq, entry)
+
+            return dist
+
+    DJIKSTRA CLEAN 2:
+        https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/solutions/992958/python-most-readable-shortest-path-dijkstra/
+        For a city A, find its shortest distance to every other city. then we know how many cites are within the threshold.
+        To get the shortest distance, we can use bellman ford or dijkstra algorithm.
+        But, our goal is to have a standarized template for leetcode problems. And dijkstra is better(you will know why after you practice 10 shortest path problems)
+
+        class Solution:
+            def findTheCity(self, n: int, edges: List[List[int]], distanceThreshold: int) -> int:
+                # 4:09pm 12/29/2020 as a pratice while preparing the graph templates
+                
+                # do dijkstra for every city, then count reachable cities within threshold
+                
+                
+                graph = defaultdict(list)
+                for src, dst, dist in edges:
+                    graph[src].append((dst, dist))
+                    graph[dst].append((src, dist))
+                
+                def dijkstra(city):
+                    dist = [float('inf')]*n
+                    processed = [False]*n
+                    dist[city] = 0
+                    q = [(0, city)]
+                    
+                    while q:
+                        cur_dist, cur_city = heapq.heappop(q)
+                        for next_city, dist_to_next_city in graph[cur_city]:
+                            if not processed[next_city]:
+                                new_dist = dist[cur_city] + dist_to_next_city
+                                if new_dist < dist[next_city]:
+                                    dist[next_city] = new_dist
+                                    heapq.heappush(q, (new_dist, next_city))
+                        processed[cur_city] = True
+                        
+                    return dist
+                        
+                ans = []
+                for city in range(n):
+                    distance = dijkstra(city)
+                    ans.append((sum([d <= distanceThreshold for d in distance]),city))
+                    
+                return sorted(ans, key=lambda x: (x[0], -x[1]))[0][1]
+
+
+
     DJIKSTRA:
 
         from collections import defaultdict
@@ -13294,6 +14999,69 @@ COOL NOTES PART -4: Graph Algorithms
             print dijkstra(edges, "A", "E")
             print "F -> G:"
             print dijkstra(edges, "F", "G")
+
+    LEETCODE DJIKSTRA QUESTION:
+
+
+
+        743. Network Delay Time
+        Medium
+        Topics
+        Companies
+        Hint
+        You are given a network of n nodes, labeled from 1 to n. You are also given times, 
+        a list of travel times as directed edges times[i] = (ui, vi, wi), where ui is the source node, 
+        vi is the target node, and wi is the time it takes for a signal to travel from source to target.
+
+        We will send a signal from a given node k. Return the minimum time it takes for all the n nodes 
+        to receive the signal. If it is impossible for all the n nodes to receive the signal, return -1.
+
+        
+
+        Example 1:
+
+
+        Input: times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2
+        Output: 2
+        Example 2:
+
+        Input: times = [[1,2,1]], n = 2, k = 1
+        Output: 1
+        Example 3:
+
+        Input: times = [[1,2,1]], n = 2, k = 2
+        Output: -1
+
+
+        Since the graph of network delay times is a weighted, connected graph (if the graph isn't 
+        connected, we can return -1) with non-negative weights, we can find the shortest path from root 
+        node K into any other node using Dijkstra's algorithm. If we want to find how long it will take 
+        for all nodes to receive the signal, we need to find the maximum of the shortest paths from node K to any other node.
+
+        We can do this by running dijkstra's algorithm starting with node K, and shortest path length 
+        to node K, 0. We can keep track of the lengths of the shortest paths from K to every other node 
+        in a set S, and if the length of S is equal to N, we know that the graph is connected (if not, return -1). 
+        We can then return the maximum of the shortest path lengths in S to get how long it will take for all nodes to receive the signal.
+
+        def networkDelayTime(self, times: List[List[int]], N: int, K: int) -> int:
+                graph = collections.defaultdict(list)
+                for (u, v, w) in times:
+                    graph[u].append((v, w))
+                    
+                priority_queue = [(0, K)]
+                shortest_path = {}
+                while priority_queue:
+                    w, v = heapq.heappop(priority_queue)
+                    if v not in shortest_path:
+                        shortest_path[v] = w
+                        for v_i, w_i in graph[v]:
+                            heapq.heappush(priority_queue, (w + w_i, v_i))
+                            
+                if len(shortest_path) == N:
+                    return max(shortest_path.values())
+                else:
+                    return -1
+
 
 #############################################################################
 #############################################################################
@@ -15303,3 +17071,497 @@ GRAPH REFERENCE (From cheatsheet algos.py)
         return vertex_cover(Gcomp, n - k)
 
 
+
+#########################################
+########################################
+
+DYNAMIC PROGRAMMING FOR PRACTICE
+https://leetcode.com/discuss/interview-question/1380561/Template-For-Dynamic-programming
+
+    Dynmaic Programming For Practice
+
+    Sharing some topic wise good Dynamic Programming problems and sample solutions to observe on how to approach.
+
+    1.Unbounded Knapsack or Target sum
+    Identify if problems talks about finding groups or subset which is equal to given target.
+
+    https://leetcode.com/problems/target-sum/
+    https://leetcode.com/problems/partition-equal-subset-sum/
+    https://leetcode.com/problems/last-stone-weight-ii/
+    https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/
+
+    All the above problems can be solved by 01 Knapsack or Target sum algo with minor tweaks.
+    Below is a standard code for 01 knapsack or target sum problems.
+
+
+    int 01 knacsack(vector<int>& nums,vector<int>& v, int w)  // nums array , w total amount that have to collect 
+        {                                                     // v value array
+            int n=nums.size();
+            
+            vector<vector<bool>> d(n+1,vector<bool>(w+1,0));  
+            for(int i=1;i<=n;i++)
+            {
+                for(int j=1;j<=w;j++)
+                {
+                    if(j<nums[i-1])  
+                    {
+                        d[i][j]=d[i-1][j];
+                    }
+                    else if(nums[i-1]<=j)
+                    {
+                        d[i][j]=max(v[i-1]+d[i-1][j-nums[i-1]],d[i-1][j]);
+                    }
+                }
+            }
+            
+            return d[n][w];
+            
+        }
+    Funtion for Target sum
+
+    int countsubset(vector<int>& nums, int w) 
+        {
+            int n=nums.size();
+            
+            vector<vector<bool>> d(n+1,vector<bool>(w+1));
+            for(int i=0;i<=n;i++)
+            {
+                    d[i][0]=1;
+            }
+            for(int i=1;i<=w;i++)
+            {
+                    d[0][i]=0;
+            }
+            
+            for(int i=1;i<=n;i++)
+            {
+                for(int j=1;j<=w;j++)
+                {
+                    if(j<nums[i-1])
+                    {
+                        d[i][j]=d[i-1][j];
+                    }
+                    else if(nums[i-1]<=j)
+                    {
+                        d[i][j]=d[i-1][j-nums[i-1]] + d[i-1][j];
+                    }
+                }
+            }
+            
+            return d[n][w];
+        }
+    2.Unbounded Knapsack
+    Identify if problems talks about finding groups or subset which is equal to given target and repetition is allowed.
+
+    https://leetcode.com/problems/coin-change-2/
+    https://leetcode.com/problems/coin-change/
+
+    All the above problems can be solved by unbounded Knapsack algo with minor tweaks.
+    Below is a standard code for 01 knapsack or target sum problems.
+
+    int unboundedknacsack(vector<int>& nums,vector<int>& v, int w) 
+        {
+            int n=nums.size();
+            
+            vector<vector<bool>> d(n+1,vector<bool>(w+1,0));
+            for(int i=1;i<=n;i++)
+            {
+                for(int j=1;j<=w;j++)
+                {
+                    if(j<nums[i-1])
+                    {
+                        d[i][j]=d[i-1][j];
+                    }
+                    else if(nums[i-1]<=j)
+                    {
+                        d[i][j]=max(v[i-1]+d[i][j-v[i-1]],d[i-1][j]);
+                    }
+                }
+            }
+            
+            return d[n][w];
+        }
+    or
+
+        int change(int amount, vector<int>& coins) 
+        {
+        vector<vector<int>> d(coins.size()+1,vector<int>(amount+1));
+            
+        for(int i=0;i<=coins.size();i++)
+        {
+            d[i][0]=1;
+        }
+            for(int i=1;i<=amount;i++)
+        {
+            d[0][i]=0;
+        }
+            
+            for(int i=1;i<=coins.size();i++)
+        {
+            for(int j=1;j<=amount;j++)
+            {
+                if(j<coins[i-1])
+                {
+                    d[i][j]=d[i-1][j];
+                }
+                
+                else if(j>=coins[i-1])
+                {
+                    d[i][j]=(d[i][j-coins[i-1]]+d[i-1][j]);
+                }
+            }
+        }
+            
+            return d[coins.size()][amount]; 
+        }
+    3.Longest Increasing Subsequence (LIS)
+
+    Identify if problems talks about finding longest increasing subset.
+
+    https://leetcode.com/problems/minimum-cost-to-cut-a-stick/
+    https://leetcode.com/problems/longest-increasing-subsequence/
+    https://leetcode.com/problems/largest-divisible-subset/
+    https://leetcode.com/problems/perfect-squares/
+    https://leetcode.com/problems/super-ugly-number/
+
+    https://leetcode.com/problems/russian-doll-envelopes/
+    https://leetcode.com/problems/maximum-height-by-stacking-cuboids/description/
+
+    @Nam_22 mentioning above two question .
+
+    All the above problems can be solved by longest Increasing subsequence algo with minor tweaks.
+    Below is a standard code for LIS problems.
+
+
+
+
+        int lengthOfLIS(vector<int>& nums) 
+        {
+            vector<int> d(nums.size(),1);
+            
+            int m=0;
+            for(int i=0;i<nums.size();i++)
+            {
+                for(int j=0;j<i;j++)
+                {
+                    if(nums[j]<nums[i] && d[i]<d[j]+1)
+                    {
+                        d[i]=d[j]+1;
+                    }
+                }
+                m=max(d[i],m);
+            }
+        
+            return m;
+        }
+
+    longest bitonic subsequence
+
+    int lbs(vector<int> v)
+    {
+        vector<int> lis(v.size(),1);
+        vector<int> lds(v.size(),1);
+        
+    for(int i=0;i<v.size();i++)
+        {
+            
+            for(int j=0;j<i;j++)
+            {
+                if(v[j]<v[i] && lis[i]<lis[j]+1)
+                {
+                lis[i]=lis[j]+1;
+                }
+            }
+
+        }
+        
+    for(int i=v.size()-2;i>0;i--)
+        {
+        
+        for(int j=v.size()-1;j>i;j--)
+        {
+            if(v[j]<v[i] && lds[i]<lds[j]+1)
+            { 
+                lds[i]=lds[j]+1;
+            }
+        }
+        
+        }
+        
+        int m=0;
+        for(int i=0;i<v.size();i++)
+        { 
+            m=max(m,lis[i]+lds[i]-1);
+        }
+        
+        return m;
+    }
+    4.Longest Common Subsequence
+
+    Identify if problems talks about finding longest common subset.
+
+    1.subsequence
+    https://leetcode.com/problems/longest-common-subsequence/
+    https://leetcode.com/problems/distinct-subsequences/
+    https://leetcode.com/problems/shortest-common-supersequence/
+    https://leetcode.com/problems/distinct-subsequences/
+    https://leetcode.com/problems/interleaving-string/
+
+    int longestCommonSubsequence(string text1, string text2) 
+        {
+            int n1 = text1.size();
+            int n2 = text2.size();
+            vector<vector<int>> dp(n1+1,vector<int>(n2+1,0));
+            
+
+            for(int i=1;i<=n1;i++)
+            {
+                for(int j=1;j<=n2;j++)
+                {
+                    if(text1[i-1] == text2[j-1])
+                        dp[i][j] = 1+dp[i-1][j-1];
+                    else
+                        dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+
+                }
+            }
+            return dp[n1][n2];
+
+        }
+    2.substring
+
+    https://leetcode.com/problems/maximum-length-of-repeated-subarray/
+
+    int longestCommonSubstring(string text1, string text2) 
+        {
+            int n1 = text1.size();
+            int n2 = text2.size();
+            vector<vector<int>> dp(n1+1,vector<int>(n2+1,0));
+            
+            int r=0;
+            for(int i=1;i<=n1;i++)
+            {
+                for(int j=1;j<=n2;j++)
+                {
+                    if(text1[i-1] == text2[j-1])
+                    { 
+                        dp[i][j] = 1+dp[i-1][j-1];
+                        r=max(dp[i][j],r);
+                    }
+                    else
+                        dp[i][j] = 0;
+
+                }
+            }
+            return dp[n1][n2];
+
+        }
+    3.palindrome
+
+    https://leetcode.com/problems/longest-palindromic-substring/
+    https://leetcode.com/problems/longest-palindromic-subsequence/
+    https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
+    https://leetcode.com/problems/delete-operation-for-two-strings/
+
+    int lps(string s1)
+    {
+        int n1=s1.length();
+        string s2=s1;
+        reverse(s2.begin(),s2.end());
+        int n2=s2.length();
+        
+        vector<vector<int>> dp(n1+1,vector<int>(n2+1,0));
+        
+        for(int i=1;i<=n1;i++)
+        {
+            for(int j=1;j<=n2;j++)
+            {
+                if(s1[i-1]==s2[j-1])
+                dp[i][j]=1+dp[i-1][j-1];
+                
+                else
+                dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
+            }
+        }
+        
+        return dp[n1][n2];
+    }
+    4.Print
+
+    string longestCommonSubsequence(string a) 
+    {
+    string b=a;
+    reverse(b.begin(),b.end());
+    
+    int n1=a.size();
+    int n2=b.size();
+    vector<vector<int>> d(n1+1,vector<int>(n2+1,0));
+    
+    for(int i=1;i<=n1;i++)
+    {
+        for(int j=1;j<=n2;j++)
+        {
+            if(a[i-1]==b[j-1])
+            {
+                d[i][j]=1+d[i-1][j-1];
+            }
+            else
+            {
+                d[i][j]=max(d[i-1][j],d[i][j-1]);
+            }
+        }
+    }
+    
+    string v;
+    int i=n1,j=n2;
+    while(i>0 && j>0)
+    {
+        if(a[i-1]==b[j-1])
+        {
+            v.push_back(a[i-1]);
+            i--;
+            j--;
+        }
+        
+        else
+        {
+            if(d[i-1][j]>d[i][j-1])
+            {
+                i--;
+            }
+            else
+            {
+                j--;
+            }
+        }
+    }
+    reverse(v.begin(),v.end());
+    return v;
+    }
+    5.Gap Method Problems
+
+    General Dp problem which is solved by Gap method
+
+    https://leetcode.com/problems/count-different-palindromic-subsequences/
+    https://leetcode.com/problems/palindrome-partitioning-ii/
+    https://leetcode.com/problems/minimum-score-triangulation-of-polygon/
+
+    And Leetcode stones problem set are also included.
+
+    All the above problems can be solved by gap methodwith minor tweaks.
+    Below is a standard code for gap method code.
+
+    count palindromic subsequence
+
+    int countPalindromicSubsequences(string s) 
+        {
+        int d[s.length()][s.length()];  
+        
+        for(int g=0;g<s.length();g++)
+        {
+            for(int i=0,j=g;j<s.length();i++,j++)
+            {
+                if(g==0)
+                {
+                    d[i][j]=1;
+                }
+                else if(g==1)
+                {
+                    if(s[i]==s[j])
+                    {
+                        d[i][j]=3;
+                    }
+                    else
+                    {
+                        d[i][j]=2;
+                    }
+                }
+                
+                else
+                {
+                    if(s[i]==s[j])
+                    {
+                        d[i][j]=d[i][j-1]+d[i+1][j]+1;
+                    }
+                    else
+                    {
+                        d[i][j]=d[i][j-1]+d[i+1][j]-d[i+1][j-1];
+                    }
+                }
+            }
+        }
+            
+            return d[0][s.length()-1];
+        }
+    6.Kadans algo
+
+    Identify if problems talks about finding the maximum subarray sum.
+
+    https://leetcode.com/problems/best-time-to-buy-and-sell-stock/
+    https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
+    https://leetcode.com/problems/maximum-absolute-sum-of-any-subarray/
+    https://leetcode.com/problems/arithmetic-slices/
+    https://leetcode.com/problems/arithmetic-slices-ii-subsequence/
+    https://leetcode.com/problems/longest-turbulent-subarray/
+    https://leetcode.com/problems/k-concatenation-maximum-sum/
+    https://leetcode.com/problems/k-concatenation-maximum-sum/
+    https://leetcode.com/problems/length-of-longest-fibonacci-subsequence/
+    https://leetcode.com/problems/ones-and-zeroes/
+    https://leetcode.com/problems/maximum-sum-circular-subarray/
+
+    All the above problems can be solved by gap method with minor tweaks.
+    Below is a standard code for gap method code.
+
+    int kad(vector<int> v)
+    {
+        int c=v[0],o=v[0];
+        
+        for(int i=1;i<n;i++)
+        {
+            if(c >= 0)
+            {
+                c=c+v[i];
+            }
+            else
+            {
+                c=v[i];
+            }
+            
+            if(o<c)
+            {
+                o=c;
+            }
+            
+        }
+        
+        return o;
+    }
+    7.Catalan
+
+    Identify if problems talks about counting the number of something.
+    eg node,bracket etc.
+
+    https://leetcode.com/problems/unique-binary-search-trees/
+
+    All the above problems can be solved by catalan with minor tweaks.
+    Below is a standard code for catalan code.
+
+    int cat(int n)
+    {
+        int dp[n+1];
+        dp[0]=1;
+        dp[1]=1;
+        for(int i = 2; i < n+1; i++)
+        {
+            dp[i]=0;
+            for(int j = 0; j < i; j++)
+            {
+                dp[i] += dp[j] * dp[i - 1 - j];
+            }
+        }
+        
+        return dp[n];
+    }
+
+    Please correct the approach/solution if you find anything wrong.
+    And if you like my post then give a thumbs up : ) happy coding

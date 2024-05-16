@@ -128,6 +128,841 @@ class Trie(object):
             root = root.children[c]
         return True
 
+################################################################
+################################################################
+    TRIES LEETCODE REVIEW
+
+        https://leetcode.com/discuss/interview-question/4161389/All-you-need-to-know-about-trie
+
+
+        A trie, also known as a prefix tree, is a tree-like data structure used to store a dynamic set of strings where the keys are usually strings. It is particularly efficient for tasks like prefix searching and string lookups. Here's an overview of tries in C++ with common problems and solutions:
+
+        Trie Structure in C++:
+
+        class TrieNode {
+        public:
+            TrieNode* children[26]; // Assuming lowercase English alphabet
+            bool isEndOfWord;
+            TrieNode() {
+                for (int i = 0; i < 26; i++) {
+                    children[i] = nullptr;
+                }
+                isEndOfWord = false;
+            }
+        };
+
+        class Trie {
+        public:
+            TrieNode* root;
+            Trie() {
+                root = new TrieNode();
+            }
+            // Methods for insertion, search, and other operations.
+        };
+        Common Problems and Solutions with Tries:
+
+        Insertion into a Trie:
+
+        Problem: Given a set of strings, insert them into a trie.
+        Solution: Implement a function to traverse the trie, creating nodes for characters as needed 
+        and marking the last character as the end of a word.
+
+        Search in a Trie:
+
+        Problem: Given a string, check if it exists in the trie.
+        Solution: Traverse the trie, checking for each character's presence and the final node's 'isEndOfWord' flag.
+        Auto-completion / Prefix Searching:
+
+        Problem: Given a prefix, find all words in the trie that start with the prefix.
+        Solution: Traverse the trie to the node representing the prefix and perform a depth-first search to collect words under that node.
+        Longest Common Prefix:
+
+        Problem: Given an array of strings, find the longest common prefix.
+        Solution: Traverse the trie to find the common prefix up to the first differing character in the first and last strings.
+        
+        Count Words with a Given Prefix:
+
+        Problem: Count the number of words in a trie with a given prefix.
+        Solution: Traverse the trie to the node representing the prefix and count all the words under that node.
+        
+        Deleting a String from a Trie:
+
+        Problem: Given a string, delete it from the trie.
+        Solution: Traverse the trie to the node representing the string, set the 'isEndOfWord' flag to false, 
+        and optionally remove nodes if they have no other children.
+
+
+        Solving Word Search Problems:
+
+        Problem: Given a 2D board of characters and a list of words, find all the words from the list in the board.
+        Solution: Use a trie to efficiently search for words in the board by backtracking and avoiding unnecessary exploration.
+        
+        
+        Implementing a Spell Checker:
+
+        Problem: Create a spell checker that can suggest correct spellings for a misspelled word.
+        Solution: Build a trie containing a dictionary of correctly spelled words and use it to suggest corrections for misspelled words.
+        
+        
+        1. Insertion into a Trie:
+
+        class TrieNode {
+        public:
+            TrieNode* children[26]; // Assuming lowercase English alphabet
+            bool isEndOfWord;
+            TrieNode() {
+                for (int i = 0; i < 26; i++) {
+                    children[i] = nullptr;
+                }
+                isEndOfWord = false;
+            }
+        };
+
+        class Trie {
+        public:
+            TrieNode* root;
+            Trie() {
+                root = new TrieNode();
+            }
+
+            void insert(string word) {
+                TrieNode* current = root;
+                for (char ch : word) {
+                    int index = ch - 'a';
+                    if (!current->children[index]) {
+                        current->children[index] = new TrieNode();
+                    }
+                    current = current->children[index];
+                }
+                current->isEndOfWord = true;
+            }
+        };
+
+        2. Searching in a Trie:
+
+        bool search(TrieNode* root, string word) {
+            TrieNode* current = root;
+            for (char ch : word) {
+                int index = ch - 'a';
+                if (!current->children[index]) {
+                    return false;
+                }
+                current = current->children[index];
+            }
+            return current->isEndOfWord;
+        }
+
+        3. Auto-completion / Prefix Searching:
+
+        void findAllWordsWithPrefix(TrieNode* root, string prefix, vector<string>& result) {
+            TrieNode* current = root;
+            for (char ch : prefix) {
+                int index = ch - 'a';
+                if (!current->children[index]) {
+                    return; // Prefix not found
+                }
+                current = current->children[index];
+            }
+            // Perform a depth-first search to collect words under this node.
+            findAllWordsFromNode(current, prefix, result);
+        }
+
+        void findAllWordsFromNode(TrieNode* node, string currentWord, vector<string>& result) {
+            if (node->isEndOfWord) {
+                result.push_back(currentWord);
+            }
+            for (int i = 0; i < 26; i++) {
+                if (node->children[i]) {
+                    char ch = 'a' + i;
+                    findAllWordsFromNode(node->children[i], currentWord + ch, result);
+                }
+            }
+        }
+
+
+        4. Deleting a String from a Trie:
+
+        bool deleteWord(TrieNode* root, string word, int index) {
+            if (index == word.length()) {
+                if (!root->isEndOfWord) return false; // Word doesn't exist
+                root->isEndOfWord = false;
+                return isEmptyNode(root);
+            }
+            int chIndex = word[index] - 'a';
+            if (!root->children[chIndex]) return false; // Word doesn't exist
+            bool canDelete = deleteWord(root->children[chIndex], word, index + 1);
+            if (canDelete) {
+                delete root->children[chIndex];
+                root->children[chIndex] = nullptr;
+                return isEmptyNode(root);
+            }
+            return false;
+        }
+
+        bool isEmptyNode(TrieNode* node) {
+            for (int i = 0; i < 26; i++) {
+                if (node->children[i]) return false;
+            }
+            return true;
+        }
+
+
+        These code snippets cover basic operations with a trie, including insertion, searching, auto-completion with a given prefix, 
+        and deletion of words. You can use these as a starting point and adapt them to your specific requirements
+         when working with trie data structures in C++.
+
+        What about Compresed Trie?
+
+        Compressed tries are a space-efficient variation of standard tries that reduce memory consumption by merging nodes with a single child into a single node. They are particularly useful for cases where the trie may have a large number of nodes with only one child, which can lead to significant memory savings.
+
+        Compressed Trie Structure in C++:
+
+        #include <iostream>
+        #include <unordered_map>
+        #include <string>
+
+        class CompressedTrieNode {
+        public:
+            std::unordered_map<char, CompressedTrieNode*> children;
+            bool isEndOfWord;
+
+            CompressedTrieNode() : isEndOfWord(false) {}
+        };
+
+        class CompressedTrie {
+        public:
+            CompressedTrieNode* root;
+
+            CompressedTrie() {
+                root = new CompressedTrieNode();
+            }
+
+            void insert(const std::string& word) {
+                CompressedTrieNode* current = root;
+                for (char ch : word) {
+                    if (current->children.find(ch) == current->children.end()) {
+                        current->children[ch] = new CompressedTrieNode();
+                    }
+                    current = current->children[ch];
+                }
+                current->isEndOfWord = true;
+            }
+
+            bool search(const std::string& word) {
+                CompressedTrieNode* current = root;
+                for (char ch : word) {
+                    if (current->children.find(ch) == current->children.end()) {
+                        return false;
+                    }
+                    current = current->children[ch];
+                }
+                return current->isEndOfWord;
+            }
+        };
+
+        int main() {
+            CompressedTrie trie;
+            
+            trie.insert("apple");
+            trie.insert("app");
+            trie.insert("banana");
+            
+            std::cout << "Search 'apple': " << (trie.search("apple") ? "Found" : "Not found") << std::endl;
+            std::cout << "Search 'app': " << (trie.search("app") ? "Found" : "Not found") << std::endl;
+            std::cout << "Search 'banana': " << (trie.search("banana") ? "Found" : "Not found") << std::endl;
+            std::cout << "Search 'orange': " << (trie.search("orange") ? "Found" : "Not found") << std::endl;
+
+            return 0;
+        }
+        Compressed Trie Output:
+
+        Search 'apple': Found
+        Search 'app': Found
+        Search 'banana': Found
+        Search 'orange': Not found
+        A baic comparison between Standard Trie and Compressed Trie:
+
+        Standard Trie:
+
+        In a standard trie, each node represents a single character of a string. Nodes are connected by edges labeled with characters. It's a straightforward structure that may not be very memory-efficient, especially when there are many nodes with only one child.
+
+                (root)
+                /  |  |  \
+                a   b  c   d
+            /   / \    / \
+            p   a   t  o   r
+            /   /     \   \   \
+            p   n       e   n   y
+        /   /         \   \   \
+        l   a           r   e   a
+        Compressed Trie:
+
+        In a compressed trie, nodes with a single child are merged into a single node. This results in a more memory-efficient structure, especially when there are long sequences of characters shared by multiple words.
+
+                    (root)
+                /  |   |   |   \
+                ab   c   d   e   ar
+                |    |   |       |
+                pap  t   o       eny
+                / \   \       /
+                l   a   r     e
+        In the compressed trie, the sequence "ap" is shared by "apple" and "app," so it's represented as a single node. Similarly, "en" is shared by "pen" and "penny," so it's compressed into one node. This compression can significantly reduce memory usage in scenarios where there is redundancy in the structure of the tree.
+
+        Overall, while both tries represent the same set of words, the compressed trie is more memory-efficient. However, building and searching in a compressed trie can be a bit more complex compared to a standard trie due to the compression and decompression processes.
+
+        image
+
+        Note : This part is for those who wants to know more about Trie:
+
+        Suffix Tries and Suffix Trees
+
+        Suffix tries and suffix trees are advanced data structures used in string processing and pattern matching.
+        They are used to efficiently search for and manipulate substrings within a larger string. Suffix trees are 
+        losely related to suffix tries and are a more space-efficient representation of the same information.
+
+        1. Suffix Trie:
+
+        A suffix trie is a tree-like data structure that represents all the suffixes of a given string. 
+        Each path from the root to a leaf node represents a suffix of the string. Suffix tries contain all substrings, 
+        and they are constructed by adding one character at a time from the original string.
+
+        Suffix trie for the string x = atatgtttgt$.
+
+        image
+
+        Here's a simple example of a suffix trie for the string "banana" with some suffixes:
+
+                            ┌──┐
+                        ┌─── b └── n ─┐
+                    ┌─── a ─┐           └── a
+                ┌─── n ─┐    └─── a
+            ┌─── a ─┐    └── n
+        ┌─── n ─┐     └── a
+        ┌── a ─┐     └── n
+        │  a  │     └── a
+        │  n  │
+        └─────┘
+        2. Suffix Tree:
+
+        A suffix tree is a more space-efficient representation of a suffix trie. It 
+        eliminates redundant information and compresses the trie structure, making it more practical for real-world use.
+
+        Applications:
+
+        Suffix trees and suffix tries are used in various applications, including:
+
+        Substring Searching: They can be used to search for substrings efficiently. 
+        For example, in text editors, you can quickly find occurrences of a word within a large document.
+
+        Pattern Matching: Suffix trees are widely used in bioinformatics for sequence alignment and pattern matching in DNA and protein sequences.
+
+        Longest Common Substring: They can be used to find the longest common substring between two or more strings.
+
+        Data Compression: Suffix trees are used in data compression algorithms like Burrows-Wheeler Transform (BWT) and Run-Length Encoding (RLE).
+
+        Text Indexing: Search engines and database systems use suffix trees for text indexing and searching.
+
+        Creating a Suffix Tree in C++:
+
+        Creating a suffix tree is complex and typically requires specialized algorithms such as Ukkonen's algorithm. 
+        Here's a simple example of how to build a suffix tree in C++ using a library like libstree:
+
+        #include <libstree/suffix_tree.h>
+
+        int main() {
+            struct suffix_tree* st = st_create();
+
+            const char* text = "banana";
+            st_add_string(st, text);
+
+            st_free(st); // Don't forget to free the tree when done
+            return 0;
+        }
+
+        Visualizing a Suffix Tree:
+
+        You can visualize a suffix tree using a tool like Graphviz:
+
+        #include <libstree/suffix_tree.h>
+        #include <libstree/streeviz.h>
+
+        int main() {
+            struct suffix_tree* st = st_create();
+
+            const char* text = "banana";
+            st_add_string(st, text);
+
+            streeviz(st, "suffix_tree.dot"); // Visualize the tree
+            st_free(st); // Don't forget to free the tree when done
+            return 0;
+        }
+        
+        Suffix Tree Visualization:
+
+        Suffix Tree Visualization
+
+        Wiki
+
+        Multi-Key Trie
+
+        A multi-key trie is a trie that stores multiple keys in a single trie. It's a space-efficient data structure that can be used to store a set of strings where the keys are usually strings. It's particularly useful for tasks like prefix searching and string lookups.
+
+        Multi-Key Trie Structure in C++:
+
+        #include <iostream>
+        #include <unordered_map>
+        using namespace std;
+
+        // TrieNode represents a node in the multi-key trie.
+        struct TrieNode {
+            unordered_map<char, TrieNode*> children;
+            bool isEndOfKey;
+
+            TrieNode() : isEndOfKey(false) {}
+        };
+
+        // MultiKeyTrie represents the multi-key trie.
+        class MultiKeyTrie {
+        private:
+            TrieNode* root;
+
+        public:
+            MultiKeyTrie() {
+                root = new TrieNode();
+            }
+
+            // Insert a key into the multi-key trie.
+            void insert(const string& key) {
+                TrieNode* node = root;
+                for (char ch : key) {
+                    if (!node->children[ch]) {
+                        node->children[ch] = new TrieNode();
+                    }
+                    node = node->children[ch];
+                }
+                node->isEndOfKey = true;
+            }
+
+            // Search for a key in the multi-key trie.
+            bool search(const string& key) {
+                TrieNode* node = root;
+                for (char ch : key) {
+                    if (!node->children[ch]) {
+                        return false; // Key not found
+                    }
+                    node = node->children[ch];
+                }
+                return node->isEndOfKey;
+            }
+        };
+
+        int main() {
+            MultiKeyTrie trie;
+
+            // Insert keys into the multi-key trie
+            trie.insert("apple");
+            trie.insert("appetizer");
+            trie.insert("banana");
+            trie.insert("ball");
+
+            // Search for keys
+            cout << "Search 'apple': " << (trie.search("apple") ? "Found" : "Not found") << endl;
+            cout << "Search 'appetizer': " << (trie.search("appetizer") ? "Found" : "Not found") << endl;
+            cout << "Search 'orange': " << (trie.search("orange") ? "Found" : "Not found") << endl;
+
+            return 0;
+        }
+        Root
+        |
+        a
+        |
+        *p* (end of "apple")
+        |
+        p
+        |
+        *p* (end of "appetizer")
+        |
+        b
+        |
+        *a* (end of "banana")
+        |
+        *b* (end of "ball")```
+
+        Radix Tree or Patricia Trie:
+
+        Radix trees, also known as radix tries or compact prefix trees, are a space-efficient variation of the traditional trie data structure. They are designed to store and efficiently search strings with common prefixes. Radix trees compress the trie structure by collapsing linear chains of nodes into a single node, reducing memory consumption and improving lookup performance. They are commonly used in networking, file systems, and IP address storage.
+
+        Radix Tree Structure in C++:
+        image
+
+        #include <iostream>
+        #include <unordered_map>
+        using namespace std;
+
+        class RadixNode {
+        public:
+            unordered_map<char, RadixNode*> children;
+            string label;
+            bool isEndOfKey;
+
+            RadixNode() : isEndOfKey(false) {}
+        };
+
+        class RadixTree {
+        private:
+            RadixNode* root;
+
+            // Helper function to insert a key into the radix tree
+            void insert(RadixNode* node, const string& key) {
+                for (char ch : key) {
+                    if (!node->children[ch].get()) {
+                        node->children[ch] = make_unique<RadixNode>();
+                        node->children[ch]->label = key;
+                        node->children[ch]->isEndOfKey = true;
+                        return;
+                    }
+
+                    RadixNode* child = node->children[ch].get();
+                    string commonPrefix = longestCommonPrefix(child->label, key);
+                    if (commonPrefix.empty()) {
+                        insert(node->children[ch].get(), key);
+                        return;
+                    }
+
+                    if (commonPrefix == child->label) {
+                        insert(child, key.substr(commonPrefix.size()));
+                    } else {
+                        auto newNode = make_unique<RadixNode>();
+                        newNode->label = commonPrefix;
+                        newNode->isEndOfKey = false;
+
+                        child->label = child->label.substr(commonPrefix.size());
+                        newNode->children[child->label[0]] = move(node->children[ch]);
+                        newNode->children[key[commonPrefix.size()]] = make_unique<RadixNode>();
+                        newNode->children[key[commonPrefix.size()]]->label = key.substr(commonPrefix.size());
+                        newNode->children[key[commonPrefix.size()]]->isEndOfKey = true;
+
+                        node->children[ch] = move(newNode);
+                    }
+                    return;
+                }
+                node->isEndOfKey = true;
+            }
+
+            // Helper function to find the longest common prefix of two strings
+            string longestCommonPrefix(const string& s1, const string& s2) {
+                int len = min(s1.length(), s2.length());
+                int i = 0;
+                while (i < len && s1[i] == s2[i]) {
+                    i++;
+                }
+                return s1.substr(0, i);
+            }
+
+        public:
+            RadixTree() : root(make_unique<RadixNode>().release()) {}
+
+            // Public insert function
+            void insert(const string& key) {
+                insert(root, key);
+            }
+
+            // Public search function
+            bool search(const string& key) {
+                RadixNode* node = root;
+                for (char ch : key) {
+                    if (node->children.find(ch) == node->children.end()) {
+                        return false; // Key not found
+                    }
+                    node = node->children[ch];
+                }
+                return node->isEndOfKey;
+            }
+        };
+
+        int main() {
+            RadixTree tree;
+
+            // Insert keys into the radix tree
+            tree.insert("apple");
+            tree.insert("appetizer");
+            tree.insert("banana");
+            tree.insert("ball");
+
+            // Search for keys
+            cout << "Search 'apple': " << (tree.search("apple") ? "Found" : "Not found") << endl;
+            cout << "Search 'appetizer': " << (tree.search("appetizer") ? "Found" : "Not found") << endl;
+            cout << "Search 'orange': " << (tree.search("orange") ? "Found" : "Not found") << endl;
+
+            return 0;
+        }
+        Root
+        |
+        a*
+        |
+        pple* (end of "apple")
+        |
+        etizer* (end of "appetizer")
+        |
+        nana* (end of "banana")
+        |
+        ball* (end of "ball")
+
+
+        A popular problems solving using radix tree is IP Address Lookup:
+
+        IP Address Lookup
+
+        IP address lookup is a common problem in networking and routing. It involves searching for the longest prefix match of an IP address in a routing table. Radix trees are a popular data structure for this problem because they can efficiently store and search IP addresses.
+
+        IP Address Lookup in C++:
+
+        #include <iostream>
+        #include <vector>
+        using namespace std;
+
+        class RadixNode {
+        public:
+            vector<string> ips;
+            RadixNode* left;
+            RadixNode* right;
+
+            RadixNode() : left(nullptr), right(nullptr) {}
+        };
+
+        class RadixTree {
+        private:
+            RadixNode* root;
+
+            bool isSamePrefix(const string& ip1, const string& ip2, int len) {
+                return ip1.compare(0, len, ip2, 0, len) == 0;
+            }
+
+            RadixNode* insert(RadixNode* node, const string& ip, int depth) {
+                if (node == nullptr) {
+                    node = new RadixNode();
+                    node->ips.push_back(ip);
+                    return node;
+                }
+
+                if (node->ips.size() > 0) {
+                    string existingIP = node->ips[0];
+                    node->ips.clear();
+
+                    while (isSamePrefix(existingIP, ip, depth)) {
+                        node->ips.push_back(existingIP);
+                        existingIP = node->ips[0];
+                        node->ips.clear();
+                    }
+
+                    if (ip[depth] == existingIP[depth]) {
+                        node->left = insert(node->left, ip, depth + 1);
+                    } else {
+                        node->right = insert(node->right, ip, depth + 1);
+                    }
+                } else {
+                    if (ip[depth] == '0') {
+                        node->left = insert(node->left, ip, depth + 1);
+                    } else {
+                        node->right = insert(node->right, ip, depth + 1);
+                    }
+                }
+
+                return node;
+            }
+
+        public:
+            RadixTree() : root(nullptr) {}
+
+            void insert(const string& ip) {
+                root = insert(root, ip, 0);
+            }
+
+            void search(const string& ip) {
+                RadixNode* node = root;
+                int depth = 0;
+
+                while (node != nullptr) {
+                    if (!node->ips.empty()) {
+                        cout << "IPs with common prefix: ";
+                        for (const string& storedIP : node->ips) {
+                            cout << storedIP << " ";
+                        }
+                        cout << endl;
+                        return;
+                    }
+
+                    if (ip[depth] == '0') {
+                        node = node->left;
+                    } else {
+                        node = node->right;
+                    }
+                    depth++;
+                }
+
+                cout << "No IPs found with the prefix: " << ip << endl;
+            }
+        };
+
+        int main() {
+            RadixTree tree;
+
+            tree.insert("192.168.0.1");
+            tree.insert("192.168.1.1");
+            tree.insert("192.168.0.10");
+            tree.insert("192.168.1.2");
+            tree.insert("10.0.0.1");
+
+            tree.search("192.168.0"); // Search for IPs with the common prefix "192.168.0"
+            tree.search("10.0.1");     // Search for IPs with the common prefix "10.0.1"
+
+            return 0;
+        }
+        Trie vs. Hash Table
+
+        Tries and hash tables are two popular data structures used to store and search for data. They are both efficient for searching, but they have different characteristics that make them suitable for different use cases.
+
+        Trie:
+
+        A trie is a tree-like data structure that stores data in a tree structure. It's particularly useful for storing strings and performing prefix searches. Tries are efficient for searching and inserting strings, but they can be slower than hash tables for other types of data.
+
+        Hash Table:
+
+        A hash table is a data structure that stores data in an array. It's particularly useful for storing and searching for data with unique keys. Hash tables are efficient for searching and inserting data, but they can be slower than tries for strings.
+
+        Some Popular Problems:
+
+        Longest Common Prefix:
+
+        Problem: Given an array of strings, find the longest common prefix.
+        Solution: Use a trie to find the common prefix up to the first differing character in the first and last strings.
+        Count Words with a Given Prefix:
+
+        Problem: Count the number of words in a trie with a given prefix.
+        Solution: Traverse the trie to the node representing the prefix and count all the words under that node.
+        Solving Word Search Problems:
+
+        Problem: Given a 2D board of characters and a list of words, find all the words from the list in the board.
+        Solution: Use a trie to efficiently search for words in the board by backtracking and avoiding unnecessary exploration.
+        Implementing a Spell Checker:
+
+        Problem: Create a spell checker that can suggest correct spellings for a misspelled word.
+        Solution: Build a trie containing a dictionary of correctly spelled words and use it to suggest corrections for misspelled words.
+        IP Address Lookup:
+
+        Problem: Given a list of IP addresses, find all the IP addresses with a common prefix.
+        Solution: Use a radix tree to efficiently store and search for IP addresses with common prefixes.
+        Auto-completion / Prefix Searching:
+
+        Problem: Given a prefix, find all words in the trie that start with the prefix.
+        Solution: Traverse the trie to the node representing the prefix and perform a depth-first search to collect words under that node.
+        Deleting a String from a Trie:
+
+        Problem: Given a string, delete it from the trie.
+        Solution: Traverse the trie to the node representing the string, set the 'isEndOfWord' flag to false, and optionally remove nodes if they have no other children.
+        Insertion into a Trie:
+
+        Problem: Given a set of strings, insert them into a trie.
+        Solution: Implement a function to traverse the trie, creating nodes for characters as needed and marking the last character as the end of a word.
+        Search in a Trie:
+
+        Problem: Given a string, check if it exists in the trie.
+        Solution: Traverse the trie, checking for each character's presence and the final node's 'isEndOfWord' flag.
+        Compressed Trie:
+
+        Problem: Given a set of strings, insert them into a compressed trie.
+        Solution: Implement a function to traverse the trie, creating nodes for characters as needed and marking the last character as the end of a word. Merge nodes with a single child into a single node to compress the trie.
+        NOW it is time to solve some problems:
+
+        1. Longest Common Prefix:
+
+        #include <iostream>
+        #include <vector>
+
+        using namespace std;
+
+        class TrieNode {
+        public:
+            TrieNode* children[26];
+            bool isEndOfWord;
+
+            TrieNode() {
+                for (int i = 0; i < 26; i++) {
+                    children[i] = nullptr;
+                }
+                isEndOfWord = false;
+            }
+        };
+
+        class Trie {
+        public:
+            TrieNode* root;
+
+            Trie() {
+                root = new TrieNode();
+            }
+
+            void insert(string word) {
+                TrieNode* current = root;
+                for (char ch : word) {
+                    int index = ch - 'a';
+                    if (!current->children[index]) {
+                        current->children[index] = new TrieNode();
+                    }
+                    current = current->children[index];
+                }
+                current->isEndOfWord = true;
+            }
+
+            string longestCommonPrefix() {
+                string prefix = "";
+                TrieNode* current = root;
+                while (current && !current->isEndOfWord && !hasMultipleChildren(current)) {
+                    current = current->children[getOnlyChild(current)];
+                    prefix += 'a';
+                }
+                return prefix;
+            }
+
+            bool hasMultipleChildren(TrieNode* node) {
+                int count = 0;
+                for (int i = 0; i < 26; i++) {
+                    if (node->children[i]) {
+                        count++;
+                        if (count > 1) return true;
+                    }
+                }
+                return false;
+            }
+
+            int getOnlyChild(TrieNode* node) {
+                for (int i = 0; i < 26; i++) {
+                    if (node->children[i]) return i;
+                }
+                return -1;
+            }
+        };
+
+        string longestCommonPrefix(vector<string>& strs) {
+            Trie trie;
+            for (string str : strs) {
+                trie.insert(str);
+            }
+            return trie.longestCommonPrefix();
+        }
+
+        int main() {
+            vector<string> strs = {"apple", "appetizer", "banana", "ball"};
+            cout << longestCommonPrefix(strs) << endl;
+            return 0;
+        }
+        I hope you enjoyed this article and found it useful. If you have any questions or feedback, feel free to reach out to me on Twitter. Thanks for reading!
+
+
+
+
+
+
 ################################################################################
 
 SUFFIX ARRAYS:

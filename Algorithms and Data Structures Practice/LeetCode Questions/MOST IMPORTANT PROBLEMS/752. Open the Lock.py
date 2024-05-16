@@ -6,9 +6,11 @@ You have a lock in front of you with 4 circular wheels. Each wheel has 10 slots:
 
 The lock initially starts at '0000', a string representing the state of the 4 wheels.
 
-You are given a list of deadends dead ends, meaning if the lock displays any of these codes, the wheels of the lock will stop turning and you will be unable to open it.
+You are given a list of deadends dead ends, meaning if the lock displays any of these codes, 
+the wheels of the lock will stop turning and you will be unable to open it.
 
-Given a target representing the value of the wheels that will unlock the lock, return the minimum total number of turns required to open the lock, or -1 if it is impossible.
+Given a target representing the value of the wheels that will unlock the lock, return the 
+ minimum total number of turns required to open the lock, or -1 if it is impossible.
 
 Example 1:
 Input: deadends = ["0201","0101","0102","1212","2002"], target = "0202"
