@@ -70,8 +70,195 @@ TOPICS TO UNDERSTAND:
 
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
+        
+        -111) Trie and Reverse Trie to cover all cases for search...
 
--110)
+        1554. Strings Differ by One Character
+
+        Given a list of strings dict where all the strings are of the same length.
+
+        Return true if there are 2 strings that only differ by 1 character in the same index, otherwise return false.
+
+        
+
+        Example 1:
+
+        Input: dict = ["abcd","acbd", "aacd"]
+        Output: true
+        Explanation: Strings "abcd" and "aacd" differ only by one character in the index 1.
+        Example 2:
+
+        Input: dict = ["ab","cd","yz"]
+        Output: false
+        Example 3:
+
+        Input: dict = ["abcd","cccc","abyd","abab"]
+        Output: true
+        
+
+        Constraints:
+
+        The number of characters in dict <= 105
+        dict[i].length == dict[j].length
+        dict[i] should be unique.
+        dict[i] contains only lowercase English letters.  
+
+
+            class TrieNode():
+                def __init__(self):
+
+                    self.children = {}  
+                    self.is_end = False
+
+            class Trie():
+                def __init__(self):
+                    self.root = TrieNode()
+
+                def add(self, word):
+                    node = self.root
+                    
+                    for i in word:
+                        if node.children.get(i) is None:
+                            node.children[i] = TrieNode()
+                        node = node.children[i]
+                    node.is_end = True
+                
+                def search_one_off(self, word):
+
+                    node = self.root
+
+                    st = [(node, 0, False)] # second state is differ by one
+                    
+                    while st:
+                        
+                        n, i, state = st.pop()
+                        if i == len(word) and state and n.is_end:
+                            return True 
+
+                        if n.children.get(word[i]) is not None:
+                            # ok recur on next letter. 
+                            st.append((n.children.get(word[i]), i + 1, state))
+                        elif state == False:
+                            for k, v in n.children.items():
+                                st.append( (v, i+1, True))
+                    return False
+
+                def __repr__(self):
+                    def recur(node, indent):
+                        return "".join(indent + key + ("$" if child.is_end else "") + recur(child, indent + " ") for key, child in node.children.items())
+
+                    return recur(self.root, "\n")
+
+            class Solution:
+                def differByOne(self, dict: List[str]) -> bool:
+                    """
+                    Insert into a trie?
+                    then check if trie has it, but one character off?
+                    
+                    We have to check both forwards and backwards with trie and reverse trie or else you miss cases with just forward 
+                    causing incorrect soln.
+                    """
+                    trie = Trie()
+                    reverse_trie = Trie()
+
+                    for word in dict:
+                        if trie.search_one_off(word):
+                            return True
+                        if reverse_trie.search_one_off(word[::-1]):
+                            return True 
+
+                        trie.add(word)
+                        reverse_trie.add(word[::-1])
+
+                    return False
+
+
+            The better solution is following:
+            Use hashset, to insert all possible combinations adding a character "*". For example: If dict[i] = "abc", insert ("*bc", "a*c" and "ab*").  
+
+
+-110.5) Strings differ by one character rabinkarp soln:
+
+
+        class Solution:
+            def differByOne(self, dict: List[str]) -> bool:
+                # rolling hash
+                N, M = len(dict), len(dict[0])
+                MOD = 1000000007
+                BASE = 27
+                memo = set()
+
+                def helper(char: str):
+                    if char == "*":
+                        return 26
+                    return ord(char) - ord('a')
+
+                def collision(word1, word2):
+                    cnt = 0
+                    for i in range(len(word1)):
+                        if word1[i] != word2[i]:
+                            cnt += 1
+                    return cnt == 1
+
+                # time: O(N * M)
+                # space: O(N)
+                arr = []
+                for word in dict:
+                    hash_value = 0
+                    for i, char in enumerate(word):
+                        hash_value = ((hash_value * BASE) % MOD + helper(char)) % MOD
+                    arr.append(hash_value)
+
+                # time: O(N * M)
+                # space: O(N * M)
+                memo = {}
+                for idx, word in enumerate(dict):
+                    base = 1
+                    hash_value = arr[idx]
+                    for i in range(M - 1, -1, -1):
+                        new_hash_value = (hash_value + base * (helper("*") - helper(word[i]))) % MOD
+                        if new_hash_value in memo:
+                            # collision test
+                            if collision(word, dict[memo[new_hash_value]]):
+                                return True
+                        memo[new_hash_value] = idx
+                        base = BASE * base % MOD
+
+                return False
+
+
+-110) DP max dot product of 2 subsequences:
+    
+    make sure to review LIS, LCS, and other common DP problems!
+
+    class Solution:
+        def maxDotProduct(self, nums1: List[int], nums2: List[int]) -> int:
+            
+            '''
+            index i, and j:
+            maximum dot product to index i and j for each array. 
+            '''
+            
+            ROWS = len(nums1)
+            COLS = len(nums2)
+        
+            OPT = [[0 for _ in range(COLS) ] for _ in range(ROWS) ]
+            
+            OPT[0][0] = nums1[0] * nums2[0]
+            
+            for i in range(1, ROWS):     
+                OPT[i][0] = max(OPT[i-1][0], nums1[i]*nums2[0])
+            
+            for j in range(1, COLS):
+                OPT[0][j] = max(OPT[0][j-1], nums1[0]*nums2[j])
+            
+            for i in range(1, ROWS):
+                for j in range(1, COLS):
+                    OPT[i][j] = max(nums1[i]*nums2[j], 
+                                    OPT[i-1][j-1] + nums1[i]*nums2[j], 
+                                    OPT[i][j-1], 
+                                    OPT[i-1][j])    
+            return OPT[-1][-1]
 
 
 
