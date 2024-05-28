@@ -1,3 +1,9 @@
+HERE ARE THE BEST CHEATSHEETS:
+
+https://leetcode.com/discuss/study-guide/1154632/C%2B%2B-STL-powerful-guide-or-Compiled-list-of-popular-STL-operations
+https://leetcode.com/discuss/study-guide/1359115/All-C%2B%2B-STL-internal-implementation-oror-last_minute_notes-oror-2021
+
+
 ###################################################################
 1) USING TREESETS AND TREE MAPS C++
 

@@ -1,7 +1,6 @@
 scrape this:
 https://leetcode.com/discuss/interview-question/4366889/System-Design-100-topics-to-learn
 
-
 1. Feature Expectations [5 min]
 	(1) Use Cases
 	(2) Scenarios That Will Not Be Covered
@@ -120,6 +119,691 @@ Rsync algorithm
 Trie algorithm
 Add Bloom Filters and Count-Min Sketch into the list.
 
+ 
++SYSTEM DESIGN STUDY GUIDE DDIA: https://docs.google.com/document/d/1cHB2rks07RAo0cEEeONZjwGHsVI5GULEbEZLB-OGgxs/edit
++
++
++SYSTEM DESIGN BIG CHEATSHEET:https://docs.google.com/document/d/16wtG6ZsThlu_YkloeyX8pp2OEjVebure/edit
++what is alex yu?
++ALEX YU INSIDE SYSTEM DESIGN INTERVIEW:
++
++Grab his second book too:
++ALEX YU INSIDE SYSTEM DESIGN INTERVIEW 2:
++
++https://www.bing.com/search?q=alex+yu+system+design&cvid=ed6dd359e5774b4797aec2dc7dccffa0&aqs=edge.0.0j69i57.1904j0j1&pglt=43&FORM=ANNTA1&PC=U531
++AS COOL AS DDIA
++
++Watch Code Karls Videos too: https://www.youtube.com/watch?v=YyOXt2MEkv4 -> he has a bunch of good example system design sessions
++-> Code karl also has descriptions here: https://www.codekarle.com/system-design/Uber-system-design.html for each vid
++https://www.youtube.com/watch?v=YyOXt2MEkv4 -> Airbnb System Design | Booking.com System Design | System Design Interview Question
++
++
++Another dope system design channel: https://www.youtube.com/c/ThinkSoftware/videos 
++
++Cool blog system desing very good: http://highscalability.com/blog/category/example
++
++Read this other system design patterns checklist:
++https://microservices.io/patterns/data/saga.html
++
++Application architecture patterns
++
++Monolithic architecture
++Microservice architecture
++Decomposition
++
++Decompose by business capability
++Decompose by subdomain
++Self-contained Servicenew
++Service per teamnew
++Refactoring to microservicesnew
++
++Strangler Application
++Anti-corruption layer
++Data management
++
++Database per Service
++Shared database
++Saga
++API Composition
++CQRS
++Domain event
++Event sourcing
++Transactional messaging
++
++Transactional outbox
++Transaction log tailing
++Polling publisher
++Testing
++
++Service Component Test
++Consumer-driven contract test
++Consumer-side contract test
++Deployment patterns
++
++Multiple service instances per host
++Service instance per host
++Service instance per VM
++Service instance per Container
++Serverless deployment
++Service deployment platform
++Cross cutting concerns
++
++Microservice chassis
++Service Template
++Externalized configuration
++Communication style
++
++Remote Procedure Invocation
++Messaging
++Domain-specific protocol
++Idempotent Consumer
++External API
++
++API gateway
++Backend for front-end
++Service discovery
++
++Client-side discovery
++Server-side discovery
++Service registry
++Self registration
++3rd party registration
++Reliability
++
++Circuit Breaker
++Security
++
++Access Token
++Observability
++
++Log aggregation
++Application metrics
++Audit logging
++Distributed tracing
++Exception tracking
++Health check API
++Log deployments and changes
++UI patterns
++
++Server-side page fragment composition
++Client-side UI composition
++
++
++----------------------------------
++
++
++SCRAPE THE SYSTEM DESIGN LEETCODE ALGORITHMS:
++https://github.com/resumejob/system-design-algorithms
++
++
++https://giters.com/chaitanyaphalak/distributed_systems_notes#networking
++https://cs.uwaterloo.ca/~tozsu/courses/cs454/notes.html
++http://anthony-zhang.me/University-Notes/CS454/CS454.html
++
++
++
++------------------------------------
++WATCH THE YOUTUBE GUY:
++Channel name:  System Design Interview
++
++----------------------------------
++SYSETM DESIGN TEMPLATE (https://leetcode.com/discuss/career/229177/My-System-Design-Template)
++
++
++
++-----------------------------
++System Design Interview - Step By Step Guide
++https://www.youtube.com/watch?v=bUHFg8CZFws&t=3524s&ab_channel=SystemDesignInterview
++
++Remember -> everythign is trade-off -> always discuss tradeoffs with interviewer with respect to business requeimetns. 
++
++
++Stages of interview: 
++Interviewer ask us for system that does counting for views on youtube, or likes on instagram, or facebook.
++But more often, problem stated in more general manner. So we have to nail down on what they want!!
++
++We may be asked for several metrics. Performance of diff applications. How many requests, errors, avg response time, etc,
++Or analyze data in realtime
++
++What does data analysis mean, who sends us data, who uses data, who uses results of data, is there a ML analytics team??
++ALWAYS ASK QUESTSIONS:
++
++The interviewer wants to you to deal with ambiguity, why because we want to know how you approach design problems in real life. 
++We need you to talk and bring things up. 
++
++Interviewees need requirement clarifications so we know exact functional and nonfunctional requirements and what exact technologies 
++we should use based on CAP theorem! -> because there are many solns to problem asked and we need to pick the best ones. 
++
++Ask youtube view count to someone, how do they solve -> based on what they are experts on? 
++Could we use distributed cache to count stuff, Kafak+spark? sql database, nosql database, batchprocessing (hadoop Map reduce), Cloud native processing (Kinesis)
++These options not equal, each has pros/cons/tradeoffs. 
++
++Ask the following questions for 4 categories:  Ask to clarify what we need. 
++
++Ask about users/customers, Ask about scale, ask about performance, finally ask about cost (budget constraints). 
++use view counting as example.
++
++USERS: 
++Who will use system? All youtubers or statistics for video owner, or is the user a machine learning model? 
++
++
++How will the system be used? by marketing to generate monthly reports so not retriveved often? 
++                             do we need it in realtime or daily because it is used in realtime recommendation service? 
++                             HOW WILL THE SYSTEM BE USED? WHAT DATA SHOULD WE STORE? 
++
++SCALE: 
++How many read queries per second
++how much data is queried per request?
++how many video veiwers are processed per second
++can there be spikes in traffic? 
++The interviewer will help use deifne these numbers, or wecan assume reasonable values. 
++
++
++PERFORAMNCE (EVALUATE diff design options);
++can we count views several hours later than when it happens (then we can use batch procesing)
++
++What is expected write-to-read delay? Can we use batch processing or stream processing
++What is expected P99 latency for read queries.  (how fast should data be retrieved from system)
++-> if p99 matters, data should already be aggregated. 
++-> if interviwer says response time must be as small as possible, we must count views when we write data, and 
++    we should do minimal/no counting when we read data. 
++
++
++
++Coost (evaluate tech stack): 
++Should the design minimized the cost of deployment
++If we wanat to minimize developement cost, use well regarded open source frameworks. 
++
++Should the design minimize the cost of maintence. -> if future maintain cost is a concern, consider public cloud services for our design.
++
++IF YOU DONT ASK QUESTSION -> Interviewr will think you are a junion engineer. ALWAYS ASK!! TO INCREASE YOUR LEVELING!!
++You better spend additional 5 minutes clarifying requirements and scope, how data gets in and out of system VS solving a different,
++more complex problem than the interveiwer actually asked. 
++
++
++CLARIFY THE REQUIREMENTS SO 
++
++
++
++We want to be able to define functional and nonfunctional requirements (fast, fault tolerant, secure) after asking our questions. 
++
++Functional requriements API write down on whiteboard.:
++Write out the api!!
++
++This system has to count video view events:
++countViewEvent(videoId, ) OR
++
++countView(videoId, eventType(such as view like, share), function(such as count, sum, average) ) -> we can generalize parameters in api like this
++
++countView(videoId, eventType(such as view like, share), function(such as count, sum, average) ) -> can support total watch time, avg view duration, etc.
++processEvents(listOfEvents) -> process a list of events at once, instead of 1 event. 
++
++
++The system has to return video views count for a time period:
++
++getViewsCount(videoId, startTime, endTime)
++  ->
++getCount(videoId, , eventType, startTime, endTime)
++-> 
++getStats(videoId, , eventType, function, startTime, endTime)
++Name api in more generic way, as you add more parameters!
++
++CONTINUE TO GENERALIZE YOUR APIS as you define this. 
++
++
++NON FUNCTIONAL REQUIREMNTS: 
++
++interviewer wont tell us nonfunctional requirements -> try to think of business requirements and tradeoffs: 
++deal with big scale, and high performance -> we will have to handle following:
++
++5 CATEGORIES (FIRST 3 MOST IMPORTANT):
++Scalable (tens of thorusangs vide views per second)
++Highly Performant (few tens of milliseconds to return total views count for the video)
++highly available
++CONSISTENCY
++COST MINIMIZATION 
++
++NEXT STAGE OF SYSTEM DESING: HIGH LEVEL ARCHITECTURE: 
++
++we need a database, processing service (write view counts), and a query service (view view count on youtube),
++
++just draw boxes, and dont worry about it. Most forward one step at a time. 
++
++Start with something simple, than continue to aggregate. 
++
++WE NEED TO FIGURE OUT THE SMALLEST UNIT FIRST AND THEN build a system around it, in other words, the data!!
++Understand what data we need to store, and how we do it. 
++We need to define a data model!
++
++What we store: 
++
++Individdual events (every click) 
++-> Fast writes, later when we retreieve data, we can slice and dice how we want, and raw events allow use to recalaute stats as necessary 
++-> But we cant read data quickly, slow reads, it may also cost alot of money to store a lot of view events, costly for large scale. 
++ 
++
++Or we can store data on fly -> aggregate date (per minute) in realtime -> such as count. 
++-> Fast reads (dont need to aggregate), 
++-> data is ready for decision making in realtime -> can use data for recommendation service or trending service. 
++Drawbacks: can query only the way data was aggregated, requries data aggregation pieplein, hard or even impossible to fix errors
++
++
++Do we store raw events, or store aggragate data per minute -> WE NEED TO ASK INTERVIWER THIS, to help guide us 
++Ask interviwer about expected data delay, if it should be no more than a few minutes, we must aggregate on the fly, otherwise, 
++we can store raw events and do batch processing 
++
++Interviwer will let us know what she is interested in. And by the way combinging both apparoches makes alot of sense for many systems 
++we will store raw events, and because there are so many of them , we will store events for several days or weeks, then purge old data. 
++And we also calculate data in realtime, so stats available to user right away. 
++
++Doing both ways, means we have the best of both worlds!!
++But price to pay for all this flexibility -> system becomes more complex, and expensive -> good to talk about with interviwer. 
++
++NEXT QUESTION: 
++is WHERE WE STORE THE DATA!!!
++
++
++Both SQL and noSQL databases can scale and perform well.
++
++Evaluate databases based on non funcctional requirements. 
++How to scale writes?
++how to scale reads?
++How to make both writes and reads fast?
++How not to lose data in case of hardware faults and network partitions?
++how to achieve strong conssitency? what are the tradeoffs? 
++how to recover data in case of an outage?
++how to ensure data security?
++how to make it extensible for data model changes in the future?
++Where to run (cloud vs on-premise) data centers?
++
++
++SQL DATABASES!!
++simple when database on one machine, but what if one machine isnt enuff. 
++Data needs to be split on multiple machines, sharding aka horizontal partitioning, 
++Each shard holds subset of all data, several machines, services talk to machines must know which one databases exist and which to pick for queries, etc.
++
++Processing service writes, query service reads. 
++Need light proxy server which knows about all database machines and routes traffic to correct shards. both write and read services talk to cluster proxy only, dont need to know about each and every database machine anymore, 
++but cluster proxy has to know, moreover, proxy needs to know when some shards die, or become unavaiible to network partition, or when new shards added to database cluster, proxy needs to be aware of it. 
++proxy needs a new component, configuration service, configuration service matians health check connection to all shards so it knowas what database machines are available. 
++
++and cluster proxy needs to know when shards die, when shards added, etc. 
++Introduce a new component -> confgiuration service which has health monitor conection for database aka zookeeper. 
++
++AND INSTEAD OF CALLING DATABASE INSTACNCE DIRECTLY, WE CAN INTRODUCE ONE MORE PROXY, SHARD PROXY. 
++Introduce a shard proxy sit in front of database, shard proxy, can cache query results, monitor database instance health, and publish metrics, termiante queries that take too long to return data, and many more 
++Great setup helps us address several requirments before like scabaility and performance. 
++
++
++Availabilty needs to be addressed,what if shard dies, how to ensure data is not lost? 
++we need to replicate data, each existing shard, create read replicas, and a master shard. We call it read replica because all writes still go through master. 
++Also put read replicas in data center different from master shard. so if whole data center goes down, data still availabel. 
++
++so when Store data request comes, based on info from confgiuration service, cluster proxy sends data to a shard. And data is either syncrhonosly or async replicated to a corresponding read replica 
++And when retrieve data request comes, cluster may retreive either from master or read replica. 
++
++Ideas we just discussed is what youtube is using. 
++
++Great now we know how to scale sql databases. 
++But this solution doesnt seem simple right!
++
++We have all these proxies, configurations
++
++Read request, cluster proxy
++
++
++HOW ABOUT NOSQL(CASSANDRA?)
++
++in no sql, still split data into chunks, called shards, aka nodes. instead of leaders and followrs, we say each shard is equal. we no longer need congifuration service to monitor health of each shard. 
++instead of lets allow shards to talk to each other.
++And shards can talk to each other and exchange info about its state. 
++
++To reduce network load, we dont need each shard to talk to every other shard. every second shard may exchange info with a few other shards, no more than 3. 
++Quickl enuff state info about every node propogates throughout the cluster. This procedure is called a gossip protocol. 
++ok each node iin the clsuter knows about other nodes. And this is a big deal, rmbr that previously we used cluster proxy component to route request to particular shard. Cluster proxy only knew about all shards.
++But now every node knows about each other. So clients of our db do not have to call a speciail compoentn to route requests, clients can call any node in cluster. 
++nodes iteself decide where to forward requets. 
++
++
++Processing service makes a call to store views count for some video B. And lets say node 4 is selected to serve this requeist. 
++WWe can use a round robin algorithm to choose this initial node, or we may be smarter, and choose a node that is closted to the client in terms of network distance. Lets call this node 4 a coordinator node. The coordinator
++node needs to decide which node stores data for the requested video. We can  use consistent hashing algo to pick the node. As you may see node 1 should store the data for vid B. Coordinater node will make a call 
++to the node 1, and wait for the repsonse, nothing stops coordinator node to call 3 nodes for 3 replicas of data. Waiting for 3 responses too slow. 
++
++We should wait for 3 succss requests actually we wait for 2 success requests for speed. This process is called Quorum writes. 
++We consider right to be successful when 2 replication requests compelte. This is called QUORUM WRITES. SIMILAR TO QUORUM writes there 
++is quorum reads appraoch. Wehn query service retreive count for vid b, 
++coordinate node 4 will initiate several read requests in parallel. In theroy coordinate node may get diff respones from replica nodes? 
++Why? because some nodes could have beeen unavailable when write request happened.
++That node has stale data right now ,other 2 nodes has up to date data. Read quorum defines a minum number of nodes that have to agree on the response. 
++Cassandra uses version numbers to determine 
++staleness of data. And similar to sql database, we want to store copies of data across different data centers. For high availabilty, 
++do  you remeber where else on the chnanel we saw practice application of a consistent
++hashing algo. Right, designed distributed cache (read that first if you havent.). Another important concept is consistency. 
++
++
++every shard can talk to 2 other shards, no more than 3.  KNOWN AS Gossip protocol IN C*.
++
++
++When we defined nonfunctional requiements, we chose availability over consistency. We prefer to show stale data than no data at all. 
++Synchronous data replication is slow, we usually replicate asynchronoly.
++inconsistency is temporary, overtime, all writes will propogate to replicas, known as evential consistenc. 
++C* has eventual consistency, and has tunable consistency, the writes will reflect all nodes at some point. 
++
++
++How we store. 
++when designing data models for relational databases
++For relational, we define nouns, and use foreign keys to reference related data. 
++
++REPORT 
++
++INFO ABOUT VIDEO
++
++NUMBER OF VIEWS FOR LAST HOUR,  
++
++CHANNEL 
++
++need video_info table, video_stats table, channel_info table 
++
++generate report, run join query that gets data from all tables.
++
++Data is normalized, reduce data 
++
++
++https://www.youtube.com/watch?v=bUHFg8CZFws&t=3524s&ab_channel=SystemDesignInterview -> start watching from 25 mins 
++
++
++
++
++--------------------------------------------------------------------
++System Design Interview - Distributed Cache
++https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview
++
++Problem statement: 
++
++Client calls webservice which calls datastore. We want a cache in between. 
++Get data from distributed cache because we cannot store cache in memory since there is too much data. 
++
++Requirements: -> TELL INTERVIEWER ABOUT FUNCTIONAL AND NON FUNCTIONAL REQUIREMNTS
++Functional:
++We need to implement put and get
++Non functinal requirement: 
++
++Scalable (can deal with larger amounts of data ), Highly available (), High performance (fast puts and gets)
++
++NON FUNCTIONAL -> YOU CAN talk about CAP theorem.
++Interviwer is freidn -> needs to collect all data points. 
++evolve design with small steps from basic to adnvanced 
++Go from 
++LOCAL CACHE --> THEN GO TO DISTRIBUTED CACHE DURING INTERVIEW. 
++Local cache -> use hash table but also use LRU cache for eviction. (miultiple replacement policies. )
++LRU = map + doubly linked list. 
++
++System Design Interview - Distributed Cache
++DISCUSS Availability, CONSISTENCY, PARTITION TOLERANCE, AND Durability FOR DATABASES
++
++
++IMPELMENT LRU CACHE (LEETCODE) -> then split it based on consistent hashing of keys (SHARDED PER CACHE SERVER BASED ON KEY)
++
++Consistent hashing needs binary searching the cache server in the circle
++All cache clients should have same list of cache servers.
++Client stores list of servers in sorted order using treemap
++binary search used to identify server
++If server is unavailable client proceeds as though it was cache miss
++Cache client used in web serviec as library. 
++
++How do maintain list of cache servers that are available in conssitent hashing???
++First option
++store list of cache hosts in file, deploy to service host using continuous management tool pipelines like chef or puppet
++everytiem list changes, make code change, and deploy to every webservice 
++
++SECOND OPTION -> USE SHARED STORAGE -> AND SERVICE HOST POLLS FOR FILE
++
++HAVE FILE IN server. Can put the file in shared storage such as S3. All service hosts retrieve file from S3 storage
++Introudce daemon process THAT RUNS ON EACH SERVICE HOST, polls from S3 every minute to get file 
++drawback -> still have to maintain that file that contains all the configurations for the cache servers. 
++-> when cache host dies, have to change file, and same for adding cache servers 
++
++
++THIRD OPTION
++We should monitor CACHE server heath -> something bad happens -> then all web servers notified and stops sending requests to unavailable cache server 
++-> when new cache server is added -> all web service is notified -> send requests to it
++
++
++NEED NEW SERVICE -> CONFGIURATION SERVICE -> DISCOVER CACHE HOSTS AND MONITOR THEIR HEALTH -> AKA ZOOKEEPER (discover cache servers and monitor health)-> 
++CACHE SERVER SENDS HEARTBEATS TO CONFGIURATION SERVICE perioducy -> IF WE STOP GETTING HEARTBEATS IT BECOME DE-registered -> NEED THOSE HEARTBEATS!
++AND every cache client grabs list of cache servers from configiuration service. 
++
++ZOOKEEPER -> AUTOMATES LIST MAINTAINECE !!!
++
++connection between cache client and server is UDP/TCP. 
++
++Performance is there -> O(1) put and get and O(logn) to find server in consistent hash circle. 
++
++Scability is there -> can create more shards. Shards can become hot. Some shards process more than they appear. 
++Adding more cache servers may not be effective. -> we dont want to split all shards -> just the very hot one 
++We could fix it a diff way: 
++create more labels in the consistent hashing scheme. 20 labels per cache server in the consistent hash circle. 
++So 4 servers = 80 labels in the consistent hash circle. 
++
++High availability is not there at all yet! -> If some shard dies or becomes unavailbale due to network partition, all cache data for that shard is lost
++all requests to that shard will result in cache miss until keys are rehashed. 
++
++All cache data is lost, until keys are rehased. 
++
++Need to improve availability, and deal with hot shard problem 
++
++NEED DATA REPLICATION
++
++2 categories of data replication Protocols
++First category inclludes a set of probailitsitc protocols like gossip, epidemic broadcast trees, bimodal multicast.
++These protocols tend to favor eventual consistency
++
++The second category includes consensus protocols such as 2 or 3 phase commit, paxos, raft, chain replication,
++Test protocols tend to favor strong consistency 
++
++Lets keep things simple and use leader follower (also known as master slave) replication. 
++For each shard, designate master and bunch of read replicas, Read replicas try to be exact copy of master. Every time connection between master and replica breaks, 
++replica tries to reconnect to master.  Replicas try to automatically connect to master,
++each replica lives in diff data center so that cache data is still available when one data center is down. 
++All put calls go through master node, while get calls handled by master node and all replicas. 
++
++Get nodes handled by master and all replicas -> Can deal with hot shards by adding more read replicas
++
++Leader election: Rely on seperate component, configuration service (zookeeper), 
++or just if you want to avoid that, implement leader election in cache cluster.
++
++Configuration service responsible for monitoring of master and slaves, as well as failover. 
++If leader not working properly, promote follower to leader. Config service is source of authority for clients. 
++cache clients use config service to find all cache servers. Config service is distributed by nature, 
++and has odd # of nodes to achieve quorum easier, 
++nodes located on machines that fail independently so that configuration service remains aailale in case 
++for network partiitions. All nodes talk to each other with tcp protocol.
++CAN USE ZOOKEEPER OR REDIS SENTINEL. 
++
++Data replication deals with hot shards, and increased availability.
++But there are still points of failure. We do data replication replication async for better performance. 
++We do not want to wait until leader server replicates data to all the followers. 
++
++If leader server gets data and fails before replicated, then data is lost. This is acceptable behaviour for many real life use cases for cache. 
++
++Cache needs to be fast. Loses data in rare scenerios shouldnt be a big deal. Such cache failures are expected. thats just a cache miss doesnt matter.
++
++What topics will pop up during interview: 
++Distributed cache favours performance and availability over consistency
++
++THESE are the other things your should talk about in interview: 
++
++CONSISTENCY
++DATA expiration
++LOCAL AND REMOTE CACHE
++SECURTIY 
++MONITORING AND LOGGING
++Cache client
++Consistent hasshing
++
++
++Several things that lead to inconsistency: 
++Lead to inconsistency -> async data replication, -> dif read calls get diff results from diff replicas due to async
++another inconsistency -> clients may have different set of cache servers. Cache servers may go down and back up agian. 
++                         Clients write values that no other clients can read. Can fix this by introducing 
++                         synchronous replication and make sure all clients share a single view of cache servers list. 
++                         But this will increase latency and overall complexity of the system. Discuss the tradeoffs with your interviewer 
++
++                         LRU evicts data from cache when cache is full. But when cache isnt full, items stay a long time. Then when we do a get, 
++                         we get stale data. We can introduce TTL for cache entry by introducing metadata for each cache item. 
++                         Two common approaches to clean cache. 
++                         
++                         Passively expire an item, when some client tries to access it, check the ttl, and expire 
++                         if necessary. 
++
++                         Or we can actiely expire with maintence thread that runs at regular intervals and removes expired items. 
++                         As there may be billions of items in cache, we cant interate over all cache items. 
++                         usually some probabilistic algorithms are used, when several random items are tested with every run.. 
++
++Services that use distributed or remote cache often use local cache as well. If data isnt in local cache, then data is accessed from distributed cache. 
++
++To make life OF THE SERVICE TEAMS EASIER, WE CAN IMPLEMENT SUPPORT OF LOCAL CACHE IN CACHE CLIENT. HID COMPELLXITY BEHIND SINGLE COMPOENNT, 
++CACHE CLIENT INSTANT IS CREATED THEN WE CONSTRUCT LOCAL CACHE. HIDE COMPLEXITY BEHIND ONE CLIENT, THE CACHE CLIENT. 
++
++CACHES ARE OPTImized for pperofrmance, but not security. Caches are usually accessed by trusted clients, inside trusted environmentS. sHOULDNT 
++expose cache servERS directly to internet if it is not absolutely required. For this reason we should use firewall to restrict access to cache server ports, 
++and ensure only approved clients can access cache. 
++Clients may also encrypt data before storing in cache, and decrypt it on the way out. But we should expect performance implications. 
++
++Our cache has to be instrumented with metrics and logging, this is especially important, if we launch our distributed cache as a service, because
++so many service teams in the organization may use our cache, everytime those services experience perfomrance degradation, they will come to us as one
++of the potential sources of this degradation, and we should be able to answer their questison :
++
++What metrics should we emit:
++# OF FAULTS while calling cache, latency, HITS, MISSES, CPU AND MEM UTILIZATION, NETWORK I/O 
++
++logging capture details of every request to cache the basic infomration -> who, when, key, return status code (log entries should be small but usefl)
++
++Currently cache client has alot of responsibilties, pick shards, handle a remote call and any potential failures, emit metrics etc, 
++
++ideally Client software should be very simple, dumb if you want.  Can simplify cache client. 
++One idea is we can introduce proxy between cache client and cache servers, and responsible forpicking cache shard. Take a look twemproxy project created by twitter. 
++
++Another idea, is to make cache servers responbile for picking a shard. 
++Client sends request to random cache server, and cache server applies consistent hashing or some other partitioning algorithm, and redirects request to shard 
++that stores data. This idea is utilized by redis cluster. 
++Consistent hashing algorithm is great, simple, and effective, but it has 2 major falls. 
++So called domino effect, and the fact that cache servers do not split circle evenly. Domino effect may appear when cache server dies, and all of its load 
++is transferred to next server, this transfer might overload next server and then that server would fail, causing a chain reaction of failures, and to understand 
++second problem, remember how we placed cache servers on circle, based on hashing their ip address. Some servers might be close together, while others are 
++far apart, dealing with uneven distribution of keys. 
++
++
++Several modifcations for consisten hash algorithm :
++Simple idea: Add each server on the circle multiple times, you can also read about jump hash algorithm a paper published by google on 2014,
++or proportional hasing (algorithm used by yahoo video platform)
++
++Quick recap of what we discussed:
++Single host, and have local cache, 
++
++Local cache has not enuff mem -> so create a standolne service, 
++Then use consistent caching for servers, and have cache client that routes requests for each key to specific shards that store data for key. 
++
++Can stop right here, memcached, is built upon just those principles 
++
++We went further and improved scalability and failover support, with configuration service. 
++
++
++---------------------------------------------------------------------------------------------------------------------------------
++
++
++https://leetcode.com/discuss/study-guide/901324/My-System-Design-Interview-Checklist-A-Gateway-to-FAANGs
++
++
++
++
++Usually, the System Design interviews are lengthy and cover a lot of complex components. This makes it very easy to get 
++lost in small things and miss out on the big picture. Therefore, it becomes very important to structure your interview in a 
++way such that you can easily convey the whole picture without wasting time on anything which does not add value.
++
++Below is the structure that I follow, and you could try the same.
++
++Drive the interview
++Make sure you are the one driving the interview and not your interviewer. This does not mean that you do not let them speak, but rather, you should be the one doing most of the talking, proactively calling out issues in your design before the interviewer points it out, handle the edge cases that the interviewer might poke you on etc.
++
++FRs and NFRs
++Clearly call out the Functional and Non-Functional requirements.
++
++The intent is that the requirements should be big enough that makes the problem challenging and also finite enough 
++that you can build a system that fulfills those requirements within the stipulated time. From the Non Functional side, try 
++to make a system that works at a very large scale. What's the fun in designing a system which works at a low scale?
++
++Before finalizing the FRs and the NFRs, get them reviewed with your interviewer to make sure they do not want to 
++    add/ remove something. At times, interviewers do have some particular use cases in mind that they want to go over.
++
++Capacity Estimation
++Check with your interviewer if they want to get into this. A lot of people prefer to skip the calculations and focus more on the design, assuming a large enough approximate number for the number of cores required or the amount of disk required etc.
++
++Plan
++Based on the FRs and NFRs, come up with these things:
++
++User Interaction Points.
++Latency/ Availability/ Consistency requirements at each of the user interaction points.
++A quick analysis estimating if it's a read-heavy interaction or a write-heavy interaction.
++Based on the above three, come up with what all services you'll need and what kind of databases you can use to store the data that each of these services owns.
++HLD
++Come up with a high level component diagram, that covers the following:
++
++What all services are present? Make sure you divide the flow into multiple functional components and see if a microservices 
++    based approach makes sense or not. Usually, using a microservices based approach is a good idea in SD interviews.
++How do the services interact with each other and what kind of protocols are used for inter service communication like Async/ Sync - Rest, RPC etc?
++How would the users interact with the whole system and what all services are user facing. Do you need a Cache to reduce latencies?
++Which service uses what Database and why? You can refer to this article that can help you choose the right database based on your use case
++See if you need caching anywhere and if you do, then what shall be the eviction policy, do you need an expiry for the keys, should it be a write through cache etc?
++Basis all this analysis, draw out a High Level Diagram of your whole system.
++Must Haves
++Some key things your high level diagram should have are:
++
++Load Balancers
++Services
++Databases and Caches
++User interaction points
++Any other tools like a Message Queue, CDN, etc.
++Walkthrough the design
++Once you have the whole diagram ready, go over the whole design, one use case at a time and explain your design to your interviewer at a very high level.
++Talk about why you have chosen a particular database here and why you have used a particular mode of communication like Sync/ Async etc. You can also get into an RPC vs HTTP kind of a conversation if you made a particular design choice. You should go over what kind of data replication strategy is being used in your databases, for example, would you use a Master-Slave or a Multi Master setup etc.
++
++If this sounds intimidating, you can check out how I usually do a design walkthrough in this video.
++
++
++
++CAUTION: Do not go into the details like APIs, DB Schema etc right away unless the interviewer asks for it. Most people get lost in designing the APIs for just one system at this point and run out of time later on.
++
++Brownie Points: Most interviews do not have FRs and NFRs around analytics, but if your design covers that or leaves good enough scope for analytics, that elevates your solution a lot. Try to add that. For example, you can look at this.
++
++This video also covers Analytics in great depth.
++
++
++
++Implementation
++Once you explain the whole flow to your interviewer, ask them which component they want to discuss in detail.
++Usually, people do not want to go over the entire system in detail. Let them decide which is that one component 
++that they want to dig into and then you can go over the implementation details of that particular system.
++Things you should cover here are:
++
++APIs- Call out the APIs that this system exposes. Make sure you are using the best practices here. For example instead of a GET API with URL like GET /user/getUserbyUserId, it’s better to use: GET /user/{id}
++API Protocols - You can cover what protocols are you exposing the APIs on. Most people choose REST APIs, but you can decide to use something more efficient like Thrift, Protobuf etc based on your use cases.
++Events - You can call out which events this particular service listens to, who produces that event, what payload comes in, what processing happens on that event etc.
++DB Schema - Go over the DB Schema here. You can also get into SQL vs NoSQL debate or why have you chosen a particular database, if you did not go over the same earlier while talking about the high level design.
++If it's a SQL, do talk about what indices you'll have and how are you optimising your queries. In case of NoSQL, make sure you go over the consistency guarantees that the DB provides, can it cause any issues and the kind of queries you'll run on that DB. Clearly call out the keys for key-value stores or the partition keys for a columnar store etc.
++Handle Murphy's law
++This is something that most people skip but this is one of the most important things that you must cover which talks about how resilient your system is. In the real world, things break, and when they do, you need to make sure you are in full control of your system.
++
++Talk about how you monitor the system. What kind of alerting mechanism do you have in place? What are your KPIs (Key Performance Indicators) and how do you track them? What happens when things break, when your service crashes, your DB's master node goes down or even when one of your datacentres goes down?
++
++Again, if you haven't done this before, see how I have been doing it, towards the later half of this video.
++
++
++
++This is my checklist, that I usually follow when I try to design any system, be it in an interview or in the real world.
++
++Thoughts/Suggestions?
 
 
 #######
@@ -1371,6 +2055,9 @@ Leaderboard or scoring data
 Temporary data, such as a shopping cart
 Frequently accessed ('hot') tables
 Metadata/lookup tables
+
+
+
 
 ###############################################
 

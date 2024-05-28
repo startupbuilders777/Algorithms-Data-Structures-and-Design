@@ -1,3 +1,5 @@
+https://leetcode.com/discuss/study-guide/1612475/All-leetcode-discuss-lists-and-my-lists-so-far-topic-wisedifficulty-wise
+
 ##########################
 STUDY GUIDE: 
 GO THROUGH ALL THE MONTONIC STACK/QUEUE LINKS IN CHROME ONETABS.
@@ -8,6 +10,122 @@ DO SAME FOR DSU in cp-algorithms.
 
 binarysearch.com has problems sorted by company. 
 speed through em. 
+##################
+Bridge and articulation point questions:
+
+Bridges&articulation pts28 views
+1. Minimize Malware Spread
+2. Minimize Malware Spread II
+3. Critical Connections in a Network
+4. Minimum Number of Days to Disconnect Island
+
+#####################
+
+Good questions on binary search
+3
+xafrabot69's avatar
+xafrabot69
+8
+Last Edit: February 4, 2022 1:10 PM
+
+195 VIEWS
+
+1552. Magnetic Force Between Two Balls
+1870. Minimum Speed to Arrive on Time
+875. Koko Eating Bananas
+1011. Capacity To Ship Packages Within D Days
+1283. Find the Smallest Divisor Given a Threshold
+1482. Minimum Number of Days to Make m Bouquets
+2064. Minimized Maximum of Products Distributed to Any Store
+1760. Minimum Limit of Balls in a Bag
+1300 Sum of Mutated Array Closest To Target
+
+
+
+#########################33
+
+Hard dps that are supposeedly easy:
+
+Here I will be updating the list of DP Hard problems which are actually easy. The only difficult part is that we are not able to think in the correct direction. And that's the trickiest part with DP problems -
+not able to come up with recurrence relation
+
+https://leetcode.com/problems/distinct-subsequences/
+https://leetcode.com/problems/number-of-unique-good-subsequences/
+https://leetcode.com/problems/distinct-subsequences-ii/
+https://leetcode.com/problems/number-of-ways-to-divide-a-long-corridor/
+
+HARD Greedy Problems which Are actually easy
+1
+Khoonkharbilla's avatar
+Khoonkharbilla
+42
+February 18, 2022 11:50 AM
+
+185 VIEWS
+
+Here I will be maintaing a list of greedy problems which are tagged as hard but are simple as compared to other
+actually Hard problems on the leetcode. Solving them will not make you learn anything new but they sure tests your understanding. So here is the list and give it a try :-
+
+https://leetcode.com/problems/candy/
+https://leetcode.com/problems/minimum-initial-energy-to-finish-tasks/
+
+TOP 50 LC HARD PROBLEMS TO DO: https://leetcode.com/list/903dl56h/
+
+
+Linked list problems to do:
+Reverse a Linked List
+Middle of the Linked List
+Delete Node in a Linked List
+Merge Two Sorted Linked List
+Remove duplicates from sorted list
+Intersection of two linked list
+Linked List Cycle
+Palindrome Linked List
+Swapping Nodes in a Linked List
+Odd Even Linked List
+Remove nth node from Linked List
+Add Two Numbers
+Swap Nodes in Pairs
+Split Linked List in Parts
+Insertion sort on Linked List
+Merge sort on Linked List
+Copy list with random pointers
+Remove zero sum from consecutive nodes from linked list
+Merge k sorted Linked List
+Reverse nodes in k group
+Doubly Linked List
+Adding a node at the front, at the end, after a node or before a node
+Deleting a node from the front, from the end, after a node or before a node
+Circular Doubly Linked List
+Adding a node at the front, at the end, after a node or before a node
+Deleting a node from the front, from the end, after a node or before a node
+LRU Cache
+LFU Cache
+
+more hards:
+
+More hards:
+
+1. Regular Expression Matching
+2. Merge k Sorted Lists
+3. Longest Valid Parentheses
+4. Wildcard Matching
+5. Permutation Sequence
+6. Valid Number
+7. Edit Distance
+8. Maximal Rectangle
+9. Scramble String
+10. Distinct Subsequences
+11. Best Time to Buy and Sell Stock III
+12. Binary Tree Maximum Path Sum
+13. Word Break II
+14. Maximum Gap
+15. Shortest Palindrome
+16. Longest Increasing Path in a Matrix
+17. Super Egg Drop
+18. Number of Submatrices That Sum to Target
+19. Minimum Number of Taps to Open to Water a Garden
+20. Number of Ways to Paint N × 3 Grid
 
 
 ##########################
@@ -17,6 +135,79 @@ DONE:
 GO THROUGH THE BINARY SEARCH NOTES +  QUESTIONS URL -> 
 https://leetcode.com/discuss/general-discussion/786126/
 python-powerful-ultimate-binary-search-template-solved-many-problems
+
+#########################
+https://github.com/15kingben/GooglePrep
+MORE HARDS GOOGLE STYLE:
+
+
+https://github.com/15kingben/GooglePrep
+
+Also watch the videos in there from competitive programming:
+Fenwick Trees (https://www.youtube.com/watch?v=kPaJfAUwViY)
+Trees and Diameters (https://www.youtube.com/watch?v=2PFl93WM_ao)
+Segment Trees (https://www.youtube.com/watch?v=Tr-xEGoByFQ)
+Geometric Sweeps( https://www.youtube.com/watch?v=gXn2yUHpvRE)
+Cows (Important Binary search technique but a harder format) (https://www.youtube.com/watch?v=OPDRYkCWdGs)
+Solution Bags (https://www.youtube.com/watch?v=oaYsWnohXpA&t=2661s)
+Exchange Arguments ( OTHER LINKS ARE IN THE GITHUB ABOVE FOR GOOGLE PREP!) (https://www.youtube.com/watch?v=Oq1seKJvfQU)
+Binary Lifting LCA ()
+Knapsack DP ()
+Bitmask DP ()
+DFS LowLink ()
+Biconnected Decomposition ()
+Strongly Connected Components ()
+Topological Sort ()
+Orchestra (It's like a hard version of a classic interview problem) ()
+Max Flow ()
+Venture Cup (Good Mathematical Approach to simplify a problem) ()
+
+
+Practice Interview
+Once you feel like you have mastered most concepts, give these questions a try. Try to complete each in 45 minutes or less.
+
+List of Questions to do
+merge k sorted lists
+
+Open after solving
+critical connections in a network
+
+Open after solving
+minimize malware spread
+
+Open after solving
+course schedule II
+
+Open after solving
+construct target array with multiple sums
+
+Open after solving
+uncrossed lines
+
+Open after solving
+smallest sufficient team
+
+Open after solving
+daily temperatures
+
+Open after solving
+course schedule III
+
+Open after solving
+find in mountain array
+
+Open after solving
+Other questions I like:
+Some questions with elegant or clever solutions:
+
+remove palindromic subsequences
+reverse substrings between each pair of parentheses
+convert to base -2
+distinct sequences II
+element appearing in more than 25% of sorted array
+trapping rain water
+maximum performance of a team
+
 
 
 ############################
@@ -737,10 +928,70 @@ https://leetcode.com/discuss/general-discussion/726900
 Related LC completed scores who joined Google
 75 easy, 200 medium & 100 hard
 75 easy, 250 medium & 50 hard
+################
+https://leetcode.com/discuss/study-guide/448285/List-of-questions-sorted-by-common-patterns.
 
 
+
+##################
+
+HARD GRAPH PROBLEMS (BRDIGE, ARTICULATION POINTS)
+https://leetcode.com/discuss/study-guide/1612475/All-leetcode-discuss-lists-and-my-lists-so-far-topic-wisedifficulty-wise
+
+
+
+
+#########################
+MORE IMPORTANT PROBLEMS TO DO:
+
+Palindromic Substrings - https://leetcode.com/problems/palindromic-substrings
+Meeting Rooms II - https://leetcode.com/problems/meeting-rooms-ii
+Word Search - https://leetcode.com/problems/word-search
+Clone Graph - https://leetcode.com/problems/clone-graph
+Longest Increasing Subsequence - https://leetcode.com/problems/longest-increasing-subsequence
+Two Sum - https://leetcode.com/problems/two-sum
+Find Median from Data Stream - https://leetcode.com/problems/find-median-from-data-stream
+Insert Delete GetRandom O(1) - https://leetcode.com/problems/insert-delete-getrandom-o1
+Insert Interval - https://leetcode.com/problems/insert-interval
+LRU Cache - https://leetcode.com/problems/lru-cache
+Design Log Storage System - https://leetcode.com/problems/design-log-storage-system
+Merge Intervals - https://leetcode.com/problems/merge-intervals
+Implement Trie (Prefix Tree) - https://leetcode.com/problems/implement-trie-prefix-tree
+Merge k Sorted Lists - https://leetcode.com/problems/merge-k-sorted-lists
+Text Justification - https://leetcode.com/problems/text-justification
+The Skyline Problem - https://leetcode.com/problems/the-skyline-problem
+Find First and Last Position of Element in Sorted Array - https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array
+Sliding Window Maximum - https://leetcode.com/problems/sliding-window-maximum
+Time Based Key-Value Store - https://leetcode.com/problems/time-based-key-value-store
+Reaching Points - https://leetcode.com/problems/reaching-points
+Minimum Increment to Make Array Unique - https://leetcode.com/problems/minimum-increment-to-make-array-unique
+Find Pivot Index - https://leetcode.com/problems/find-pivot-index
+K-diff Pairs in an Array - https://leetcode.com/problems/k-diff-pairs-in-an-array
+Longest Consecutive Sequence - https://leetcode.com/problems/longest-consecutive-sequence
+Max Stack - https://leetcode.com/problems/max-stack
+Minimum Number of Taps to Open to Water a Garden - https://leetcode.com/problems/minimum-number-of-taps-to-open-to-water-a-garden
+Tweet Counts Per Frequency - https://leetcode.com/problems/tweet-counts-per-frequency
+Reconstruct Itinerary - https://leetcode.com/problems/reconstruct-itinerary
+Accounts Merge - https://leetcode.com/problems/accounts-merge
+Single Element in a Sorted Array - https://leetcode.com/problems/single-element-in-a-sorted-array
+Word Search II - https://leetcode.com/problems/word-search-ii
+Maximal Square - https://leetcode.com/problems/maximal-square
+Degree of an Array - https://leetcode.com/problems/degree-of-an-array
+Daily Temperatures - https://leetcode.com/problems/daily-temperatures
+Longest Substring with At Most K Distinct Characters - https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters
+Maximum Number of Occurrences of a Substring - https://leetcode.com/problems/maximum-number-of-occurrences-of-a-substring
+The kth Factor of n - https://leetcode.com/problems/the-kth-factor-of-n
+Minimum Swaps to Group All 1's Together - https://leetcode.com/problems/minimum-knight-moves
+Minimum Knight Moves - https://leetcode.com/problems/minimum-knight-moves
+
+
+######################################################################################################33
 
 # LEETCODE DP PROBLEMS TO PRACTICE:
+
+Problems also here (same ones i think):
+https://leetcode.com/discuss/study-guide/1050391/Must-do-Dynamic-programming-Problems-Category-wise
+
 https://leetcode.com/discuss/general-discussion/1000929/solved-all-dynamic-programming-dp-problems-in-7-months
 Solved all dynamic programming (dp) problems in 7 months.
 189
@@ -1020,4 +1271,36 @@ https://leetcode.com/problems/super-egg-drop/
 https://leetcode.com/problems/least-operators-to-express-number/
 https://leetcode.com/problems/largest-multiple-of-three/
 https://leetcode.com/problems/minimum-one-bit-operations-to-make-integers-zero/
+########################3
+#############################################
+##################################################3
 
+SLIDING WINDOW:
+
+Question Bank
+A slight variation using the template for Sliding Window that can be used in the following problems that follow a similar pattern:
+
+Fixed Sized Window
+30. Substring with Concatenation of All Words
+438. Find All Anagrams in a String
+567. Permutation in String
+643. Maximum Average Subarray I
+1100. Find K-Length Substrings With No Repeated Characters (P)
+1176. Diet Plan Performance (P)
+1343. Number of Sub-arrays of Size K and Average Greater than or Equal to Threshold
+1876. Substrings of Size Three with Distinct Characters
+Variable Sized Window
+3. Longest Substring Without Repeating Characters
+76. Minimum Window Substring
+159. Longest Substring with At Most Two Distinct Characters
+209. Minimum Size Subarray Sum
+340. Longest Substring with At Most K Distinct Characters (P)
+424. Longest Repeating Character Replacement
+487. Max Consecutive Ones II (P)
+904. Fruit Into Baskets
+1004. Max Consecutive Ones III
+1493. Longest Subarray of 1's After Deleting One Element
+1852. Distinct Numbers in Each Subarray (P)
+Legend: P = Premium
+
+Comments and contributions for improvement are appreciated. Thanks!

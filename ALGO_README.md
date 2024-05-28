@@ -70,7 +70,685 @@ TOPICS TO UNDERSTAND:
 
 
 THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
-        
++-117) Learn to simplify your thoughts after finding a soln. You make a bunch of assumptions but you actually need less assumptions to solve the problem.
++      Stop adding so many artificial constraints yourself, and think beyound about your own assumptons to solution!!
++      Find Peak Element 1D 
++        162. Find Peak Element
++        Medium
++        5689
++        3628
++        Add to List
++        Share
++        A peak element is an element that is strictly greater than its neighbors.
++        Given an integer array nums, find a peak element, and return its index. If the array contains multiple peaks, return the index to any of the peaks.
++        You may imagine that nums[-1] = nums[n] = -∞.
++        You must write an algorithm that runs in O(log n) time.
++        
++        Example 1:
++        Input: nums = [1,2,3,1]
++        Output: 2
++        Explanation: 3 is a peak element and your function should return the index number 2.
++        Example 2:
++        Input: nums = [1,2,1,3,5,6,4]
++        Output: 5
++        Explanation: Your function can return either index number 1 where the peak element is 2, or index number 5 where the peak element is 6.
++        class Solution:
++            def findPeakElement(self, nums: List[int]) -> int:
++                l = 0 
++                r = len(nums) - 1 
++                # just append -inf to front and end of array!
++                # kills log n behavior! =c
++                # deal with size = 0 array here. 
++                while l < r:
++                    # right bias used here just for fun
++                    mid = l + (r-l + 1)//2
++                    # if mid == 0 && 
++                    leftElement = nums[mid-1] if mid - 1 >= 0 else float("-inf")
++                    rightElement = nums[mid + 1] if mid + 1 < len(nums) else float("-inf")
++                    
++                    if nums[mid] > leftElement and nums[mid] > rightElement:
++                        return mid
++                    
++                    elif leftElement < nums[mid] and nums[mid] < rightElement: 
++                        # ok so its on right side
++                        l = mid 
++                    else:
++                        r = mid - 1
++                # returning either l or r works here. 
++                return r
++        
++
++        Much simpler soln: (you need to take out that BS assumption!) -> otherwise followup problems become much harder
++        
++        public class Solution {
++            public int findPeakElement(int[] nums) {
++                int l = 0, r = nums.length - 1;
++                while (l < r) {
++                    int mid = (l + r) / 2;
++                    if (nums[mid] > nums[mid + 1])
++                        r = mid;
++                    else
++                        l = mid + 1;
++                return l;
++        }
++-116) Identifying when DP is needed and BITMASK DP
++        [* H * * * ]
++        [H * * * * ]
++        [ * * * * H]
++        [ * * H * *]
++        2D matrix, H stands for house, * stands for empty spots and these empty spots can be planted with trees
++        Find the minium number of trees need to be planted and they will be neighbouring to each house, and the neighbouring condition is 8 directions neighbored
++        the answer should be ( t stands for trees)
++        [* H * * * ]
++        [H t * * * ]
++        [ * * * t H]
++        [ * * H * *]
++    Initial idea (Greedy):
++        you can collect the trees all around the houses.
++        Then you can take the tree that covers the max number of houses, 
++        remove that tree, then compute the next tree that covers the max number of houses,
++        and end it.
++    The greedy soln doesnt work for the following case: 
++        * * * H * * *
++        * * * * * * *
++        * * * H * * *
++        H * H * H * H
++        * * * H * * *
++        * * * * * * *
++        * * * H * * *
++        This only takes 4 trees to plant optimally, but with your algorithm it'd take 5. I think that this problem is NP-hard, and that we'll need DP to solve it.
++    -> Ok so DP.
++    
+        quick dp soln:
+        Tc: O(t2^t) SC O(t2^t) t->total H
+
+        create bipartite graph i->j edge denotes planting tree at i place will satisfy neighbouring to jth cell(house)
+        We just need to find minimum set of left side nodes such that all right side nodes are covered.
+        It's bitmask DP dp[i][mask] denotes we are at ith left node and set bits in mask denotes set of right nodes available.
+        dp[i][mask] = min(dp[i+1][mask], 1 + dp[i+1][mask- mask&curMask]). curMask->set of nodes which can be satisfied by this i.
+
+        Call dp(0, 1<<rightNodes - 1)) and compute top down dp.
+
+        LeftNodes->T, rightNodes->T hence SC: O(T*2^T).
+
+
++    At the very start of DP what you want to do is try to write out the recursion and do what you think will happen and 
++    that will pwoer your bottom up! Lets try it.
++    If you solve recursively, you have to take or not take certain tree locations, 
++    and that will update the subset of houses that are covered.
++    Label each house 1 to N, and then you can start taking subsets of 1 to N. 
++    You can also just use a bitmask instead of a set()
++    Like this:
++    def soln(grid):
++        N = len(grid)
++        M = len(grid[0])
++        treeLocations = []
++        M = {}
++        
++        k = 0
++        for i in range(N):
++            for j in range(M):
++                if grid[i][j] == "H":
++                    treeLocations.extend([(i+1, j), (i-1,j)])...ETC!
++                    M[(i,j)] = k
++                    k += 1
++        @lru_cache(None)
++        def recursion(i, setProcessed):
++            (treeX, treeY) = treeLocations[i]
++            if setProcssed == 2^(len(m)) - 1:
++                # alrdy processed all
++                return 0
++            # ok either process take it or not. 
++            # find all houses around me!
++            dirs = [(-1,-1), (-1, 0), (1,1), (1,0), (0,1), (0, -1), (-1, 1), (1, -1)]
++            taken = setProcessed
++            for i,j in dirs:
++                houseLabel = M.get(treeX+i, treeY+j)
++                if houseLabel is not None:
++                    taken |= ( 1 << houseLabel)
++            # ok either take or dont take
++            return min( 1 + recursion(i+1, taken), recursion(i+1, setProcessed) )
+
++        # Now go over the trees and see which houses covered
++    Recursively, we want to find the min, and solve for every subset -> therefore our DP would be
++    OPT[ith tree processed][set(houses covered)] = Minimum trees required to cover the set of houses. 
++    Choosing or not choosing ith tree will affect all house coverages from 1 to i-1th coverages!
++    To get index of a house use a map that maps (housex, housey) -> idxofhouseinsubset
++    OPT[0][0] = 0
++    
++    OPT[i][x] = 
++        min(OPT[i-1][x], 1 + OPT[i-1][all partial x which when introducing tree i -> results in x]) 
++    You can space optimize out the i parameter given you only need the previous to generate next
++    x goes from 0 to 2^n - 1
++    
++    Total complexity (2^n - 1) * #ofCandidateTrees
++    
++    Maybe forward DP is easier. 
++    # Process tree i, calculate all the x it generates -> set the mins!
++    # Relax it from infinite!
++    -> Exercise: check if this is correct:
++    F = len(treeLocations)
++    prev = [0] # base case
++    curr = [0] # base case
++    prev.extend([float("inf") for i in range(1, 2**N)])
++    curr.extend([float("inf") for i in range(1, 2**N)])
++    
++    dirs = [(-1,-1), (-1, 0), (1,1), (1,0), (0,1), (0, -1), (-1, 1), (1, -1)]
++    for i in range(F):
++        for j in range(2**N - 1):
++            # -> check all the houses you cover and forward update!
++            # all_forward_updates = []
++            # or should we just do 1 forward update for all the houses we covered!
++            new_houses_covered = j
++            for i,j in dirs:
++                houseLabel = M.get(treeX+i, treeY+j)
++                if houseLabel is not None:
++                    new_houses_covered |= ( 1 << houseLabel)
++            curr[new_houses_covered] = min(curr[new_houses_covered], 1 + prev[j])
++        prev = curr
++    return curr[2**N-1]
++    
++
+
++
++-115) Lazy Deleting VS doubly linked list:
++    
++        Design a wait list for customers at restaurant:
++
++        Add customers to wait list (for example: Bob, party of 4 people)
++        Remove a customer from wait list
++        Given a open table with N seats, remove and return the first customer party of size N
++        Clarifications:
++
++        10 unique table sizes
++        Customer names unique
++        FIFO if two parties have the same number of people
++        Table with N seats must have exactly N people
++        Ideal solution O(1) runtime for all 3 methods
++
++    Soln1 :
++        map {
++
++        tableIdx -> [customer1, customer2]
++        1...10 keys
++        }
++
++         Add to waitlist, -> add him to the end
++        Remove from waitlsit. just mark him removed in some set!
++        Assign table -> check if customer has been removed before assinging, otherwise go to next customer. 
++
++        Guranteed O(1) delete complexity + FIFO
++
++        -> Otherwise, you can use a doubly linked list to remove him quickly!
++
++        My solution is to use 3 maps.
++
++        One map for table(size) and list of customer waiting for it in order. customer_wait_list_map <Table_id, List>
++        One map for table(size) and its availability count. <Table_Id, Count> (Optional if we have multiple same table with same size)
++        One map for customer and it's Node address. <Customer_name, Node>
++        Node is Doubly Linked List.
++        So all 3 could be done in O(1)
++
++
++-114)   Understand how to do graph property type questions, where you have to satisfy a graph shape:
++    
++        Give a undirected graph as a list of edges [(1, 2), (1, 3), (1, 4), (2, 3)], check if the graph forms a grid?
++        For examples,
++
++        True Case: [(1, 2), (1, 4), (2, 3), (2, 5), (3, 6), (4, 5), (5, 6)]
++
++        Because we can form grid,
++
++        1 2 3
++        4 5 6
++
++        False Case: [(1, 2), (1, 4), (2, 3), (2, 5), (3, 6), (4, 5)]
++
++        Because we cannot form grid,
++
++        1 2 3
++        4 5
++
++        there should be 4 nodes with degree 2
++        Check weather all the vertices with degree less than or equal to 4
++        choose one corner and run a bfs until you get 2 more corners, so now you have your row size and column size.
++        from the corner other than the one found in step 3 bfs again and check if m,n are satisfied here as well
++        now you should have 4 two degree vertices, 2*(m+n)-8 three degree vertices, nm-2(m+n)+4 four degree vertices.
++
++
++-113) Insert, Delete, GetRandom O(1)
++
++    Implement the RandomizedSet class:
++
++    RandomizedSet() Initializes the RandomizedSet object.
++    bool insert(int val) Inserts an item val into the set if not present. Returns true if the item was not present, false otherwise.
++    bool remove(int val) Removes an item val from the set if present. Returns true if the item was present, false otherwise.
++    int getRandom() Returns a random element from the current set of elements (it's guaranteed that at least one element exists when this 
+      method is called). Each element must have the same probability of being returned.
++    You must implement the functions of the class such that each function works in average O(1) time complexity.
++
++    class RandomizedSet:
++        def __init__(self):
++            self.arr = []
++            self.m = {}
++        def insert(self, val: int) -> bool:
++            if(val in self.m):
++                return False
++            self.arr.append(val)
++            idx = len(self.arr) - 1
++            self.m[val] = idx
++            return True
++        def remove(self, val: int) -> bool:
++            # -> get idx from val  
++            
++            if(self.m.get(val) is None):
++                return False
++            
++            idx = self.m[val] 
++        
++            lastIdx = len(self.arr) - 1
++            lastIdxVal = self.arr[lastIdx]
++            
++            self.m[lastIdxVal] = idx
++            self.arr[idx], self.arr[lastIdx] = self.arr[lastIdx], self.arr[idx]
++            
++            del self.m[val]     
++            self.arr.pop()
++            
++            
++            # what if removing the last one? edge case
++            return True
++        
++        def getRandom(self) -> int:
++            r = random.randint(0, len(self.arr)-1)
++            return self.arr[r]
++
++
+
+
++
++-112) Multisource BFS:
++        For multisource BFS you will have to use visited set twice if yu fck it up.
++        Make sure you process every node once, or if your parent is processing the child, 
++        multiple parents arent processing the same child!!!
++
++        Look at below example for correctness!
++
++        '''
++        663 · Walls and Gates
++
++        You are given a m x n 2D grid initialized with these three possible values.
++
++        -1 - A wall or an obstacle.
++        0 - A gate.
++        INF - Infinity means an empty room. We use the value 2^31 - 1 = 2147483647 to represent INF as you may assume that the distance to a gate is less than 2147483647.
++        Fill each empty room with the distance to its nearest gate. If it is impossible to reach a Gate, that room should remain filled with INF
++
++        Explanation:
++        the 2D grid is:
++        INF  -1  0  INF
++        INF INF INF  -1
++        INF  -1 INF  -1
++        0  -1 INF INF
++        the answer is:
++        3  -1   0   1
++        2   2   1  -1
++        1  -1   2  -1
++        0  -1   3   4
++        Example2
++
++        Input:
++        [[0,-1],[2147483647,2147483647]]
++        Output:
++        [[0,-1],[1,2]]
++        '''
++
++        from collections import deque
++
++        class Solution:
++            """
++            @param rooms: m x n 2D grid
++            @return: nothing
++            """
++            def walls_and_gates(self, rooms: List[List[int]]):
++                N = len(rooms)
++                M = len(rooms[0])
++
++                d = deque()
++                visited = set()
++                dist = {}
++                for i in range(N):
++                    for j in range(M):
++                        if rooms[i][j] == 0:
++                            d.append((i,j))
++                            dist[(i,j)] = 0
++                            # rooms[i][j] = 0
++            
++
++                directions = [(0,1), (0,-1), (1,0), (-1,0)]
++
++                # THIS PROBLEM ILLUSTRATES WHEN NODES SHOULD BE ADDED TO VISITED!
++                # to reduce any duplication that can occur in updates.
++                # nodes should be processed once and know that defn!
++
++                while len(d) > 0:
++                    r, c = d.popleft()
++                    # Both visiteds are required in multisource BFS 
++                    # The below visited can be removed if you add the  gate nodes at the very start 
++                    # to the visited set
++                    # BE CAREFUL WHEN YOU ARE DOING PARENT TO CHILD UPDATE aka parent updates child
++                    # that means child was processed! so 2 parents shouldnt update same child!!
++                    visited.add((r,c) )
++
++                    for (i,j) in directions:
++                        if(r + i < N and r + i >=0 and c + j < M and c + j >= 0 and (r+i, c+j) not in visited
++                            and rooms[r+i][c+j] !=-1):
++                            
++                            d.append((r+i, c+j))
++                            dist[(r+i, c+j)] = dist[(r,c)] + 1
++                            
++                            # The child should be updating based on parent!
++                            # The child should be updated once its accessed, not from parent to child update!!!
++                            # because children are accessed multiple times before they get added to visited in top 
++                            # statement. So we have to add child to visited as well!
++                            rooms[r+i][c+j] = dist[(r,c)] + 1
++                            # effectively child was processed in above statement. 
++                            visited.add((r+i, c+j))
++                            # 
++                            print("updated ", (r, c, ))
+
++-111) Realize in the question when things are sorted for you. Will the datastructure calls come in a sorted manner?
++    Do we need to sort it based on time using a BST or does it come presorted just by how it is called. If it comes presorted
++        put it in a deque or a priority queue instead of a bst. 
+
+
+
++-110)   Doubly Linked List O(1) popping requirement VS Lazy Popping with a deque + map
++        Which soln is better for these datastructures??
++        Build a data structure to perform three operations (Restaurant is full initially):
++        1) waitList (string customer_name, int table_size):
++        Add customer with given name and table size they want to book into the waitlist
++        2) leave (string customer_name):
++        Customer wants to leave the waitlist so remove them.
++        3) serve (int table_size):
++        This means restaurant now has a free table of size equal to table_size. Find the best customer to serve from waitlist
++        Best Customer: Customer whose required size is less than or equal to the table_size. 
++
++        If multiple customers are matching use first come first serve.
++        For e.g. if waitlist has customers with these table requirements => [2, 3, 4, 5, 5, 7] 
++        and restaurant is serving table_size = 6 then best customer is index 3 (0-based indexing).
++
++
++
++        Add to waitlist -> keep it sorted first on size, then on time. 
++
++        to keep sorted on time push into a deque, append!!
++        and also popLeft. (for getting the earlist person!)
++
++
++        map{
++            size -> [customers in deque]
++        }
++
++        Also:  
++        customerName -> locate idx in deque! (Need it implemented as doubly linked list for O(1) removal!)
++
++        map {
++        customerName -> (size, locInDeque/Node in deque)
++        }
++
++        Then when we want to serve someone,
++            binary search the tree map for the queue of names, and give the first name, then remove the first name. 
++
++        Someone elses soln, doesnt use Doubly linked list??
++
++
++            from sortedcontainers import SortedList
++            from collections import deque
++
++            class Restaurant:
++                def __init__(self):
++                    # maps customer to the table they're waiting for
++                    self.customerToTable = {}
++                    # sorted list of unique table sizes that people are waiting for
++                    self.sortedWaitList = SortedList()
++                    # maps table size to a deque of customer names waiting for that table
++                    # in order of arrival. some of these names may have left, so we have 
++                    # to check at the end of each leave call to ensure that we always have
++                    # a valid, present customer waiting for a table at the leftmost element.
++                    self.tableSizeDeques = {}
++
++                def waitList(self, cn, ts):
++                    self.customerToTable[cn] = ts
++                    if ts not in self.sortedWaitList:
++                        self.sortedWaitList.add(ts)
++                    if ts not in self.tableSizeDeques:
++                        self.tableSizeDeques[ts] = deque()
++                    self.tableSizeDeques[ts].append(cn)
++
++                def leave(self, cn):
++                    ts = self.customerToTable[cn]
++                    del self.customerToTable[cn]
++
++                    # this while loop ensures that the leftmost customer has not
++                    # yet left the restaurant for this table size, and if there are 
++                    # no customers left for this table size, we will delete the
++                    # entry for this table size. that means we always have a valid
++                    # customer to use for this table size if it still exists in the waitlist.
++                    while self.tableSizeDeques[ts] and \
++                        self.tableSizeDeques[ts][0] not in self.customerToTable:
++                        self.tableSizeDeques[ts].popleft()
++
++                    if len(self.tableSizeDeques[ts]) == 0:
++                        self.sortedWaitList.remove(ts)
++                        del self.tableSizeDeques[ts]
++
++                def serve(self, ts):
++                    i = min(self.sortedWaitList.bisect_left(ts), \
++                            len(self.sortedWaitList) - 1)
++
++                    customer = self.tableSizeDeques[i][0]
++                    # instead of rewriting our leave code, let's just call it here to make the customer leave
++                    self.leave(self, customer)
++                    return customer
++
++
++-109) Integer Break (Dp soln, not cool math one):
++    In the DP you might have a lot of edge casey stuff around 1 state, or a few states, and
++    then all the other states are easy. In this case, the edge casey stuff was around computing
++    answers to the small input values, dealing with only 2 factors in the product:
++
++    343. Integer Break
++    Given an integer n, break it into the sum of k positive integers, where k >= 2, and maximize the product of those integers.
++    Return the maximum product you can get.
++    Example 1:
++    Input: n = 2
++    Output: 1
++    Explanation: 2 = 1 + 1, 1 × 1 = 1.
++    Example 2:
++    Input: n = 10
++    Output: 36
++    Explanation: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36.
++    
++    Soln:
++
++    class Solution:
++        def integerBreak(self, n: int) -> int:
++            '''
++            OPT[i] = OPT product we get for i
++            OPT[0] = 0
++            OPT[1] = 0?
++            OPT[2] = 1 -> 1*1? I GUESS
++            OPT[3] = 2
++            OPT[i] = OPT[i - k] * k for every k from n to 1
++            k can go from n to 2 
++            The below solution needs the extra 
++            (i-k)*(k)
++            in the max, 
++            because there are so many edge cases with doing products when small numbers are involved.
++            So calculating anything with 2 factors is edge casey, but 3 or more can build of the 2 
++            product stuff we calculate with the above.
++            
++            '''
++            OPT = [0 for i in range(max(n+1, 4))]
++            
++            for i in range(n+1):
++                for k in range(1, n+1):
++                    if i - k >= 0:
++                        OPT[i] = max(OPT[i], max((i-k)*(k), OPT[i-k]*k))
++            return OPT[n]
+
+
+
+        -111.11) Do you think you could use sliding window here?? lolol
+            solve this when you have time. 
+
+
+            727. Minimum Window Subsequence
+                Attempted
+                Hard
+                Topics
+                Companies
+                Hint
+                Given strings s1 and s2, return the minimum contiguous substring part of s1, so that s2 is a subsequence of the part.
+
+                If there is no such window in s1 that covers all characters in s2, return the empty string "". If there are multiple such minimum-length windows, return the one with the left-most starting index.
+
+                
+
+                Example 1:
+
+                Input: s1 = "abcdebdde", s2 = "bde"
+                Output: "bcde"
+                Explanation: 
+                "bcde" is the answer because it occurs before "bdde" which has the same length.
+                "deb" is not a smaller window because the elements of s2 in the window must occur in order.
+                Example 2:
+
+                Input: s1 = "jmeqksfrsdcmsiwvaovztaqenprpvnbstl", s2 = "u"
+                Output: ""
+
+
+            My attempt:
+
+            class Solution:
+                def minWindow(self, s1: str, s2: str) -> str:
+                    """
+                    SLIDING WINDOW DOESNT WORK ON THIS PROBLEM? DO YOU KNOW WHY LOL? CAUSE
+                    I TTRIED AND IT DIDNT! DO DP HERE. BECAUSE IT SAYS SUBSEQUENCE. 
+
+
+                    s[i][j]
+                    at character i how much of j did we match? so is it LCS right?
+
+                    idk is it:
+                    DP[i][j] = max( D[i-1][j-1] + 1 if s1[i] == s[j], D[i-1][j], D[i][j-1])
+
+                    how many characters in ht prefix s2[j] do we match when we process each character of s1 right..
+
+                    if we matched all the characters, then DP[i][j] == len(s2)
+                    i think!
+
+                    to think about params/tabulation method try to also do it recursively.. and work it backwards.
+
+                    helper(i, j, left_index):
+                        
+                        if matched: 
+                            return left most index?
+                            # need to keep track of..
+                            # either use the character to match the next character, or dont right. 
+                            # just set the answer in the global variable. 
+                            # we need to keep track the length of the string we just went through right..?
+                            # leftmost index tbh in s1 tbh!
+
+                            # we will need to process s2 over and over hmm 
+                            return True, left_index - i 
+
+                        if s2[j] == s1[i]:
+                            res1, res1_len = helper(i+1, j+1, left_index)
+                        
+                        # we process it again!
+                        if s1[i] == s2[0]:
+                            res2, res2_len = helper(i+1, 1, i)
+
+                        # otherwise, try next character in seq to see if it can match j!
+                        third, third_len = helper(i+1, j, left_index)
+
+                        # ok so we solve it and.. 
+                        return min()
+
+                    FUCK I CANT DO IT :C
+
+                    DAMN
+
+                    RECURRENT SHOULD LOOK LIKE:
+                    For substring S[0, i] and T[0, j], 
+                    dp[i][j] is starting index k of the shortest postfix of S[0, i], 
+                    such that T[0, j] is a subsequence of S[k, i]. 
+                    Here T[0] = S[k], T[j] = S[i]. Otherwise, dp[i][j] = -1.
+
+                    The goal is the substring with length of min(i-dp[i][n-1]) for all i < m,  
+                    where m is S.size() and n is T.size() 
+                    Initial condition: dp[i][0] = i if S[i] = T[0], else -1
+                    Equations: If S[i] = T[j], dp[i][j] = max(dp[k][j-1]) for all k < i; else dp[i][j] = -1;   
+
+                    aka leetcode hint is:
+                    Let dp[j][e] = s be the largest index for which S[s:e+1] has T[:j] as a substring.
+
+                    Here is explanation of recurrence:
+
+                    OK leetcode discuss soln:
+
+                    dp[i][j] stores the starting index of the substring where T has length i and S has length j.
+
+                    So dp[i][j would be:
+                    if T[i - 1] == S[j - 1], this means we could borrow the start index from dp[i - 1][j - 1] to make the current substring valid;
+                    else, we only need to borrow the start index from dp[i][j - 1] which could either exist or not.
+
+                    Finally, go through the last row to find the substring with min length and appears first.
+
+
+                    dp[i][j] represents the largest occurence of T[0] in S 
+                            such that all the characters of T are included in S
+                    e.g. S = "abcdebdde" T="bd"
+                    dp[2][4] = 2 which corresponds to S being only "abcd"
+                    dp[2][7] = 6 which correspods to S being only "abcdebd"            
+
+                        public String minWindow(String S, String T) {
+                            int m = T.length(), n = S.length();
+                            int[][] dp = new int[m + 1][n + 1];
+                            for (int j = 0; j <= n; j++) {
+                                dp[0][j] = j + 1;
+                            }
+                            for (int i = 1; i <= m; i++) {
+                                for (int j = 1; j <= n; j++) {
+                                    if (T.charAt(i - 1) == S.charAt(j - 1)) {
+                                        dp[i][j] = dp[i - 1][j - 1];
+                                    } else {
+                                        dp[i][j] = dp[i][j - 1];
+                                    }
+                                }
+                            }
+
+                            int start = 0, len = n + 1;
+                            for (int j = 1; j <= n; j++) {
+                                if (dp[m][j] != 0) {
+                                    if (j - dp[m][j] + 1 < len) {
+                                        start = dp[m][j] - 1;
+                                        len = j - dp[m][j] + 1;
+                                    }
+                                }
+                            }
+                            return len == n + 1 ? "" : S.substring(start, start + len);
+                        }
+
+                    """
+
+
+
+
+
+
         -111) Trie and Reverse Trie to cover all cases for search...
 
         1554. Strings Differ by One Character
@@ -1778,9 +2456,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
             return area
 
 
-
-
-
 -94) MONOTONIC STACK + Largest rectangle in histogram
 
     Given n non-negative integers representing the histogram's bar 
@@ -1981,6 +2656,93 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         and use a hashset.
 
 
++-88) DFA AND DP PROBLEM!!!!
+ 
+      You are a traveling salesperson who travels 
++      back and forth between two cities (A and B). 
++      You are given a pair of arrays (revA and revB) of length n.
++
++    You can only sell goods in one city per day.
++    At the end of each day you can choose to travel to another 
++    city but it will cost a constant amount of money (travelCost).
++
++    Ex::
++    revA[] = {3, 7,2,100};
++
++    revB[] = {1,1,1,10};
++
++    travelCost = 2;
++    Find maximum profit.
++        int MaxProfitBySalesMan ( int arr1 [] , int arr2 [] , int n )
++        {
++            int dp [ 2 ] [ n ] ; 
++            dp [ 0 ] [ 0 ]  = arr1 [ 0 ] ; 
++            dp [ 1 ] [ 0 ]  = arr2 [ 0 ] ;
++            for ( int i = 1 ; i < n ; i ++ )
++            {
++                dp [ 0 ] [ i ] = max ( dp [ 0 ] [ i -  1 ] , dp [ 1 ][ i  - 1 ] - 2  ) + arr1 [ i ]  ; 
++                dp [ 1 ] [ i ] = max ( dp [ 1 ] [ i -  1 ] , dp [ 0 ][ i  - 1 ] - 2  ) + arr2 [ i ]  ;
++            }
++            return max ( dp [ 0] [ n - 1 ] , dp [ 1 ] [ n - 1 ] ) ;
++        }
++
++
++
++-87)Optimizing binary tree questions with bottom up DP: 
++    One way to optimize these questions is to use post-order traversal.
++    Compute the value for the children then compute for parent sorta like DP:
++
++    1.   Count Univalue Subtrees
++    中文English
++    Given a binary tree, count the number of uni-value subtrees.
++    
++    A Uni-value subtree means all nodes of the subtree have the same value.
++    
++    Example
++    Example1
++    
++    Input:  root = {5,1,5,5,5,#,5}
++    Output: 4
++    Explanation:
++                  5
++                 / \
++                1   5
++               / \   \
++              5   5   5
++    Example2
++    
++    Input:  root = {1,3,2,4,5,#,6}
++    Output: 3
++    Explanation:
++                  1
++                 / \
++                3   2
++               / \   \
++              4   5   6
++
++    Solution:
++    def countUnivalSubtrees(self, root):
++        count = 0
++        def helper(node):
++            nonlocal count 
++            if node is None:
++                return None
++            left_result = helper(node.left)
++            right_result = helper(node.right)
++            if left_result == False:
++                return False
++            if right_result == False:
++                return False
++            if left_result and left_result != node.val:
++                return False
++            if right_result and right_result != node.val:
++                return False
++            count += 1
++            return node.val
++        helper(root)
++        return count
++
+
 
 -90) USING TREESETS AND TREE MAPS C++
 
@@ -2063,37 +2825,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
     How to use fenwick tree?
     
-
-
-
-
--88)  You are a traveling salesperson who travels 
-      back and forth between two cities (A and B). 
-      You are given a pair of arrays (revA and revB) of length n.
-
-    You can only sell goods in one city per day.
-    At the end of each day you can choose to travel to another 
-    city but it will cost a constant amount of money (travelCost).
-
-    Ex::
-    revA[] = {3, 7,2,100};
-
-    revB[] = {1,1,1,10};
-
-    travelCost = 2;
-    Find maximum profit.
-        int MaxProfitBySalesMan ( int arr1 [] , int arr2 [] , int n )
-        {
-            int dp [ 2 ] [ n ] ; 
-            dp [ 0 ] [ 0 ]  = arr1 [ 0 ] ; 
-            dp [ 1 ] [ 0 ]  = arr2 [ 0 ] ;
-            for ( int i = 1 ; i < n ; i ++ )
-            {
-                dp [ 0 ] [ i ] = max ( dp [ 0 ] [ i -  1 ] , dp [ 1 ][ i  - 1 ] - 2  ) + arr1 [ i ]  ; 
-                dp [ 1 ] [ i ] = max ( dp [ 1 ] [ i -  1 ] , dp [ 0 ][ i  - 1 ] - 2  ) + arr2 [ i ]  ;
-            }
-            return max ( dp [ 0] [ n - 1 ] , dp [ 1 ] [ n - 1 ] ) ;
-        }
 
 
 
@@ -2466,94 +3197,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     }
 
     #######################################################################33
-    2 - Given an array of integers, find the subarray with maximum XOR. 
 
-        Think of cumulatives and starting from beginning simialar to above problem. 
-
-        Similar to previous problem:
-        Cool XOR trick to solve problem:
-        -> F(L, R) is XOR subarray L to R
-        F(L, R) = F(1, R) ^ F(1, L-1)
-    */
-
-
--81)MONTONIC QUEUE/STACK + CRITICAL ELEMENTS + LEFT RIGHT, THEN RIGHT LEFT TRICK:
-    Sometimes you have to look at critically ordered elements left to right, then 
-    right to left like product of array except self
-
-    Given an array of integers a, return a new array b using the following guidelines:
-
-    For each index i in b, the value of bi is the index of the aj 
-    nearest to ai and is also greater than ai.
-    If there are two options for bi, put the leftmost one in bi.
-    If there are no options for bi, put -1 in bi.
-    Example
-
-    For a = [1, 4, 2, 1, 7, 6], the output should bbe
-    nearestGreater(a) = [1, 4, 1, 2, -1, 4].
-
-
-    def nearestGreater(a):
-        # n log n solution with binary search, on sorted array!
-        '''
-        Can do with sorting + keeping track of index + binary search
-        Faster soln (MONTONIC QUEUE/STACK + CRITICAL ELEMENTS + LEFT RIGHT, THEN RIGHT LEFT TRICK): 
-        
-        process left to right. when i use word queue below, i mean stack.  
-        
-        keep elements in queue. 
-        go left to right. 
-        
-        pick up elements as you go left to right.
-        
-        when you see smaller element, check queue. if queue has smaller element, remove it 
-        because it is no longer a critical point, the element we just saw is a critical point 
-        that can be a larger element. 
-        
-        to get nearest! -> we redo algo right to left, 
-        after doing it left to right, and overwrite the soln 
-        when we find a better one aka closer one!   
-        '''
-        result = [None for i in range(len(a))]
-        
-        stack = [] 
-        
-        # left to right
-        for idx, el in enumerate(a):
-            while len(stack) > 0:    
-                if stack[-1][0] <= el:
-                    stack.pop()
-                else:
-                    break
-                    
-            if len(stack) > 0:    
-                result[idx] = stack[-1][1]
-            
-            stack.append([el, idx])
-        
-        # generator
-        def enumerate_reversed(L):
-            for index in reversed(range(len(L))):
-                yield index, L[index]
-
-        stack = []
-        # right to left
-        for idx, el in enumerate_reversed(a):
-            while len(stack) > 0:    
-                if stack[-1][0] <= el:
-                    stack.pop()
-                else:
-                    break
-                    
-            if len(stack) > 0:
-                if result[idx] is None or abs(idx - result[idx]) > abs(idx - stack[-1][1]):
-                    result[idx] = stack[-1][1] 
-            
-            if result[idx] is None:
-                result[idx] = -1
-            
-            stack.append([el, idx])
-        return result
 
 
 -80) Union Find VS DFS for finding connected components pros/cons:
@@ -2696,201 +3340,6 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                 res[i] = c
         
         return "".join(res)
-
-
-
-
--78) Maximal Square DP - DP vs cumulative array strategy?
-    
-    You have a 2D binary matrix that's filled with 0s and 1s. 
-    In the matrix, find the largest square that 
-    contains only 1s and return its area.
-
-    NOTES:
-        When a problem looks like a cumulative array problem try other accumulations,
-        rather than sum, such as 2d segment trees, or 2d maximum slice accumations.
-
-        In this probem -> we did our accumulation based on 3 other coordinates in matrix. 
-        Up your preprocessing game
-        ALWAYS USE THE DIAGONAL SOMEHOW IN 2D ARRAYS + DONT FORGET TOP-LEFT COORDINATE.
-    
-    SOLUTION:
-        def maximalSquare(matrix):
-            
-            '''
-            then do maximal rectangle. 
-            Go right and go down. 
-            question -> how many 1's below me?
-            
-            1 1 1 1
-            1 2 2 2 
-            1 2 3
-
-            Recurrence:
-            dp(i,j) = min(dp(i−1, j), dp(i−1, j−1), dp(i, j−1)) + 1
-
-            BASE CASE: 
-            matrix[i,j] == '0' THEN return 0        
-            '''
-            R = len(matrix)
-            if R == 0:
-                return 0
-            C = len(matrix[0])
-            prevRow = [0 for j in range(C+1)]
-            maxSquare = 0
-            for i in range(R):
-                # we have to zero pad. 
-                currRow = [0]
-                
-                for j in range(1, C+1):
-                    # if current value is 0, put 0.
-                    val = matrix[i][j-1]
-                    if val == "0":
-                        currRow.append(0)
-                    else:
-                        minOfTopAndLeft = min(currRow[-1], prevRow[j-1], prevRow[j])
-                        cellVal = minOfTopAndLeft + 1
-                        maxSquare = max(maxSquare, cellVal**2)
-                        currRow.append(cellVal)
-                        
-                prevRow = currRow[::]
-            return maxSquare
-            
-
-
-
-
-
--77) Painted Ladies BACKWARD DP
-
-    In San Francisco, there is a row of several beautiful houses called 
-    the Painted Ladies. Each of the Painted Ladies can be painted with 
-    one of three colors: red, blue or green. The cost of painting each 
-    house with a certain color is different. cost[i][0] for each i is 
-    the cost of painting house i red, cost[i][1] is the cost of painting 
-    it blue, and cost[i][2] is the cost of painting it green.
-
-    You want to paint all the houses in a way such that no two adjacent 
-    Painted Ladies have the same color. Find the minimum cost to achieve this.
-
-    Example
-
-    For cost = [[1, 3, 4], [2, 3, 3], [3, 1, 4]], the output should be
-    paintHouses(cost) = 5.
-
-    def paintHouses(cost):
-        
-        '''
-        recurrence 
-        OPT[i, color] = minimum cost as a result of choosing a specific color. 
-        # compute all three! -> BACKWARD DP. 
-        OPT[i, Blue] = min(OPT[i-1, RED], OPT[i-1, GREEN])
-        OPT[i, RED] =  min(OPT[i-1, BLUE], OPT[i-1, GREEN])
-        OPT[i, GREEN] =  min(OPT[i-1, BLUE], OPT[i-1, RED])
-        answer is min(of all colors OPT[i])
-        
-        recursive
-        fn(idx, prev_color)
-            we know prev color -> choose other 2 colors. 
-            take min of choosing either color!
-        
-        Space optimize to 3 variables!        
-        '''
-        opt_b, opt_r, opt_g = cost[0][0], cost[0][1], cost[0][2]
-        IDX_b, IDX_r, IDX_g = 0, 1, 2
-        
-        for i in range(1, len(cost)):
-            blue_cost = cost[i][IDX_b]
-            red_cost = cost[i][IDX_r]
-            green_cost = cost[i][IDX_g]
-            
-            opt_b, opt_g, opt_r = \
-                min(opt_r, opt_g) + blue_cost, min(opt_r, opt_b) + green_cost, min(opt_b, opt_g) + red_cost  
-            
-        return min(opt_b, opt_g, opt_r)
-
-
-
-
--76) Linked Lists, 2 Pointers and simplifying problems by  respecting   
-     OPEN-CLOSE 2 pointers which satisfy a <= b < c aka [X, Y) for start and end. 
-
-    Given a singly linked list of integers l and a non-negative integer n, 
-    move the last n list nodes to the beginning of the linked list.
-
-    Example
-
-    For l = [1, 2, 3, 4, 5] and n = 3, the output should be
-    rearrangeLastN(l, n) = [3, 4, 5, 1, 2];
-    For l = [1, 2, 3, 4, 5, 6, 7] and n = 1, the output should be
-    rearrangeLastN(l, n) = [7, 1, 2, 3, 4, 5, 6].
-
-    HARMAN SOLUTION WHICH USES 2POINTERS that refer to [start, end]
-    problem is both pointers can point to same node so this case 
-    has to be handled seperately!! + other edge cases.
-    
-        def rearrangeLastN(l, n):     
-            # use 2 pointers that occupy n space. 
-            # go to the  second last element. do you know why? 
-            # because we have to set None to the element we are 
-            # splitting from. 
-            i = l 
-            j = l
-            
-            if l is None:
-                return None
-            if n == 0:
-                return l
-                
-            # n-1 spaces between n nodes
-            for _ in range(n-1):
-                j = j.next
-            
-            # the whole list was chosen as n. 
-            if j.next == None:
-                return l
-            
-            # second last.
-            while j and j.next and j.next.next:
-                i = i.next
-                j = j.next
-            
-            # get last node. 
-            j.next.next = l
-            
-            # end
-            newStart = i.next            
-            # SET THE NULLS AT THE END BECAUSE WE CAN 
-            # BREAK LINKED LIST FUNCTIONALITY
-            # IF BOTH POINTERS POINT AT SAME NODE!
-            i.next = None
-            return newStart
-
-    OPEN CLOSE NOTATION SOLUTION CLEANNN:
-
-        def rearrangeLastN(l, n):
-            if n == 0:
-                return l
-            front, back = l, l
-            for _ in range(n):
-                front = front.next
-            if not front:
-                return l
-            while front.next:
-                front = front.next
-                back = back.next
-            out = back.next
-            back.next = None
-            front.next = l
-            return out
-
-
-        
-
-
-
-
-
 
 
 
@@ -3617,97 +4066,97 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         return "mixed" if a != b else a
 
 
--64) Bomber DP or is the DP just precomputation below? you should check:
-    (CAN DO WITH PRECOMPUTATION BUT LETS DO WITH DP!!!)
-    
-    Each cell in a 2D grid contains either a wall ('W') or an 
-    enemy ('E'), or is empty ('0'). Bombs can destroy enemies, 
-    but walls are too strong to be destroyed. A bomb placed in 
-    an empty cell destroys all enemies in the same row and column, 
-    but the destruction stops once it hits a wall.
-
-    Return the maximum number of enemies you can destroy using one bomb.
-
-    Note that your solution should have O(field.length · field[0].length) 
-    complexity because this is what you will be asked during an interview.
-
-    Example
-    For
-    field = [["0", "0", "E", "0"],
-            ["W", "0", "W", "E"],
-            ["0", "E", "0", "W"],
-            ["0", "W", "0", "E"]]
-    the output should be
-    bomber(field) = 2.
-
-    Sol'n A Easy (Cool Top Down):
-        from functools import lru_cache
-        def bomber(q):
-            if not q or not q[0]:
-                return 0
-            a , b = len(q),len(q[0])
-            @lru_cache(maxsize=None)
-            def g(m,n,x,y):
-                return 0 if m<0 or n<0 or m>=a or n>=b or q[m][n]=="W" \
-                    else g(m + x,n + y,x,y)+(q[m][n]=="E")
-            ans = 0
-            for i in range(a):
-                for j in range(b):
-                    if q[i][j] == "0":
-                        ans = max(ans,g(i-1,j,-1,0)+g(i,j-1,0,-1)+g(i+1,j,1,0)+g(i,j+1,0,1))
-            return ans
-    Soln B:
-        def bomber(F):
-            if not F or not F[0]         :   return 0
-            row ,col = len(F) ,len(F[0]) ;   F = numpy.array(F)
-            dp = numpy.zeros((row,col))  ;   t = zip(*numpy.where(F == 'E'))
-            for x,y in t:
-                for i in range(y-1,-1,-1):   
-                    if F[x,i] == 'W'  :   break
-                    if F[x,i] == '0' :   dp[x,i]+=1 
-                for i in range(y+1,col):
-                    if F[x,i] == 'W'  :   break
-                    if F[x,i] == '0'  :   dp[x,i]+=1 
-                for i in range(x-1,-1,-1):
-                    if F[i,y] == 'W'  :   break
-                    if F[i,y] == '0'  :   dp[i,y]+=1 
-                for i in range(x+1,row):
-                    if F[i,y] == 'W'  :   break
-                    if F[i,y] == '0'  :   dp[i,y]+=1 
-            return dp.max()
-
-    Soln C:
-        def bomber(A):
-            from itertools import groupby
-            if not A or not A[0]: return 0
-            R, C = len(A), len(A[0])
-            dp = [ [0] * C for _ in xrange(R) ]
-            for r, row in enumerate(A):
-                c = 0
-                for k, v in groupby(row, key = lambda x: x != 'W'):
-                    w = list(v)
-                    if k:
-                        enemies = w.count('E')
-                        for c2 in xrange(c, c + len(w)):
-                            dp[r][c2] += enemies
-                    c += len(w)
-
-            for c, col in enumerate(zip(*A)):
-                r = 0
-                for k, v in groupby(col, key = lambda x: x != 'W'):
-                    w = list(v)
-                    if k:
-                        enemies = w.count('E')
-                        for r2 in xrange(r, r + len(w)):
-                            dp[r2][c] += enemies
-                    r += len(w)
-            
-            ans = 0
-            for r, row in enumerate(A):
-                for c, val in enumerate(row):
-                    if val == '0':
-                        ans = max(ans, dp[r][c])
-            return ans
++-64) Bomber DP or is the DP just precomputation below? you should check:
++    (CAN DO WITH PRECOMPUTATION BUT LETS DO WITH DP!!!)
++    
++    Each cell in a 2D grid contains either a wall ('W') or an 
++    enemy ('E'), or is empty ('0'). Bombs can destroy enemies, 
++    but walls are too strong to be destroyed. A bomb placed in 
++    an empty cell destroys all enemies in the same row and column, 
++    but the destruction stops once it hits a wall.
++
++    Return the maximum number of enemies you can destroy using one bomb.
++
++    Note that your solution should have O(field.length · field[0].length) 
++    complexity because this is what you will be asked during an interview.
++
++    Example
++    For
++    field = [["0", "0", "E", "0"],
++            ["W", "0", "W", "E"],
++            ["0", "E", "0", "W"],
++            ["0", "W", "0", "E"]]
++    the output should be
++    bomber(field) = 2.
++
++    Sol'n A Easy (Cool Top Down):
++        from functools import lru_cache
++        def bomber(q):
++            if not q or not q[0]:
++                return 0
++            a , b = len(q),len(q[0])
++            @lru_cache(maxsize=None)
++            def g(m,n,x,y):
++                return 0 if m<0 or n<0 or m>=a or n>=b or q[m][n]=="W" \
++                    else g(m + x,n + y,x,y)+(q[m][n]=="E")
++            ans = 0
++            for i in range(a):
++                for j in range(b):
++                    if q[i][j] == "0":
++                        ans = max(ans,g(i-1,j,-1,0)+g(i,j-1,0,-1)+g(i+1,j,1,0)+g(i,j+1,0,1))
++            return ans
++    Soln B:
++        def bomber(F):
++            if not F or not F[0]         :   return 0
++            row ,col = len(F) ,len(F[0]) ;   F = numpy.array(F)
++            dp = numpy.zeros((row,col))  ;   t = zip(*numpy.where(F == 'E'))
++            for x,y in t:
++                for i in range(y-1,-1,-1):   
++                    if F[x,i] == 'W'  :   break
++                    if F[x,i] == '0' :   dp[x,i]+=1 
++                for i in range(y+1,col):
++                    if F[x,i] == 'W'  :   break
++                    if F[x,i] == '0'  :   dp[x,i]+=1 
++                for i in range(x-1,-1,-1):
++                    if F[i,y] == 'W'  :   break
++                    if F[i,y] == '0'  :   dp[i,y]+=1 
++                for i in range(x+1,row):
++                    if F[i,y] == 'W'  :   break
++                    if F[i,y] == '0'  :   dp[i,y]+=1 
++            return dp.max()
++
++    Soln C:
++        def bomber(A):
++            from itertools import groupby
++            if not A or not A[0]: return 0
++            R, C = len(A), len(A[0])
++            dp = [ [0] * C for _ in xrange(R) ]
++            for r, row in enumerate(A):
++                c = 0
++                for k, v in groupby(row, key = lambda x: x != 'W'):
++                    w = list(v)
++                    if k:
++                        enemies = w.count('E')
++                        for c2 in xrange(c, c + len(w)):
++                            dp[r][c2] += enemies
++                    c += len(w)
++
++            for c, col in enumerate(zip(*A)):
++                r = 0
++                for k, v in groupby(col, key = lambda x: x != 'W'):
++                    w = list(v)
++                    if k:
++                        enemies = w.count('E')
++                        for r2 in xrange(r, r + len(w)):
++                            dp[r2][c] += enemies
++                    r += len(w)
++            
++            ans = 0
++            for r, row in enumerate(A):
++                for c, val in enumerate(row):
++                    if val == '0':
++                        ans = max(ans, dp[r][c])
++            return ans
 
 -63) IMPORTANT TRICK: 
      PRECOMPUTING LEFT AND RIGHT INDEX SUMS WITH KADANES
@@ -7120,6 +7569,266 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         red, and so on. If we ever color a red node blue 
         (or a blue node red), then we've reached a conflict.
 
++
++
++
++
++
++
+
++-108) Linked list cycle detection start algo with treess:
++
++        LeetCode 1650. Lowest Common Ancestor of a Binary Tree III
++        Tree
++        Given two nodes of a binary tree p and q, return their lowest common ancestor (LCA).
++        Each node will have a reference to its parent node. The definition for Node is below:
++        class Node {
++            public int val;
++            public Node left;
++            public Node right;
++            public Node parent;
++        }
++
++        /*
++        // Definition for a Node.
++        class Node {
++        public:
++            int val;
++            Node* left;
++            Node* right;
++            Node* parent;
++        };
++        */
++            Node* lowestCommonAncestor(Node* p, Node * q) {
++                Node* a = p, *b = q;
++                while (a != b) {
++                    a = (a == nullptr ? q : a->parent);
++                    b = (b == nullptr ? p : b->parent);
++                return a;
++        };
++
++
++
++-107) PRINTING QUESTIONS -> good pattern is to enumerate all the indices you are going
++    to print to make it easier to figure out a good way to traverse the array 
++    Diagonal Matrix:
++    98. Diagonal Traverse
++
++    Given an m x n matrix mat, return an array of all the 
++    elements of the array in a diagonal order.
++        
++    class Solution:
++        def findDiagonalOrder(self, mat: List[List[int]]) -> List[int]:
++            '''
++            LC Pattern:
++            One trick for these questions is to enumerate how the indexes should be visited and find 
++            patttersn in that enumeration.
++            '''
++            i = 0 
++            j = 0 
++            go_up = True
++            collect = []
++            N = len(mat)
++            M = len(mat[0])
++            while True:
++                print("i, j, go_up", i, j, go_up)
++                collect.append(mat[i][j])
++                if(i == N -1 and j == M-1):
++                    return collect
++                if go_up:
++                    if(i-1 < 0 or j + 1 >= M):
++                        if( j + 1 >= M):
++                            i += 1
++                        else:
++                            j += 1
++                        go_up = False
++                    else:
++                        i -= 1
++                        j += 1
++                else:
++                    if(j - 1 < 0 or i + 1 >= N ):
++                        if(i + 1  >= N ):
++                            j += 1
++                        else:    
++                            i += 1
++                        go_up = True
++                    else:
++                        i += 1
++                        j -=  1
++-106) Research this math problem (Hidden bit manipulation): 
++    Convert 0 into N in minimum steps by multiplying with 2 or by adding 1.
++    Input: 19;  Output: 6
++    Medium level problem
++    Explained: Recursion -> DP -> Better{ O(n) } -> Optimal{ O(log(n)} }
++    After that question was updated with if you are only allowed to multiply by 2, K times.
++    Explained: Optimal{ O(logK) }
++    This is a bit manipulation question (possibly???). 
++    N -> we need to check how many set bits are there. 
++    For instnace N = 6  -> 0110
++    Add 1          –> 0 + 1 = 1.
++    Multiply 2  –> 1 * 2 = 2.
++    Add 1          –> 2 + 1 = 3. 
++    Multiply 2  –> 3 * 2 = 6.
++    Therefore number of operations = 4.  
++    divide by 2, subtract 1, divide by 2 then subtract 1?
++    0 + 1 = 1 * 2 = 2 + 1 = 3 * 2 = 6
++    # QUESTION DOES THE BELOW MODIFIED GEEKS FOR GEEKS SOLN ALWAYS 
++    # WORK OR DO YOU ALWAYS NEED TO DO SOME TYPE OF DP??
++    def minimumOperation(N):
++    
++        # Stores the count of set bits
++        count = 0
++    
++        while (N):
++    
++            # If N is odd, then it
++            # a set bit
++            if (N & 1 == 1):
++                count += 1
++    
++            N = N >> 1
++            count += 1
++        # Return the result
++        return count
++-105) Read leftmost column with at least a one:
++      Abuse the fact that pointers can move both row and column in a 2d array 
++      and try to continue to be greedy as you optimize for the soln. 
++    
++      Think about wierd traversals in a  matrix as well!!
++-104) SOMETIMES YOU CAN ANSWER GOING BOTH LEFT TO RIGHT, OR RIGHT TO LEFT
++        You are given an integer num. You can swap two digits at 
++        most once to get the maximum valued number.
++        Return the maximum valued number you can get.
++       
+        LEETCODE SOLN:
+
+        class Solution(object):
+            def maximumSwap(self, num):
+                A = map(int, str(num))
+                last = {x: i for i, x in enumerate(A)}
+                for i, x in enumerate(A):
+                    for d in xrange(9, x, -1):
+                        if last.get(d, None) > i:
+                            A[i], A[last[d]] = A[last[d]], A[i]
+                            return int("".join(map(str, A)))
+                return num
+
+        SOLN 2;
+        class Solution:
+            def maximumSwap(self, num):
+                """
+                :type num: int
+                :rtype: int
+                """
+                num = [int(x) for x in str(num)]
+                max_idx = len(num) - 1
+                xi = yi = 0
+                for i in range(len(num) - 1, -1, -1):
+                    if num[i] > num[max_idx]:
+                        max_idx = i
+                    elif num[i] < num[max_idx]:
+                        xi = i
+                        yi = max_idx
+                num[xi], num[yi] = num[yi], num[xi]
+                return int(''.join([str(x) for x in num]))
+
++        
++        class Solution:
++            def maximumSwap(self, num: int) -> int:
++                return self.maximumSwapLtoR(num)
++                # this soln also works:
++                #return self.maximumSwapRtoL(num)
++            # SOLN THAT GOES RIGHT TO LEFT!
++            def maximumSwapRtoL(self, num: int) -> int:
++                '''
++                2736
++                ^
++                Go right to left soln
++                '''
++                
++                nums_arr = [int(i) for i in str(num)]
++                
++                j = len(nums_arr) - 1
++                biggest = -1
++                biggest_idx = -1
++                
++                left_idx = -1
++                
++                viable_soln = None
++                while j > -1:
++                    if nums_arr[j] > biggest:
++                        # SAVE THE PREVIOUS VIABLE SOLN!
++                        if(biggest_idx != -1 and left_idx != -1):
++                            viable_soln = (biggest_idx, left_idx)  
++                            
++                        # keep track of previous viable soln, in case we cant find a better one?
++                        biggest= nums_arr[j]  
++                        biggest_idx = j
++                        left_idx = -1
++                    elif nums_arr[j] < biggest:
++                        left_idx = j
++                    j -= 1
++                
++                def create_soln(i, j):
++                    nums_arr[i], nums_arr[j] = nums_arr[j], nums_arr[i]
++                    return int("".join([str(i) for i in nums_arr]))
++                
++                ans = num
++                if left_idx == -1:
++                    if viable_soln != None:
++                        return create_soln(viable_soln[0], viable_soln[1])
++                else:
++                    return create_soln(biggest_idx, left_idx)
++                        
++                return ans
++            # SOLN THAT GOES LEFT TO RIGHT
++            def maximumSwapLtoR(self, num: int) -> int:
++                '''
++                Left to right
++                just make sure its descending,
++                when its not descending fix max valu to the right,
++                then swap it with something in the left. 
++                '''
++                nums_arr = [int(i) for i in str(num)]
++                prev = float("inf")
++                break_idx = None
++                
++                for idx, i in enumerate(nums_arr):
++                    if i <= prev:
++                        prev = i
++                    else:
++                        break_idx = idx
++                        break
++                
++                if break_idx == None:
++                    return num
++                biggest = nums_arr[break_idx]
++                biggest_idx = break_idx
++                
++                for i in range(break_idx+1, len(nums_arr)):
++                    if nums_arr[i] >= biggest:
++                        biggest = nums_arr[i]
++                        biggest_idx = i
++                
++                def create_soln(i, j):
++                    nums_arr[i], nums_arr[j] = nums_arr[j], nums_arr[i]
++                    return int("".join([str(i) for i in nums_arr]))
++                
++                # ok now we need a left idx...
++                for i in range(len(nums_arr)):
++                    if biggest > nums_arr[i]:
++                        # then swap it and return 
++                        return create_soln(i, biggest_idx)
++                  
++
+
++---------------------------------------------------------------------------------------------
++------------------------------------------------------------------------------------------------------------------------
++---------------------------------------------------------------------------------------------
++------------------------------------------------------------------------------------------------------------------------
++Start reading notes from here, when you are done going forwards, go backwards from here. 
++ALGO README PART 1
+
 
 1)  For problems like parenthesis matching. You can use a stack to solve the matching. But you can also
     do matching by incrementing and decrementing an integer variable. Or you can use colors or 
@@ -7417,6 +8126,36 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
             max_colors = max(active_colors, max_colors)
         return max_colors
 
++0.58) Min Meeting rooms ii Approach 2) : Chronological Ordering
++    class Solution:
++        """
++        @param intervals: an array of meeting time intervals
++        @return: the minimum number of conference rooms required
++        """
++        def minMeetingRooms(self, intervals):
++            # Write your code here
++            '''
++            start < end
++            get all start times, get all end times, sort them together. 
++            If you see starts increment, if you see an end, decrement. 
++            Keep track of max overlapping rooms
++            '''
++            all_times = []
++            for i in intervals:
++                all_times.append( ("s", i.start) )
++                all_times.append( ("e", i.end))
++            sorted_times = sorted(all_times, key=lambda x: x[1])
++            
++            cur = 0
++            ans = 0
++            for i in sorted_times:
++                if(i[0] == "s"):
++                    cur += 1
++                else:
++                    cur -= 1
++                ans = max(ans, cur)
++            return ans
+
 
 0.6) To delete from a list in O(1), any index, you can swap the middle indexed element with
     the last element in the array. then call array.pop(). This is O(1). You could also use a linked
@@ -7579,6 +8318,141 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     d) 2 pointers, one that traverses even indexes, and the other that traverses odd indexes
     e) Linked list pointers, second moves twice as fast as the first. When second gets to end, first is at halfway node. 
     f) Be creative in how you see the DIRECTIONALITY of the solution for a given problem. 
+
+
++1.56) Linked List Palindrome Question:
++    Solution 1:
++        def isPalindrome(self, head):
++            rev = None
++            slow = fast = head
++            while fast and fast.next:
++                fast = fast.next.next
++                rev, rev.next, slow = slow, rev, slow.next
++            if fast:
++                slow = slow.next
++            while rev and rev.val == slow.val:
++                slow = slow.next
++                rev = rev.next
++            return not rev
++        
++        Expand rev, rev.next, slow = slow, rev, slow.next in C++ for easier understanding.
++
++        ListNode* tmp = rev;
++        rev = slow;
++        slow = slow -> next;
++        rev -> next = tmp;
++
++    Solution 2: Play Nice
++
++    Same as the above, but while comparing the two halves, restore the 
++    list to its original state by reversing the first half back. 
++
++    def isPalindrome(self, head):
++        rev = None
++        fast = head
++        while fast and fast.next:
++            fast = fast.next.next
++            rev, rev.next, head = head, rev, head.next
++        tail = head.next if fast else head
++        isPali = True
++        while rev:
++            isPali = isPali and rev.val == tail.val
++            head, head.next, rev = rev, head, rev.next
++            tail = tail.next
++        return isPali
++
++
++    Solution 3:
++    How to use nonlocals in python3 to make code easier:
++    (check if palindrome exists in singly linked list)
++        def isPalindrome(self, head):
++            """
++            :type head: ListNode
++            :rtype: bool
++            """
++            
++            if(head == None):
++                return True
++            
++            n = head
++            l = 0      
++            while n:
++                n = n.next
++                l += 1
++            
++            lp = head
++            rp = head        
++            rpCounter = (l+1)//2
++            lpCounter = (l//2 -1)
++            left_counter = 0
++            
++            for i in range(rpCounter):
++                rp = rp.next
++                
++            def check_palin(lp): 
++                # We only need these 2 as nonlocals. 
++                # because we modify in the closure. 
++                # Also cant use rp as argument 
++                # to function call. unless you wrap in []. Why?
++                nonlocal rp 
++                nonlocal left_counter
++                if (left_counter < lpCounter):
++                    left_counter += 1
++                    result = check_palin(lp.next)
++                    if result == False:
++                        return False
++                
++                if(rp == None):
++                    return True
++                
++                if(rp.val == lp.val):
++                    rp = rp.next # check next rp. 
++                    return True # needed when there are only 2 nodes in linked list. 
++                else:
++                    return False
++            return check_palin(lp)
++1.57) Python generator for converting binary to value, but 
++    binary is encoded as a linked list:
++    
++    class Solution(object):
++        def yield_content(self, head):
++            current = head
++            yield current.val
++            while current.next != None:
++                current = current.next
++                yield current.val
++        def getDecimalValue(self, head):
++            bin_number = ''
++            generator = self.yield_content(head)
++            while True:
++                try:
++                    bin_number += str(next(generator))
++                except StopIteration:
++                    break
++            return int(bin_number, 2)
+
+
+
++1.58) WHEN GIVEN CONSTRAINTS TO A PROBLEM
++    NEGATE THE CONsTRAINTS TO EXPLOIT PROBLEM STRUCTURE. think combinatorically 
++    about how to use constraints, whether that means to do there exists, or there 
++    doesnt exist such that the constrain is satisfied. especially for greedy questions. 
++    think in positive space and negative space.
++1.59) For sliding window, remember that you can do optimized sliding window 
++    by skipping multiple indexes ahead instead of skipping one at a time. 
++    COMPRESS THE STEPS TO FURTHER OPTIMIZE SLIDING WINDOW!
++    OR USE MULTIPLE POINTERS. 
++1.6)     DFS, BFS + COLORS IS POWERFUL!
++        Another way to check if graph is bipartionable. 
++        ALGORITHM:
++        CAN DO BIPARTITION WITH DFS AND 2 COLORING. 
++        For each connected component, we can check whether 
++        it is bipartite by 
++        just trying to coloring it with two colors. How to do this is as follows: 
++        color any node red, then all of it's neighbors blue, 
++        then all of those neighbors 
++        red, and so on. If we ever color a red node blue 
++        (or a blue node red), then we've reached a conflict.
 
 1.6) Coin Change Bottom Up DP:
         You are given coins of different denominations and a total amount of money amount. 
@@ -7906,26 +8780,62 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 
 
 2.311) KRUSKALS WITH AND WITHOUT Disjoint set union
++        Creating Minimum Spanning Tree Using Kruskal Algorithm
++        You will first look into the steps involved in Kruskal’s Algorithm to generate a minimum spanning tree:
++        Step 1: Sort all edges in increasing order of their edge weights.
++        Step 2: Pick the smallest edge.
++        Step 3: Check if the new edge creates a cycle or loop in a spanning tree.
++        Step 4: If it doesn’t form the cycle, then include that edge in MST. Otherwise, discard it.
++        Step 5: Repeat from step 2 until it includes |V| - 1 edges in MST.
++    Kruskal's algorithm initially places all the nodes of the original graph isolated from each other, 
++    to form a forest of single node trees, and then gradually merges these trees, combining at each 
++    iteration any two of all the trees with some edge of the original graph. Before the execution of 
++    the algorithm, all edges are sorted by weight (in non-decreasing order). 
++    Then begins the process of unification: pick all edges from the first to 
++    the last (in sorted order), and if the ends of the currently picked edge 
++    belong to different subtrees, these subtrees are combined, 
++    and the edge is added to the answer. After iterating through 
++    all the edges, all the vertices will belong to the same sub-tree, 
++    and we will get the answer.
++    The simplest implementation
++    The following code directly implements the algorithm described above, 
++    and is having O(MlogM+N^2) time complexity. Sorting edges requires O(MlogN) 
++    (which is the same as O(MlogM)) operations. Information regarding the subtree to 
++    which a vertex belongs is maintained with the help of an array tree_id[] - 
++    for each vertex v, tree_id[v] stores the number of the tree , to which v belongs. 
++    For each edge, whether it belongs to the ends of different trees, 
++    can be determined in O(1). Finally, the union of the two trees is carried 
++    out in O(N) by a simple pass through tree_id[] array. Given that the 
++    total number of merge operations is N−1, we obtain 
++    the asymptotic behavior of O(MlogN+N^2).
++    NON DSU IMPL:
++        struct Edge {
++            int u, v, weight;
++            bool operator<(Edge const& other) {
++                return weight < other.weight;
++            }
++        };
++        int n;
++        vector<Edge> edges;
++        int cost = 0;
++        vector<int> tree_id(n);
++        vector<Edge> result;
++        for (int i = 0; i < n; i++)
++            tree_id[i] = i;
++        sort(edges.begin(), edges.end());
++        for (Edge e : edges) {
++            if (tree_id[e.u] != tree_id[e.v]) {
++                cost += e.weight;
++                result.push_back(e);
++                int old_id = tree_id[e.u], new_id = tree_id[e.v];
++                for (int i = 0; i < n; i++) {
++                    if (tree_id[i] == old_id)
++                        tree_id[i] = new_id;
++                }
++            }
++        }
 
 
-    Then begins the process of unification: pick all edges from the first to 
-    the last (in sorted order), and if the ends of the currently picked edge 
-    belong to different subtrees, these subtrees are combined, 
-    and the edge is added to the answer. After iterating through 
-    all the edges, all the vertices will belong to the same sub-tree, 
-    and we will get the answer.
-
-    The simplest implementation
-    The following code directly implements the algorithm described above, 
-    and is having O(MlogM+N^2) time complexity. Sorting edges requires O(MlogN) 
-    (which is the same as O(MlogM)) operations. Information regarding the subtree to 
-    which a vertex belongs is maintained with the help of an array tree_id[] - 
-    for each vertex v, tree_id[v] stores the number of the tree , to which v belongs. 
-    For each edge, whether it belongs to the ends of different trees, 
-    can be determined in O(1). Finally, the union of the two trees is carried 
-    out in O(N) by a simple pass through tree_id[] array. Given that the 
-    total number of merge operations is N−1, we obtain 
-    the asymptotic behavior of O(MlogN+N^2).
 
     NON DSU IMPL:
         struct Edge {
@@ -8117,6 +9027,139 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         cout << total_weight << endl;
     }
 
+
++2.313) Prims With PriorityQueue C++:
++        // STL implementation of Prim's algorithm for MST
++        #include<bits/stdc++.h>
++        using namespace std;
++        # define INF 0x3f3f3f3f
++        
++        // iPair ==>  Integer Pair
++        typedef pair<int, int> iPair;
++        
++        // This class represents a directed graph using
++        // adjacency list representation
++        class Graph
++        {
++            int V;    // No. of vertices
++        
++            // In a weighted graph, we need to store vertex
++            // and weight pair for every edge
++            list< pair<int, int> > *adj;
++        
++        public:
++            Graph(int V);  // Constructor
++        
++            // function to add an edge to graph
++            void addEdge(int u, int v, int w);
++        
++            // Print MST using Prim's algorithm
++            void primMST();
++        };
++        
++        // Allocates memory for adjacency list
++        Graph::Graph(int V)
++        {
++            this->V = V;
++            adj = new list<iPair> [V];
++        }
++        
++        void Graph::addEdge(int u, int v, int w)
++        {
++            adj[u].push_back(make_pair(v, w));
++            adj[v].push_back(make_pair(u, w));
++        }
++        
++        // Prints shortest paths from src to all other vertices
++        void Graph::primMST()
++        {
++            // Create a priority queue to store vertices that
++            // are being preinMST. This is weird syntax in C++.
++            // Refer below link for details of this syntax
++            // http://geeksquiz.com/implement-min-heap-using-stl/
++            priority_queue< iPair, vector <iPair> , greater<iPair> > pq;
++        
++            int src = 0; // Taking vertex 0 as source
++        
++            // Create a vector for keys and initialize all
++            // keys as infinite (INF)
++            vector<int> key(V, INF);
++        
++            // To store parent array which in turn store MST
++            vector<int> parent(V, -1);
++        
++            // To keep track of vertices included in MST
++            vector<bool> inMST(V, false);
++        
++            // Insert source itself in priority queue and initialize
++            // its key as 0.
++            pq.push(make_pair(0, src));
++            key[src] = 0;
++        
++            /* Looping till priority queue becomes empty */
++            while (!pq.empty())
++            {
++                // The first vertex in pair is the minimum key
++                // vertex, extract it from priority queue.
++                // vertex label is stored in second of pair (it
++                // has to be done this way to keep the vertices
++                // sorted key (key must be first item
++                // in pair)
++                int u = pq.top().second;
++                pq.pop();
++                
++                //Different key values for same vertex may exist in the priority queue.
++                //The one with the least key value is always processed first.
++                //Therefore, ignore the rest.
++                if(inMST[u] == true){
++                    continue;
++                }
++            
++                inMST[u] = true;  // Include vertex in MST
++        
++                // 'i' is used to get all adjacent vertices of a vertex
++                list< pair<int, int> >::iterator i;
++                for (i = adj[u].begin(); i != adj[u].end(); ++i)
++                {
++                    // Get vertex label and weight of current adjacent
++                    // of u.
++                    int v = (*i).first;
++                    int weight = (*i).second;
++        
++                    //  If v is not in MST and weight of (u,v) is smaller
++                    // than current key of v
++                    if (inMST[v] == false && key[v] > weight)
++                    {
++                        // Updating key of v
++                        key[v] = weight;
++                        pq.push(make_pair(key[v], v));
++                        parent[v] = u;
++                    }
++                }
++            }
++        
++            // Print edges of MST using parent array
++            for (int i = 1; i < V; ++i)
++                printf("%d - %d\n", parent[i], i);
++        }
++        
++2.314) PRIM VS KRUSKAL
++    If you implement both Kruskal and Prim, in their optimal form : with a union find and a 
++    finbonacci heap respectively, then you will note how Kruskal is easy to implement compared to Prim.
++    Prim is harder with a fibonacci heap mainly because you have to maintain a book-keeping 
++    table to record the bi-directional link between graph nodes and heap nodes. With a Union Find, 
++    it's the opposite, the structure is simple and can even produce directly the mst at almost no additional cost.
++    Use Prim's algorithm when you have a graph with lots of edges.
++    For a graph with V vertices E edges, Kruskal's algorithm runs in O(E log V) time 
++    and Prim's algorithm can run in O(E + V log V) amortized time, if you use a Fibonacci Heap.
++    Prim's algorithm is significantly faster in the limit when you've got a 
++    really dense graph with many more edges than vertices. Kruskal performs better in 
++    typical situations (sparse graphs) because it uses simpler data structures.
++    Kruskal's algorithm will grow a solution from the cheapest edge by 
++    adding the next cheapest edge, provided that it doesn't create a cycle.
++    Prim's algorithm will grow a solution from a random vertex by adding 
++    the next cheapest vertex, the vertex that is not currently in the 
++    solution but connected to it by the cheapest edge.  
 
 
 2.32) ORDERED SET/BST IN ACITION: (optimally done with fibonnaci heaps however) 
@@ -8426,6 +9469,19 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     CROSS EDGE -> STARTED BEFORE YOU, AND ENDED BEFORE YOU.
 
 
++2.33) Storing 2 integer values at same index in an array:
++    First we have to find a value greater than 
++    all the elements of the array. Now we can store the 
++    original value as modulus and the second value as division. 
++    Suppose we want to store arr[i] and arr[j] both at index 
++    i(means in arr[i]). First we have to find a ‘maxval’ 
++    greater than both arr[i] and arr[j]. Now we can store 
++    as arr[i] = arr[i] + arr[j]*maxval. Now arr[i]%maxval 
++    will give the original value of arr[i] and arr[i]/maxval 
++    will give the value of arr[j].
+
+
+
 2.33) Construct the Rooted Tree by using start and finish time of its 
       DFS traversal: 
 
@@ -8679,6 +9735,299 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
                 low[u] = min(low[u], disc[v]) 
 
 
+
+
++2.36) Learn to use iterators: Serialize and Deserialize bin tree preorder style:
++
++    class Codec:
++        def serialize(self, root):
++            def doit(node):
++                if node:
++                    vals.append(str(node.val))
++                    doit(node.left)
++                    doit(node.right)
++                    vals.append('#')
++            vals = []
++            doit(root)
++            return ' '.join(vals)
++        def deserialize(self, data):
++            def doit():
++                val = next(vals)
++                if val == '#':
++                    return None
++                node = TreeNode(int(val))
++                node.left = doit()
++                node.right = doit()
++                return node
++            vals = iter(data.split())
++            return doit()
++2.37) GREEDY HILL FINDING WITH REVERSE POINTERS, 
++     AKA MOST IMPORTANT INDEXES ONLY FINDING AND USING SMARTLY 
++     AKA MONOQUEUE EXTENSION
++    Some problems require you to find optimal hills, to get answer. 
++    These hills are valid for certain indexes, and then you have to use new hills
++    They have a sort of max min aura to them, and seem similar to monoqueue type 
++    problems.
++    When you see a max-min type optimization pattern, then you have to find HILLS:
++    
++    For instance:
++    Input a = [21,5,6,56,88,52], output = [5,5,5,4,-1,-1] . 
++    Output array values is made up of indices of the 
++    element with value greater than the current element 
++    but with largest index. So 21 < 56 (index 3), 
++    21 < 88 (index 4) but also 21 < 52 (index 5) 
++    so we choose index 5 (value 52). 
++    Same applies for 5,6 and for 56 its 88 (index 4).
++    
++    Algorithm 1: Find the hills, and binsearch the indexes: 
++    need to keep track of biggest element on right side. 
++    on the right side, keep the hills!
++    52, is a hill, 
++    then 88, because its bigger than 52,
++    not 56, not 6, not 5, not 21, because you can just use 52, or 88 
++    so elements check against 52 first, then against 88. 
++    
++    import bisect
++    def soln(arr):
++        hills = []
++        hill_locations = []
++        running_max = float("-inf")
++        for i in range(len(arr)-1, -1, -1):
++            if running_max < arr[i]:
++                running_max = arr[i]
++                hills.append(arr[i])
++                hill_locations.append(i)
++        hill_locations_pop_idx = hill_locations[-1]
++        ans = []
++        def bin_search(arr, val):
++            l = 0
++            r = len(arr) 
++            mid = None
++            while l != r:
++                mid = l + (r-l)//2
++                if arr[mid]  == val:
++                    return mid 
++                elif arr[mid] > val:
++                    r = mid 
++                else:
++                    l = mid  + 1
++            return l # what happens if you returned mid here would that still work?
++                     # we check below. 
++                     # but i think it would be incorrect
++                     # because we always want the one index left of mid at the very end. 
++        for i in range(len(arr)):
++            if i == hill_locations_pop_idx:
++                # you have to invalidate indexes because you dont want to 
++                # invalid indexes to be found in bin search.
++                hill_locations.pop()
++                hills.pop()
++                hill_locations_pop_idx = -1 if len(hill_locations) == 0 else hill_locations[-1]
++            # Locate the insertion point for x in a to maintain sorted order.
++            x = bisect.bisect_left(hills, arr[i], lo=0, hi=len(hills))
++            y = bin_search(hills, arr[i])
++            print("x, y", (x, y)) # will be same
++            if y < len(hill_locations):
++                ans.append(hill_locations[x])
++            else:
++                ans.append(-1)
++        return ans  
++    Algorithm 2: Insert everything in pq. Pop off 1 by 1, check running max idx. and assign idx.
++    -> i dont get how this method works actually...  
++    // do you pop it off and push it back in or some shit?
++    // pq based on index?
++    if max val is too big its aight kepe it,
++    If its smaller, at a lower idx, throw it away, otherwise keep it?
++2.38) SIMULATE BINARY SEARCH INSERTION POINT FINDER  
++     AKA bisect.bisect_left(arr, val, lo=0, hi=len(arr)) PART 1
++    -> 
++    The returned insertion point i partitions the array a into two halves so that 
++    all(val < x for val in a[lo:i]) for the left side and all(val >= x for val in a[i:hi]) 
++    for the right side.
++    # BTW THIS CODE LOOKS DIFFERENT FROM THE BINARY SEARCH TEMPLATE SECTION BELOW
++    # Locate the insertion point for x in a to maintain sorted order.
++    # REMEMBER THAT THE FINAL ANSWER IS LOW NOTTTTT MID
++    # HERE WE INITIALIZED RIGHT AS LEN(NUMS) - 1
++    def searchInsert(self, nums, target):
++        low = 0
++        high = len(nums) - 1
++        while low <= high:
++            mid = (low + high) / 2
++            if nums[mid] == target:
++                return mid
++            elif nums[mid] < target:
++                low = mid + 1
++            else:
++                high = mid - 1
++        return low
++    # THE ABOVE SOLUTION WORKS ONLY IF WE RETURN LOW, NOT MEDIUM OR HIGH
++    # IN OTHER WORDS, WHAT YOU RETURN LOW/MID/HIGH IS PROBLEM SPECFIC!
++    Wrong Answer
++    Details 
++    Input
++    [1,3,5,6], 2
++    Output: 0
++    Expected: 1
++2.385) SIMULATE BINARY SEARCH INSERTION POINT FINDER  PART 2
++    # BTW THIS CODE LOOKS DIFFERENT FROM THE BINARY SEARCH TEMPLATE SECTION BELOW
++    Logic Flow of Solving Binary Search Problems
++        Choose lo & hi
++        Always double check what is the maximum range of possible values. For example, 
++        <LeetCode 35>, since it's possible to insert a value at the very end, 
++        the boundary for this problem is actually 0 - n.
++        Calculate mid
++        Always use the following, since it avoids overflow.
++        // when odd, return the only mid
++        // when even, return the lower mid
++        int mid = lo + ((hi - lo)/2);
++        // when odd, return the only mid
++        // when even, return the upper mid
++        int mid2 = lo + ((hi - lo + 1) / 2);
++        How to move lo and hi?
++        Always use a condition we are 100% sure of. It's always easier to eliminate 
++        options when we are 100% sure of something. For eample, if we are we are looking 
++        for target <= x, then for target>nums[mid] , we are 100% sure that our mid should 
++        never be considered. Thus we can type lo = mid + 1 with all the confidence.
++                if (100% sure logic) {
++                    left = mid + 1; // 100% sure target is to the right of mid
++                } else {
++                    right = mid; 
++                }
++                
++                if (100% sure logic) {
++                    right = mid - 1; // 100% sure target is to the left of mid
++                } else {
++                    left = mid;
++                }
++        while Condition
++        Always use while (lo < hi) so when the loop breaks, we are 100% sure that lo == hi
++        If it's possible that target doesn't exist, extra check needs to be performed.
++        🔥Avoid Infinite loop
++        // ❌ The following code results in inifite loop
++        let mid = lo + ((hi - lo)/2); // aka the lower mid
++        // We should use:
++        // let mid = lo + ((hi - lo + 1)/2) // aka the upper mid
++
++        if (100% sure logic) {
++            right = mid - 1
++        } else {
++            left = mid // <-- note here
++        }
++        Consider when there's only 2 elements left, if the if condition goes to the else statement, 
++        since left = mid, our left boundary will not shrink, 
++        this code will loop for ever. Thus, we should use the upper mid.
++        // ❌ The following code results in inifite loop
++        let mid = lo + ((hi - lo + 1)/2); // aka the upper mid
++        // We should use:
++        // let mid = lo + ((hi - lo)/2) // aka the lower mid
++        if (100% sure logic) {
++            left = mid + 1;
++        } else {
++            right = mid // <-- note here
++        }
++        
++        Consider when there's only 2 elements left, if the if condition goes to the else statement, 
++        since right = mid our right boundary will not shrink, this code will loop for ever. 
++        Thus, we should use the lower mid.
++
++        Take Away
++        * Always think of the situation where there's only 2 elements left!
++
++    ANSWER 1:
++        var searchInsert = function(nums, target) {
++            let lo = 0, hi = nums.length; // we might need to inseart at the end
++            while(lo < hi) { // breaks if lo == hi
++                let mid = lo + Math.floor((hi-lo)/2); // always gives the lower mid
++                if (target > nums[mid]) {
++                    lo = mid + 1 // no way mid is a valid option
++                } else {
++                    hi = mid // it might be possibe to inseart @ mid
++                }
++            }
++            return lo;
++        };
++2.39) SIMULATE BINARY SEARCH INSERTION POINT FINDER  PART 3 (Binary search with post processing)
++    First of all, we assume [left, right] is the possible answer range(inclusive) for this question. 
++    So initially left = 0; and right = n - 1;
++    we calculate int mid = left + (right - left)/2; rather than int mid = (left + right)/2; to avoid overflow.
++    Clearly, if A[mid] = target; return mid;
++    if A[mid] < target, then since we can insert target into mid + 1, so the minimum 
++    possible index is mid + 1. That's the reason why we set left = mid + 1;(1)
++    if A[mid] > target, then notice here(important!) that: we can insert
++    target into mid, so mid can be the potential candidate. For example:
++    Then how to determine the while loop condition?
++    left < right, left <= right，left < right - 1 are probally 
++    all the possible writings for a binary search problem.
++    Then how to determine the while loop condition?
++    left < right, left <= right，left < right - 1 are probally all the possible writings 
++    for a binary search problem.
++    The answer is that we need to test it out by ourselves with our left/right operation:
++    left = mid + 1;
++    right = mid;
++    You may find it very difficult and time consuming to figure it out. 
++    But if you are familiar with this analysis for while loop, 
++    you can give the answer very quickly, piece of cake.
++    Let's assume there are 3 elements left at last
++    5 	7 	9
++    l	m   h
++    we can see that left = mid + 1 and right = mid can shrink the size by 2 and 1, 
++    so 3 elements will not result in dead loop.
++    So we reduce it to 2 elements:
++    5 	  7
++    l/m   h
++    Same way, we can see that left = mid + 1 and right = mid can both shrink the size by 1, no dead loop as well.
++    So we can safely reduce it to only 1 element:
++    5
++    l/m/h
++    we can see that left = mid + 1 will not cause dead loop, but with right = mid 
++    we cannot shrink the size, so we will enter a dead loop if we goes to the case: right = mid.
++    So we can determine that we need break/jump out of the loop when there is 
++    only 1 element left, i.e. while(left < right)
++    At the end, we need to check the last element: nums[left/right] which has not 
++    been checked in binary search loop with target to determine the index. We call it the post processing part.
++    ANSWER:
++    class Solution {
++	public int searchInsert(int[] nums, int target) {
++		if(nums == null || nums.length == 0) return 0;
++		
++		int n = nums.length;
++		int left = 0;
++		int right = n - 1;
++		while(left < right){
++			int mid = left + (right - left)/2;
++			
++			if(nums[mid] == target) return mid;
++			else if(nums[mid] > target) right = mid; // right could be the result
++			else left = mid + 1; // mid + 1 could be the result
++		}
++		
++		// 1 element left at the end
++		// post-processing
++		return nums[left] < target ? left + 1: left;
++        }
++    }
++2.40)SIMULATE BINARY SEARCH INSERTION POINT FINDER 
++     AKA bisect.bisect_left(arr, val, lo=0, hi=len(arr))  PART 4
++    # HERE WE INITIALIZED RIGHT AS LEN(NUMS) KNOW THE DIFFERENCE. 
++    def searchInsert(self, nums: List[int], target: int) -> int:
++        
++        l = 0
++        r = len(nums)
++        mid = None
++        
++        while l != r:            
++            mid = l + (r-l)//2  # calculates lower mid/not upper mid
++            if nums[mid] == target:
++                return mid
++            elif nums[mid] < target:
++                l = mid + 1
++            else:
++                r = mid
++        # DO NOT RETURN MID, RETURN L
++        return l
+
+
+
+
 2.55) MATRIX Problems Tips:
       Try reversing. Try transposing. Try circular sorting. 
       Flipping on x axis or y axis is just reversing. 
@@ -8725,7 +10074,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         def rotate(self, matrix):
             n = len(matrix)
             matrix.reverse()
-            for i in xrange(n):
+            for i in xrange(n): # top half triangle transpose
                 for j in xrange(i + 1, n):
                     matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
         
@@ -8753,7 +10102,7 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         class Solution:
             def rotate(self, A):
                 n = len(A)
-                for i in range(n):
+                for i in range(n): # bottom half triangle transpose
                     for j in range(i):
                         A[i][j], A[j][i] = A[j][i], A[i][j]
                 for row in A:
@@ -9579,6 +10928,175 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         Reverse a Sub-list (medium)
         Reverse every K-element Sub-list (medium)
 
++22.61) Math & HashMap counting:
++    You are given n points in the plane that are all distinct,
++     where points[i] = [xi, yi]. A boomerang is a tuple of points (i, j, k) 
++     such that the distance between i and j equals the distance between 
++     i and k (the order of the tuple matters).
++    Return the number of boomerangs.
++
++ 
++
++    Example 1:
++
++    Input: points = [[0,0],[1,0],[2,0]]
++    Output: 2
++    Explanation: The two boomerangs are [[1,0],[0,0],[2,0]] 
++                 and [[1,0],[2,0],[0,0]].
++
++    Solution
++    for each point, create a hashmap and count all points with same distance. If for a point p, there are k points with distance d, number of boomerangs corresponding to that are k*(k-1). Keep adding these to get the final result.
++
++        res = 0
++        for p in points:
++            cmap = {}
++            for q in points:
++                f = p[0]-q[0]
++                s = p[1]-q[1]
++                cmap[f*f + s*s] = 1 + cmap.get(f*f + s*s, 0)
++            for k in cmap:
++                res += cmap[k] * (cmap[k] -1)
++        return res
++
++
++22.62) Question that doesnt look like DP but is
++    1048. Longest String Chain
++
++    You are given an array of words where each word consists of 
++    lowercase English letters.
++
++    wordA is a predecessor of wordB if and only if we can insert 
++    exactly one letter anywhere in wordA without changing the order 
++    of the other characters to make it equal to wordB.
++
++    For example, "abc" is a predecessor of "abac", while "cba" 
++    is not a predecessor of "bcad".
++
++    A word chain is a sequence of words [word1, word2, ..., wordk]
++    with k >= 1, where word1 is a predecessor of word2, word2 is a 
++    predecessor of word3, and so on. A single word is 
++    trivially a word chain with k == 1.
++
++    Return the length of the longest possible word chain with 
++    words chosen from the given list of words.
++
++    Input: words = ["a","b","ba","bca","bda","bdca"]
++    Output: 4
++    Explanation: One of the longest word chains is ["a","ba","bda","bdca"].
++
++    Soln)
++    Sort the words by word's length. (also can apply bucket sort)
++    For each word, loop on all possible previous word with 1 letter missing.
++    If we have seen this previous word, update the longest chain for the current word.
++    Finally return the longest word chain.
++
++    Succint:
++    def longestStrChain(self, words):
++        dp = {}
++        for w in sorted(words, key=len):
++            dp[w] = max(dp.get(w[:i] + w[i + 1:], 0) + 1 for i in xrange(len(w)))
++        return max(dp.values())
++
++    class Solution:
++        def longestStrChain(self, words: List[str]) -> int:
++            dp = {}
++            result = 1
++
++            for word in sorted(words, key=len):
++                dp[word] = 1
++
++                for i in range(len(word)):
++                    prev = word[:i] + word[i + 1:]
++
++                    if prev in dp:
++                        dp[word] = max(dp[prev] + 1, dp[word])
++                        result = max(result, dp[word])
++
++            return result
++    
++    3 other solns TopDown/bottomup/LIS
++
++    LIS idea:
++    class Solution:
++        def longestStrChain(self, words: List[str]) -> int:
++            def isPredecessor(word1, word2):
++                if len(word1) + 1 != len(word2): return False
++                i = 0
++                for c in word2:
++                    if i == len(word1): return True
++                    if word1[i] == c:
++                        i += 1
++                return i == len(word1)
++            
++            words.sort(key=len)
++            n = len(words)
++            dp = [1] * n
++            ans = 1
++            for i in range(1, n):
++                for j in range(i):
++                    if isPredecessor(words[j], words[i]) and dp[i] < dp[j] + 1:
++                        dp[i] = dp[j] + 1
++                ans = max(ans, dp[i])
++            return ans
++
++
++    TOPDOWN (SEEMS to be fastest)
++
++    Let dp(word) be the length of the longest possible word chain end at word word.
++    To calculate dp(word), we try all predecessors of word
++    word and get the maximum length among them.
++
++    class Solution:
++        def longestStrChain(self, words: List[str]) -> int:
++            wordSet = set(words)
++
++            @lru_cache(None)
++            def dp(word):
++                ans = 1
++                for i in range(len(word)):
++                    predecessor = word[:i] + word[i + 1:]
++                    if predecessor in wordSet:
++                        ans = max(ans, dp(predecessor) + 1)
++                return ans
++
++            return max(dp(w) for w in words)
++
++
++
++22.69) Floyd's Loop detection algorithm:
++    Find cycle in linkedlist through tortoise and hare pointers.
++    If they meet again, there is a loop in the list.
++
++
++    For showing that they eventually must meet, 
++    consider the first step at which the tortoise enters the loop. If the hare is on that node, that 
++    is a meeting and we are done. If the hare is not on that node, note that on each subsequent step the distance the hare is ahead of the 
++    tortoise increases by one, which means that since they are on a loop the d
++    istance that the hare is BEHIND the tortoise decreases by one. 
++    Hence, at some point the distance the hare is behind the tortoise becomes zero and the meet
++
++    More detailed proof (modulus):
++
++    If the preliminary tail is length T and the cycle is length C (so in your picture, T=3, C=6), 
++    we can label the tail nodes (starting at the one farthest from the cycle) 
++    as −T,−(T−1),...,−1 and the cycle nodes 0,1,2,...,C−1 (with the cycle node 
++    numbering oriented in the direction of travel).
++
++    We may use the division algorithm to write T=kC+r where 0≤r<C.
++
++    After T clicks the tortoise is at node 0 and the hare is at node r (since hare has gone 2T 
++    steps, of which the first T were in the tail, leaving T steps in the cycle, and T≡r(modC)).
++
++    Assuming r≠0, after an additional C−r clicks, the tortoise is at node C−r; and the hare is at 
++    node congruent (modC) to r+2(C−r)=2C−r≡C−r(modC). Hence both critters are at node C−r. 
++    [In the r=0 case, you can check that the animals meet at the node 0.]
++
++    The distance from the start at this meeting time is thus T+C−r=(kC+r)+C−r=(k+1)C, a multiple of the cycle length, 
++    as desired. We can further note, this occurrence is at the first multiple of the cycle length that is greater than or equal to the tail length.
++
+
+
+
 22.7) Find the start of a loop in a linked list:
 
        Consider the following linked list, where E is the cylce entry and X, the crossing point of fast and slow.
@@ -9733,6 +11251,536 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
     Subsets With Duplicates (easy)
     String Permutations by changing case (medium)
 
+
++25.3) Given an array of numbers and an array of integer pairs, [i,j], increment the array of 
+        numbers by one for each index between interval [i,j]
++        e.g.
++        a = [1,2,3,4]
++        intervals = [[1,3]]
++        output [1,3,4,5]
++        You're incrementing everything from index 1 to index 3.
++
++        a = [1,2,3,4]
++        intervals = [[1,3],[2,3]]
++        output [1,3,5,6]
++        You're incrementing everything from index 1 to index 3 then index 2 to index 3.
+
+        You can get O(N + M). Keep an extra increment array B the same size of A initially empty (filled with 0). 
+        If you need to increment the range (i, j) with value k then do B[i] += k and B[j + 1] -= k
+
+        Now do a partial sum transformation in B, considering you're indexing from 0:
+
+        for (int i = 1; i < N; ++i) B[i] += B[i - 1];
+        And now the final values of A are A[i] + B[i]
+
+
+
+
++
++
++25.31) How does mod work on negatives?? whats binary/ternary representation of negative numbers?
++        
++        Python modulo operator always return the remainder having the same sign as the divisor. 
++        This can lead to some confusion with the output.
++
++        >>> -5 % 3
++        1
++        >>> 5 % -3
++        -1
++        >>> -10 % 3
++        2
++        >>> 
++
++        -5 % 3 = -5 + 3 + 3 % 3 == 1
++        
++        -5 % 3 = (1 -2*3) % 3 = 1
++        5 % -3 = (-1 * -2*-3) % 3 = -1
++        -10 % 3 = (2 -4*3) % 3 = 2
++
++
++        If, according to 2's Complement any binary string can be converted to it's negative counterpart by flipping each digit to it's 
++        opposite number (eg. 10012→01102) and then add 1, then how would you implement a "3's Complement"? So to speak.
++
++        Like, lets say I have 29, and want to write it as −29 in binary.
++        First I convert it into binary: 11101. And now to make it negative, we use 2's Complement. 
++        We change the binary number to 00010 and add 1→00011.
++
++        Now we have −29 in binary form.
++
++        But how to do for ternary?
++
+
+
++25.4) Covert Decimal to binary/ternary:
++
++        Similar to converting decimal to binary/or ternary?
++            -> 
++                i mean you can just find leftmost set bits...
++                how about ternary?
++                
++                find largest 3^x that can divide number. 
++                number // 3 -> remaineder
++                number = 3*q + r
++                divide by 3 -> remainder. 
++
++                10 in tern
++
++                1*3^2 + 0*3^1 + 1*3^0 -> 10 (101)
++                10 = 3*3 + 1
++
++                YOU ARE OVER COMPLICATING IT!
++                FIND THE least significant SET BIT first, then find the bigger bits!
++
++                Steps to Convert Decimal to Ternary: 
++
++                Divide the number by 3.
++                Get the integer quotient for the next iteration.
++                Get the remainder for the ternary digit.
++                Repeat the steps until the quotient is equal to 0.
++
++                How do you represent -3 decimal? how does mod work for negatives? (Research it and post it here)
++
++                    def convertToTernary(N):
++                        
++                        # Base case
++                        if (N == 0):
++                            return;
++                    
++                        # Finding the remainder
++                        # when N is divided by 3
++                        x = N % 3;
++                        N //= 3;
++                        if (x < 0):
++                            N += 1;
++                    
++                        # Recursive function to
++                        # call the function for
++                        # the integer division
++                        # of the value N/3
++                        convertToTernary(N);
++                    
++                        # Handling the negative cases
++                        if (x < 0):
++                            print(x + (3 * -1), end = "");
++                        else:
++                            print(x, end = "");
++                    
++                    
++                    # Function to convert the
++                    # decimal to ternary
++                    def convert(Decimal):
++                        
++                        print("Ternary number of ", Decimal,
++                            " is: ", end = "");
++                    
++                        # If the number is greater
++                        # than 0, compute the
++                        # ternary representation
++                        # of the number
++                        if (Decimal != 0):
++                            convertToTernary(Decimal);
++                        else:
++                            print("0", end = "");
++
++25.5) Counting and Similar to Next Permutation: Number plate
++
++        The number on the number plate of a vehicle has alphanumeric characters. The number is a string of 6 characters of 
++        which first 2 characters are alphabets while last 4 are digits. The first number generated is AA0000 while the last 
++        number generated is ZZ9999. Find the kth number generated.
++
++        Be greedy. subtract as much as possibly to get the leftmost letter, then get rest of letters. 
++
++        Subtract 26 * 9999 -> 
++        go up 10000 -> shifts the letter.
++
++        AA0000 -> AB0000
++
++        Can you divide by 10000 first, -> check the remainder. Set that. 
++        then use the rest to figure out the other 2 letters. 
++
++
++        260,004 -> Correct answer:
++        
++        BA0004
++        
++
++        -> 260,004 % 10,000 =   4
++        260,004//10000 = 26
++
++        ok now divide by 26? 
++
++        26 % 26 == 0 
++        26/26 = 1
++
++        1 % 26 = 1
++        1//26 == 0
++        done!
++
++        so we got
++
++        26^2 * 1  + 26^1 * 0 + 4*10,0000^0
++        
++        0 ->a, 1 -> B, ..., 25 -> Z
++        BA0004
++        (I think this soln works...)
++    
++
++
++25.55) Counting Plate 2:
++    Given below pattern of license plates (Pattern only, not the actual list of license plates), Find the nth license plate
++    All license plates no are of size 5 chars
++    Eg, if n is 3, ans is - 00002
++
++    00000
++    00001
++    00002
++    ........
++    ........
++    99999
++    0000A
++    0001A
++    0002A
++    ........
++    .........
++    9999A
++    0000B
++    0001B
++    0002B
++    .........
++    .........
++    9999B
++    0000C
++    ........
++    ........
++    9999Z
++    000AA
++    001AA
++    .........
++    .........
++    999AA
++    000AB
++    ..........
++    ..........
++    999ZZ
++    00AAA
++    ........
++    ........
++    ZZZZZ
++
++        Soln: Idea:
++        Example there are n = 5 charaters and find no-th license plate
++        All licenses can be listed and devided into 6 region:
++
++        Region 1	Region 2	Region 3	Region 4	Region 5	Region 6
++        00000	0000A	000AA	00AAA	0AAAAA	AAAAA
++        00001	0001A	001AA	01AAA	1AAAAA	AAAAB
++        ...	...	...	...	...	...
++        99999	9999Z	999ZZ	99ZZZ	9ZZZZZ	ZZZZZ
++        The first region has $10^5$ elements
++        The second region has $10^4*26$ elements
++        The third region has $10^3*26^2$ elements
++        The fourth region has $10^2*26^3$ elements
++        The fifth region has $10 * 26^4$ elements
++        The sixth region has $26^5$ elements\
++
++        We will find no-th license that belongs which region by compare no with the order of the first element in each region
++        After that, we find the pattern of this license.
++        Can see that each license has 2 part: left part only has number (like '123') and right part has only alphabet (like 'ABC').
++        If the no-th license belongs to Region X, left part has (5 - X + 1) numbers (call it by num0s) and (X - 1) alphabets.
++
++        Calculate the order from the first element in this region, call it distance
++        The left part is remainder of distance modulo $10^{num0s}$.
++        The right part is calculated from the quotient of distance devide $10^{num0s}$.
++
++25.57)  BFS VS Brute force:
++
++        Given a 2D grid with n rows and m columns. Some cells are blocked which you cannot pass through. From each cell you can go either up, 
++        down, left or right. Find the shortest path from (0, 0) to (n-1, m-1).
++
++        Followup:
++
++        Now assume that there exists no path from (0, 0) to (n-1, m-1) (All paths are blocked). Find the minimum number of cells that you need to 
++        unblock such that there exists a path from (0, 0) to (n-1, m-1). Can you solve it in O(n+m)
++
++        First part: BFS,
++
++        Second part: 
++
++        Brute force:
++            Try to dfs from start to other nodes. Then allow 1 crossing, and see if you make it. If you dont, try 2 crossings, until you get to N
++
++        Better:
++           dJIKSTRAS
++
++
++25.58) Cycle in linked list. One node moves 1 step at a time and the other node moves 2 steps at a time. If they meet, there is a cycle. 
++    If a pointer reaches theend of the linkedlist before the pointers are the same, then there is no cycle. 
+     Actually, the pointers need not move one and two nodes at a time; it is only necessaary that 
+     thepointers move at different rates. Sketch otu the proof for this. 
++
++
++25.59) Without a calculator, how many zeros are at the end of 100! (100 factorial)
++    factor out 100, factor out 10?
++    100 *90*80*70*60*50*40*30*20*10
++    
++    2*5 -> 10 
++
++    atleast 12....
++    
++    Answer:Whatyoudon'twanttodoisstartmultiplyingitallout!Thetrickis
++    rememberingthatthenumberofzerosattheendofanumberisequaltothe
++    numberoftimes"10"(or"2*5")appearswhenyoufactorthenumber.Therefore
++    thinkabouttheprimefactorizationof100!andhowmany2sand5sthereare.
++    Thereareabunchmore2sthan5s,sothenumberof5sisalsothenumberof10sin
++    thefactorization.Thereisone5foreveryfactorof5inourfactorialmultiplication
++    (1*2*...*5*...*10*...*15*...)andanextra5for25,50,75,and100.Thereforewehave
++    20+4=24zerosattheendof100!.
++    
++    Review Prime factorization
++
++25.6) Min cost to make string palindrome:
++    Given a string S and a cost matrix C.
++
++    C[i][j] denotes the cost to convert character i to character j. 
++
++    Goal is to convert the string into a palindromic string. In one operation you can choose a character of string and convert 
++    that character to any other character. You can do this operation any number of times. The cost to convert one character to another character 
++    is determined by the cost matrix. Find the minimum cost to convert a given string to a palindrome. 
++
++        The idea is to start comparing from the two ends of string. Let i be initialized as 0 index and j initialized as length – 1.
++        If characters at two indices are not same, a cost will apply. To make the cost minimum replace the character 
++        which is smaller. Then increment i by 1 and decrement j by 1. Iterate till i less than j. 
++
++        Also find the shortest cost from one character to anotehr using all pair shortest paths graph algo
++
++
++25.7) Efficient strategy for round robin?
++
++        Fair log pickups:
++        A log is defined as:
++
++        class Log {
++            String text;
++            String serverId;
++        }
++
++        You are given a list of logs and a number k. You need to pick up k logs in total from the servers. But while picking 
++        one must ensure that the pickup strategy is as fair as possible. By fair it means that it should not happen that all the logs 
++        are picked up from the same machine. Return list of log files. Implement the following method:
++
++        List<Log> optimalLogPickup(List<Log> logs, int k) {
++
++        }
++
++        Eg:
++
++
++        logs = [{"hello", "server#1"}, {"world", "server#1"}, {"Rishika Sinha", "server#2"}, {"best PM", "server#2"}], k = 2
++
++        possible output: 
++        logs = [{"hello", "server#1"}, {"Rishika Sinha", "server#2"}]
++        incorrect output:
++        logs = [{"hello", "server#1"}, {"world", "server#1"}] // Since I am picking both the logs from the same server (server#1) while being unfair to server#2.
++
++
++        Create map of server -> logs
++        
++        Use priority queue and pick one item at a time. 
++        
++        What if we want to pick more items at a time?
++
++        Determine min amount for particular server. 
++        Exhaust it, then keep track of min amount for next server.
++        Exhuast it, until you run out of servers. 
++
++        Count total logs in each server.
++        Sort it. 
++        [2,4,5,7,8] [5 servers]
++
++        Now check if k > 2*5, if it is, take 2 logs from each server. and kill off the exhausted server. 
++        Subtract 2 from every element in list and pop front. 
++
++        [2,3,5,6]
++        Repeat process, but if k <2 * 4 then just do round robin pick 1 at a time. 
++
++25.8) LAZY COMPUTING, PARTIAL SUMS,  AND Increment Intervals:
++
++    Given an array of numbers and an array of integer pairs, [i,j], increment the array of numbers by one for each index between interval [i,j]
++    e.g.
++    a = [1,2,3,4]
++    intervals = [[1,3]]
++    output [1,3,4,5]
++    You're incrementing everything from index 1 to index 3.
++
++    a = [1,2,3,4]
++    intervals = [[1,3],[2,3]]
++    output [1,3,5,6]
++    You're incrementing everything from index 1 to index 3 then index 2 to index 3.
++
++    Ok in a seperate LAZY array, put 1 and -1 in the locations where we are incrementing (1 for increment, and put -1 in the location 1 after the end of interval).
++    Lazy array will have to be 1 size bigger, to deal with end intervals. 
++
++    Process all the intervals, then at the end, do a cumulative sum array with that table. 
++    Cumulative sum array will include all your incrementing!
++
++    So for  [[1,3],[2,3]] we create the following:
++    [0, 1, 1, 0, -2]
++    -> Cum sum is:
++    [0,1,2,2,0]
++    Then sum it with original array a (ignore last element in lazy):
++
++    [1,3,5,6] -> which is our answer. 
++
++    Soln Code:
++        partial sum technique
++        we will increment the start position with 1 and decrease the (end + 1) position then will perform a prefix sum
++
++        vector<int> incrementIntervals(vector <int> array , vector<vector<int>> intervals) {
++        int n = (int)array.size();
++        vector <int> partialSum(n + 1 , 0);
++        for(auto index : intervals){
++        partialSum[index[0]]++;
++        partialSum[index[1] + 1]--;
++        }
++        for(int i = 1;i <= n;i++){
++            partialSum[i] += partialSum[i - 1];
++        }
++        vector <int> answer(n , 0);
++        for(int i = 0;i < n;i++){
++            answer[i] = array[i] + partialSum[i];
++        }
++        return answer;
++        }
++        hope this helps you
++        https://codeforces.com/blog/entry/15729 
++
++
++
++25.9)  SQRT Decomposition
++        Suppose we have an array a1, a2, ..., an and . We partition this array into k pieces each containing k elements of a.
++
++        Doing this, we can do a lot of things in . Usually we use them in the problems with modify and ask queries.
++
++        Problems : Holes, DZY Loves Colors, RMQ (range minimum query) problem
++
++25.95) Sparse Table
++        The main problem that we can solve is RMQ problem, we have an array a1, a2, ..., an and some queries. Each query gives you numbers 
++        l and r (l ≤ r) and you should print the value of min(al, al + 1, ..., ar) .
++
++        Solving using Sparse Table : For each i that 1 ≤ i ≤ n and for each j that 0 ≤ j and i + 2^j - 1 ≤ n, we keep the value 
++        of min(ai, ai + 1, ..., ai + (2^j - 1) ) in st[i][j] (preprocess) : (code is 0-based)
++
++        for(int j = 0;j < MAX_LOG; j++)
++            for(int i = 0; i < n; i ++) if(i + (1 << j) - 1 < n)
++                st[i][j] = (j ?   min(st[i][j-1], st[i + (1 << (j-1)) - 1][j-1])    :    a[i]);
++
++
++        And then for each query, first of all, find the maximum x such that 2^x ≤ r - l + 1 and answer is min(st[l][x], st[r - 2^x + 1][x]) .
++
++        So, the main idea of Sparse Table, is to keep the value for each interval of length 2^k (for each k).
++
++        You can use the same idea for LCA problem and so many other problems.
++        So preprocess will be in O(n.log(n)) and query will be in O(1)
++
++25.96) Median of Medians
++
++    The task is to find a median (the element with central index) in a sorted set of elements storing on 
++    multiple (here assuming the number is 1000) servers.
++
++    It’s pointless to do a full sort of set - it won’t fit in memory :) The algorithm is to sort arrays on each server and take a 
++    median from each other. Now we get a set of 1000 medians and it’s easy to find the result here.
++
++    More information: http://en.wikipedia.org/wiki/Selection_algorithm#Linear_general_selection_algorithm_-_Median_of_Medians_algorithm
++
++
++25.97) XOR Double Linked Lists:
++        Sometimes you implement linked list and think whether it’s needed to store 1 or 2 pointers in each node. 
++        The space really matters, especially if you store millions of records but sometimes it’s good to have a way to 
++        traverse back from a given node. There is one hack how to store two pointers using just half of the size 
++        (meaning that you’ll use size like for a single-linked list).
++
++        You store previous XOR next pointers.
++
++        Usage: when you traverse front (or back) the linked list, you just get the value and XOR it with the last element, taking the next value.
++
++        
++        A <-> B <-> C <-> D <-> E
++             A^C   B^D   C^E
++ 
++25.98) Recursively convert number to base x
++
++    Solution is incredibly simple and uses recursion:
++
++    //convert number to base X
++    public String convertToBase(int a, int x) {
++    if (a < x) return a;
++    return convertToBase(a/x, x) + (a%x);
++    }
++
++25.99) Matrix block (REMEMBER TO USE PRIORITY QUEUE VS DP ANALYSIS!)
++        Given a 2D grid with n rows and m columns. Some cells are blocked which you cannot pass through. From each cell you can go either up, 
++        down, left or right. Find the shortest path from (0, 0) to (n-1, m-1).
++        -> bfs
++
++        Followup:
++
++        Now assume that there exists no path from (0, 0) to (n-1, m-1) (All paths are blocked).
++        Find the minimum number of cells that you need to 
++        unblock such that there exists a path from (0, 0) to (n-1, m-1). Can you solve it in O(n+m)
++
++        Can follow up be solved with DP. I think so
++        
++        Also can we also just go right and down, why woudl we go up and left if we are starting at (0, 0)
++
++        To do follow up,
++        write dfs code that tries all paths to go from (0,0) to destination, and also passes through obstacles!
++        Keep track of path that took min # of obstacles to remove and memoize this in dfs
++
++        Then return min of left and down!
++
++        @lru_cache(None)
++        def helper(i, j)
++
++            if i == N-1 and J == M-1:
++                return 0
++            
++            isObstacle = 0
++            if maze[i][j] == "obstacle":
++                isObstacle = 1
++
++
++            return isObstacle + min(helper(i+1, j), helper(i, j+1)) 
++
++        This is linear time right!
++
++        Follow up can also be solved with PQ and exhausting all paths!, and priority is # of blocks you touched so far.
++
++
++
++
++
++
++25.999) FUNCTOOLS CACHE:
++
++    functools.cache was newly added in version 3.9.
++
++    The documentation states:
++
++    Simple lightweight unbounded function cache. Sometimes called “memoize”.
++
++    Returns the same as lru_cache(maxsize=None), creating a thin wrapper around a dictionary lookup for the 
++    function arguments. Because it never needs to evict old values, this is smaller and faster than lru_cache() with a size limit.
++
++    Example from the docs:
++
++    @cache
++    def factorial(n):
++        return n * factorial(n-1) if n else 1
++                
++
++
+
+
 26) Modified Binary Search  
         First, find the middle of start and end. 
         An easy way to find the middle would be: 
@@ -9746,74 +11794,1295 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
         Order-agnostic Binary Search (easy)
         Search in a Sorted Infinite Array (medium)
 
-27) Top K elements
-        -> CAN BE SOLVED IN O(N) WITH BUCKET SORT, AND QUICK SELECT. CHECK IT OUT
-        -> TOP K MOST FREQUENT ELEMENTS QUESTION TO SEE THIS. 
 
-        Any problem that asks us to find the top/smallest/frequent ‘K’ 
-        elements among a given set falls under this pattern.
++
++26.5) Basic Calculator 1,2,3 (I havent personally done this yet): [study other solutions too, and do it again.]
++
++
++    This algorithm works for Basic Calculator (BC I) problem, where we can have only + - ( ) operations, for Basic Calculator II (BC II), 
++    where we can have only + - * / operations and also for Basic Calculator III (BC III), where we can have all + - * / ( ) operations.
++
++    Stack of monomials
++    The idea is to use both stack and recursion (which can be seen as 2 stack, because recursion use implicit stack). First, let us consider, 
++    that we do not have any brackets. Then let us keep the stack of monomial, consider the example s = 1*2 - 3\4*5 + 6. 
++    Then we want our stack to be equal to [1*2, -3\4*5, 6], let us do it step by step:
++
++    Put 1 into stack, we have stack = [1].
++    We can see that operation is equal to *, so we pop the last element from our stack and put new element: 1*2, now stack = [1*2].
++    Now, operation is equal to -, so we put -3 to stack and we have stack = [1*2, -3] now
++    Now, operation is equal to \, so we pop the last element from stack and put -3\4 instead, stack = [1*2, -3\4]
++    Now, operation is equal to *, so we pop last element from stack and put -3\4*5 instead, stack = [1*2, -3\4*5].
++    Finally, operation is equal to +, so we put 6 to stack: stack = [1*2, -3\4*5, 6]
++    Now, all we need to do is to return sum of all elements in stack.
++
++    How to deal with brackets
++    If we want to be able to process the brackets properly, all we need to do is to call our calculator recursively! 
++    
++    When we see the open bracket (, we call calculator with the rest of our string, and when we see closed bracket ')', we give back 
++    the value of expression inside brackets and the place where we need to start when we go out of recursion.
++
++    Complexity
++    Even though we have stack and also have recursion, we process every element only once, so time complexity is O(n). However 
++    we pass slice of string as argument each time we meet bracket, so time complexity can go upto O(n^2) on example like (1+(1+(... +))) 
++    with O(n) open brackets. Space complexity is potentially O(n), because we need to keep stacks, but each element not more than once.
++
++    class Solution:
++        def calculate(self, s):
++            def update(op, v):
++                if op == "+": stack.append(v)
++                if op == "-": stack.append(-v)
++                if op == "*": stack.append(stack.pop() * v)           #for BC II and BC III
++                if op == "/": stack.append(int(stack.pop() / v))      #for BC II and BC III
++                
++            # the cool trick here is we assign + as our first sign, the operator becomes "post fix"        
++            it, num, stack, sign = 0, 0, [], "+"
++            
++            while it < len(s):
++                if s[it].isdigit():
++                    num = num * 10 + int(s[it])
++                elif s[it] in "+-*/":
++                    update(sign, num)
++                    num, sign = 0, s[it]
++                elif s[it] == "(":                                        # For BC I and BC III
++                    num, j = self.calculate(s[it + 1:])
++                    it = it + j
++                elif s[it] == ")":                                        # For BC I and BC III
++                    update(sign, num)
++                    return sum(stack), it + 1
++                it += 1
++            update(sign, num)
++            return sum(stack)
++        
++
++    Solution 2
++    The problem of previous code is that we pass slice of string as parameter. In python it works quite fast, because function is 
++    implemented in C and it works very fast. If we want to have honest linear time, we need to pass index as parameter. 
++    (there is alternative way like I used in problem 1896 https://leetcode.com/problems/minimum-cost-to-change-the-final-value-of-expression/discuss/1267304/Python-Recursion-dfs-solution-explained, 
++    where we can precalculate pairs of open and closing brackets)
++
++    Complexity
++    Now time complexity it is O(n), space is still O(n).
++
++    class Solution:
++        def calculate(self, s):    
++            def calc(it):
++                def update(op, v):
++                    if op == "+": stack.append(v)
++                    if op == "-": stack.append(-v)
++                    if op == "*": stack.append(stack.pop() * v)
++                    if op == "/": stack.append(int(stack.pop() / v))
++            
++                num, stack, sign = 0, [], "+"
++                
++                while it < len(s):
++                    if s[it].isdigit():
++                        num = num * 10 + int(s[it])
++                    elif s[it] in "+-*/":
++                        update(sign, num)
++                        num, sign = 0, s[it]
++                    elif s[it] == "(":
++                        num, j = calc(it + 1)
++                        it = j - 1
++                    elif s[it] == ")":
++                        update(sign, num)
++                        return sum(stack), it + 1
++                    it += 1
++                update(sign, num)
++                return sum(stack)
++
++            return calc(0)
++
++    Note:
++
++    Awsome solution, but it needs a little fix to pass this test case "14-3/2" in python (haven't tried in python3 tho), 
+Update the function for -ve integer division as follows
++
++    if operation == "/":
++                    prev_value = stack.pop()
++                    if prev_value <0:
++                        prev_value = abs(prev_value)
++                        stack.append(-(int(prev_value/value)))
++                    else:
++                        stack.append(int(prev_value/value))
++
++921) Minimum Add to Make Parentheses Valid
++        Medium
++
++        2403
++
++        139
++
++        Add to List
++
++        Share
++        A parentheses string is valid if and only if:
++
++        It is the empty string,
++        It can be written as AB (A concatenated with B), where A and B are valid strings, or
++        It can be written as (A), where A is a valid string.
++        You are given a parentheses string s. In one move, you can insert a parenthesis at any position of the string.
++
++        For example, if s = "()))", you can insert an opening parenthesis to be "(()))" or a closing parenthesis to be "())))".
++        Return the minimum number of moves required to make s valid.
++
++
++        class Solution:
++            def minAddToMakeValid(self, s: str) -> int:
++            
++            
++                invalid_opens = 0
++                invalid_closes = 0
++                for i in s:
++                    if i == "(":
++                        invalid_opens += 1         
++                    elif i == ")":
++                        if(invalid_opens > 0):
++                            invalid_opens -= 1
++                        else:
++                            invalid_closes += 1
++                
++                return invalid_opens + invalid_closes 
++                 
++Given an m x n matrix mat, return an array of all the elements of the array in a diagonal order.\
++        Hey guys, super easy solution here, with NO DIRECTION CHECKS!!!
++        The key here is to realize that the sum of indices on all diagonals are equal.
++            -> Exploit property
++
++        class Solution(object):
++            def findDiagonalOrder(self, matrix):
++                """
++                :type matrix: List[List[int]]
++                :rtype: List[int]
++                """
++                d={}
++                #loop through matrix
++                for i in range(len(matrix)):
++                    for j in range(len(matrix[i])):
++                        #if no entry in dictionary for sum of indices aka the diagonal, create one
++                        if i + j not in d:
++                            d[i+j] = [matrix[i][j]]
++                        else:
++                        #If you've already passed over this diagonal, keep adding elements to it!
++                            d[i+j].append(matrix[i][j])
++                # we're done with the pass, let's build our answer array
++                ans= []
++                #look at the diagonal and each diagonal's elements
++                for entry in d.items():
++                    #each entry looks like (diagonal level (sum of indices), [elem1, elem2, elem3, ...])
++                    #snake time, look at the diagonal level
++                    if entry[0] % 2 == 0:
++                        #Here we append in reverse order because its an even numbered level/diagonal. 
++                        [ans.append(x) for x in entry[1][::-1]]
++                    else:
++                        [ans.append(x) for x in entry[1]]
++                return ans  
++
++
++26.6) Graph algo question series of queries:
++    You are given a weighted graph G that contains N nodes and M edges. 
++    Each edge has weight(w) associated to it. You are given Q queries of the following type:
++
++    -> x y W. Find if there exists a path in G between nodes x and y such that the weight of each edge in the 
+        path is at most W. If such a path exists print 1, otherwise print 0.
++
++    Constraints:
++    1<=N,Q,M,<=10^5
++    1<=w,W<=10^5
++    1<=x,y<=N
++        Here is my solution with complexity: O(MlogN+QlogN)
++        Idea: sort the edges and queries by weights then join nodes and check if the nodes are connected i.e. have the same parent 
++        node in disjoint-sets.n the very beginning all nodes are disconnected. Then starting from edges with smallest weight the nodes are 
++        connected (Union) while the weight of edge is less or equal to the weight in the current query.
++        If the nodes have the same parent node for the current query then the query is counted.
++
++        Ex. edges = [
++        [0, 1, 5],
++        [1, 2, 6],
++        [2, 3, 7],
++        [0, 3, 4]
++        ]
++        queries = [
++        [0, 3, 5],
++        [1, 0, 3]
++        ]
++
++        Answer - 1,0
++
++        def solve(edges, queries):
++            def find(a):
++                if par[a] < 0:
++                    return a
++                par[a] = find(par[a])
++                return par[a]
++
++            def merge(a,b):
++                if a!=b:
++                    if rank[a]>rank[b]:
++                        par[b]=a
++                        rank[a]+=rank[b]
++                    else:
++                        par[a]=b;
++                        rank[b]+=rank[a]
++
++            n = len(edges)
++            if not edges or not queries:
++                return 0
++                        
++            par=[-1 for i in range(n+10)]
++            rank=[1 for i in range(n+10)]
++
++            edges.sort(key = lambda x:  x[2])
++            queries.sort(key = lambda x:    x[2])
++
++            pos = 0
++            for i,j,w in queries:
++                while pos < len(edges) and edges[pos][2] <= w:
++                    k = edges[pos]
++                    a = find(k[0])
++                    b = find(k[1])
++                    merge(a,b)
++                    pos+=1
++                print(1) if find(i) == find(j) else print(0)
++    
++
++
++26.7) MIN-MAX DP CARDS GOOGLE (same as stone game 3)
++        Two players are playing a card game where the deck of cards are layed out in a straight line and each card value is visible to both the players.
++        The value of each card can range from a reasonable [-ve to +ve] number and the length of deck in n.
++
++        The rules of the game are such:
++
++        Player 1 starts the game
++        Each player has 3 option:
++        (Option 1: Pick 1st card)
++        (Option 2: Pick 1st two cards)
++        (Option 3: Pick 1st three cards)
++        You're only allowed to pick cards from the left side of the deck
++        Both players have to play optimally.
++        Return the maximum sum of cards Player 1 can obtain by playing optimally.
++
++        Example 1:
++
++        Input: cards = [1, 2, -3, 8]
++        Output: 3
++        Explanation:
++        Turn 1: Player 1 picks the first 2 cards: 1 + 2 = 3 points
++        Turn 2: Player 2 gets the rest of the deck: -3 + 8 = 5 points
++        Example 2:
++
++        Input: cards = [1, 1, 1, 1, 100]
++        Output: 101
++        Explanation:
++        Turn 1: Player 1 picks cards[0] = 1 point
++        Turn 2: Player 2 picks cards[1] + cards[2] + cards[3] = 3 points
++        Turn 3: Player 1 picks cards[4] = 100 points
++
++        from functools import lru_cache
++        def max_score(cards):
++            @lru_cache(maxsize=None)
++            def minimax(idx, player1):
++                if idx >= len(cards):
++                    return 0
++                if player1:
++                    return max([sum(cards[idx:idx + o]) + minimax(idx + o, not player1) \
++                                for o in range(1, 4)])
++                else:
++                    return min([minimax(idx + o, not player1) for o in range(1, 4)])
++
++            return minimax(0, True)
++
++        Space O(N)
++        // dp[i] means the max possible score the 1st player can get starting from index i
++        // best strategy means we take the option that minimizes the max possible score for our opponent
++
++        def max_score_iterative(cards):
++            total, n = 0, len(cards)
++            dp = [0] * (n + 3)
++            
++            for i in range(n - 1, -1, -1):
++                total += cards[i]
++                // we then get (total - the minimized possible score for our opponent)
++                // we maximize our own score, by minning opponent, 
++                // but on the next iteration, the thing we compute now will be used as part of the "min"
++                dp[i] = total - min([dp[i + o] for o in range(1, 4)])
++            
++            return dp[0]
++
++        Optimized bottom-up:
++        Time: O(n); space: O(1).
++        from collections import deque
++        def max_score_iterative_opt(cards):
++            total, n = 0, len(cards)
++            dp = deque([0] * 3)
++            
++            for i in range(n - 1, -1, -1):
++                total += cards[i]
++                head = total - min(dp)
++                dp.pop()
++                dp.appendleft(head)
++            
++            return dp[0]
++
++
++
++
++26.8) Problems that seemingly cant improve but do (always attempt bin search theory!):
++
++        You are given a string that is grouped together by characters. For example a sample input could be: "hhzzzzaaa", 
++        and we need to output the most frequently occuring character so for our example we would output 'z'.
++
++        I was only asked this question on the phone screen.
++
++        Optimization 1:
++
++        Since the characters are kept in groups, we need to find the index where the character changes.
++        To get the count of a specific character, we need to subtract i - pivot.
++        Linear Time and Constant Space
++
++
++
++        I thought Linear time and constant space was the optimal solution, but it turns out the interviewer wanted me to optimize 
++        further into Log N time and constant space. This is where I struggled. 
++        After a hint I was able to code out the binary search solution.
++
++        Get the start from skipping and binary search for the end, k * log(n) but since k is capped at the number of 
++        different characters which should be a fixed amount. k is constant so log(n). Thanks for the detailed post, 
++        I think someone else mentioned this problem, but the description was very vague.
++
++        public class Main {
++            //returns position after the last instance of c, end variable is not needed but I just put it in for clarity
++            private static int findEnd(String s, char c, int start, int end){
++                while(start<=end){
++                    int mid = start+(end-start)/2;
++                    if(s.charAt(mid) == c){
++                        start = mid+1;
++                    }else{
++                        end = mid-1;
++                    }
++                }
++                return start;
++            }
++            private static char findMostFrequent(String s){
++                int i = 0;
++                int mostFreqCount = 0;
++                //assuming s is not blank
++                char mostFreq = ' ';
++                while(i<s.length()){
++                    char c = s.charAt(i);
++                    int end = findEnd(s, c, i, s.length()-1);
++                    int start = i;
++                    int count = end-start;
++                    if(count> mostFreqCount){
++                        mostFreqCount = count;
++                        mostFreq = c;
++                    }
++                    i = end;
++                }
++                return mostFreq;
++            }
++            public static void main(String[] args) {
++                System.out.println(findMostFrequent("hhzzzzaaa"));
++            }
++        }
++
++
++26.7) Creating a stock exchange:
++        1801. Number of Orders in the Backlog
++        Medium
++
++        166
++
++        176
++
++        Add to List
++
++        Share
++        You are given a 2D integer array orders, where each orders[i] = [pricei, amounti, orderTypei] denotes that amounti orders have been placed of type orderTypei at the price pricei. The orderTypei is:
++
++        0 if it is a batch of buy orders, or
++        1 if it is a batch of sell orders.
++        Note that orders[i] represents a batch of amounti independent orders with the same price and order type. All orders represented by orders[i] will be placed before all orders represented by orders[i+1] for all valid i.
++
++        There is a backlog that consists of orders that have not been executed. The backlog is initially empty. When an order is placed, the following happens:
++
++        If the order is a buy order, you look at the sell order with the smallest price in the backlog. If that sell order's price is smaller than or equal to the current buy order's price, they will match and be executed, and that sell order will be removed from the backlog. Else, the buy order is added to the backlog.
++        Vice versa, if the order is a sell order, you look at the buy order with the largest price in the backlog. If that buy order's price is larger than or equal to the current sell order's price, they will match and be executed, and that buy order will be removed from the backlog. Else, the sell order is added to the backlog.
++        Return the total amount of orders in the backlog after placing all the orders from the input. Since this number can be large, return it modulo 109 + 7.
++
++        class Solution:
++            def getNumberOfBacklogOrders(self, orders):
++                b, s = [], []
++                
++                for p,a,o in orders:
++                    if o == 0:
++                        heapq.heappush(b, [-p, a])
++                        
++                    elif o == 1:
++                        heapq.heappush(s, [p, a])
++                    
++                    # Check "good" condition
++                    while s and b and s[0][0] <= -b[0][0]:
++                        a1, a2 = b[0][1], s[0][1]
++                        
++                        if a1 > a2:
++                            b[0][1] -= a2
++                            heapq.heappop(s)
++                        elif a1 < a2:
++                            s[0][1] -= a1
++                            heapq.heappop(b)
++                        else:
++                            heapq.heappop(b)
++                            heapq.heappop(s)
++                            
++                count = sum([a for p,a in b]) + sum([a for p,a in s])
++                return count % (10**9 + 7)
++
++
++26.8) Common Prefixes
++
++        The distance between 2 binary strings is the sum of their lengths after removing the common prefix. 
++        For example: the common prefix of 1011000 and 1011110 is 1011 so the distance is len("000") + len("110") = 3 + 3 = 6.
++
++        Given a list of binary strings, pick a pair that gives you maximum distance 
++        among all possible pair and return that distance.
++
++
++
++26.9)  904. Fruit Into Baskets
++        Medium
++
++        897
++
++        67
++
++        Add to List
++
++        Share
++        You are visiting a farm that has a single row of fruit trees arranged from left to right. 
+        The trees are represented by an integer array fruits where fruits[i] is the type of fruit the ith tree produces.
++
++        You want to collect as much fruit as possible. However, the owner has some strict rules that you must follow:
++
++        You only have two baskets, and each basket can only hold a single type of fruit. There is no limit on the amount of fruit each basket can hold.
++        Starting from any tree of your choice, you must pick exactly one fruit from every tree (including the start tree) while moving to the right. The picked fruits must fit in one of your baskets.
++        Once you reach a tree with fruit that cannot fit in your baskets, you must stop.
++        Given the integer array fruits, return the maximum number of fruits you can pick.
++
++        
++
++        Example 1:
++
++        Input: fruits = [1,2,1]
++        Output: 3
++        Explanation: We can pick from all 3 trees.
++        Example 2:
++
++        Input: fruits = [0,1,2,2]
++        Output: 3
++        Explanation: We can pick from trees [1,2,2].
++        If we had started at the first tree, we would only pick from trees [0,1].
++        Example 3:
++
++        Input: fruits = [1,2,3,2,2]
++        Output: 4
++        Explanation: We can pick from trees [2,3,2,2].
++        If we had started at the first tree, we would only pick from trees [1,2].
++        
++        Soln:
++            # slide the window!
++            '''  
++            take a fruit, 
++            take another fruit type,
++            extend window untily oucant.
++            
++            throw away fruit until one fruit is there. 
++            
++            then move right pointer to incldue a new fruit.
++            Repeat
++            record max.
++            '''
++
++        Soln 2: O(1) space doing Longest Subarray With 2 Elements
++
++            class Solution {
++                public int totalFruit(int[] tree) {
++                    // track last two fruits seen
++                    int lastFruit = -1;
++                    int secondLastFruit = -1;
++                    int lastFruitCount = 0;
++                    int currMax = 0;
++                    int max = 0;
++                    
++                    for (int fruit : tree) {
++                        if (fruit == lastFruit || fruit == secondLastFruit)
++                            currMax++;
++                        else
++                            currMax = lastFruitCount + 1; // last fruit + new fruit
++                        
++                        if (fruit == lastFruit)
++                            lastFruitCount++;
++                        else
++                            lastFruitCount = 1; 
++                        
++                        if (fruit != lastFruit) {
++                            secondLastFruit = lastFruit;
++                            lastFruit = fruit;
++                        }
++                        
++                        max = Math.max(max, currMax);
++                    }
++                    
++                    return max;
++                }
++            }
++
++26.95) Heap Vs Binary Search Vs Quick Select -> Super important bin search technique
++
++        973. K Closest Points to Origin
++        Medium
++        Given an array of points where points[i] = [xi, yi] represents a point on the X-Y plane and an 
+        integer k, return the k closest points to the origin (0, 0).
++
++        The distance between two points on the X-Y plane is the Euclidean distance (i.e., √(x1 - x2)2 + (y1 - y2)2).
++
++        You may return the answer in any order. The answer is guaranteed to be unique (except for the order that it is in).
++
++        Soln:
++
++        Max heap priority soln is easy (keep track of k furthest points)
++            class Solution:
++                def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
++                    # Since heap is sorted in increasing order,
++                    # negate the distance to simulate max heap
++                    # and fill the heap with the first k elements of points
++                    heap = [(-self.squared_distance(points[i]), i) for i in range(k)]
++                    heapq.heapify(heap)
++                    for i in range(k, len(points)):
++                        dist = -self.squared_distance(points[i])
++                        if dist > heap[0][0]:
++                            # If this point is closer than the kth farthest,
++                            # discard the farthest point and add this one
++                            heapq.heappushpop(heap, (dist, i))
++                    
++                    # Return all points stored in the max heap
++                    return [points[i] for (_, i) in heap]
++                
++                def squared_distance(self, point: List[int]) -> int:
++                    """Calculate and return the squared Euclidean distance."""
++                    return point[0] ** 2 + point[1] ** 2
++
++        Binary Search Soln (Time Complexity O(N) space O(N))
++            
++            It would be NlogN but we elimiate our search space as we iterate the bin search!
++
++            In this case, however, we can improve upon the time complexity of this modified binary search by eliminating 
++            one set of points at the end of each iteration. If the target distance yields fewer than kk closer points, 
++            then we know that each of those points belongs in our answer and can then be ignored in later iterations. 
++            If the target distance yields more than kk closer points, on the other hand, we know that 
++            we can discard the points that fell outside the target distance.
++            
++            
++            Since we're going to be using the midpoint of the range of distances for each iteration of our binary search, we should
++            calculate the actual Euclidean distance for each point, rather than using the squared distance as in the other approaches. 
++            An even distribution of the points in the input array will yield an even distribution of
++            distances, but an uneven distribution of squared distances.
++            Complexity = N + N/2 + N/4 ... = 2N
++            
++            
++            class Solution:
++                def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
++                    # Precompute the Euclidean distance for each point
++                    distances = [self.euclidean_distance(point) for point in points]
++                    # Create a reference list of point indices
++                    remaining = [i for i in range(len(points))]
++                    # Define the initial binary search range
++                    low, high = 0, max(distances)
++                    
++                    # Perform a binary search of the distances
++                    # to find the k closest points
++                    closest = []
++                    while k:
++                        mid = (low + high) / 2
++                        closer, farther = self.split_distances(remaining, distances, mid)
++                        if len(closer) > k:
++                            # If more than k points are in the closer distances
++                            # then discard the farther points and continue
++                            remaining = closer
++                            high = mid
++                        else:
++                            # Add the closer points to the answer array and keep
++                            # searching the farther distances for the remaining points
++                            k -= len(closer)
++                            closest.extend(closer)
++                            remaining = farther
++                            low = mid
++                            
++                    # Return the k closest points using the reference indices
++                    return [points[i] for i in closest]
++
++                def split_distances(self, remaining: List[int], distances: List[float],
++                                    mid: int) -> List[List[int]]:
++                    """Split the distances around the midpoint
++                    and return them in separate lists."""
++                    closer, farther = [], []
++                    for index in remaining:
++                        if distances[index] <= mid:
++                            closer.append(index)
++                        else:
++                            farther.append(index)
++                    return [closer, farther]
++
++                def euclidean_distance(self, point: List[int]) -> float:
++                    """Calculate and return the squared Euclidean distance."""
++                    return point[0] ** 2 + point[1] ** 2
++
++
++
++        Quick Select Soln (with partiail sorting partition function):
++            Lets reduce space to O(1) by modifying in place
++            Try to understand the partition function!!
++
++            1.Return the result of a QuickSelect algorithm on the points array to kk elements.
++            2. In the QuickSelect function:
++                Repeatedly partition a range of elements in the given array while homing in on the k^{th}kth element.
++            3. In the partition function:
++                Choose a pivot element. The pivot value will be squared Euclidean distance from the origin to the pivot element and will be compared to the 
++                    squared Euclidean distance of all other points in the partition.
++                Start with pointers at the left and right ends of the partition, then while the two pointers have not yet met:
++                    If the value of the element at the left pointer is smaller than the pivot value, increment the left pointer.
++                    Otherwise, swap the elements at the two pointers and decrement the right pointer.
++            Make sure the left pointer is past the last element whose value is lower than the pivot value.
++            Return the value of the left pointer as the new pivot index.
++            4. Return the first kk elements of the array.
++
++
++
++            class Solution:
++                def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
++                    return self.quick_select(points, k)
++                
++                def quick_select(self, points: List[List[int]], k: int) -> List[List[int]]:
++                    """Perform the QuickSelect algorithm on the list"""
++                    left, right = 0, len(points) - 1
++                    pivot_index = len(points)
++                    while pivot_index != k:
++                        # Repeatedly partition the list
++                        # while narrowing in on the kth element
++                        pivot_index = self.partition(points, left, right)
++                        if pivot_index < k:
++                            left = pivot_index
++                        else:
++                            right = pivot_index - 1
++                    
++                    # Return the first k elements of the partially sorted list
++                    return points[:k]
++                
++                def partition(self, points: List[List[int]], left: int, right: int) -> int:
++                    """Partition the list around the pivot value"""
++                    pivot = self.choose_pivot(points, left, right)
++                    pivot_dist = self.squared_distance(pivot)
++                    while left < right:
++                        # Iterate through the range and swap elements to make sure
++                        # that all points closer than the pivot are to the left
++                        if self.squared_distance(points[left]) >= pivot_dist:
++                            points[left], points[right] = points[right], points[left]
++                            right -= 1
++                        else:
++                            left += 1
++                    
++                    # Ensure the left pointer is just past the end of
++                    # the left range then return it as the new pivotIndex
++                    if self.squared_distance(points[left]) < pivot_dist:
++                        left += 1
++                    return left
++                
++                def choose_pivot(self, points: List[List[int]], left: int, right: int) -> List[int]:
++                    """Choose a pivot element of the list"""
++                    return points[left + (right - left) // 2]
++                
++                def squared_distance(self, point: List[int]) -> int:
++                    """Calculate and return the squared Euclidean distance."""
++                    return point[0] ** 2 + point[1] ** 2
++
++
++26.97)  1509. Minimum Difference Between Largest and Smallest Value in Three Moves
++
++        You are given an integer array nums. In one move, you can choose one element of nums and change it by any value.
++
++        Return the minimum difference between the largest and smallest value of nums after performing at most three moves.
++
++        
++
++        Example 1:
++
++        Input: nums = [5,3,2,4]
++        Output: 0
++        Explanation: Change the array [5,3,2,4] to [2,2,2,2].
++        The difference between the maximum and minimum is 2-2 = 0.
++        Example 2:
++
++        Input: nums = [1,5,0,10,14]
++        Output: 1
++        Explanation: Change the array [1,5,0,10,14] to [1,1,0,1,1]. 
++        The difference between the maximum and minimum is 1-0 = 1.
++
++        class Solution:
++            def minDifference(self, nums: List[int]) -> int:
++                '''
++                get top 3 mins,
++                get top 3 maxes
++                
++                Ok remove the worst offenders. 
++                compare min and max. 
++                
++                try every possibility with these 3. 
++                i guess!
++                We have 4 plans:
++
++                kill 3 biggest elements
++                kill 2 biggest elements + 1 smallest elements
++                kill 1 biggest elements + 2 smallest elements
++                kill 3 smallest elements
++                '''
++                pass
++            
++        import heapq
++        class Solution:
++            def minDifference(self, nums: List[int]) -> int:
++                
++                if len(nums) <= 3:
++                    return 0
++                
++                top_4 = []
++                for x in nums:
++                    heapq.heappush(top_4,x)
++                    if len(top_4) > 4:
++                        heapq.heappop(top_4)
++                top_4.sort()
++                down_4 = []
++                for x in nums:
++                    heapq.heappush(down_4,-x)
++                    if len(down_4) > 4:
++                        heapq.heappop(down_4)
++                down_4.sort()
++                down_4 = [-x for x in down_4]
++                
++                
++                res = float('inf')
++                for i in range(4):
++                    if abs(top_4[i] - down_4[3-i]) < res:
++                        res = abs(top_4[i] - down_4[3-i])
++                
++                return res
++
++
++26.98)  Do good tracking as you iterate left to right
++
++        1525. Number of Good Ways to Split a String
++        You are given a string s.
++
++        A split is called good if you can split s into two non-empty strings sleft and sright where their concatenation is equal to 
++        s (i.e., sleft + sright = s) and the number of distinct letters in sleft and sright is the same.
++
++        Return the number of good splits you can make in s.
++
++        Have two dicionaries to track the frequency of letters for the left partition and the right partition. Initially, 
++        left partion will be empty. For each loop, update both dictionaries to reflect the frequency on the left and right 
++        partition. If the length of both partitions are equal, we found the good ways, so increment the result.
++
++
++        class Solution:
++            def numSplits(self, s: str) -> int:
++                left_count = collections.Counter()
++                right_count = collections.Counter(s)
++                res = 0
++                for c in s:
++                    left_count[c] += 1
++                    right_count[c] -= 1
++                    if right_count[c] == 0:
++                        del right_count[c]
++                    
++                    if len(left_count) == len(right_count):
++                        res += 1
++                        
++                return res
++
++26.99) DP or something else? 
++
++        A pizza shop offers n pizzas along with m toppings. A customer plans to spend around x coins. 
++        The customer should order exactly one pizza, and may order zero, one or two toppings. Each topping may be order only once.
++
++        Given the lists of prices of available pizzas and toppings, what is the price closest to x of possible orders? 
++        Here, a price said closer to x when the difference from x is the smaller. 
++        Note the customer is allowed to make an order that costs more than x.
++
++        Example 1:
++
++        Input: pizzas = [800, 850, 900], toppings = [100, 150], x = 1000
++        Output: 1000
++        Explanation:
++        The customer can spend exactly 1000 coins (two possible orders).
++        Example 2:
++
++        Input: pizzas = [850, 900], toppings = [200, 250], x = 1000
++        Output: 1050
++        Explanation:
++        The customer may make an order more expensive than 1000 coins.
++        Example 3:
++
++        Input: pizzas = [1100, 900], toppings = [200], x = 1000
++        Output: 900
++        Explanation:
++        The customer should prefer 900 (lower) over 1100 (higher).
++        Example 4:
++
++        Input: pizzas = [800, 800, 800, 800], toppings = [100], x = 1000
++        Output: 900
++        Explanation:
++        The customer may not order 2 same toppings to make it 1000. 
++
++
++        def closestPrice(pizzas, toppings, x):
++            import bisect
++            closest = float('inf')
++            new_toppings = [0]
++            
++            # Generate combinations for 0, 1, and 2 toppings
++            for i in range(len(toppings)):
++                new_toppings.append(toppings[i])
++                for j in range(i+1, len(toppings)):
++                    new_toppings.append(toppings[i] + toppings[j])
++            new_toppings.sort()
++            for pizza in pizzas:
++                idx = bisect.bisect_left(new_toppings, x - pizza)
++                for j in range(idx-1, idx+2):
++                    if 0 <= j < len(new_toppings):
++                        diff = abs(pizza + new_toppings[j] - x)
++                        if diff == abs(closest - x):
++                            closest = min(closest, pizza + new_toppings[j]) # When two are equal, take the lowest one according to example 3
++                        elif diff < abs(closest - x):
++                            closest = pizza + new_toppings[j]
++            return closest
++
++26.999) BFS TOPOLOGICAL SORT TECHNIQUE/MEET IN THE MIDDLE
++    TREE GRAPH PBOELMS AND GRAPH PROBLEMS IN GENERAL! THINK ABOUT STRUCTURE OF GRAPHS AND TREES TO SOLVE AS MUCH AS POSSIBLY
+            DONT JUST BLINDLY APPLY DFS/BFS -> BFS/DFS FROM LEAVES, OR OTHER TYPES OF NODES KNOW HOW OT DO THIS BE SMART, THINK CREATIVELY 
+            ALL DIRECTIONS IN GRAPHS AND TREES, INORDER, PREORDER, ETC, FROM LEAVE, FROM PARENT, UP DOWN YOU
 
-        The best data structure to keep track of ‘K’ elements is Heap. 
-        This pattern will make use of the Heap to solve multiple 
-        problems dealing with ‘K’ elements at a time from 
-        a set of given elements. The pattern looks like this:
++        310. Minimum Height Trees
++
++        Share
++        A tree is an undirected graph in which any two vertices are connected by exactly one path. 
++        In other words, any connected graph without simple cycles is a tree.
++
++        Given a tree of n nodes labelled from 0 to n - 1, and an array of n - 1 edges where edges[i] = [ai, bi] indicates 
++        that there is an undirected edge between the two nodes ai and bi in the tree, you can choose any node of the tree as the root. 
++        When you select a node x as the root, the result tree has height h. Among all possible rooted trees, 
+         those with minimum height (i.e. min(h))  are called minimum height trees (MHTs).
++
++        Return a list of all MHTs' root labels. You can return the answer in any order.
++
++        The height of a rooted tree is the number of edges on the longest downward path between the root and a leaf.
++
++        Soln:
++            We start from every end, by end we mean vertex of degree 1 (aka leaves). We let the pointers move the same speed. 
++            When two pointers meet, we keep only one of them, until the last two pointers 
++            meet or one step away we then find the roots.
++
++            It is easy to see that the last two pointers are from the two ends of the longest path in the graph.
++
++            The actual implementation is similar to the BFS topological sort. Remove the leaves, update the degrees of inner vertexes. 
++            Then remove the new leaves. Doing so level by level until there are 2 or 1 nodes left. What's left is our answer!
++
++            The time complexity and space complexity are both O(n).
++
++            Note that for a tree we always have V = n, E = n-1.
++
++        def findMinHeightTrees(self, n, edges):
++            if n == 1: return [0] 
++            adj = [set() for _ in xrange(n)]
++            for i, j in edges:
++                adj[i].add(j)
++                adj[j].add(i)
++
++            leaves = [i for i in xrange(n) if len(adj[i]) == 1]
++
++            while n > 2:
++                n -= len(leaves)
++                newLeaves = []
++                for i in leaves:
++                    j = adj[i].pop()
++                    adj[j].remove(i)
++                    if len(adj[j]) == 1: newLeaves.append(j)
++                leaves = newLeaves
++            return leaves
++            
++        # Runtime : 104ms
++
++26.99999) Trees and leaf removal
++    You are given a tree-shaped undirected graph consisting of n nodes labeled 1...n and n-1 edges. 
+        The i-th edge connects nodes edges[i][0] and edges[i][1] together.
++    For a node x in the tree, let d(x) be the distance (the number of edges) from x to its farthest node. Find the min value of d(x) for the given tree.
++    The tree has the following properties:
++
++    It is connected.
++    It has no cycles.
++    For any pair of distinct nodes x and y in the tree, there's exactly 1 path connecting x and y.
++    Example 1:
++    Input: n = 6, edges = [[1, 4], [2, 3], [3, 4], [4, 5], [5, 6]]
++        1
++        |
++    2-3-4-5-6
++
++    Output: 2
++
++    Input: n = 2, edges = [[1, 2]]
++    Output: 1
++
++    Input: n = 10, edges = [[1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 9], [9, 10]]
++    Output: 5
++
++
++    Imagine a spider with many legs, and each leg has multiple sections.
++
++    In each iteration, you're going to pull out the outermost section of each of its legs.
++
++    In the context of a graph, you're removing the leaf nodes (nodes with exactly 1 adjacent edge) at every iteration.
++
++    The number of iterations at the end (when you've finished pulling out all its legs) gives min([d(node) for node in graph])
++
++
++    from collections import defaultdict
++    from typing import List
++
++
++    def min_dist_to_furthest_node(n: int, edges: List[List[int]]) -> int:
++        """
++        Time  : O(N)
++        Space : O(N),
++        """
++
++        # SETUP THE GRAPH
++        g = defaultdict(list)
++
++        # SETUP A SET OF NODES WITH IN-DEGREE = 0
++        id0 = set([i for i in range(1, n + 1)])
++
++        # COUNT THE IN-DEGREE OF EACH NODE
++        id = [0] * (n + 1)
++
++        # TRACK THE DIST
++        dist = 0
++
++        for e in edges:
++            g[e[0]].append(e[1])
++            g[e[1]].append(e[0])
++            id[e[0]] += 1
++            id[e[1]] += 1
++            if id[e[0]] > 1 and e[0] in id0: id0.remove(e[0])
++            if id[e[1]] > 1 and e[1] in id0: id0.remove(e[1])
++
++        # LOOP TILL WE ONLY HAVE 0 - 1 NODE WITH ID = 0
++        while len(id0) > 1:
++
++            # TRACK THE NEW ID0
++            new_id0 = set()
++
++            # REMOVE ALL LEAVES AND THEIR EDGES
++            for leaf in id0:
++                for nb in g.get(leaf):
++                    id[nb] -= 1
++                    if id[nb] == 1: new_id0.add(nb)
++
++            id0 = new_id0
++            dist += 1
++
++        return dist
++
++
++27) Backtracking Example:
++    282. Expression Add Operators
++    Share
++    Given a string num that contains only digits and an integer target, return all possibilities to insert the binary 
++    operators '+', '-', and/or '*' between the digits of num so that the resultant expression evaluates to the target value.
++
++    Note that operands in the returned expressions should not contain leading zeros.
++
++    Example 1:
++
++    Input: num = "123", target = 6
++    Output: ["1*2*3","1+2+3"]
++    Explanation: Both "1*2*3" and "1+2+3" evaluate to 6.
++    Example 2:
++
++    Input: num = "232", target = 8
++    Output: ["2*3+2","2+3*2"]
++    Explanation: Both "2*3+2" and "2+3*2" evaluate to 8.
++    Example 3:
++
++    Input: num = "3456237490", target = 9191
++    Output: []
++    Explanation: There are no expressions that can be created from "3456237490" to evaluate to 9191.
++
++    Soln 1
++
++    class Solution:
++        def addOperators(self, num: 'str', target: 'int') -> 'List[str]':
++
++            def backtracking(idx=0, path='', value=0, prev=None):            
++                if idx == len(num) and value == target:
++                    rtn.append(path)
++                    return
++                
++                for i in range(idx+1, len(num) + 1):
++                    tmp = int(num[idx: i])
++                    if i == idx + 1 or (i > idx + 1 and num[idx] != '0'):
++                        if prev is None :
++                            backtracking(i, num[idx: i], tmp, tmp)
++                        else:
++                            backtracking(i, path+'+'+num[idx: i], value + tmp, tmp)
++                            backtracking(i, path+'-'+num[idx: i], value - tmp, -tmp)
++                            backtracking(i, path+'*'+num[idx: i], value - prev + prev*tmp, prev*tmp)
++            
++            rtn = []
++            backtracking()
++            
++            return rtn    
++
++
++
++    Soln 2 (Official Leetcode)
++
++    class Solution:
++        def addOperators(self, num: 'str', target: 'int') -> 'List[str]':
++
++            N = len(num)
++            answers = []
++            def recurse(index, prev_operand, current_operand, value, string):
++
++                # Done processing all the digits in num
++                if index == N:
++
++                    # If the final value == target expected AND
++                    # no operand is left unprocessed
++                    if value == target and current_operand == 0:
++                        answers.append("".join(string[1:]))
++                    return
++
++                # Extending the current operand by one digit
++                current_operand = current_operand*10 + int(num[index])
++                str_op = str(current_operand)
++
++                # To avoid cases where we have 1 + 05 or 1 * 05 since 05 won't be a
++                # valid operand. Hence this check
++                if current_operand > 0:
++
++                    # NO OP recursion
++                    recurse(index + 1, prev_operand, current_operand, value, string)
++
++                # ADDITION
++                string.append('+'); string.append(str_op)
++                recurse(index + 1, current_operand, 0, value + current_operand, string)
++                string.pop();string.pop()
++
++                # Can subtract or multiply only if there are some previous operands
++                if string:
++
++                    # SUBTRACTION
++                    string.append('-'); string.append(str_op)
++                    recurse(index + 1, -current_operand, 0, value - current_operand, string)
++                    string.pop();string.pop()
++
++                    # MULTIPLICATION
++                    string.append('*'); string.append(str_op)
++                    recurse(index + 1, current_operand * prev_operand, 0, value - prev_operand + (current_operand * prev_operand), string)
++                    string.pop();string.pop()
++            recurse(0, 0, 0, 0, [])    
++            return answers
++
++
++
++27.5) Top K elements
++        -> CAN BE SOLVED IN O(N) WITH BUCKET SORT, AND QUICK SELECT. CHECK IT OUT
++        -> TOP K MOST FREQUENT ELEMENTS QUESTION TO SEE THIS. 
++
++        Any problem that asks us to find the top/smallest/top most frequently occuring ‘K’ 
++        elements among a given set falls under this pattern.
++
++        The best data structure to keep track of ‘K’ elements is Heap. 
++        This pattern will make use of the Heap to solve multiple 
++        problems dealing with ‘K’ elements at a time from 
++        a set of given elements. The pattern looks like this:
++
++        Insert ‘K’ elements into the min-heap or max-heap based on the problem.
++
++        Iterate through the remaining numbers and if you find one that is 
++        larger than what you have in the heap, 
++        then remove that number and insert the larger one.
++
++        There is no need for a sorting algorithm because the heap will keep track of the elements for you.
++        How to identify the Top ‘K’ Elements pattern:
++        If you’re asked to find the top/smallest/frequent ‘K’ elements of a given set
++        If you’re asked to sort an array to find an exact element
++        Problems featuring Top ‘K’ Elements pattern:
++        Top ‘K’ Numbers (easy)
++        Top ‘K’ Frequent Numbers (medium)
++
++        # Top K Frequent Elements
++
++        class Solution(object):
++            def topKFrequent(self, nums, k):
++                """
++                :type nums: List[int]
++                :type k: int
++                :rtype: List[int]
++                """
++
++                num_of_items_to_return = k
++                m = collections.defaultdict(int)
++                
++                for i in nums:
++                    m[i] += 1
++
++                pq = [] # heapq
++                counter = itertools.count()
++                
++                # entry_finder = {} Used for deleting other elements in heapq!
++
++                for k, v in m.items():
++                
++                    if len(pq) < num_of_items_to_return:
++                        count = next(counter)
++                        i = [v, count, k] #[priority, count, task]
++                        heappush(pq, i)
++                    else:
++                        top =  pq[0][0] # get priority
++                        print("TOP IS", top)
++
++                        if v > top:
++                            _ = heappop(pq)
++                            count = next(counter)
++                            i = [v, count, k] #[priority, count, task]
++                            heappush(pq, i)     
++                return map(lambda x: x[-1], pq)
++
++        # BUCKET SOLN:
++        There are solution, using quickselect with O(n) complexity in average, but I think they are 
++        overcomplicated: actually, there is O(n) solution, using bucket sort. The idea, is that frequency 
++        of any element can not be more than n. So, the plan is the following:
++
++        Create list of empty lists for bucktes: for frequencies 1, 2, ..., n.
++        Use Counter to count frequencies of elements in nums
++        Iterate over our Counter and add elements to corresponding buckets.
++
++        buckets is list of lists now, create one big list out of it.
++
++        Finally, take the k last elements from this list, these elements will be top K frequent elements.
++
++        Complexity: time complexity is O(n), because we first iterate over nums once and create buckets, then we 
++        flatten list of lists with total number of elements O(n) and finally 
++        we return last k elements. Space complexity is also O(n).
++
++        class Solution:
++            def topKFrequent(self, nums, k):
++                bucket = [[] for _ in range(len(nums) + 1)]
++                Count = Counter(nums).items()  
++                for num, freq in Count: bucket[freq].append(num) 
++                flat_list = list(chain(*bucket))
++                return flat_list[::-1][:k]
++                
 
-        Insert ‘K’ elements into the min-heap or max-heap based on the problem.
+-64) Bomber DP or is the DP just precomputation below? you should check:
+    (CAN DO WITH PRECOMPUTATION BUT LETS DO WITH DP!!!)
+    
+    Each cell in a 2D grid contains either a wall ('W') or an 
+    enemy ('E'), or is empty ('0'). Bombs can destroy enemies, 
+    but walls are too strong to be destroyed. A bomb placed in 
+    an empty cell destroys all enemies in the same row and column, 
+    but the destruction stops once it hits a wall.
 
-        Iterate through the remaining numbers and if you find one that is 
-        larger than what you have in the heap, 
-        then remove that number and insert the larger one.
+    Return the maximum number of enemies you can destroy using one bomb.
 
-        There is no need for a sorting algorithm because the heap will keep track of the elements for you.
-        How to identify the Top ‘K’ Elements pattern:
-        If you’re asked to find the top/smallest/frequent ‘K’ elements of a given set
-        If you’re asked to sort an array to find an exact element
-        Problems featuring Top ‘K’ Elements pattern:
-        Top ‘K’ Numbers (easy)
-        Top ‘K’ Frequent Numbers (medium)
+    Note that your solution should have O(field.length · field[0].length) 
+    complexity because this is what you will be asked during an interview.
 
-        # Top K Frequent Elements
+    Example
+    For
+    field = [["0", "0", "E", "0"],
+            ["W", "0", "W", "E"],
+            ["0", "E", "0", "W"],
+            ["0", "W", "0", "E"]]
+    the output should be
+    bomber(field) = 2.
 
-        class Solution(object):
-            def topKFrequent(self, nums, k):
-                """
-                :type nums: List[int]
-                :type k: int
-                :rtype: List[int]
-                """
+    Sol'n A Easy (Cool Top Down):
+        from functools import lru_cache
+        def bomber(q):
+            if not q or not q[0]:
+                return 0
+            a , b = len(q),len(q[0])
+            @lru_cache(maxsize=None)
+            def g(m,n,x,y):
+                return 0 if m<0 or n<0 or m>=a or n>=b or q[m][n]=="W" \
+                    else g(m + x,n + y,x,y)+(q[m][n]=="E")
+            ans = 0
+            for i in range(a):
+                for j in range(b):
+                    if q[i][j] == "0":
+                        ans = max(ans,g(i-1,j,-1,0)+g(i,j-1,0,-1)+g(i+1,j,1,0)+g(i,j+1,0,1))
+            return ans
+    Soln B:
+        def bomber(F):
+            if not F or not F[0]         :   return 0
+            row ,col = len(F) ,len(F[0]) ;   F = numpy.array(F)
+            dp = numpy.zeros((row,col))  ;   t = zip(*numpy.where(F == 'E'))
+            for x,y in t:
+                for i in range(y-1,-1,-1):   
+                    if F[x,i] == 'W'  :   break
+                    if F[x,i] == '0' :   dp[x,i]+=1 
+                for i in range(y+1,col):
+                    if F[x,i] == 'W'  :   break
+                    if F[x,i] == '0'  :   dp[x,i]+=1 
+                for i in range(x-1,-1,-1):
+                    if F[i,y] == 'W'  :   break
+                    if F[i,y] == '0'  :   dp[i,y]+=1 
+                for i in range(x+1,row):
+                    if F[i,y] == 'W'  :   break
+                    if F[i,y] == '0'  :   dp[i,y]+=1 
+            return dp.max()
 
-                num_of_items_to_return = k
-                m = collections.defaultdict(int)
-                
-                for i in nums:
-                    m[i] += 1
+    Soln C:
+        def bomber(A):
+            from itertools import groupby
+            if not A or not A[0]: return 0
+            R, C = len(A), len(A[0])
+            dp = [ [0] * C for _ in xrange(R) ]
+            for r, row in enumerate(A):
+                c = 0
+                for k, v in groupby(row, key = lambda x: x != 'W'):
+                    w = list(v)
+                    if k:
+                        enemies = w.count('E')
+                        for c2 in xrange(c, c + len(w)):
+                            dp[r][c2] += enemies
+                    c += len(w)
 
-                pq = [] # heapq
-                counter = itertools.count()
-                
-                # entry_finder = {} Used for deleting other elements in heapq!
-                
-                for k, v in m.items():
-                
-                    if len(pq) < num_of_items_to_return:
-                        count = next(counter)
-                        i = [v, count, k] #[priority, count, task]
-                        heappush(pq, i)
-                    else:
-                        top =  pq[0][0] # get priority
-                        print("TOP IS", top)
-
-                        if v > top:
-                            _ = heappop(pq)
-                            
-                            
-                            count = next(counter)
-                            i = [v, count, k] #[priority, count, task]
-                            
-                            heappush(pq, i)
-                            
-                return map(lambda x: x[-1], pq)
-
+            for c, col in enumerate(zip(*A)):
+                r = 0
+                for k, v in groupby(col, key = lambda x: x != 'W'):
+                    w = list(v)
+                    if k:
+                        enemies = w.count('E')
+                        for r2 in xrange(r, r + len(w)):
+                            dp[r2][c] += enemies
+                    r += len(w)
+            
+            ans = 0
+            for r, row in enumerate(A):
+                for c, val in enumerate(row):
+                    if val == '0':
+                        ans = max(ans, dp[r][c])
+            return ans
 
 28) K way Merge:
 
@@ -10194,6 +13463,12 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
     Go up the tree for SPEED. 
 
 
++37) In head recursion , the recursive call, when it happens, comes 
++      before other processing in the function (think of it happening at the top, 
++      or head, of the function). In tail recursion , it's the 
++      opposite—the processing occurs before the recursive call.
+
+
 40.1) Can create queue with 2 stacks
 
 
@@ -10307,6 +13582,1023 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
   
     Output:
     The maximum possible flow is 23
+
+
++41) AVOID LINKED LIST LOOPS IN YOUR CODE. ALWAYS 
++       NULLIFY YOUR POINTERS IF YOU ARE REUSING THE 
++       DATASTRUCTURE/ DOING THINGS IN PLACE!!!!!!
++       SUCH AS HERE by saving nxt pointer as tmp
++
++       1.   Odd Even Linked List
++        Given the head of a singly linked list, group all the nodes 
++        with odd indices together followed by the nodes with even 
++        indices, and return the reordered list.
++
++        The first node is considered odd, and the second node is even, and so on.
++
++        Note that the relative order inside both the even and odd
++        3groups should remain as it was in the input.
++
++        You must solve the problem in O(1) extra space complexity and O(n) time complexity.
++   
++       You should try to do it in place. The program should run in O(1)    
++       space complexity and O(nodes) time complexity.
++
++        def oddEvenList(self, head: ListNode) -> ListNode:
++            oddH = ListNode(0)
++            evenH = ListNode(0)
++            
++            odd = oddH
++            even = evenH
++            
++            isOdd = True
++            node = head
++            
++            while node:
++                nxt = node.next
++                node.next = None # IMPORTANT STOP THE LOOPS
++                if isOdd:
++                    odd.next = node
++                    odd = odd.next
++                    isOdd = False
++                else:
++                    even.next = node
++                    even = even.next
++                    isOdd = True
++                node = nxt
++            
++            odd.next = evenH.next
++            return oddH.next
+
+
+41.1) Flatten binary tree to linked list. 
++     Given a binary tree, flatten it to a linked list in-place.
++     Use right nodes when creating linked list. 
++     CAN DO THIS WITH O(1) SPACE LIKE SO:
++  
++     So what this solution is basically doing is putting the 
++     right subtree next to the rightmost node on the left subtree 
++     and then making the left subtree the right subtree and 
++     then making the left one null. Neat!
++     
++    class Solution:
++        # @param root, a tree node
++        # @return nothing, do it in place
++        def flatten(self, root):
++            if not root:
++                return
++            
++            # using Morris Traversal of BT
++            node=root
++            
++            while node:
++                if node.left:
++                    pre=node.left
++                    while pre.right:
++                        pre=pre.right
++                    pre.right=node.right
++                    node.right=node.left
++                    node.left=None
++                node=node.right
++
++
+41.2) Flattening a multilevel doubly linked list using a stack:
++        def flatten(self, head):
++            if not head:
++                return
++            
++            dummy = Node(0,None,head,None)     
++            stack = []
++            stack.append(head)
++            prev = dummy
++            
++            while stack:
++                root = stack.pop()
++
++                root.prev = prev
++                prev.next = root
++                
++                if root.next:
++                    stack.append(root.next)
++                    root.next = None
++                if root.child:
++                    stack.append(root.child)
++                    root.child = None
++                prev = root        
++                
++            # disengage dummy node
++            dummy.next.prev = None
++            return dummy.next
+
+
++-68) Counting clouds by removing and growing as an alternative DFS:
++
++    Given a 2D grid skyMap composed of '1's (clouds) and '0's (clear sky), 
++    count the number of clouds. A cloud is surrounded by clear sky, and is 
++    formed by connecting adjacent clouds horizontally or vertically. 
++    You can assume that all four edges of the skyMap are surrounded by clear sky.
++
++    Example
++
++    For
++
++    skyMap = [['0', '1', '1', '0', '1'],
++              ['0', '1', '1', '1', '1'],
++              ['0', '0', '0', '0', '1'],
++              ['1', '0', '0', '1', '1']]
++    the output should be
++    countClouds(skyMap) = 2;
++    
++    
++    def countClouds(skyMap):
++        if not skyMap or not skyMap[0]:
++            return 0
++        m, n = len(skyMap), len(skyMap[0])
++        ones = {(i, j) for i in range(m) for j in range(n) if skyMap[i][j] == '1'}
++        cc = 0
++        while ones:
++            active = {ones.pop()}
++            while active:
++                ones -= active
++                nxt_active = set()
++                for x, y in active:
++                    for dx, dy in ((-1,0), (1,0), (0,-1), (0,1)):
++                        if 0 <= x+dx < m and 0 <= y + dy < n and \
++                            (x+dx, y+dy) in ones:
++                            nxt_active.add((x+dx, y+dy))
++                active = nxt_active
++            cc += 1
++        return cc
++
+
+
+
++2 - Given an array of integers, find the subarray with maximum XOR. 
++
++        Think of cumulatives and starting from beginning simialar to above problem. 
++
++        Similar to previous problem:
++        Cool XOR trick to solve problem:
++        -> F(L, R) is XOR subarray L to R
++        F(L, R) = F(1, R) ^ F(1, L-1)
++    */
++
+
+
++-67) Lazy updates to build faster data structures (aka min stack extended ):
++
++        Similar hill finding question from IMC oa: 
++        Techniques: for stack 2.0, where we create a stack
++        but we can also increment alll elements below index i 
++        by a value
++        
++        -> implement push, pop, increment(index i, value v)
++        you use 2 stacks, and we do LAZY updates. Similar to min stack.
++        When we access an element that should have been increment. 
++        add stack value + increment stack value. 
++        When we increment we only save it at index i. not [0...i] with for loop
++        to do O(1) lookup, push, pop, increment. And when we pop that index,
++        assign to index i-1.
++        
++        THE IDEA IS: -> look at the very specific constraints of problem and solve 
++        for only what it is asking. nothing more (which allows you to simplify and 
++        improve solutions).
++        
++        Try to solve by being as LAZY as possible, and keeping track of critical indexes. 
++        Do it similar to how you as a lazy human would solve it IRL. 
++        
++        By waiting to do operations until it is necessary -> and being GREEDY and smart 
++        about how to update the state of the problem for only the next state[and just the next state], 
++        and not all states, we optimized stack 2.0. 
++
++        IMPLEMENTATION OF SUPER STACK:
++    
++        def superStack(operations):
++            stack = []
++            inc = []
++            result = []
++            '''
++            Save and propogate lazy updates using inc[]
++            based on how we access stack 
++            '''
++            for op in operations:
++                
++                items = op.split()
++                cmd = items[0]  
++                if cmd == "push":
++                    stack.append(int(items[1]) )
++                    inc.append(0)
++                elif cmd == "pop":
++                    if len(stack) > 0:
++                        stack.pop()
++                        poppedInc = inc.pop()
++                        if len(inc) > 0:
++                            inc[-1] += poppedInc
++                elif cmd == "inc":
++                    # inc 2 2
++                    pos, val = int(items[1]), int(items[2])
++                    inc[pos-1] += val
++                
++                if len(stack) > 0:
++                    print(stack[-1] + inc[-1])
++                else:
++                    print("EMPTY")
+
++-66)  Hill finding w/ stacks and queues and lazy updates in data structures: 
++
++        '''
++        Given an array a composed of distinct elements, find 
++        the next larger element for each element of the array, i.e. 
++        the first element to the right that is greater than this element, 
++        in the order in which they appear in the array, and return the 
++        results as a new array of the same length. If an element does 
++        not have a larger element to its right, put -1 in the 
++        appropriate cell of the result array.
++
++        Example
++
++        For a = [6, 7, 3, 8], the output should be
++        nextLarger(a) = [7, 8, 8, -1]
++
++        '''
++        # use queue. 
++        '''
++        HILL FINDING WITH CRITICAL INDEXES + LAZINESS LECTURE.  
++        KEEP TRACK OF KEY POINTS ONLY IN QUEUE/STACK. 
++        NO WASTE IN QUEUE, JUST WHAT WE NEED. 
++        AKA hill finding.         
++        '''
++
++        def nextLarger(a):        
++            st = []
++            res = []
++
++            for i in range(len(a)-1, -1, -1):
++                val = a[i]
++                while len(st) > 0:
++                    if a[i] > st[-1]:
++                        st.pop()
++                    else:
++                        break     
++                if len(st) == 0:
++                    res.append(-1)
++                else:
++                    res.append(st[-1])
++                st.append(val)
++            return res[::-1]
+
+
+
++-65) REGEX REVIEW USAGE:
++
++    You categorize strings into three types: good, bad, or mixed. If a string has 
++    3 consecutive vowels or 5 consecutive consonants, or both, then it is categorized 
++    as bad. Otherwise it is categorized as good. Vowels in the English alphabet are 
++    ["a", "e", "i", "o", "u"] and all other letters are consonants.
++
++    The string can also contain the character ?, which can be replaced by either a 
++    vowel or a consonant. This means that the string "?aa" can be bad if ? is a 
++    vowel or good if it is a consonant. This kind of string is categorized as mixed.
++
++    Implement a function that takes a string s and returns its category: good, bad, or mixed.
++
++    def classifyStrings(s):
++        if re.search(r"[aeiou]{3}|[^aeiou?]{5}", s):
++            return "bad"
++        if "?" not in s:
++            return "good"
++        a = classifyStrings(s.replace("?", "a", 1))
++        b = classifyStrings(s.replace("?", "b", 1))
++        return "mixed" if a != b else a
+
+
+-78) Maximal Square DP - DP vs cumulative array strategy?
+    
+    You have a 2D binary matrix that's filled with 0s and 1s. 
+    In the matrix, find the largest square that 
+    contains only 1s and return its area.
+
+    NOTES:
+        When a problem looks like a cumulative array problem try other accumulations,
+        rather than sum, such as 2d segment trees, or 2d maximum slice accumations.
+
+        In this probem -> we did our accumulation based on 3 other coordinates in matrix. 
+        Up your preprocessing game
+        ALWAYS USE THE DIAGONAL SOMEHOW IN 2D ARRAYS + DONT FORGET TOP-LEFT COORDINATE.
+    
+    SOLUTION:
+        def maximalSquare(matrix):
+            
+            '''
+            then do maximal rectangle. 
+            Go right and go down. 
+            question -> how many 1's below me?
+            
+            1 1 1 1
+            1 2 2 2 
+            1 2 3
+
+            Recurrence:
+            dp(i,j) = min(dp(i−1, j), dp(i−1, j−1), dp(i, j−1)) + 1
+
+            BASE CASE: 
+            matrix[i,j] == '0' THEN return 0        
+            '''
+            R = len(matrix)
+            if R == 0:
+                return 0
+            C = len(matrix[0])
+            prevRow = [0 for j in range(C+1)]
+            maxSquare = 0
+            for i in range(R):
+                # we have to zero pad. 
+                currRow = [0]
+                
+                for j in range(1, C+1):
+                    # if current value is 0, put 0.
+                    val = matrix[i][j-1]
+                    if val == "0":
+                        currRow.append(0)
+                    else:
+                        minOfTopAndLeft = min(currRow[-1], prevRow[j-1], prevRow[j])
+                        cellVal = minOfTopAndLeft + 1
+                        maxSquare = max(maxSquare, cellVal**2)
+                        currRow.append(cellVal)
+                        
+                prevRow = currRow[::]
+            return maxSquare
+            
+
+
+
+
+
+-77) Painted Ladies BACKWARD DP
+
+    In San Francisco, there is a row of several beautiful houses called 
+    the Painted Ladies. Each of the Painted Ladies can be painted with 
+    one of three colors: red, blue or green. The cost of painting each 
+    house with a certain color is different. cost[i][0] for each i is 
+    the cost of painting house i red, cost[i][1] is the cost of painting 
+    it blue, and cost[i][2] is the cost of painting it green.
+
+    You want to paint all the houses in a way such that no two adjacent 
+    Painted Ladies have the same color. Find the minimum cost to achieve this.
+
+    Example
+
+    For cost = [[1, 3, 4], [2, 3, 3], [3, 1, 4]], the output should be
+    paintHouses(cost) = 5.
+
+    def paintHouses(cost):
+        
+        '''
+        recurrence 
+        OPT[i, color] = minimum cost as a result of choosing a specific color. 
+        # compute all three! -> BACKWARD DP. 
+        OPT[i, Blue] = min(OPT[i-1, RED], OPT[i-1, GREEN])
+        OPT[i, RED] =  min(OPT[i-1, BLUE], OPT[i-1, GREEN])
+        OPT[i, GREEN] =  min(OPT[i-1, BLUE], OPT[i-1, RED])
+        answer is min(of all colors OPT[i])
+        
+        recursive
+        fn(idx, prev_color)
+            we know prev color -> choose other 2 colors. 
+            take min of choosing either color!
+        
+        Space optimize to 3 variables!        
+        '''
+        opt_b, opt_r, opt_g = cost[0][0], cost[0][1], cost[0][2]
+        IDX_b, IDX_r, IDX_g = 0, 1, 2
+        
+        for i in range(1, len(cost)):
+            blue_cost = cost[i][IDX_b]
+            red_cost = cost[i][IDX_r]
+            green_cost = cost[i][IDX_g]
+            
+            opt_b, opt_g, opt_r = \
+                min(opt_r, opt_g) + blue_cost, min(opt_r, opt_b) + green_cost, min(opt_b, opt_g) + red_cost  
+            
+        return min(opt_b, opt_g, opt_r)
+
+
+
+
+-76) Linked Lists, 2 Pointers and simplifying problems by  respecting   
+     OPEN-CLOSE 2 pointers which satisfy a <= b < c aka [X, Y) for start and end. 
+
+    Given a singly linked list of integers l and a non-negative integer n, 
+    move the last n list nodes to the beginning of the linked list.
+
+    Example
+
+    For l = [1, 2, 3, 4, 5] and n = 3, the output should be
+    rearrangeLastN(l, n) = [3, 4, 5, 1, 2];
+    For l = [1, 2, 3, 4, 5, 6, 7] and n = 1, the output should be
+    rearrangeLastN(l, n) = [7, 1, 2, 3, 4, 5, 6].
+
+    HARMAN SOLUTION WHICH USES 2POINTERS that refer to [start, end]
+    problem is both pointers can point to same node so this case 
+    has to be handled seperately!! + other edge cases.
+    
+        def rearrangeLastN(l, n):     
+            # use 2 pointers that occupy n space. 
+            # go to the  second last element. do you know why? 
+            # because we have to set None to the element we are 
+            # splitting from. 
+            i = l 
+            j = l
+            
+            if l is None:
+                return None
+            if n == 0:
+                return l
+                
+            # n-1 spaces between n nodes
+            for _ in range(n-1):
+                j = j.next
+            
+            # the whole list was chosen as n. 
+            if j.next == None:
+                return l
+            
+            # second last.
+            while j and j.next and j.next.next:
+                i = i.next
+                j = j.next
+            
+            # get last node. 
+            j.next.next = l
+            
+            # end
+            newStart = i.next            
+            # SET THE NULLS AT THE END BECAUSE WE CAN 
+            # BREAK LINKED LIST FUNCTIONALITY
+            # IF BOTH POINTERS POINT AT SAME NODE!
+            i.next = None
+            return newStart
+
+    OPEN CLOSE NOTATION SOLUTION CLEANNN:
+
+        def rearrangeLastN(l, n):
+            if n == 0:
+                return l
+            front, back = l, l
+            for _ in range(n):
+                front = front.next
+            if not front:
+                return l
+            while front.next:
+                front = front.next
+                back = back.next
+            out = back.next
+            back.next = None
+            front.next = l
+            return out
+
+
+
++-87)Optimizing binary tree questions with bottom up DP: 
++    One way to optimize these questions is to use post-order traversal.
++    Compute the value for the children then compute for parent sorta like DP:
++
++    1.   Count Univalue Subtrees
++    中文English
++    Given a binary tree, count the number of uni-value subtrees.
++    
++    A Uni-value subtree means all nodes of the subtree have the same value.
++    
++    Example
++    Example1
++    
++    Input:  root = {5,1,5,5,5,#,5}
++    Output: 4
++    Explanation:
++                  5
++                 / \
++                1   5
++               / \   \
++              5   5   5
++    Example2
++    
++    Input:  root = {1,3,2,4,5,#,6}
++    Output: 3
++    Explanation:
++                  1
++                 / \
++                3   2
++               / \   \
++              4   5   6
++
++    Solution:
++    def countUnivalSubtrees(self, root):
++        count = 0
++        def helper(node):
++            nonlocal count 
++            if node is None:
++                return None
++            left_result = helper(node.left)
++            right_result = helper(node.right)
++            if left_result == False:
++                return False
++            if right_result == False:
++                return False
++            if left_result and left_result != node.val:
++                return False
++            if right_result and right_result != node.val:
++                return False
++            count += 1
++            return node.val
++        helper(root)
++        return count
+
+
+
++
++-86.5)  HRT: 1775. Equal Sum Arrays With Minimum Number of Operations
++
++        You are given two arrays of integers nums1 and nums2, possibly of different lengths. 
++        The values in the arrays are between 1 and 6, inclusive.
++
++        In one operation, you can change any integer's value in any of the arrays 
++        to any value between 1 and 6, inclusive.
++
++        Return the minimum number of operations required to make the sum of values in nums1 
++        equal to the sum of values in nums2. Return -1​​​​​ if it is not possible 
++        to make the sum of the two arrays equal.
++
++            static const auto speedup = []() { std::ios::sync_with_stdio(false); std::cin.tie(nullptr); return 0; }();
++
++            class Solution {
++            public:
++                int minOperations(vector<int>& nums1, vector<int>& nums2) {
++                    // calculate the frequency and find the sum
++                    vector<int> cnt1(7,0), cnt2(7,0);
++                    for(auto &a:nums1) cnt1[a]++;
++                    for(auto &a:nums2) cnt2[a]++;
++                    int sum1 = accumulate(nums1.begin(), nums1.end(), 0);
++                    int sum2 = accumulate(nums2.begin(), nums2.end(), 0);
++                    
++                    // already equal
++                    if(sum1 == sum2) return 0;
++                    
++                    // reduce sum1 < sum2 to sum1 > sum2....so only one problem we have to deal wiith
++                    if(sum1 < sum2){
++                        swap(sum1, sum2);
++                        cnt1.swap(cnt2);
++                    }
++                    
++                    // since sum1 > sum2 ... we have two options 
++                            // 1) decrease val in first array 
++                            // 2) increase val in second array
++                    
++                    // if we have 6 in first array, maximum decrease of sum1 can be of 5 So, sum1-sum2 decreases by 5 
++                    // Similarly if we have 1 in second array, maximum incrase of sum2 can be 5. And hence sum1-sum2 decreases by 5. 
++                    // So, decreasing 6 in first array and increasing 1 in second lead to maximum deduction of 5 in the difference.
++                    
++                    // Similary, If we consider 5 from first array and 2 from the second array, 
++                    // it can lead to maximum deduction of 4 in the difference.
++                    
++                    // Now, cnt1[i] (i=2,3,4,5,6) will have the number of times it can decrese the difference by (i-1);
++                    for(int i=1; i<=6; i++)
++                        cnt1[i] += cnt2[7-i];
++                    
++                    int diff = sum1-sum2;
++                    int curr = 6;      // start by i=6 and go upto i=2;
++                    int ops = 0;        // to store the # of operations
++                    
++                    while(diff && (curr>1)){
++                        // count the # of substraction needs to be done where the substraction can be of (curr-1) 
++                        int needed = ceil(1.0*diff/(curr-1));
++                        
++                        // maximum operations is bounded by count of the (curr-1) substraction
++                        // As stated earlier cnt1[curr] have the count of how many (curr-1) deduction can be done
++                        // So, we can only do min(needed, cnt1[curr-1]) ops
++                        ops += min(needed, cnt1[curr]);
++                        
++                        // deacrese the difference accordingly
++                        diff -= min(needed, cnt1[curr])*(curr-1);
++                        
++                        // for last deduction diff can be -ve. E.g. diff was 3 and we deduct 5. So, we can assume that we deducted 3 only and make diff = 0
++                        if(diff < 0) diff = 0;
++                        
++                        // go for next smaller value
++                        curr--;
++                    }
++                    
++                    // if diff is non-zero, then return -1. Otherwise return the # of operations
++                    return (diff ? -1 : ops);
++                }
++            };
++
++
++
++-40) CIRCULAR BUFFERS: Implementation Stack and Queue 
++     Declare an array with enough space!
++     
++    7.1: Push / pop function — O(1).
++    1   stack = [0] * N
++    2   size = 0
++    3   def push(x):
++    4       global size
++    5       stack[size] = x
++    6       size += 1
++    7   def pop():
++    8       global size
++    9       size -= 1
++    10      return stack[size]
++
++    7.2: Push / pop / size / empty function — O(1).
++    1   queue = [0] * N
++    2   head, tail = 0, 0
++    3   def push(x):
++    4       global tail
++    5       tail = (tail + 1) % N
++    6       queue[tail] = x
++    7   def pop():
++    8       global head
++    9       head = (head + 1) % N
++    10      return queue[head]
++    11  def size():
++    12      return (tail - head + N) % N
++    13  def empty():
++    14      return head == tail
++
++-86) monotonic stack vs monotonic queue and how to build a monotonic structure
++    HRT PROBLEM: MINIMIZE THE AMPLITUDE!:
++    Given an array of N elements, remove K elements to minimize the amplitude(A_max - A_min) of the remaining array.
++
++    remove k consecutive elements from A such that amplitude is minimal which is the 
++
++
++        #include <vector>
++        #include <deque>
++        #include <bits/stdc++.h>
++        #include <iostream> 
++
++        using namespace std;
++
++
++        struct Item {
++            int idx;
++            int val;
++        };
++
++
++        int solution(vector<int> &A, int K) {
++
++            /*
++            min amplitude.
++
++            remove k consecutive elements from A, 
++            such that amplitude of remaining elements will be minimal.
++
++            Aka keep track of max and min outside of k size interval
++            use both minheap and maxheap -> too painful to do. need to use map plus internal siftup siftdown
++
++            slide window left to right.
++            + monotonic deque for max + monotonic deque for min. 
++            add values to end of queue when you process,
++
++            pop from left side which contains best max, min, and pop when the index gets crossed!
++
++            */
++
++            // montonic queue after K elements. 
++            int idx = K; 
++            int N = A.size();
++
++            deque<Item> mono_max;
++            deque<Item> mono_min; 
++
++            // initialize monotonic struture with stack operations
++            for(int idx = K; idx < N; ++idx) {
++                // pop smaller elements and keep larger elements. 
++                Item i;
++                i.idx = idx;
++                i.val = A[idx];
++                while(!mono_max.empty() && mono_max.back().val <= i.val) {
++                    mono_max.pop_back();
++                }
++                mono_max.push_back(i);
++            }
++
++            for(int idx = K; idx < N; ++idx) {
++                // pop smaller elements and keep larger elements. 
++                Item i;
++                i.idx = idx;
++                i.val = A[idx];
++                while(!mono_min.empty() && mono_min.back().val >= i.val) {
++                    mono_min.pop_back();
++                }
++                mono_min.push_back(i);
++            }
++
++            // use monotone as queue
++            // 2 pointer + runnign min + update mono queues
++            int i = 0;
++            int j = K-1;
++
++            int amp = INT_MAX;
++
++            while(j != N) {
++                
++                int temp = mono_max.front().val - mono_min.front().val;
++                std::cout << "max and min is" << mono_max.front().val << ", " << mono_min.front().val << endl;
++
++                amp = min(amp, temp);
++                // add index i max_mono and min_mono 
++                // burn through the stack from the back garabage points
++                // set index to infinite cause these points we add when we move
++                // sliding window to right cannot be invalidated. 
++
++                // add in ith item in sliding window.         
++                Item newItem;
++                newItem.val = A[i];
++                newItem.idx = INT_MAX;
++
++                while(!mono_max.empty() && mono_max.back().val <= newItem.val) {
++                    mono_max.pop_back();
++                }
++                mono_max.push_back(newItem);
++                
++                while(!mono_min.empty() && mono_min.back().val >= newItem.val) {
++                    mono_min.pop_back();
++                }
++                mono_min.push_back(newItem);
++
++                // move sliding window.
++                i += 1;
++                j += 1;
++
++                // remove j+1th item from sliding window. 
++                if(j != N) {
++                    if(mono_max.front().idx == j) {
++                        mono_max.pop_front();
++                    }   
++
++                    if(mono_min.front().idx == j) {
++                        mono_min.pop_front();
++                    }
++                }
++            }
++
++            return amp; 
++        }
++
++        int main(){
++            vector<int> a = {1,2,3,4,5,6};
++            vector<int> b = {5,3,6,1,3};
++            vector<int> c = {8,8,4,3};
++            vector<int> d = {3,5,1,6,9,8,2,5,6};
++
++            cout << solution(a,  2) << endl;
++            cout << solution(b,  2) << endl;
++            cout << solution(c,  2) << endl;
++            cout << solution(d,  4) << endl;
++        }
++
++
++-85) think of the algo to do citadel problem -> round robin ALGORITHM!!!
++    -> Also take a look at the problem consecutive numbers sum
++
++
++-84) Using cumulative array for sums in 1D and 2D case tricks:
++    1D) sum between i and j inclsuive:
++        sum(j) - sum(i-1)
++        REMEMBER TO DO I-1 to make it INCLUSIVE!
++
++    2D)
++    Have a 2D cumulative array,
++    of size N+1, M+1, for NxM array
++    top row is all 0s.
++    left column is all 0s.
++    similar to cumualtive array. 
++    
++    2 coordinates is top left and bottom right. 
++    
++    (from snap interview)
++    SUM OF LARGE RECTANGE - SUM OF TOP RIGHT - SUM OF BOTTOM LEFT + SUM OF SMALL RECTANGLE. 
++    
++
++
++    topleft -> tlx, tly
++    bottomright -> brx, bry
++    
++    # because inclusive, not sure though, do lc to check below part.
++    tlx -= 1
++    tly -= 1
++
++    arr[brx][bry] - arr[brx][tly] - arr[tlx][bry]  + arr[tlx][tly]
++
++Snap DEADLOCK QUESTION
++
++    We obtained a log file containing runtime information about all threads and mutex locks of a user program. 
++    The log file contains N lines of triplets about threads acquiring or releasing mutex locks. The format of the file 
++    is: The first line contains an integer N indicating how many more lines are in the file. Each of the following N lines 
++    contains 3 numbers separated by space. The first number is an integer representing thread_id (starting from 1). 
++    The second number is either 0 (acquiring) or 1 (releasing). The third number is an integer representing mutex_id 
++    (starting from 1). Now we want you to write a detector program that reads the logs line by line and output the line 
++    number of the trace where a deadlock happens. If there is no deadlock after reading all log traces, output 0.
++
++    Example:
++    4
++    1 0 1
++    2 0 2
++    2 0 1
++    1 0 2
++
++    Output:
++    4
++
++    Ok so create graph and check for cycle?
++    
++    t1 wants a [a taken]
++    t2 wants b  [b taken]
++
++    t1 -> a -> t2 -> b -> t1
++    Cycle right!
++
++    or lets do it like
++
++    remove edges when that line comes from 
++    t2 wants a [a wanted not released -> t2 falls asleep with b]
++    t1 wants b [b wanted not released -> t1 falls asleep with a]
++    Soooo
++    both threads are asleep
++    because
++
++    Do cycle detection on resource allocation graph sir!
++
++
++
++
++
++-37) MAKING SURE YOUR DFS IS CORRECT! And the DP is being resolved 
++     in the DFS tree properly. 
++
++    For a given array A of N integers and a sequence S of N integers 
++    from the set {−1, 1}, we define val(A, S) as follows:
++
++    val(A, S) = |sum{ A[i]*S[i] for i = 0..N−1 }|
++
++    (Assume that the sum of zero elements equals zero.)
++    For a given array A, we are looking for such a sequence S that minimizes val(A,S).
++
++    Write a function:
++    def solution(A)
++
++    that, given an array A of N integers, computes the minimum value of val(A,S) 
++    from all possible values of val(A,S) for all 
++    possible sequences S of N integers from the set {−1, 1}.
++
++    For example, given array:
++
++    A[0] =  1
++    A[1] =  5
++    A[2] =  2
++    A[3] = -2
++    
++    your function should return 0, since for S = [−1, 1, −1, 1], 
++    val(A, S) = 0, which is the minimum possible value.
++
++    def solution(A):
++        # THIS FAILS DUE TO MAX RECURSION DEPTH REACHED!
++        # BUT IT IS 100% CORRECT
++        @lru_cache(None)
++        def recurseB(i,s):
++            
++            if len(A) == i:
++                return s
++                
++            add = recurseB(i+1, s + A[i])
++            sub = recurseB(i+1, s - A[i])
++            print("CORRECT ADD AND SUB FOR I IS", i, add, sub)
++
++            # print("ADD and sub are", add, sub)
++            if abs(add) < abs(sub):
++                return add
++            else:
++                return sub
++        
++        correct_val = abs(recurseB(0, 0))
++        print("CORRECT VALU IS", correct_val)
++        
++        # BELOW WAY IS WRONG!
++        # DO YOU KNOW WHY?
++        # IT GENERATES DIFF ANSWERS FROM ABOVE. 
++        # BECAUSE IN THE RECURSIVE CALLS CLOSE TO THE 
++        # BASE CASE, WE ARENT ABLE TO FINE TUNE THE SOLUTION
++        # TO THE INCOMING SUM, BECAUSE YOU NEVER SEE THE INCOMING
++        # SUM LIKE ABOVE. 
++        # SO INSTEAD, YOU GREEDILY CHOOSE 
++        # IN THE ABOVE RECURSION, HELPER SEES INCOMING SUM, 
++        # AND THEN RETURNS AN OPTIMIZED SUM BASED ON THE INCOMING SUM!
++        # THERE IS COMMUNICATION!
++        def recurseA(i):
++            if len(A) == i:
++                return 0
++                
++            add = A[i] + recurseA(i+1)
++            sub = -A[i] + recurseA(i+1)
++            print("INC ADD AND SUB FOR I IS", i, add, sub)
++            # print("ADD and sub are", add, sub)
++            if abs(add) < abs(sub):
++                return add
++            else:
++                return sub
++
++        incorrect_val = abs(recurseA(0))
++        return correct_val
++
+
++55.5) K stack pops (Finish it up https://binarysearch.com/problems/K-Stack-Pops):
++    
++        K Stack Pops
++        Medium
++        You are given two-dimensional list of integers stacks and an integer k. Assuming each list in stacks represents a stack, return 
++        the maximum possible sum that can be achieved from popping off exactly k elements from any combination of the stacks.
++        Constraints
++        n ≤ 500 where n is the number of rows in stacks.
++        m ≤ 200 where m is the maximum number of elements in a stack.
++        k ≤ 100
++        Youll realize only way is DP:
++        attempt top down, then do bottom up. Watch out for following failures:: 
++        class Solution:
++            def solveSlow(self, stacks, k):
++                
++                '''
++                This solution didnt pass, we didnt optimize the DP states enuff.
++                FAILURE
++                '''
++                @cache
++                def helper(i,j, remaining):
++                    # i is the list we are processing so far. 
++                    # remaining is amt of elements left.
++                    if remaining == 0:
++                        return 0
++                    if i == len(stacks):
++                        return float("-inf")
++                    take = float("-inf") 
++                    dont = float("-inf")
++                    # print("stacks i is", stacks[i])
++                    if len(stacks[i]) - j >= 0:
++                        element = stacks[i][len(stacks[i])-j]
++                    
++                        take = helper(i, j+1, remaining - 1) + element
++                        # stacks[i].append(element)
++                    dont = helper(i+1,1, remaining)
++                    return max(take, dont)
++                return helper(0,1, k)
++            def solve(self, stacks, k):
++                '''
++                A[i+1,l]=max{A[i,l−t]+(t pops from stack i+1),0≤t≤l}
++                We can compute A[m,k] in time O(k^2m).
++                
++                '''   
++                pass
++            # Forward dp? someone elses solution
++            def solve(self, stacks, k):
++                NINF = float("-inf")
++                dp = [NINF] * (k + 1)
++                dp[0] = 0
++                for stack in stacks:
++                    P = [0]
++                    for x in reversed(stack):
++                        P.append(P[-1] + x)
++                    for j in range(k, 0, -1):
++                        for i in range(1, min(j + 1, len(P))):
++                            dp[j] = max(dp[j], dp[j - i] + P[i])
++                return dp[k]
++                
++                return A[len(stacks) - 1][k]
+
+
++-53) Recursive Multiply:
++    Write a recursie function to multiply 2 positive integers without using the 
++    * operator. Only addition, subtraction and bit shifting but minimize ops. 
++
++    Answer:
++
++    int minProduct(int a, int b) {
++        int bigger = a< b ? b : a;
++        int smaller = a < b ? a: b;
++        return minProductHelper(a, b);
++    }
++
++    int minProdHelper(smaller, bigger) {s
++        if smaller == 0 return 0
++        elif smaller == 1 return 1
++
++        int s = smaller >> 1; //divide by 2
++        int halfPrd = minProductHelper(s, bigger);
++        if smaller % 2 == 0:
++            return halfProd + halfProd
++        else:
+            # adding extra bigger because the bit is on?
++            return halfProd + halfProd + bigger
++    }
++    Runtime O(log s)
 
 42) Bipartite matching problem: (Max flow 1)
     n students. d dorms. Each student wants to live in one of 
@@ -10797,6 +15089,204 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
                             power = power * power 
                             n = n >> 1
                         return res 
+
+
++32.5) DFS LOW LINK!
++        ARTICULATION POINTS :
++        These are also called cut-vertices . When they are removed(including the edges connected to them) , 
++        the remaining graph is broken down into two or more connected components.
++        BRIDGES:
++        These are also called cut-edges . When they are removed, the graph 
++        is broken down into two or more connected components.
++        FORWARD EDGES:
++        They are the edges taken during the dfs (or bfs) . 
++        More specifically, they are the edges present in the dfs tree.
++        BACK EDGES:
++        They are the edges that connect vertices to some of its ancestors..
++        NOTE:  In a dfs tree there exits no cross-edge. Suppose there are 2 vertices u and v connected 
++        to each other and some same ancestor in dfs-tree say w. So u(or v) is visited before v(or u) 
++        during dfs and the edge u-v then becomes a forward edge making the edge v-w(or u-w) a back edge.
++        PROPERTY I :  In a tree , all edges are cut-edges. (By defination of a tree)
++        PROPERTY II: For a vertex u to be a cut-vertex, there should be some vertex v in its subtree 
++        in dfs tree which has no back edge to any ancestor of u or none of its ancestors which lie in 
++        path from u to to v has a backedge to an ancestor of u.  Why? Suppose we claim vertex w is a 
++        cut vertex and u be any vertex in it’s subtree. If u has a back-edge to any ancestor of w, 
++        cutting w doesn’t break it into two components as u is still reachable from ancestor’s of w.
++        PROPERTY III: For an edge e connecting u and v  ( par[v]=u ) to be a cut-edge , none of the 
++        vertices in the subtree of v should have a backedge to u or any of its ancestors. (Same reasoning as above)
++        Note: From now on we will be focussing on finding bridges of a graph. Finding Articulation Points would just need some trivial changes from that.
++        So how to find bridges in a graph ?
++        BRUTE FORCE
++        We can loop through all the edges, remove them and check if it’s a cut edge or not by running a dfs and 
++        checking the number of connected components formed. COMPLEXITY: O(E*(V+E))        
++        OPTIMIZED APPROACH
++        Let’s start by defining a new term:
++        LOWLINKS:
++        Lowlink of a vertex v is the maximum ancestor in dfs tree to 
++        which v or any node in its subtree in dfs tree has a backedge to.
++                 ---> 1 
++                /    /\
++               /   2   5               
++               |  /    /\   
++               | 3    6  7
++               |/
++               4
++        In the above example, node 1 has lowlink 1, node 2 has lowlink 1, node 3 has lowlink 1, node 4 has lowlink 1, node 5 has lowlink 5,
++        node 6 has lowlink 6, node 7, has lowlink 7
++        The above figure shows the dfs tree of a graph with the lowlink values written in red. Note that node 6 
++        has a lowlink value 6 instead of being connected to 5 because the edge 5-6 is not a backedge.
++        Now how to assign the lowlink values? An easy way is by assigning minimum height of node to which it has a
++        backedge. But we will do it similar to Euler Tour (Inorder traversal). As we know in euler tour,  ancestors get 
++        lesser value assigned . So here our lowlink  value will be the least ancestor value to which any node in the subtree 
++        has a backedge.  So now, what will be the condition for an edge to be bridge? An edge u-v (u=par[v]) becomes a 
++        bridge iff the lowlink value of node v is greater than value assigned to node u. Why? Because u will have 
++        lower value than any node in subtree of v. So a higher lowlink means there is no backedge 
++        in subtree of v to u or any ancestor of u.
++        Let’s look into some code now:
++        vectorg[N];
++        int timestamp[N];
++        int best[N];
++        bool visited[N];
++        int par[N];
++        bool iscut[N];
++        int T=0;
++        void dfs(int s,int p)
++        {
++            par[s]=p;
++            timestamp[s]=T++;
++            best[s]=timestamp[s];
++            visited[s]=true;
++            for(auto v:g[s])
++            {
++                if(!visited[v.first])
++                {
++                    dfs(v.first,s);
++                    best[s]=min(best[s],best[v.first]);
++                    if(best[v.first]>timestamp[s])
++                    {
++                        iscut[v.second]=true;
++                    }
++                }
++                else if(v.first!=p)
++                {
++                    best[s]=min(best[s],best[v.first]);
++                }
++        Let’s try understanding what’s happening:
++        timestamp[s]=T++ : This assigns values to nodes same as in euler tour. 
++        Note that T is incremented before visiting subtree of s. 
++        So all nodes in subtree of s has higher timestamp value than s.
++        best[s] : This is the lowlink value of s. Initially it is assigned to same value as that of s.
++        best[s]=min(best[s],best[v.first]) : We update our current lowlink value 
++        if any node in subtree of v.first has a backedge to some ancestor of s.
++        best[v.first]>timestamp[s]: This is the same condition we discussed above for an edge to be cut-edge. 
++        (Note: Here we are labelling v.first as a cut-edge though it is a vertex. We can always represent 
++        any edge u-v (u=par[v]) as v as every vertex has atmax one parent in a tree.
++
+
++36.5) Eulerean tour:
++    Necessary and sufficient conditions
++        An undirected graph has a closed Euler tour iff it is connected and 
++        each vertex has an even degree.
++        An undirected graph has an open Euler tour (Euler path) if it is connected, and each vertex, 
++        except for exactly two vertices, has an even degree. The two vertices of odd degree have to be the endpoints of the tour.
++        A directed graph has a closed Euler tour iff it is strongly connected and the in-degree of each vertex is equal to its out-degree.
++        Similarly, a directed graph has an open Euler tour (Euler path) iff for each vertex the difference 
++        between its in-degree and out-degree is 0, except for two vertices, where one has difference +1 (the start of the tour) 
++        and the other has difference -1 (the end of the tour) and, if you add an edge from the
++        end to the start, the graph is strongly connected.
++    Fleury's algorithm (Not the best one)
++        Fleury's algorithm is a straightforward algorithm for finding Eulerian paths/tours. It proceeds by repeatedly 
++        removing edges from the graph in such way, that the graph remains Eulerian. A version of the algorithm, 
++        which finds Euler tour in undirected graphs follows.
++        Start with any vertex of non-zero degree. Choose any edge leaving this vertex, which is not a bridge 
++        (i.e. its removal will not disconnect the graph into two or more disjoint connected components). If there is no 
++        such edge, stop. Otherwise, append the edge to the Euler tour, remove it from the graph, and 
++        repeat the process starting with the other endpoint of this edge.
++        Though the algorithm is quite simple, it is not often used, because it needs to identify bridges 
++        in the graph (which is not a trivial thing to code.) Slightly more sophisticated, but easily implementable algorithm is presented below.
++    Cycle finding algorithm (Better)
++        This algorithm is based on the following observation: if C is any cycle in a Eulerian graph, 
++        then after removing the edges of C, the remaining connected components will also be Eulerian graphs.
++        The algorithm consists in finding a cycle in the graph, removing its edges and
++        repeating this steps with each remaining connected component. It has a very compact code with recursion:
++    PSUEDOCODE:
++        find_tour(u):
++            for each edge e=(u,v) in E:
++                remove e from E
++                find_tour(v)
++            prepend u to tour
++        where u is any vertex with a non-zero degree.  
++37) Lets go over that again! Cut edges, cut vertices, Eulerian tours   
++    Definitions An Euler tour (or Eulerian tour) in an undirected graph is a tour that
++    traverses each edge of the graph exactly once. Graphs that have an Euler tour 
++    are called Eulerian.
++    Finding cut edges -------------------
++        The code below works properly because the lemma above (first lemma):
++        h is the height of the vertex. v is the parent. u is the child.
++
++        We need compute for each subtree, the lowest node in the DFS tree that a back edge can reach. 
++        This value can either be the depth of the other end point, or the discovery time. 
++        Cut edges can, also, be seen as edges that needs to be removed 
++        to end up with strongly connected components.
++        h[root] = 0
++        par[v] = -1
++        dfs (v):
++                d[v] = h[v]
++                color[v] = gray
++                for u in adj[v]:
++                        if color[u] == white
++                                then par[u] = v and dfs(u) and d[v] = min(d[v], d[u])
++                                if d[u] > h[v]
++                                        then the edge v-u is a cut edge
++                        else if u != par[v])
++                                then d[v] = min(d[v], h[u])
++                color[v] = black
++        In this code, h[v] =  height of vertex v in the DFS tree and d[v] = min(h[w] where 
++                                            there is at least vertex u in subtree of v in 
++                                      the DFS tree where there is an edge between u and w).
+
++    Finding cut vertices -----------------
++        The code below works properly because the lemma above (first lemma):
++        h[root] = 0
++        par[v] = -1
++        dfs (v):
++                d[v] = h[v]
++                color[v] = gray
++                for u in adj[v]:
++                        if color[u] == white
++                                then par[u] = v and dfs(u) and d[v] = min(d[v], d[u])
++                                if d[u] >= h[v] and (v != root or number_of_children(v) > 1)
++                                        then the edge v is a cut vertex
++                        else if u != par[v])
++                                then d[v] = min(d[v], h[u])
++                color[v] = black
++        In this code, h[v] =  height of vertex v in the DFS tree and d[v] = min(h[w] where 
++        there is at least vertex u in subtree of v in the DFS tree where there is an edge between u and w).
+
++    Finding Eulerian tours ----------------
++        It is quite like DFS, with a little change :
++        vector E
++        dfs (v):
++                color[v] = gray
++                for u in adj[v]:
++                        erase the edge v-u and dfs(u)
++                color[v] = black
++                push v at the end of e
++        e is the answer.
++    Python implementation
++    This is a short implementation of the Euler tour in python.
++        # g is a 2D adjacency matrix
++        circuit = []
++        def visit(current):
++            for x in range(MAX_N):
++                if g[current][x] > 0:
++                    g[current][x] -= 1
++                    g[x][current] -= 1
++                    visit(x)
++            circuit.append(current)
++        # circuit now has the circuit in reverse, if ordering matters
++        # you can start with any node for a closed tour, and an odd degree node for a open tour
+
 
 57) Articulation points and Biconnected graphs:
     In graph theory, a biconnected component (sometimes known as a 2-connected component) 
@@ -11597,6 +16087,134 @@ SORTED CONTAINERS USAGE PYTHON.
                 
                 # if you dont do list() it will return a SortedDictValuesView -> need to type cast it.
                 return list(res.values())
+
++-70) Example of extracting dynamic programming traversal paths 
++     after doing DP problem.
++        '''
++        CombinationSum:
++        Given an array of integers a and an integer sum, find all of the 
++        unique combinations in a that add up to sum.
++        The same number from a can be used an unlimited number of times in 
++        a combination.
++        Elements in a combination (a1 a2 … ak) must be sorted in non-descending order, 
++        while the combinations themselves must be sorted in ascending order.
++        If there are no possible combinations that add up to sum, 
++        the output should be the string "Empty".
++
++        Example
++
++        For a = [2, 3, 5, 9] and sum = 9, the output should be
++        combinationSum(a, sum) = "(2 2 2 3)(2 2 5)(3 3 3)(9)".
++
++
++        The DP problem is simple, done previously before HARMAN!!
++
++        Here we try to return the paths themselves, that were traversed in the DP
++        2 ways to do so:
++        A parents map OR as we save our results in the DP array, we also save our paths in a DP paths array.
++        Look at both methods and learn!!
++
++        '''
++        from collections import defaultdict, deque
++        def combinationSum(a, sum):
++            # parents map? 
++            g = defaultdict(list)
++            
++            # sort a and deduplicate. 
++            
++            a = sorted(list(set(a)))
++            
++            # we could also space optimize and just use One D array, because new 
++            # index doesnt use just previous index, but all previous indexes.
++            # so include all of em. 
++            OPT = [[0 for i in range(sum+1)]]
++            OPT[0][0] = 1
++            
++            
++            dp_paths = [[] for i in range(sum+1)]
++            dp_paths[0].append([])
++            
++            for idx, coinVal in enumerate(a):
++                # to compute for current index, 
++                # first copy previous, then operate on current. 
++                curr = OPT[-1][:]
++                '''
++                idx, coin?
++                '''
++                for i in range(sum+1):
++                    if i >= coinVal:
++                        # do we specify the coin type we used??
++                        # depends if we built from previous index, or 
++                        # coins from this index.  -> cant you use difference in amts
++                        # to determine coins -> YESS.
++                        # you dont need to save coinVal
++                        curr[i] += curr[i-coinVal]
++                        # can we save it, as we build the dp?
++                        
++                        parent_paths = dp_paths[i-coinVal]
++                        for p in parent_paths:
++                            cp = p[::]
++                            cp.append(coinVal)
++                            dp_paths[i].append(cp)
++
++                        if(curr[i-coinVal] > 0):
++                            g[i].append(i-coinVal)
++                                
++                OPT.append(curr)
++            
++            # DP PATHS WORKS HOW YOU EXPECT. IF OPT[sum] = 6, then in DP paths there is 6 paths.
++            print("DP_PATHS", dp_paths)
++            print("OPT", OPT)
++            
++            '''
++            Problem with getting all paths: we end up with all permutations instead of 
++            combinations: 
++            
++            Output: "(2 2 2 2)(2 2 4)(2 4 2)(2 6)(4 2 2)(4 4)(6 2)(8)"
++            Expected Output: "(2 2 2 2)(2 2 4)(2 6)(4 4)(8)"
++            SO WE NEED LIMIT ARGUMENT.
++            '''
++            
++            results = []
++            
++            def get_all_paths(node, path, limit):
++                kids = g[node]
++                if len(kids) == 0:
++                    # nonlocal results
++                    results.append(path)
++                
++                # USING A LIMIT ALLOWS YOU TO TURN 
++                # PERMUTATONS INTO COMBINATIONS IF ITS SORTED.
++                # BY TRAVERSING COINS FROM LARGEST TO SMALLEST ONLY. 
++                
++                for k in kids:
++                    coinVal = node-k
++                    if coinVal <= limit:
++                        cp = path.copy()
++                        cp.appendleft(coinVal)
++                        get_all_paths(k, cp, min(limit, coinVal))
++                        
++            get_all_paths(sum, deque([]), float("inf"))
++            final=[]
++            
++            # Uncomment this line and code still creates correct output!
++            # results = dp_paths[sum]
++
++            for r in results:
++                if len(r) == 0:
++                    continue
++                s = str(r[0])
++                for idx in range(1, len(r)):
++                    s += " " + str(r[idx])
++                final.append(s)
++            
++            final.sort()
++            
++            if len(final) == 0:
++                return "Empty"
++                
++            last = ")(".join(final)
++            return "(" + last + ")" 
 
 
 #############################################################################
@@ -13223,9 +17841,1349 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
 ###################################################################################
 ###################################################################################
 
+###################################################################################
++##################################################################################
++Interesting/Google Problems Fun:
+
++    1) Given a zero-inexed array H of height of buildings, number of bricks b and number of ropes r. You start your journey from buiding 0 and 
++        move to adjacent building either using rope or bricks. You have limited number of bricks and ropes.
++        While moving from ith building to (i+1)th building,
++        if next building's height is less than or equal to the current buiding's height, you do not need rope or bricks.
++        if next building's height is greater than current buiding's height, you can either use one rope or (h[i+1] - h[i]) bricks.
++        So, question is How far can you reach from 0th buiding if you use bricks and ropes optimally? return index of building till which you can move.
++        Example 1:
++        Input : H = [4,2,7,6,9,11,14,12,8], b = 5, r = 2
++        Output: 8
++        Explanation: use rope to move from index 1 to index 2. 
++        use 3 bricks to move from index 3 to index 4. 
++        use 2 bricks to move from index 4 to index 5. 
++        use rope to move from index 5 to index 6. 
++        so we can reach at the end of the array using 2 ropes and 5 bricks. 
++        Example 2:
++        Input : H = [4,2,7,6,9,11,14,12,8], b = 5, r = 1
++        Output: 5
++        Explanation: use rope to move from index 1 to index 2. 
++        use 3 bricks to move from index 3 to index 4. 
++        use 2 bricks to move from index 4 to index 5. 
++        so we can reach at index 5 using 1 ropes and 5 bricks. 
+
+        You can just be greedy tbh right? hmm... 
+        use bricks for the smallest ones.. 
 
 
 
++        ✔️ Solution - I (Using Min-Heap)
++        Ladders can be used anywhere even for an infinite jump to next building. We need to realise that bricks limit our jumping capacity if 
++        used at wrong jumps. So, bricks should be used only on the smallest jumps in the path and ladders should be used on the larger ones.
++        We could have sorted the jumps and used ladders on largest L jumps(where, L is number of ladders) and bricks elsewhere. 
++        But, we don't know how many jumps will be performed or what's the order of jump sequence.
++        For this, we will assume that the first L jumps are the largest ones and store the jump heights in ascending order. 
++        We can use priority_queue / min-heap for this purpose (since we would be needing to insert and delete elements from it...explained further).
++        Now, for any further jumps, we need to use bricks since the first L jumps have used up all the ladders. 
++        Let's call the jump height requried from now on as curJumpHeight. Now,
++        If curJumpHeight > min-heap top : We have the choice to use bricks on the previous jump which had less jump height. 
++        So, we will use that many bricks on previous (smaller) jump and use ladder for current (larger) jump.
++        If curJumpHeight <= min-heap top : There's no way to minimize usage of bricks for current jump. 
++        We need to spend atleast curJumpHeight number of bricks
++        So, using the above strategy, we can find the furthest building we can reach. As soon as the available 
++        bricks are all used up, we return the current building index.
+
+
++        Time Complexity : O(NlogL)
++        Space Complexity : O(L)
++        def furthestBuilding(self, H: List[int], bricks: int, ladders: int) -> int:
++            jumps_pq = []
++            for i in range(len(H) - 1):
++                jump_height = H[i + 1] - H[i]
++                if jump_height <= 0: continue
++                heappush(jumps_pq, jump_height)
++                if len(jumps_pq) > ladders:
++                    bricks -= heappop(jumps_pq)
++                if(bricks < 0) : return i
++            return len(H) - 1
+
++        Dumber soln:
++        Time Complexity : O(NlogL)
++        Space Complexity : O(L)
++        from sortedcontainers import SortedDict
++        def furthestBuilding(self, H: List[int], bricks: int, ladders: int) -> int:
++            jumps = SortedDict()
++            for i in range(len(H) - 1):
++                jump_height = H[i + 1] - H[i]
++                if jump_height <= 0: continue
++                jumps[jump_height], ladders = jumps.get(jump_height, 0) + 1, ladders - 1
++                if ladders < 0:
++                    top = jumps.peekitem(0)[0]
++                    bricks -= top
++                    jumps[top] -= 1
++                    if jumps[top] == 0 : jumps.popitem(0)
++                if(bricks < 0) : return i
++            return len(H) - 1
+
+
++    2) Topological ordering
++        Given task dependencies (x, y) denoting that to complete y one must first complete x. Find the least
++        amount of time needed to finish all the tasks given that the task that can be done in parallel can be 
++        processed together and it takes 1 unit of time to process a task. 
++        Inorder -> reduce by 1? Process TOPOLOGICAL ORDER BFS'ing?
++        figure it out!
++        (https://docs.google.com/document/d/1S4osCeZjZa20sWywMq4EneHJALcUfPsPm5fXwLbwiAM/edit#heading=h.p5po8tu4jedu)
++    3) Write something about huffman codes here:
++        https://courses.csail.mit.edu/6.897/spring03/scribe_notes/L13/lecture13.pdf
++        and arithmetic codes, etc
++        Given a list of character and the frequencies they appear. Construct a Huffman Tree to encode all character.
++        For more details of building the Huffman Tree and how to use it to encode and decode, please take a look at this article.
++        In terms of writing the code to build the Huffman Tree, one solution I have is use a min heap to store Node objects, each Node 
++        object contains a character and its frequency, then every time poll the two lowest frequency Node objects from the min heap and 
++        create the sum Node, offer the sum Node back to the min heap, repeat this process till we only have one Node in the heap, and that 
++        will be the root node of the Huffman Tree. Eventually all the character nodes will become the leaves.
++        Encoding and decoding are pretty straightforward, just like how we traverse a tree to find a leaf with certain value, the only thing
++        is we use 0 and 1 to indicate whether we are traversing left or right direction.
++    4) Convert  some problems to multiplication and turn them into logs for djikstras such as 2sigmas currency exchange?
+
+
++    5) LeetCode 711 - Number of Distinct Islands II
++    https://protegejj.gitbooks.io/algorithm-practice/content/711-number-of-distinct-islands-ii.html
++    Given a non-empty 2D arraygridof 0's and 1's, an island is a group of1's (representing land) connected 4-directionally (horizontal or vertical.) You may assume all four edges of the grid are surrounded by water.
++
++    Count the number of distinct islands. An island is considered to be the same as another if they have the same shape, or have the same shape after 
++    rotation (90, 180, or 270 degrees only) or reflection (left/right direction or up/down direction).
++
++
++    -> dfs to find all islands
++    -> ok now we need to encode the island!
++
++    
++    -> Find top left coordinate of shape, then subtract all coordiantes by top left coordinate to get it in a picture frame
++    -> width and height of picture frame??
++        -> keep track of top most coordinate, leftmost, rightmost, bottom most. 
++        -> leftmost - rightmost + 1= width
++        -> bttom - top + 1 = height
++         012 
++         111 0
++           1 1
++           1 2 
++
++        3 by 3!
++
++
++    -> get its width and height, and put it in an array
++    
++    -> then rotate array and insert into map, and check
++    -> (Memorize rotation code again)
+    -> TO ROTATE BY 270 DEGREES DO TRANSPOSE OF MATRIX ADN THEN COLUMNS REVERSED FOR THE TRANSPOSE MATRIX 
+
+    -> TO DO 90 DEGREE ROTATION DO TRANSPOSE OF MATRIX? DO TRANSPOSE AND ROW REVERSE OF THE TRANSPOSE RIGHT? MAYUBE... 
+    
+    
+    function transpose(matrix) {
+        for (let i = 0; i < matrix.length; i++) {
+            for (let j = i; j < matrix[0].length; j++) {
+            const temp = matrix[i][j];
+            matrix[i][j] = matrix[j][i];
+            matrix[j][i] = temp;
+            }
+        }
+        return matrix;
+    }
+
+
++SPIRAL MATRIX GOOD SOLN:
++    Let us use coordinate (x, y) and direction of movement (dx, dy). Each time when we reach point outside 
++    matrix we rotate. How we can rotate? We can either create array of rotations in advance or we can use the trick 
++    dx, dy = -dy, dx. Also how we understand it is time to rotate? We will write already visited elements with *, so 
++    when we see * or we go outside the grid, it is time to rotate.
++    Complexity
++    It is O(mn) both for time and space.
++    class Solution:
++        def spiralOrder(self, matrix):
++            n, m = len(matrix[0]), len(matrix)
++            x, y, dx, dy = 0, 0, 1, 0
++            ans = []
++            for _ in range(m*n):
++                if not 0 <= x+dx < n or not 0 <= y+dy < m or matrix[y+dy][x+dx] == "*":
++                    dx, dy = -dy, dx
++                    
++                ans.append(matrix[y][x])
++                matrix[y][x] = "*"
++                x, y = x + dx, y + dy
++            
++            return ans
+
+
++MEMORY ALLOCATOR
++    I've been recently asked this question in the onsite interview:
++    You are required to design a memory allocation class for an bigArray, which will have below methods:
++
++    int bigArray[10000] -> Not necessarily int[], can be anything(Should not modify array)
++
++    int allocateSlice(int size){
++    // allocate a contiguous slice of length size in the array and return the starting index from where data can be stored
++    }
++
++    int freeSlice(int startIndex){
++    // de-allocate a contiguous slice starting at startIndex, with size it has been allocated earlier
++    }
++
++    I was able to come up with an approach but don't think it was scaleable and would pass all test cases!
++    Can you guys tell me your thoughts on possible solutions?
++
++    #Google #Design
++
++        Maintain a set of 'free' ranges in a set sorted by their length. The set will initially have only one value - [0, MAXSIZE - 1]. When you have to
++        allocate for size n, binary search for first range, then split it and store this operation in a hashmap. To free a slice, get the size from the hashmap 
++        and insert that range back into the set. Both operations take O(logn).
++
++        Write so we use a treemap to contain sizes pointing to ranges
++        
++        when we free, we will have to find if that range toouches another range, merge it, and then put it into tree map right?
++
++
++    Top k most frequenet element with TREE MAP/BST
++
++        The total time complexity is O(n + klogn)
++
++        class Solution {
++        public:
++            vector<int> topKFrequent(vector<int>& nums, int k) {
++                unordered_map<int, int> valToCnt;
++                for (auto it: nums) 
++                    valToCnt[it]++;
++                
++                map<int, vector<int>> cntToVal;
++                for (auto it: valToCnt) 
++                    cntToVal[-it.second].push_back(it.first);
++                
++                vector<int> ans; 
++                for (auto it: cntToVal) {
++                    for (auto itB: it.second) {
++                        ans.push_back(itB);
++                        k--;
++                        if (!k) return ans;
++                    }
++                }
++                return ans;
++            }
++        };
++       
+        SO we have ranges in treemap?
+        Allocate size 5 
+                -> find a size bigger than five and take it from there. 
+                -> we store big size 100000 in treemap -> points to full range 
+
+                -> then allocate -> store   200 in treempa -> point to starte of range 0 - 200 and rest 201 - 100000 is also in treemap that points to a bigger size in hashmap. 
+
+                -> keep doing this.
+                -> when you free.. -> you ahave to find the start index -> we can store these start indexes in hashmap -> then point to the treemap... 
+                -> BECAUSE YOU AHVE the size with the start index index treemap to get all ranges allocated for that size, then find the range with that start index. 
+                -> then remove the range. -> then you have to do merge intervals right! -> so you have to see if start index + n + 1 was allocated or somethignr ight? 
+                -> same to check if start index -1 is allocated.. 
+                -> hmmm or ... 
+                -> wait this soln is kinda wrong..
+
+
+
++
++
++
++
++    Snapchat Phone Screen
++
++        Question - Design a class/method AddAndGetTopK to add a number and get top K frequent elements.
++        Eg - k = 3
++        4
++        4,5
++        4,5,4 => 4,5
++        4,5,4,6 => 4,5,6
++        4,5,4,6,5 => 4,5,6
++        4,5,4,6,5,7 => 4,5,6
++        4,5,4,6,5,7,7 => 4,5,7
++
++        I suggessted a BST solution with O(logn) insertion time and O(logn) time for getting top K elements, by maintaining the count of nodes below every node.
++
++        Any other solutions?
++
++
++        freq -> val BST. 
++        
++        OK add a number
++        val -> freq hashmap
++        then also update in freq->val map 
++
++        Ok but how do we do top k?
++
++        can also use pq, and get rid of dirty elements. 
++
++
++    ENUMERATING ALL TOPOLOGICAL SORTS (DATAVISOR)
++        Enumerate all possible topological sorts,
++        dont just give me one topological sort!!
++
++    Word finder:
++
++        We are given a list of words that have both 'simple' and 'compound' words in them. Write an algorithm that 
++        prints out a list of words without the compound words that are made up of the simple words.
++
++        Input: chat, ever, snapchat, snap, salesperson, per, person, sales, son, whatsoever, what so.
++        Output should be: chat, ever, snap, per, sales, son, what, so
++ 
++        The idea . First we have to sort words by length. Then generate trie and put the words in it. Check in the trie if some word is compound.
++       -> actulally wouldnt we also need the prefixes here -> like for snapchat -> we should be searching the prefix chat.. 
+        -> waiot if you store smaller words in trie first. 
+        -> then search snapchat.... then you already know snap and chat in trie, so once you find snap, make sure chat exists and if both exist and string is complete, add both as 
+        simple words!!
+        
+
++
++    Given an R x C grid of letters "P", "F", and ".", you have one person "P" and his friends "F".
++    The person will go visit all his friends and can walk over the empty spaces to visit his friends.
++    He visits a friend when he walks onto the friend's square.
++    He can walk over his friends.
++    Find the length of the shortest path for him to visit all his friends.
++
++    "..P..",
++    "F...F",
++    "FF.FF"
++    The answer is 9. Can someone please help solving this question?
++
++        Answer:
++        Create MST using the friends node. (Kruskal Algo) -
++        Find shortest distance to any of the friends starting from P. (BFS )
++        Ans = Cost of MST (part1) + shortest distance(part-2)
++
++    Word Search 2 Snap:
++
++        class TrieNode():
++            def __init__(self):
++                self.children = collections.defaultdict(TrieNode)
++                self.isWord = False
++        class Trie():
++            def __init__(self):
++                self.root = TrieNode()
++            
++            def insert(self, word):
++                node = self.root
++                for w in word:
++                    node = node.children[w]
++                node.isWord = True
++            
++            def search(self, word):
++                node = self.root
++                for w in word:
++                    node = node.children.get(w)
++                    if not node:
++                        return False
++                return node.isWord
++            
++        class Solution(object):
++            def findWords(self, board, words):
++                res = []
++                trie = Trie()
++                node = trie.root
++                for w in words:
++                    trie.insert(w)
++                for i in xrange(len(board)):
++                    for j in xrange(len(board[0])):
++                        self.dfs(board, node, i, j, "", res)
++                return res
++            
++            def dfs(self, board, node, i, j, path, res):
++                if node.isWord:
++                    res.append(path)
++                    node.isWord = False
++                if i < 0 or i >= len(board) or j < 0 or j >= len(board[0]):
++                    return 
++                tmp = board[i][j]
++                node = node.children.get(tmp)
++                if not node:
++                    return 
++                board[i][j] = "#"
++                self.dfs(board, node, i+1, j, path+tmp, res)
++                self.dfs(board, node, i-1, j, path+tmp, res)
++                self.dfs(board, node, i, j-1, path+tmp, res)
++                self.dfs(board, node, i, j+1, path+tmp, res)
++                board[i][j] = tmp
++
++
++    Coding questions:
++        Problem 1
++
++        Custom:
++            Given an R x C grid of letters "P", "F", and ".", you have one person "P" and his friends "F".
++            The person will go visit all his friends and can walk over the empty spaces to visit his friends. 
++            He visits a friend when he walks onto the friend's square.
++            He can walk over his friends.
++            Find the length of the shortest path for him to visit all his friends.
++
++            "..P..",
++            "F...F",
++            "FF.FF"
++            
++            
++            The answer is 9.
++
++            This is a graph problem. You need to compute the distance between each person or friend, 
++            then find the size of the minimum spanning tree. Use a union find.
++
++            Worth coding this??
++
++
++    Subclassing + LRUCache but  each key has a cost instead of 1 for capiacty:
++        from collections import OrderedDict
++
++        class SCLRUCache(OrderedDict):
++            def __init__(self, max_cost: int):
++                self.curr_cost = 0
++                self.max_cost = max_cost
++            
++            def add(self, key, value, cost: int):
++                self[key] = (value, cost)
++                self.curr_cost += cost
++                while self.curr_cost > self.max_cost:
++                    _, removed_cost = self.popitem(last = False)
++                    self.curr_cost -= removed_cost
++                    
++            def read(self, key):
++                if key not in self:
++                    return - 1
++
++                self.move_to_end(key)
++                value, _ = self[key]
++                return value
++
++    241. Different Ways to Add Parentheses
++
++        Given a string expression of numbers and operators, return all possible results from computing all the different possible ways to group numbers and operators. You may return the answer in any order.
++
++        
++
++        Example 1:
++
++        Input: expression = "2-1-1"
++        Output: [0,2]
++        Explanation:
++        ((2-1)-1) = 0 
++        (2-(1-1)) = 2
++        Example 2:
++
++        Input: expression = "2*3-4*5"
++        Output: [-34,-14,-10,-10,10]
++        Explanation:
++        (2*(3-(4*5))) = -34 
++        ((2*3)-(4*5)) = -14 
++        ((2*(3-4))*5) = -10 
++        (2*((3-4)*5)) = -10 
++        (((2*3)-4)*5) = 10
++        
++
++        Constraints:
++
++        1 <= expression.length <= 20
++        expression consists of digits and the operator '+', '-', and '*'.
++        All the integer values in the input expression are in the range [0, 99].
++
++
++            class Solution:
++                def diffWaysToCompute(self, expression: str) -> List[int]:
++                    
++                    if ('+' not in expression) and ('-' not in expression) and ('*' not in expression):
++                        return [int(expression)]
++                    
++                    res = []
++                    
++                    for i, v in enumerate(expression):
++                        if v == '+' or v == '-' or v == '*':
++                            left_res = self.diffWaysToCompute(expression[:i])
++                            right_res = self.diffWaysToCompute(expression[i + 1:])
++                            for left_i, left_v in enumerate(left_res):
++                                for right_i, right_v in enumerate(right_res):
++                                    if v == '+':
++                                        res.append(left_v + right_v)
++                                    elif v == '-':
++                                        res.append(left_v - right_v)
++                                    else:
++                                        res.append(left_v * right_v)
++                    return res
++
++            MEMO SOLN
++
++            class Solution:
++                def diffWaysToCompute(self, expression: str) -> List[int]:
++                    self.memo = defaultdict(list)
++                    return self.diffWaysToComputeUtil(expression)
++                    
++                    
++                def diffWaysToComputeUtil(self, expression: str) -> List[int]:
++                    if expression in self.memo:
++                        return self.memo[expression]
++                    
++                    if ('+' not in expression) and ('-' not in expression) and ('*' not in expression):
++                        return [int(expression)]
++                    
++                    res = []
++                    
++                    for i, v in enumerate(expression):
++                        if v == '+' or v == '-' or v == '*':
++                            left_res = self.diffWaysToComputeUtil(expression[:i])
++                            right_res = self.diffWaysToComputeUtil(expression[i + 1:])
++                            for left_i, left_v in enumerate(left_res):
++                                for right_i, right_v in enumerate(right_res):
++                                    if v == '+':
++                                        res.append(left_v + right_v)
++                                    elif v == '-':
++                                        res.append(left_v - right_v)
++                                    else:
++                                        res.append(left_v * right_v)
++                    self.memo[expression] = res
++                    return res
++
++
++
++
++    Quick Select impl: Get Top K most frequent elemetns:
++
++        from collections import Counter
++        class Solution:
++            def topKFrequent(self, nums: List[int], k: int) -> List[int]:
++                count = Counter(nums)
++                unique = list(count.keys())
++                def partition(left, right, pivot_index) -> int:
++                    pivot_frequency = count[unique[pivot_index]]
++                    # 1. move pivot to end
++                    unique[pivot_index], unique[right] = unique[right], unique[pivot_index]  
++                    
++                    # 2. move all less frequent elements to the left
++                    store_index = left
++                    for i in range(left, right):
++                        if count[unique[i]] < pivot_frequency:
++                            unique[store_index], unique[i] = unique[i], unique[store_index]
++                            store_index += 1
++
++                    # 3. move pivot to its final place
++                    unique[right], unique[store_index] = unique[store_index], unique[right]  
++                    
++                    return store_index
++                
++                def quickselect(left, right, k_smallest) -> None:
++                    """
++                    Sort a list within left..right till kth less frequent element
++                    takes its place. 
++                    """
++                    # base case: the list contains only one element
++                    if left == right: 
++                        return
++                    
++                    # select a random pivot_index
++                    pivot_index = random.randint(left, right)     
++                                    
++                    # find the pivot position in a sorted list   
++                    pivot_index = partition(left, right, pivot_index)
++                    
++                    # if the pivot is in its final sorted position
++                    if k_smallest == pivot_index:
++                        return 
++                    # go left
++                    elif k_smallest < pivot_index:
++                        quickselect(left, pivot_index - 1, k_smallest)
++                    # go right
++                    else:
++                        quickselect(pivot_index + 1, right, k_smallest)
++                
++                n = len(unique) 
++                # kth top frequent element is (n - k)th less frequent.
++                # Do a partial sort: from less frequent to the most frequent, till
++                # (n - k)th less frequent element takes its place (n - k) in a sorted array. 
++                # All element on the left are less frequent.
++                # All the elements on the right are more frequent.  
++                quickselect(0, n - 1, n - k)
++                # Return top k frequent elements
++                return unique[n - k:]
++
++    Circular sort:
++
++        Given an array of integers, return true or false if the numbers in the array go from 0... (N - 1) 
++        where N is the length of the array
++
++        Linear time, constant space is a requirement
++
++        example:
++        [0,1,2,3,4] = true;
++        [4,2,1,0,3] = true;
++        [0,1,5,2,4] = false;
++
++
++
++    Valid Number DFA SOLN:
++        class Solution(object):
++        def isNumber(self, s):
++            """
++            :type s: str
++            :rtype: bool
++            """
++            #define a DFA
++            state = [{}, 
++                    {'blank': 1, 'sign': 2, 'digit':3, '.':4}, 
++                    {'digit':3, '.':4},
++                    {'digit':3, '.':5, 'e':6, 'blank':9},
++                    {'digit':5},
++                    {'digit':5, 'e':6, 'blank':9},
++                    {'sign':7, 'digit':8},
++                    {'digit':8},
++                    {'digit':8, 'blank':9},
++                    {'blank':9}]
++            currentState = 1
++            for c in s:
++                if c >= '0' and c <= '9':
++                    c = 'digit'
++                if c == ' ':
++                    c = 'blank'
++                if c in ['+', '-']:
++                    c = 'sign'
++                if c not in state[currentState].keys():
++                    return False
++                currentState = state[currentState][c]
++            if currentState not in [3,5,8,9]:
++    Word Search 2: Find all words on the board:
++        https://leetcode.com/problems/word-search-ii/discuss/59790/Python-dfs-solution-(directly-use-Trie-implemented).
++        @caikehe Great solution, but no need to implement Trie.search() since the search is essentially done by dfs.
++
++        class TrieNode():
++            def __init__(self):
++                self.children = collections.defaultdict(TrieNode)
++                self.isWord = False
++        class Trie():
++            def __init__(self):
++                self.root = TrieNode()
++            def insert(self, word):
++                node = self.root
++                for w in word:
++                    node = node.children[w]
++                node.isWord = True
++            def search(self, word):
++                node = self.root
++                for w in word:
++                    node = node.children.get(w)
++                    if not node:
++                        return False
++                return node.isWord
++        class Solution(object):
++            def findWords(self, board, words):
++                res = []
++                trie = Trie()
++                node = trie.root
++                for w in words:
++                    trie.insert(w)
++                for i in xrange(len(board)):
++                    for j in xrange(len(board[0])):
++                        self.dfs(board, node, i, j, "", res)
++                return res
++            
++            def dfs(self, board, node, i, j, path, res):
++                if node.isWord:
++                    res.append(path)
++                    node.isWord = False
++                if i < 0 or i >= len(board) or j < 0 or j >= len(board[0]):
++                    return 
++                tmp = board[i][j]
++                node = node.children.get(tmp)
++                if not node:
++                    return 
++                board[i][j] = "#"
++                self.dfs(board, node, i+1, j, path+tmp, res)
++                self.dfs(board, node, i-1, j, path+tmp, res)
++                self.dfs(board, node, i, j-1, path+tmp, res)
++                self.dfs(board, node, i, j+1, path+tmp, res)
++                board[i][j] = tmp
+
+
++    Similar to HRT problem:
++        There are some processes that need to be executed. Amount of a load that process causes on a server that runs it, is being represented by a single integer. Total load caused on a server is the sum of the loads of all the processes that run on that server. You have at your disposal two servers, on which mentioned processes can be run. Your goal is to distribute given processes between those two servers in the way that, absolute difference of their loads will be minimized.
++        Given an array of n integers, of which represents loads caused by successive processes, return the minimum absolute difference of server loads.
++        Example 1:
++        Input: [1, 2, 3, 4, 5]
++        Output: 1
++        Explanation:
++        We can distribute the processes with loads [1, 2, 4] to the first server and [3, 5] to the second one,
++        so that their total loads will be 7 and 8, respectively, and the difference of their loads will be equal to 1.
++        Just do the HRT problem instead!
++        Dishes, friends,  ETC, minimize the unfairness!
++    K stack pops
++    Divide subset into equal partitions Subset sum into k partitions (linkedin): 
++
++
+
++#################################################################################3
++#######################################################################################
++Cool Trie Code:
++    Given a dictionary of words (sorted lexicographically) and a prefix string, return all the words that start with the given prefix. @BigV
++    Couldnt you binary search the letters in the word?
++    But i guess trie is faster regardless. 
++    Rabinkarp hash the word. 
++    hash the first 8 letters of every word and put in a map. get idx, then go left and right in array!
++    from collections import defaultdict
++    class TrieNode: 
++        def __init__(self): 
++            self.ht = defaultdict(TrieNode) 
++            self.isEnd = False 
++    class Trie: 
++        def __init__(self): 
++            self.root = TrieNode() 
++        
++        def add_word(self, word): 
++            curr = self.root
++            for char in word: 
++                curr = curr.ht[char]
++            curr.isEnd = True 
++        
++        def startsWith(self, prefix, trieNode): 
++            rtn = [] 
++            
++            def dfs(currWord, currTrieNode): 
++                if currTrieNode.isEnd: 
++                    rtn.append(currWord)
++                    
++                for char, children in currTrieNode.ht.items(): 
++                    dfs(currWord+char, children) 
++                
++            dfs(prefix, trieNode)
++            return rtn 
++        
++    def get_prefix(prefix): 
++        example = ['a','abc','abs', 'b','bob']
++        trie = Trie()
++        
++        for word in example: 
++            trie.add_word(word)
++            
++        curr_root = trie.root
++        for char in prefix: 
++            curr_root = curr_root.ht[char]
++        
++        rtn = []
++        rtn.append(trie.startsWith(prefix, curr_root))
++        return rtn 
++        
++    print(get_prefix('ab'))
+
+
++#######################################
++##########################################
++RANDOM QUESTIONS & RESERVOIR SAMPLING:
++    Swap To Back Of Array O(1) Trick Random Questions
++    Q. Given an array, you have to write a function to select a random number from 
+        the array such that it has not appeared in the last K calls to this function.
++        Approach : Used a combination of deque and unordered_set to generate the random number in O(N) time. Further, the 
++        interviewer required an optimisation of O(1), used a vector to do so. The vector contains the unselected elements so far. 
++        As soon as an element is visited, swap the element with the last element in the vector & do a pop_back operation to get the answer in O(1).
++
++
++        Write a RandomGenerator class:
++
++        public class RandomGenerator {
++
++            public RandomGenerator(int n) {
++            }
++            
++            public int generate() {
++                // todo
++            }
++        }
++        The contructor will be passed an integer n. generate is supposed to return a random number between 0 to n, but it 
++        is not supposed to return a number that it has already returned. If possiblities are exhauted, return -1.
++
++    Construct your own RNG:
++        You are in charge of writing a software for a slot machine. On press of a button, the slot machine should output the roll of 2 dice.
++        constraints: Do not use the random library. Probability of the dice rolls should be equal.
++
++        Take the unix timestamp in long form. Mod that number by 36. The remainder can range from 0 to 35. You can map the remainder to 
++        36 possibilities that the 2 6-side dice throws can have in terms of value pairs.
++
++        Another way to enhance:
++        Choose a few prime numbers and put them in an array of length N. Take system time down the smallest unit possible. 
++        Take the Mod of the floor of that number divided by previous selected prime. Use the result to select a new prime. 
++        Multiply system time the prime, take Mod 36 as suggested by @vishnushiva
++
++        You can also create your own Linear congruential generator
++            var seed = 0
++            func random() -> Int {
++                seed = (seed * 1103515245 + 12345) % Int(Int32.max)
++                return seed
++            }
++    Google - Generate random (x, y) within an area
++        Given a rectangular on a 2D coordinate, write a function to return (x, y) pair so that the distribution of the return value is uniform within the rectangular.
++        Followup 1: What if you are given multiple non-overlapping rectangular areas? How to generate uniformly distributed (x, y) pair?
++        Followup 2: What if you are given an arbitrary shaped area?
++        In general, to uniformly randomly select a (x,y) from inside a rectangle, you can independently sample the x coordinate and the y coordinate. 
++        Note that the rectangle might not be aligned along the axes (i.e. could be at an angle), but one can always find linear transformations to 
++        transform the rectangle so that its axes are parallel to the X and Y axes.
++
++        First part: Choose random number between 0 and x. and Random number between 0 and y. Then return (x,y)
++            random.uniform(a, b) -> 
++            Return a random floating point number N such that a <= N <= b for a <= b and b <= N <= a for b < a.
++            The end-point value b may or may not be included in the range depending on floating-point 
++            rounding in the equation a + (b-a) * random()
++
++        Follow up 1: Have weigth of every rectangle. Choose a rectangle, based on weight of rectangle. Then in each rectange do above thing. 
++
++        Arbitrary shape -> grab a very THIN rectangle. 
++        grab height of shape.
++        Then find a slice based on height [0 and height]
++
++        Then for arbitrary shape, get all widths within the height. 
++        -> widths will be intervals!
++
++        Choose an interval based on lengths of interval as the weight.
++        Once in the interval, just do uniform [startOfInterva, endOfInterval] rng.  
++    Create unbiased random from biased random:
++        Suppose that you want to output 0 with probability 1/2 and 1 with probability 1/2. 
++        You have a function BIASED-RANDOM that outputs 1 with probability p and 0 with probability 1-p 
++        where 0<p<1.Write a function UNBIASED-RANDOM that uses BIASED -RANDOM and outputs 1 and 0 with equal probability.
++        Ok so roll twice, 
++        Consider one side heads 0
++        consider on side tails 1 
++        Roll until heads, then roll until tails. 
++        hmm
++        Heads Prob -> (1-p)
++        Tails prob -> p
++        (1-p) * p = p * (1-p)
++        
++        HH -> H
++        HT -> T
++        TH -> H
++        TT -> T
++        
++        ok roll twice. 
++        if you get 
++        HH, or TH -> heads
++        if you get 
++        TH or TT -> tails. 
++        (1-p)(1-p) = 1-2p + p^2  [2 heads]
++        
++        p*p = p^2  [2 tails]
++        (1-p)*p = [HT]
++        p * (1-p) = [TH]
++        so if you get different results you can use that to create fair coin
++        TH -> H, HT -> T
++        other options you have to re-roll!!
++        
++    Write a function to generate random numbers between given range (5 to 55 inclusive) using a given function "rand_0()" 
+        which returns whether '0' or '1'.
++        Generate 5?
++        Generate 11? 
++        multiply...
++        hmm
++        how bout we subtract 5 from each now its 
++        0 to 50 -> hb now..
++        generate 16 * 4 = 64 -> 
++        0 - 3 
++        0 - 15
++        ...
++    Reservoir sampling:
++        Main idea:
++            we have n items we need to pick random!
++            select the first item, 
++            ok now select the second item 1/2 prob
++            ok now take third item with 1/3 prob
++            ... 
++            select nth item with 1/n prob
++            Can iterate through array and then tell me what item you got!
++            3 items:
++            prob you kept first item is
++            1 * (1/2) * (2/3) = 1/3!!
++            prob kept second item:
++            1 * 1/2 * 2/3 = 1/3!!
++            prb kept 3rd item 
++            is  whatever you have *  1/3
++        Facebook | Onsite | Generate random max index
++        Given an array of integers arr, randomly return an index of the maximum value seen by far.
++
++        Example:
++        Input: [11, 30, 2, 30, 30, 30, 6, 2, 62, 62]
++
++        Having iterated up to the at element index 5 (where the last 30 is), randomly give an index among [1, 3, 4, 5] which are indices of 30 - the max value by far. Each index should have a ¼ chance to get picked.
++
++        Having iterated through the entire array, randomly give an index between 8 and 9 which are indices of the max value 62.
++
++        ok 
++        import random 
++        max = float("-inf")
++        maxIdx = -1
++        count = 0
++        for idx, i in enumerate(arr):
++            if (i > max):
++                max = i
++                maxIdx = idx
++                count = 1
++            elif(i == max):
++                count += 1
++                if(random.randint(1, count) == 1):
++                    maxIdx = idx
++        return maxIdx
++ 
++    WEIGHTED reservoir sampling: 
++    
++        528. Random Pick with Weight
++        You are given a 0-indexed array of positive integers w where w[i] describes the weight of the ith index.
++        You need to implement the function pickIndex(), which randomly picks an index in the range [0, w.length - 1] 
++        (inclusive) and returns it. The probability of picking an index i is w[i] / sum(w).
++        For example, if w = [1, 3], the probability of picking index 0 is 1 / (1 + 3) = 0.25 (i.e., 25%), and the 
++        probability of picking index 1 is 3 / (1 + 3) = 0.75 (i.e., 75%).
++        
++        Ok here is the weighted reservori sampling soln:
++            The algorithm by Pavlos Efraimidis and Paul Spirakis solves exactly this problem. The original paper with complete proofs 
++            is published with the title "Weighted random sampling with a reservoir" in Information Processing Letters 2006, 
++            but you can find a simple summary here.
++            The algorithm works as follows. First observe that another way to solve the unweighted reservoir sampling is to assign to 
++            each element a random id R between 0 and 1 and incrementally (say with a heap) keep track of the top k ids. Now let's look at 
++            weighted version, and let's say the i-th element has weight w_i. Then, we modify the algorithm by choosing the id of the i-th 
++            element to be R^(1/w_i) where R is again uniformly distributed in (0,1).
++            Another article talking about this algorithm is this one by the Cloudera folks.
++            in other words ->
++                rng(0,1) = 0.5 ^ 1/2 = 0.7071?
+
+
++    WEIGHTED RANDOM PICK INDEX with cumulative sums and bin search:
++        import random 
++        class Solution:
++            def __init__(self, w: List[int]):
++                
++                self.cum_sum = []
++                self.s = 0
++                for i in w:
++                    self.s += i
++                    self.cum_sum.append(self.s)
++                
++            def pickIndex(self) -> int:
++                # pick index with between 0 and total sum-1
++                '''
++                [1,2,3,4]
++                
++                so we have
++                [1, 3, 6, 10]
++                pick # between 1 and 10
++                
++                1 -> first idx
++                2 -> second
++                3 -> second idx
++                4 -> third idx
++                aka binary search for right idx which is always equal to or bigger than you!
++                never take smaller one
++                '''    
++                
++                r = random.randint(1, self.s)
++                start = 0
++                end = len(self.cum_sum) - 1
++                
++                while start < end:
++                    mid = start + (end - start)//2
++                    # print("start, mid, end, val", start, mid, end, self.cum_sum[mid])         
++                    if self.cum_sum[mid] == r:
++                        # return that idx!
++                        return  mid
++                    elif r < self.cum_sum[mid]:
++                        end = mid
++                    else:
++                        start = mid+1 # end might be the element we need!
++                
++                # also just do return bisect.bisect_left(self.cum_sum, r)
++                return start            
++                
++    WEIGHTED RANDOM PICK INDEX WITH ALIAS METHOD
++        O(1) INTELLIGENT ALIAS METHOD: (TODO WRITE NOTES ON THIS.)
++        https://leetcode.com/problems/random-pick-with-weight/discuss/671439/Python-Smart-O(1)-solution-with-detailed-explanation
++        Probably you already aware of other solutions, which use linear search with O(n) complexity and binary search with O(log n) complexity. 
++        When I first time solved this problem, I thought, that O(log n) is the best complexity you can achieve, howerer it is not! You can 
++        achieve O(1) complexity of function pickIndex(), using smart mathematical trick: let me explain it on the example: 
++        w = [w1, w2, w3, w4] = [0.1, 0.2, 0.3, 0.4]. Let us create 4 boxes with size 1/n = 0.25 and distribute original weights into 
++        our boxes in such case, that there is no more than 2 parts in each box. For example we can distribute it like this:
++        Box 1: 0.1 of w1 and 0.15 of w3
++        Box 2: 0.2 of w2 and 0.05 of w3
++        Box 3: 0.1 of w3 and 0.15 of w4
++        Box 4: 0.25 of w4
++        (if weights sum of weights is not equal to one, we normalize them first, dividing by sum of all weights).
++        this method has a name: https://en.wikipedia.org/wiki/Alias_method , here you can see it in more details.
++        Sketch of proof
++        There is always a way to distribute weights like this, it can be proved by induction, there is always be one box with weight <=1/n and 
++        one with >=1/n, we take first box in full and add the rest weight from the second, so they fill the full box. Like we did for Box 1 in our 
++        example: we take 0.1 - full w1 and 0.15 from w3. After we did it we have w2: 0.2, w3: 0.15 and w4: 0.4, and again we have one box with >=1/4 and one box with <=1/4.
++        Now, when we created all boxes, to generate our data we need to do 2 steps: first, to generate box number in O(1), because sizes of boxes are 
++        equal, and second, generate point uniformly inside this box to choose index. This is working, because of Law of total probability.
++        Complexity. Time and space complexity of preprocessing is O(n), but we do it only once. Time and space for function pickIndex is just O(1): 
++        all we need to do is generate uniformly distributed random variable twice!
++        Code is not the easiest one to follow, but so is the solution. First, I keep two dictionaries Dic_More and Dic_Less, where I distribute 
++        weights if they are more or less than 1/n. Then I Iterate over these dictionaries and choose one weight which is more than 1/n, another 
++        which is less, and update our weights. Finally when Dic_Less is empty, it means that 
++        we have only elements equal to 1/n and we put them all into separate boxes.
++        I keep boxes in the following way: self.Boxes is a list of tuples, with 3 numbers: index of first weight, index of second weight and split, 
++        for example for Box 1: 0.1 of w1 and 0.15 of w3, we keep (1, 3, 0.4). If we have only one weight in box, we keep its index.
++            class Solution:
++            def __init__(self, w):
++                ep = 10e-5
++                self.N, summ = len(w), sum(w)
++                weights = [elem/summ for elem in w]
++                Dic_More, Dic_Less, self.Boxes = {}, {}, []
++                
++                for i in range(self.N):
++                    if weights[i] >= 1/self.N:
++                        Dic_More[i] = weights[i]
++                    else:
++                        Dic_Less[i] = weights[i]
++
++                while Dic_More and Dic_Less:
++                    t_1 = next(iter(Dic_More))
++                    t_2 = next(iter(Dic_Less))
++                    self.Boxes.append([t_2,t_1,Dic_Less[t_2]*self.N])
++
++                    Dic_More[t_1] -= (1/self.N - Dic_Less[t_2])
++                    if Dic_More[t_1] < 1/self.N - ep:
++                        Dic_Less[t_1] = Dic_More[t_1]
++                        Dic_More.pop(t_1)
++                    Dic_Less.pop(t_2)
++                
++                for key in Dic_More: self.Boxes.append([key])
++            def pickIndex(self):
++                r = random.uniform(0, 1)
++                Box_num = int(r*self.N)
++                if len(self.Boxes[Box_num]) == 1:
++                    return self.Boxes[Box_num][0]
++                else:
++                    q = random.uniform(0, 1)
++                    if q < self.Boxes[Box_num][2]:
++                        return self.Boxes[Box_num][0]
++                    else:
++                        return self.Boxes[Box_num][1]
++    Generate uniform random integer
++    Problem: given function of rand3() which return uniformly random int number of [1,2,3], 
++    write a random function rand4(), which return uniformly random integer of [1,2,3,4]
++    How to test it?
++    As follow up, I was asked about how to test rand4() function, to verify it's truly random.
++    My thought is to run rand4() for 1K times, and collect the frequency of [1,2,3,4], and then run 
++    rand4() 10K times and collect frequency, then run rand4() 100K time ... 
++    to see if the frequency of each number between [1,2,3,4] converge to 25%.
++    There is a scenario like 1,2,3,4,1,2,3,4,1,2,3,4 ... ... like round robin generation. 
++    it would pass the convergence test I mentioned above, but it's not uniformly random. 
++    So does any pattern that shows a deterministic pattern, like 1,2,3,4,4,3,2,1 ...
++    Any idea about how to test rand4() is truely uniformly random?
++    Soln:
++        Can you generate a list of numbers by re-rolling rand3() the LCM of 3 and 4 which is 12.
++        So role rand3 4 times, sum it, do mod 4 -> and tell me what you get.
++        ^ Does this work??
++        Something about REJECTION SAMPLING is how you do it!!
++    Any idea about how to test rand4() is truely uniformly random?
++    There are probably better ways, but... you could run rand4 a million times, store the results in a 1MB file, 
++    and let a good compression program compress it. It should result in about 250KB. If there are easy patterns 
++    like your examples or if the distribution is significantly non-uniform, it will be significantly smaller.
++    
++    https://leetcode.com/problems/implement-rand10-using-rand7/
++    Given the API rand7() that generates a uniform random integer in the range [1, 7], 
++    write a function rand10() that generates a uniform random integer in the range [1, 10]. 
++    You can only call the API rand7(), and you shouldn't call any other API. Please do not use a language's built-in random API.
++    Each test case will have one internal argument n, the number of times that your implemented 
++    function rand10() will be called while testing. Note that this is not an argument passed to rand10().
++    Use REJECTION SAMPLING
++    Intuition
++    What if you could generate a random integer in the range 1 to 49? How would you generate a random integer 
++    in the range of 1 to 10? What would you do if the generated number is in the desired range? What if it is not?
++
++    Algorithm
++
++    This solution is based upon Rejection Sampling. The main idea is when you generate a number in the desired range,
++    output that number immediately. If the number is out of the desired range, reject it and re-sample again. 
++    As each number in the desired range has the same probability of being chosen, a uniform distribution is produced.
++
++    Obviously, we have to run rand7() function at least twice, as there are not enough numbers in the range of 1 to 10. 
++    By running rand7() twice, we can get integers from 1 to 49 uniformly. Why?
++    -> because we can generate 2 indexes into an array!
++     1 2 3 4 5 6 7
++   1 1 2 3 4 5 6 7 
++   2 8 91011121314
++   3 ...
++   4
++   5
++   6
++   7
++    aka -> 7 * i + j = 7*6 + 7 == 49?
++    
++        class Solution {
++        public:
++            int rand10() {
++                int row, col, idx;
++                do {
++                    row = rand7();
++                    col = rand7();
++                    idx = col + (row - 1) * 7;
++                } while (idx > 40);
++                return 1 + (idx - 1) % 10;
++        };  
++    
++    Why not return 1 + (idx % 10) for Approach 1?
++    -> 
++        Because we are using % operation here, we need to do a quick math trick.
++        idx is in range 1 2 3 4 5 6 7 8 9 10, if we do nothing, it'll become 1 2 3 4 5 6 7 8 9 "0" after using (% 10).
++        So we need to offset 1, to range 0 1 2 3 4 5 6 7 8 9 at first.
++        After using (% 10), then add 1 back.
++        Now it is correctly in range 1 2 3 4 5 6 7 8 9 10 again.
++        Approach 2: Utilizing out-of-range samples
++        Intuition
++        There are a total of 2.45 calls to rand7() on average when using approach 1. 
++        Can we do better? Glad that you asked. In fact, we are able to improve average 
++        number of calls to rand7() by about 10%.
++        The idea is that we should not throw away the out-of-range samples, but instead use them to 
++        increase our chances of finding an in-range sample on the successive call to rand7.
++        Algorithm
++        Start by generating a random integer in the range 1 to 49 using the aforementioned method. 
++        In the event that we could not generate a number in the desired range (1 to 40), it is equally 
++        likely that each number of 41 to 49 would be chosen. In other words, we are able to obtain integers 
++        in the range of 1 to 9 uniformly. Now, run rand7() again to obtain integers in the range of 1 to 63 uniformly. 
++        Apply rejection sampling where the desired range is 1 to 60. If the generated number is in the desired range (1 to 60), 
++        we return the number. If it is not (61 to 63), we at least obtain integers of 1 to 3 uniformly. Run rand7() again to 
++        obtain integers in the range of 1 to 21 uniformly. The desired range is 1 to 20, and in the unlikely event we 
++        get a 21, we reject it and repeat the entire process again.
++        class Solution {
++        public:
++            int rand10() {
++                int a, b, idx;
++                while (true) {
++                    a = rand7();
++                    b = rand7();
++                    idx = b + (a - 1) * 7;
++                    if (idx <= 40)
++                        return 1 + (idx - 1) % 10;
++                    a = idx - 40;
++                    b = rand7();
++                    // get uniform dist from 1 - 63
++                    idx = b + (a - 1) * 7;
++                    if (idx <= 60)
++                        return 1 + (idx - 1) % 10;
++                    a = idx - 60;
++                    b = rand7();
++                    // get uniform dist from 1 - 21
++                    idx = b + (a - 1) * 7;
++                    if (idx <= 20)
++                        return 1 + (idx - 1) % 10;
++                }
++            }
++        };
++        Complexity Analysis
++        Time Complexity: O(1)O(1) average, but O(\infty)O(∞) worst case.
++    710. Random Pick With Blacklist (HARD): (TODO: SOLVE BY YOURSELF!)
++        Hard
++        You are given an integer n and an array of unique integers blacklist. Design an algorithm to pick a random integer in 
++        the range [0, n - 1] that is not in blacklist. Any integer that is in the mentioned range and not in blacklist should 
++        be equally likely to be returned.
++        Optimize your algorithm such that it minimizes the number of calls to the built-in random function of your language.
++
++        Implement the Solution class:
++        Solution(int n, int[] blacklist) Initializes the object with the integer n and the blacklisted integers blacklist.
++        int pick() Returns a random integer in the range [0, n - 1] and not in blacklist.
++        
++        Example 1:
++        Input
++        ["Solution", "pick", "pick", "pick", "pick", "pick", "pick", "pick"]
++        [[7, [2, 3, 5]], [], [], [], [], [], [], []]
++        Output
++        [null, 0, 4, 1, 6, 1, 0, 4]
++
++        Explanation
++        Solution solution = new Solution(7, [2, 3, 5]);
++        solution.pick(); // return 0, any integer from [0,1,4,6] should be ok. Note that for every call of pick,
++                        // 0, 1, 4, and 6 must be equally likely to be returned (i.e., with probability 1/4).
++        solution.pick(); // return 4
++        solution.pick(); // return 1
++        solution.pick(); // return 6
++        solution.pick(); // return 1
++        solution.pick(); // return 0
++        solution.pick(); // return 4
++        
++        Harman Soln 
++        Just swap blacklisted elements to end of an array initalized from size 0 to N:
++        Use 2 pointer to keep track of border of elements that are blacklisted on the right side,
++        left pointer indicates elements not in blacklist and between left and right are unprocessed elements!
++        move right until you are on non blaclist item, and move left until you find a blacklist item and swap with right!
++        Then choose betweel [0 to L - sizeOfBlacklist]
++        Better soln is to have map initialized of size Blacklist and do following:
++        Treat the first N - |B| numbers as those we can pick from. Iterate through the blacklisted 
++        numbers and map each of them to to one of the remaining non-blacklisted |B| numbers
++        For picking, just pick a random uniform int in 0, N - |B|. If its not blacklisted, 
++        return the number. If it is, return the number that its mapped to
++        import random
++           
+            # below solution is incorrect, not fair because for i in range is going from self.lenght, self.N, actually 
+            # nvm that is correct. since we assume the blacklisted items are there we have to remap the blaklist item to 
+            # a correct value that we can fetch. 
+            
++        class Solution:
++            def __init__(self, N, blacklist):
++                blacklist = sorted(blacklist)
++                self.b = set(blacklist)
++                self.m = {}
++                self.length = N - len(blacklist)
++                j = 0
++                for i in range(self.length, N):
++                    if i not in self.b:
++                        self.m[blacklist[j]] = i
++                        j += 1
++
++            def pick(self):
++                i = random.randint(0, self.length - 1)
++                return self.m[i] if i in self.m else i    
+
+
+
+
++###################################################################################
++##################################################################################
++Binary Search Ultimate Handbook:
++    What is binary search?
++    Normally, to find the target in a group, such as an array of numbers, the worst case scenario is we need to go 
++    through every single element (O(n)). However, when these elements are sorted, we are able to take the privilege 
++    of this extra information to bring down the search time to O(log n), that is if we have 100 elements, 
++    the worst case scenario would be 10 searches. That is a huge performance improvement.
++    The Gif below demonstrates the power of binary search.
++    https://assets.leetcode.com/static_assets/posts/1EYkSkQaoduFBhpCVx7nyEA.gif
++    The reason behind this huge performance increase is because for each search iterations, 
++    we are able to cut the elements we will be looking at in half. Fewer elements to look at = faster search time. 
++    And this all comes from the simple fact that in a sorted list, everything to the right of n will be greater or equal to it, and vice versa.
++    Before we look at the abstract ideas of binary search, let's see the code first:
++        var search = function(nums, target) {
++            let lo = 0, hi = nums.length-1;
++            while (lo < hi) {
++                let mid = lo + Math.floor((hi-lo+1)/2);
++                if (target < nums[mid]) {
++                    hi = mid - 1
++                } else {
++                    lo = mid; 
++                }
++            }
++            return nums[lo]==target?lo:-1;
++        };
++    The fundamental idea
++    1. lo & hi
++    We define two variables, let's call them lo and hi . They will store array indexes and they work 
++    like a boundary such that we will only be looking at elements inside the boundary.
++    Normally, we would want initialize the boundary to be the entire array.
++    let lo = 0, hi = nums.length-1;
++    2. mid
++    The mid variable indicates the middle element within the boundary. It separates our boundary into 2 parts. 
++    Remember how I said binary search works by keep cutting the elements in half, the mid element works like a 
++    traffic police, it indicates us which side do we want to cut our boundary to.
++    Note when an array has even number of elements, it's your decision to use either the left mid (lower mid) or the right mid (upper mid)
++    let mid = lo + Math.floor((hi - lo) / 2); // left/lower mid
++    let mid = lo + Math.floor((hi - lo + 1) / 2); // right/upper mid
++
++    3. Comparing the target to mid
++    By comparing our target to mid, we can identify which side of the boundary does the target belong. 
++    For example, If our target is greater than mid, this means it must exist in the right of mid . In this case, 
++    there is no reason to even keep a record of all the numbers to its left. And this is the fundamental 
++    mechanics of binary search - keep shrinking the boundary.
++
++    if (target < nums[mid]) {
++        hi = mid - 1
++    } else {
++        lo = mid; 
++    }
++
++
++    4. Keep the loop going
++    Lastly, we use a while loop to keep the search going:
++
++    while (lo < hi) { ... }
++    The while loop only exits when lo == hi, which means there's only one element left. And if we implemented 
++    everything correctly, that only element should be our answer(assume if the target is in the array).
++
++    The pattern
++    It may seem like binary search is such a simple idea, but when you look closely in the code, we are 
++    making some serious decisions that can completely change the behavior of our code.
++    These decisions include:
++
++    Do I use left or right mid?
++    Do I use < or <= , > or >=?
++    How much do I shrink the boundary? is it mid or mid - 1 or even mid + 1 ?
++    ...
++    And just by messing up one of these decisions, either because you don't 
++    understand it completely or by mistake, it's going to break your code.
++    To solve these decision problems, I use the following set of rules to always keep me away from trouble, 
++    most importantly, it makes my code more consistent and predictable in all edge cases.
++    1. Choice of lo and hi, aka the boundary
++    Normally, we set the initial boundary to the number of elements in the array
++    let lo = 0, hi = nums.length - 1;
++    But this is not always the case.
++    We need to remember: the boundary is the range of elements we will be searching from.
++    The initial boundary should include ALL the elements, meaning all the possible answers should be included. 
++    Binary search can be applied to none array problems, such as Math, and this statement is still valid.
++    For example, In LeetCode 35, the question asks us to find an index to insert into the array.
++    It is possible that we insert after the last element of the array, thus the complete range of boundary becomes
++    let lo = 0, hi = nums.length;
++    2. Calculate mid
++    Calculating mid can result in overflow when the numbers are extremely big. I ll demonstrate a few ways of calculating mid from the worst to the best.
++    let mid = Math.floor((lo + hi) / 2) // worst, very easy to overflow
++    let mid = lo + Math.floor((hi - lo) / 2) // much better, but still possible
++    let mid = (lo + hi) >>> 1 // the best, but hard to understand
++    When we are dealing with even elements, it is our choice to pick the left mid or the right mid , 
++    and as I ll be explaining in a later section, a bad choice will lead to an infinity loop.
++    let mid = lo + Math.floor((hi - lo) / 2) // left/lower mid
++    let mid = lo + Math.floor((hi - lo + 1) / 2) // right/upper mid
++    
++    
++    3. How do we shrink boundary
++    I always try to keep the logic as simple as possible, that is a single pair of if...else. 
++    But what kind of logic are we using here? My rule of thumb is always use a logic that you can exclude mid.
++    Let's see an example:
++
++    if (target < nums[mid]) {
++        hi = mid - 1
++    } else {
++        lo = mid; 
++    }
++    Here, if the target is less than mid, there's no way mid will be our answer, and we can 
++    exclude it very confidently using hi = mid - 1. Otherwise, mid still has the 
++    potential to be the target, thus we include it in the boundary lo = mid.
++    On the other hand, we can rewrite the logic as:
++    if (target > nums[mid]) {
++        lo = mid + 1; // mid is excluded
++    } else {
++        hi = mid; // mid is included
++    }
++    
++    
++    4. while loop
++    To keep the logic simple, I always use
++    while(lo < hi) { ... }
++    Why? Because this way, the only condition the loop exits is lo == hi. I 
++    know they will be pointing to the same element, and I know that element always exists.
++    5. Avoid infinity loop
++    Remember I said a bad choice of left or right mid will lead to an infinity loop? Let's tackle this down.
++    Example:
++    let mid = lo + ((hi - lo) / 2); // Bad! We should use right/upper mid!
++    if (target < nums[mid]) {
++        hi = mid - 1
++    } else {
++        lo = mid; 
++    }
++    Now, imagine when there are only 2 elements left in the boundary. If the logic fell into the 
++    else statement, since we are using the left/lower mid, it's simply not doing anything. It just keeps shrinking itself to itself, and the program got stuck.
++    We have to keep in mind that, the choice of mid and our shrinking logic has to work together 
++    in a way that every time, at least 1 element is excluded.
++    let mid = lo + ((hi - lo + 1) / 2); // Bad! We should use left/lower mid!
++    if (target > nums[mid]) {
++        lo = mid + 1; // mid is excluded
++    } else {
++        hi = mid; // mid is included
++    }
++    
++    So when your binary search is stuck, think of the situation when there are only 2 elements left. Did the boundary shrink correctly?
++    TD;DR
++    My rule of thumb when it comes to binary search:
++    Include ALL possible answers when initialize lo & hi
++    Don't overflow the mid calculation
++    Shrink boundary using a logic that will exclude mid
++    Avoid infinity loop by picking the correct mid and shrinking logic
++    Always think of the case when there are 2 elements left
++    Because this problem is a failrly easy, the implementions may be pretty straight forward and you may 
++    wonder why do I need so many rules. However, binary search problems can get much much more complex, and without 
++    consistent rules, it's very hard to write predictable code. In the end, I would say 
++    everybody has their own style of binary serach, find the style that works for you!
++#######################################
 
 
 ###################################################################################
@@ -16131,6 +22089,8 @@ GRAPH TRAVERSAL ALL TYPES:
         that calls the helper function on every node in the graph if it's not yet in seen.
 
 
+
+
 ###########################################################
 ########################################################
 
@@ -16209,6 +22169,131 @@ COOL NOTES PART 6: UNION FIND PYTHON RECIPEE
 
         for o in l:
             del o.parent
+
+        ---------------------------------------------
+
+
+        # A class to represent a disjoint set
+        class DisjointSet:
+            parent = {}
+
+            # stores the depth of trees
+            rank = {}
+
+            # perform MakeSet operation
+            def makeSet(self, universe):
+                # create `n` disjoint sets (one for each item)
+                for i in universe:
+                    self.parent[i] = i
+                    self.rank[i] = 0
+
+            # Find the root of the set in which element `k` belongs
+            def Find(self, k):
+                # if `k` is not the root
+                if self.parent[k] != k:
+                    # path compression
+                    self.parent[k] = self.Find(self.parent[k])
+                return self.parent[k]
+
+            # Perform Union of two subsets
+            def Union(self, a, b):
+                # find the root of the sets in which elements `x` and `y` belongs
+                x = self.Find(a)
+                y = self.Find(b)
+
+                # if `x` and `y` are present in the same set
+                if x == y:
+                    return
+
+                # Always attach a smaller depth tree under the root of the deeper tree.
+                if self.rank[x] > self.rank[y]:
+                    self.parent[y] = x
+                elif self.rank[x] < self.rank[y]:
+                    self.parent[x] = y
+                else:
+                    self.parent[x] = y
+                    self.rank[y] = self.rank[y] + 1
+
+
+        def printSets(universe, ds):
+            print([ds.Find(i) for i in universe])
+
+
+        if __name__ == '__main__':
+
+            # universe of items
+            universe = [1, 2, 3, 4, 5]
+
+            # initialize `DisjointSet` class
+            ds = DisjointSet()
+
+            # create a singleton set for each element of the universe
+            ds.makeSet(universe)
+            printSets(universe, ds)
+
+            ds.Union(4, 3)        # 4 and 3 are in the same set
+            printSets(universe, ds)
+
+            ds.Union(2, 1)        # 1 and 2 are in the same set
+            printSets(universe, ds)
+
+            ds.Union(1, 3)        # 1, 2, 3, 4 are in the same set
+            printSets(universe, ds)
+
+        Download  Run Code
+
+        Output:
+
+        [1, 2, 3, 4, 5]
+        [1, 2, 3, 3, 5]
+        [1, 1, 3, 3, 5]
+        [3, 3, 3, 3, 5]
+
+###############################################################
+################################################################3
+COOL NOTES PART 6.3
+Useful bit manipulation:
+
+Bit Manipulation - Useful Tricks for efficient coding.
+
+Create a number that has only set bit as k-th bit --> 1 << (k-1)
+Check whether k-th bit is set or not -->
+if (n & (1 << (k - 1)))
+    cout << "SET";
+
+Set k-th bit to 1 --> n | (1 << (k - 1))
+Clearing the k-th bit --> n & ~(1 << (k - 1))
+Toggling the k-th bit --> n ^ (1 << (k – 1))
+
+Check whether n is power of 2 or not
+    if(x && (!( x&(x-1) ))
+        cout<<"Power of 2";
+
+
+(x<<y) is equivalent to multiplying x with 2^y (2 raised to power y).
+(x>>y) is equivalent to dividing x with 2^y.
+
+Swapping two numbers
+x = x ^ y
+y = x ^ y
+x = x ^ y
+
+Average of two numbers --> (x+y) >> 1
+
+Convert character ch from Upper to Lower case --> ch = ch | ' '
+Convert character ch from Lower to Upper case -->ch = ch & '_'
+
+Check if n is odd or even -->
+if(n & 1)
+cout<<"odd"
+else
+cout<<"even";
+
+Bitwise operations are very useful as they mostly operate in O(1) time.
+Please upvote if its helpful and suggestions are welcome.
+
+
+
 ###############################################################
 ################################################################3
 COOL NOTES PART 6.5
@@ -16386,6 +22471,9 @@ COOL NOTES PART 7:
         ∑k=0n(nk)⋅2k
         To calculate this number, note that the sum above is equal to the expansion of (1+2)n using the binomial theorem. 
         Therefore, we have 3n combinations, as we wanted to prove.
+
+
+
 
 
 #####################################################################################################################
@@ -16684,6 +22772,230 @@ COMPETITIVE PROGRAMMING GRAPH ALGORITHM GUIDE:
                             then q.push(i)
         Time complexity : Unknown!.
 
+    Kruskals Algo:
+        # Sort all the edges of the graph from low weight to high.
+        # Take the edge of the lowest weight and add it to the required spanning tree. If adding this edge creates a cycle in the graph, then reject this edge.
+        # Repeat this process until all the vertices are covered with the edges.
+
+
+        #Implementing Disjoint Set data structure and its functions
+        class DisjointSet:
+            def __init__(self, vertices):
+                self.vertices = vertices
+                self.parent = {}
+                for v in vertices:
+                    self.parent[v] = v
+                self.rank = dict.fromkeys(vertices, 0)
+
+            def find(self, item):
+                if self.parent[item] == item:
+                    return item
+                else: # could do  path compression here
+                    return self.find(self.parent[item])
+
+            def union(self, x, y):
+                xroot = self.find(x)
+                yroot = self.find(y)
+                if self.rank[xroot] < self.rank[yroot]:
+                    self.parent[xroot] = yroot
+                elif self.rank[xroot] > self.rank[yroot]:
+                    self.parent[yroot] = xroot
+                else:
+                    self.parent[yroot] = xroot
+                    self.rank[xroot] += 1
+
+
+        #Function to implement Kruskal's Algorithm
+        def kruskalAlgo(self):
+            i, e = 0, 0
+            ds = dst.DisjointSet(self.nodes)
+            self.graph = sorted(self.graph, key=lambda item: item[2])
+            while e < self.V - 1:
+                s, d, w = self.graph[i]
+                i += 1
+                x = ds.find(s)
+                y = ds.find(d)
+                if x != y:
+                    e += 1
+                    self.MST.append([s,d,w])
+                    ds.union(x,y)
+            self.printSolution(s,d,w)
+
+        g = Graph(5)
+        g.addNode("A")
+        g.addNode("B")
+        g.addNode("C")
+        g.addNode("D")
+        g.addNode("E")
+        g.addEdge("A", "B", 5)
+        g.addEdge("A", "C", 13)
+        g.addEdge("A", "E", 15)
+        g.addEdge("B", "A", 5)
+        g.addEdge("B", "C", 10)
+        g.addEdge("B", "D", 8)
+        g.addEdge("C", "A", 13)
+        g.addEdge("C", "B", 10)
+        g.addEdge("C", "E", 20)
+        g.addEdge("C", "D", 6)
+        g.addEdge("D", "B", 8)
+        g.addEdge("D", "C", 6)
+        g.addEdge("E", "A", 15)
+        g.addEdge("E", "C", 20)
+
+        g.kruskalAlgo()
+
+
+
+    Prims Algo:
+        In Prims algorithm for a minimum spanning tree, is the starting vertex arbitrary?
+
+        Yes. The key observation is that for each cut in the graph, the cheapest of the edges that
+        form the cut can be included in the minimum spanning tree (MST). The Jarník-Prim algorithm uses this observation
+        repeatedly to “grow” an MST: in the beginning you start from any single vertex, and then in each iteration you
+        split the vertices into two parts: those that already form the tree you are growing, and the rest of the graph.
+
+        from collections import defaultdict
+        import heapq
+
+
+        def create_spanning_tree(graph, starting_vertex):
+            mst = defaultdict(set)
+            visited = set([starting_vertex])
+            edges = [
+                (cost, starting_vertex, to)
+                for to, cost in graph[starting_vertex].items()
+            ]
+            heapq.heapify(edges)
+
+            while edges:
+                cost, frm, to = heapq.heappop(edges)
+                if to not in visited:
+                    visited.add(to)
+                    mst[frm].add(to)
+                    for to_next, cost in graph[to].items():
+                        if to_next not in visited:
+                            heapq.heappush(edges, (cost, to, to_next))
+
+            return mst
+
+        example_graph = {
+            'A': {'B': 2, 'C': 3},
+            'B': {'A': 2, 'C': 1, 'D': 1, 'E': 4},
+            'C': {'A': 3, 'B': 1, 'F': 5},
+            'D': {'B': 1, 'E': 1},
+            'E': {'B': 4, 'D': 1, 'F': 1},
+            'F': {'C': 5, 'E': 1, 'G': 1},
+            'G': {'F': 1},
+        }
+
+        dict(create_spanning_tree(example_graph, 'A'))
+
+        # {'A': set(['B']),
+        #  'B': set(['C', 'D']),
+        #  'D': set(['E']),
+        #  'E': set(['F']),
+        #  'F': set(['G'])}
+
+
+    Prims and Kruskals Impl:
+    1584. Min Cost to Connect All Points
+
+        You are given an array points representing integer coordinates of some points on a 2D-plane, where points[i] = [xi, yi].
+
+        The cost of connecting two points [xi, yi] and [xj, yj] is the manhattan distance between them: |xi - xj| + |yi - yj|, where |val| denotes the absolute value of val.
+
+        Return the minimum cost to make all points connected. All points are connected if there is exactly one simple path between any two points.
+
+        Prims Soln:
+            class Solution:
+                def minCostConnectPoints(self, points: List[List[int]]) -> int:
+
+                    def manhattan_distance(point_1, point_2):
+                        x1, y1 = point_1
+                        x2, y2 = point_2
+                        return abs(x2 - x1) + abs(y2 - y1)
+
+                    n = len(points)
+                    graph = collections.defaultdict(list)
+                    for i in range(n):
+                        for j in range(i + 1, n):
+                            dist = manhattan_distance(points[i], points[j])
+                            graph[i].append((dist, j))
+                            graph[j].append((dist, i))
+
+                    visited = set()
+                    visited.add(0)
+                    heap = [_ for _ in graph[0]]
+                    heapq.heapify(heap)
+                    cost = 0
+
+                    while heap and len(visited) != len(points):
+                        dist, neighbor = heapq.heappop(heap)
+                        if neighbor not in visited:
+                            visited.add(neighbor)
+                            cost += dist
+                            for new_dist, new_neighbor in graph[neighbor]:
+                                if new_neighbor not in visited:
+                                    heapq.heappush(heap, (new_dist, new_neighbor))
+
+                    return cost
+
+        Kruskals Soln:
+
+            class DisjointSetUnion:
+                def __init__(self, n):
+                    self.parent = [i for i in range(n)]
+                    self.size = [1 for i in range(n)]
+
+                def find(self, x):
+                    if self.parent[x] != x:
+                        self.parent[x] = self.find(self.parent[x])
+                    return self.parent[x]
+
+                def union(self, x, y):
+                    px, py = self.find(x), self.find(y)
+                    if px == py:
+                        return True
+
+                    if self.size[px] > self.size[py]:
+                        px, py = py, px
+
+                    self.size[py] += self.size[px]
+                    self.parent[px] = py
+                    return False
+
+
+            class Solution:
+                def minCostConnectPoints(self, points: List[List[int]]) -> int:
+
+                    def manhattan_distance(point_1, point_2):
+                        x1, y1 = point_1
+                        x2, y2 = point_2
+                        return abs(x2 - x1) + abs(y2 - y1)
+
+                    n = len(points)
+                    heap = []
+                    for i in range(n):
+                        for j in range(i + 1, n):
+                            heap.append((manhattan_distance(points[i], points[j]), i, j))
+
+                    heapq.heapify(heap)
+                    cost = 0
+                    num_edges = n - 1
+                    edge_count = 0
+
+                    dsu = DisjointSetUnion(n)
+                    while heap and edge_count < num_edges:
+                        dist, i, j  = heapq.heappop(heap)
+                        if dsu.find(i) != dsu.find(j):
+                            cost += dist
+                            edge_count += 1
+                            dsu.union(i,j)
+
+                    return cost
+
+
+
 
     Kruskal ------------------------------------------
         In this algorithm, first we sort the edges in ascending order of 
@@ -16773,7 +23085,7 @@ COMPETITIVE PROGRAMMING GRAPH ALGORITHM GUIDE:
                 }
             }
         }
-        As Dijkstra you can use std :: priority_queue instead of std :: set.
+        As Dijkstra you can use std :: priority_queue instead of std :: set. (I think set begin works because its a binary tree)
 
     Maximum Flow
     
@@ -16908,8 +23220,8 @@ COMPETITIVE PROGRAMMING GRAPH ALGORITHM GUIDE:
                 return false;
             mark[v] = true;
             for(auto &u : adj[v])
-                if(match[u] == -1 or dfs(match[u])) 
-                    // match[i] = the vertex i is matched 
+                if(match[u] == -1 or dfs(match[u]))
+                    // match[i] = the vertex i is matched
                     // with in the current matching, initially -1
                     return match[v] = u, match[u] = v, true;
             return false;
@@ -16934,6 +23246,309 @@ COMPETITIVE PROGRAMMING GRAPH ALGORITHM GUIDE:
         }
 
         In both cases, time complexity = O(nm).
+
+##################################################################
+
+PRIMS ALGORITHM WITH MIN HEAP AND DECREASE KEY IMPLEMETED (C++):
+
+2.313) PRIMS runs FASTER WITH MIN HEAP, ESP FIBONNACI HEAP
+        (We show implementation with normal heap + all heap operations implemented):
+            // C / C++ program for Prim's MST for adjacency list representation of graph
+
+            #include <limits.h>
+            #include <stdio.h>
+            #include <stdlib.h>
+
+            // A structure to represent a node in adjacency list
+            struct AdjListNode {
+                int dest;
+                int weight;
+                struct AdjListNode* next;
+            };
+
+            // A structure to represent an adjacency list
+            struct AdjList {
+                struct AdjListNode* head; // pointer to head node of list
+            };
+
+            // A structure to represent a graph. A graph is an array of adjacency lists.
+            // Size of array will be V (number of vertices in graph)
+            struct Graph {
+                int V;
+                struct AdjList* array;
+            };
+
+            // A utility function to create a new adjacency list node
+            struct AdjListNode* newAdjListNode(int dest, int weight)
+            {
+                struct AdjListNode* newNode = (struct AdjListNode*)malloc(sizeof(struct AdjListNode));
+                newNode->dest = dest;
+                newNode->weight = weight;
+                newNode->next = NULL;
+                return newNode;
+            }
+
+            // A utility function that creates a graph of V vertices
+            struct Graph* createGraph(int V)
+            {
+                struct Graph* graph = (struct Graph*)malloc(sizeof(struct Graph));
+                graph->V = V;
+
+                // Create an array of adjacency lists.  Size of array will be V
+                graph->array = (struct AdjList*)malloc(V * sizeof(struct AdjList));
+
+                // Initialize each adjacency list as empty by making head as NULL
+                for (int i = 0; i < V; ++i)
+                    graph->array[i].head = NULL;
+
+                return graph;
+            }
+
+            // Adds an edge to an undirected graph
+            void addEdge(struct Graph* graph, int src, int dest, int weight)
+            {
+                // Add an edge from src to dest.  A new node is added to the adjacency
+                // list of src.  The node is added at the beginning
+                struct AdjListNode* newNode = newAdjListNode(dest, weight);
+                newNode->next = graph->array[src].head;
+                graph->array[src].head = newNode;
+
+                // Since graph is undirected, add an edge from dest to src also
+                newNode = newAdjListNode(src, weight);
+                newNode->next = graph->array[dest].head;
+                graph->array[dest].head = newNode;
+            }
+
+            // Structure to represent a min heap node
+            struct MinHeapNode {
+                int v;
+                int key;
+            };
+
+            // Structure to represent a min heap
+            struct MinHeap {
+                int size; // Number of heap nodes present currently
+                int capacity; // Capacity of min heap
+                int* pos; // This is needed for decreaseKey()
+                struct MinHeapNode** array;
+            };
+
+            // A utility function to create a new Min Heap Node
+            struct MinHeapNode* newMinHeapNode(int v, int key)
+            {
+                struct MinHeapNode* minHeapNode = (struct MinHeapNode*)malloc(sizeof(struct MinHeapNode));
+                minHeapNode->v = v;
+                minHeapNode->key = key;
+                return minHeapNode;
+            }
+
+            // A utilit function to create a Min Heap
+            struct MinHeap* createMinHeap(int capacity)
+            {
+                struct MinHeap* minHeap = (struct MinHeap*)malloc(sizeof(struct MinHeap));
+                minHeap->pos = (int*)malloc(capacity * sizeof(int));
+                minHeap->size = 0;
+                minHeap->capacity = capacity;
+                minHeap->array = (struct MinHeapNode**)malloc(capacity * sizeof(struct MinHeapNode*));
+                return minHeap;
+            }
+
+            // A utility function to swap two nodes of min heap. Needed for min heapify
+            void swapMinHeapNode(struct MinHeapNode** a, struct MinHeapNode** b)
+            {
+                struct MinHeapNode* t = *a;
+                *a = *b;
+                *b = t;
+            }
+
+            // A standard function to heapify at given idx
+            // This function also updates position of nodes when they are swapped.
+            // Position is needed for decreaseKey()
+            void minHeapify(struct MinHeap* minHeap, int idx)
+            {
+                int smallest, left, right;
+                smallest = idx;
+                left = 2 * idx + 1;
+                right = 2 * idx + 2;
+
+                if (left < minHeap->size && minHeap->array[left]->key < minHeap->array[smallest]->key)
+                    smallest = left;
+
+                if (right < minHeap->size && minHeap->array[right]->key < minHeap->array[smallest]->key)
+                    smallest = right;
+
+                if (smallest != idx) {
+                    // The nodes to be swapped in min heap
+                    MinHeapNode* smallestNode = minHeap->array[smallest];
+                    MinHeapNode* idxNode = minHeap->array[idx];
+
+                    // Swap positions
+                    minHeap->pos[smallestNode->v] = idx;
+                    minHeap->pos[idxNode->v] = smallest;
+
+                    // Swap nodes
+                    swapMinHeapNode(&minHeap->array[smallest], &minHeap->array[idx]);
+
+                    minHeapify(minHeap, smallest);
+                }
+            }
+
+            // A utility function to check if the given minHeap is ampty or not
+            int isEmpty(struct MinHeap* minHeap)
+            {
+                return minHeap->size == 0;
+            }
+
+            // Standard function to extract minimum node from heap
+            struct MinHeapNode* extractMin(struct MinHeap* minHeap)
+            {
+                if (isEmpty(minHeap))
+                    return NULL;
+
+                // Store the root node
+                struct MinHeapNode* root = minHeap->array[0];
+
+                // Replace root node with last node
+                struct MinHeapNode* lastNode = minHeap->array[minHeap->size - 1];
+                minHeap->array[0] = lastNode;
+
+                // Update position of last node
+                minHeap->pos[root->v] = minHeap->size - 1;
+                minHeap->pos[lastNode->v] = 0;
+
+                // Reduce heap size and heapify root
+                --minHeap->size;
+                minHeapify(minHeap, 0);
+
+                return root;
+            }
+
+            // Function to decrease key value of a given vertex v. This function
+            // uses pos[] of min heap to get the current index of node in min heap
+            void decreaseKey(struct MinHeap* minHeap, int v, int key)
+            {
+                // Get the index of v in  heap array
+                int i = minHeap->pos[v];
+
+                // Get the node and update its key value
+                minHeap->array[i]->key = key;
+
+                // Travel up while the complete tree is not hepified.
+                // This is a O(Logn) loop
+                while (i && minHeap->array[i]->key < minHeap->array[(i - 1) / 2]->key) {
+                    // Swap this node with its parent
+                    minHeap->pos[minHeap->array[i]->v] = (i - 1) / 2;
+                    minHeap->pos[minHeap->array[(i - 1) / 2]->v] = i;
+                    swapMinHeapNode(&minHeap->array[i], &minHeap->array[(i - 1) / 2]);
+
+                    // move to parent index
+                    i = (i - 1) / 2;
+                }
+            }
+
+            // A utility function to check if a given vertex
+            // 'v' is in min heap or not
+            bool isInMinHeap(struct MinHeap* minHeap, int v)
+            {
+                if (minHeap->pos[v] < minHeap->size)
+                    return true;
+                return false;
+            }
+
+            // A utility function used to print the constructed MST
+            void printArr(int arr[], int n)
+            {
+                for (int i = 1; i < n; ++i)
+                    printf("%d - %d\n", arr[i], i);
+            }
+
+            // The main function that constructs Minimum Spanning Tree (MST)
+            // using Prim's algorithm
+            void PrimMST(struct Graph* graph)
+            {
+                int V = graph->V; // Get the number of vertices in graph
+                int parent[V]; // Array to store constructed MST
+                int key[V]; // Key values used to pick minimum weight edge in cut
+
+                // minHeap represents set E
+                struct MinHeap* minHeap = createMinHeap(V);
+
+                // Initialize min heap with all vertices. Key value of
+                // all vertices (except 0th vertex) is initially infinite
+                for (int v = 1; v < V; ++v) {
+                    parent[v] = -1;
+                    key[v] = INT_MAX;
+                    minHeap->array[v] = newMinHeapNode(v, key[v]);
+                    minHeap->pos[v] = v;
+                }
+
+                // Make key value of 0th vertex as 0 so that it
+                // is extracted first
+                key[0] = 0;
+                minHeap->array[0] = newMinHeapNode(0, key[0]);
+                minHeap->pos[0] = 0;
+
+                // Initially size of min heap is equal to V
+                minHeap->size = V;
+
+                // In the following loop, min heap contains all nodes
+                // not yet added to MST.
+                while (!isEmpty(minHeap)) {
+                    // Extract the vertex with minimum key value
+                    struct MinHeapNode* minHeapNode = extractMin(minHeap);
+                    int u = minHeapNode->v; // Store the extracted vertex number
+
+                    // Traverse through all adjacent vertices of u (the extracted
+                    // vertex) and update their key values
+                    struct AdjListNode* pCrawl = graph->array[u].head;
+                    while (pCrawl != NULL) {
+                        int v = pCrawl->dest;
+
+                        // If v is not yet included in MST and weight of u-v is
+                        // less than key value of v, then update key value and
+                        // parent of v
+                        if (isInMinHeap(minHeap, v) && pCrawl->weight < key[v]) {
+                            key[v] = pCrawl->weight;
+                            parent[v] = u;
+                            decreaseKey(minHeap, v, key[v]);
+                        }
+                        pCrawl = pCrawl->next;
+                    }
+                }
+
+                // print edges of MST
+                printArr(parent, V);
+            }
+
+            // Driver program to test above functions
+            int main()
+            {
+                // Let us create the graph given in above fugure
+                int V = 9;
+                struct Graph* graph = createGraph(V);
+                addEdge(graph, 0, 1, 4);
+                addEdge(graph, 0, 7, 8);
+                addEdge(graph, 1, 2, 8);
+                addEdge(graph, 1, 7, 11);
+                addEdge(graph, 2, 3, 7);
+                addEdge(graph, 2, 8, 2);
+                addEdge(graph, 2, 5, 4);
+                addEdge(graph, 3, 4, 9);
+                addEdge(graph, 3, 5, 14);
+                addEdge(graph, 4, 5, 10);
+                addEdge(graph, 5, 6, 2);
+                addEdge(graph, 6, 7, 1);
+                addEdge(graph, 6, 8, 6);
+                addEdge(graph, 7, 8, 7);
+
+                PrimMST(graph);
+
+                return 0;
+            }
+
+
+
+
 
 #######################################################################################################################
 ########################################################################################################################
@@ -17152,7 +23767,7 @@ GRAPH REFERENCE (From cheatsheet algos.py)
                 mst[v].pop()
 
         # return parents map
-        return breadth_first_search(mst, s)[1] 
+        return breadth_first_search(mst, s)[1]
 
     def prim(G, w, s):
 
@@ -17257,6 +23872,289 @@ GRAPH REFERENCE (From cheatsheet algos.py)
         Gcomp = complement_graph(G)
         return vertex_cover(Gcomp, n - k)
 
+
+#######################################
+##########################################
+
+COOL NOTES 2: EXPRESSION PARSING PROBLEMS
+
+    Reverse Polish notation
+        Parsing of simple expressions
+        Unary operators
+        Right-associativity
+        A string containing a mathematical expression containing numbers
+        and various operators is given. We have to compute the value of it in O(n),
+        where n is the length of the string.
+
+        The algorithm discussed here translates an expression into the so-called
+        reverse Polish notation (explicitly or implicitly), and evaluates this expression.
+
+        Reverse Polish notation
+        The reverse Polish notation is a form of writing mathematical expressions,
+        in which the operators are located after their operands.
+
+        For example the following expression
+        a+b∗c∗d+(e−f)∗(g∗h+i)
+
+        can be written in reverse Polish notation in the following way:
+        abc∗d∗+ef−gh∗i+∗+
+
+        The convenience of the reverse Polish notation is, that expressions
+        in this form are very easy to evaluate in linear time. We use a stack,
+        which is initially empty. We will iterate over the operands and operators
+        of the expression in reverse Polish notation. If the current element is a number,
+        then we put the value on top of the stack, if the current element is an
+        operator, then we get the top two elements from the stack, perform the operation,
+        and put the result back on top of the stack. In the end there will be
+        exactly one element left in the stack, which will be the value of the expression.
+
+        Obviously this simple evaluation runs in O(n) time.
+
+
+
+    Parsing of simple expressions
+
+        For the time being we only consider a
+        simplified problem: we assume that all operators
+        are binary (i.e. they take two arguments), and all are
+        left-associative (if the priorities are equal,
+        they get executed from left to right). Parentheses are allowed.
+
+        We will set up two stacks: one for numbers, and one for operators
+        and parentheses. Initially both stacks are empty. For the second
+        stack we will maintain the condition that all operations are
+        ordered by strict descending priority. If there are parenthesis on the stack,
+        than each block of operators (corresponding to one pair of parenthesis)
+        is ordered, and the entire stack is not necessarily ordered.
+
+        We will iterate over the characters of the expression from left to right.
+        If the current character is a digit, then we put the value of
+        this number on the stack. If the current character is an
+        opening parenthesis, then we put it on the stack. If the current
+        character is a closing parenthesis, the we execute all operators on the stack
+        until we reach the opening bracket (in other words we perform all
+        operations inside the parenthesis). Finally if the current character
+        is an operator, then while the top of the stack has
+        an operator with the same or higher priority, we will execute
+        this operation, and put the new operation on the stack.
+
+        After we processed the entire string, some operators might
+        still be in the stack, so we execute them.
+
+        Here is the implementation of this method for the four operators + − ∗ /:
+
+        bool delim(char c) {
+            return c == ' ';
+        }
+
+        bool is_op(char c) {
+            return c == '+' || c == '-' || c == '*' || c == '/';
+        }
+
+        int priority (char op) {
+            if (op == '+' || op == '-')
+                return 1;
+            if (op == '*' || op == '/')
+                return 2;
+            return -1;
+        }
+
+        void process_op(stack<int>& st, char op) {
+            int r = st.top(); st.pop();
+            int l = st.top(); st.pop();
+            switch (op) {
+                case '+': st.push(l + r); break;
+                case '-': st.push(l - r); break;
+                case '*': st.push(l * r); break;
+                case '/': st.push(l / r); break;
+            }
+        }
+
+        int evaluate(string& s) {
+            stack<int> st;
+            stack<char> op;
+            for (int i = 0; i < (int)s.size(); i++) {
+                if (delim(s[i]))
+                    continue;
+
+                if (s[i] == '(') {
+                    op.push('(');
+                } else if (s[i] == ')') {
+                    while (op.top() != '(') {
+                        process_op(st, op.top());
+                        op.pop();
+                    }
+                    op.pop();
+                } else if (is_op(s[i])) {
+                    char cur_op = s[i];
+                    while (!op.empty() && priority(op.top()) >= priority(cur_op)) {
+                        process_op(st, op.top());
+                        op.pop();
+                    }
+                    op.push(cur_op);
+                } else {
+                    int number = 0;
+                    while (i < (int)s.size() && isalnum(s[i]))
+                        number = number * 10 + s[i++] - '0';
+                    --i;
+                    st.push(number);
+                }
+            }
+
+            while (!op.empty()) {
+                process_op(st, op.top());
+                op.pop();
+            }
+            return st.top();
+        }
+
+        Thus we learned how to calculate the value of an expression in O(n),
+        at the same time we implicitly used the reverse Polish notation.
+        By slightly modifying the above implementation it is also possible
+        to obtain the expression in reverse Polish notation in an explicit form.
+
+    Parsing of all expressions include unary and right associative expr:
+
+        Unary operators
+            Now suppose that the expression also contains unary operators
+            (operators that take one argument). The unary plus and
+            unary minus are common examples of such operators.
+
+            One of the differences in this case, is that we need to
+            determine whether the current operator is a unary or a binary one.
+
+            You can notice, that before an unary operator, there always is
+            another operator or an opening parenthesis, or nothing at
+            all (if it is at the very beginning of the expression). On the contrary
+            before a binary operator there will always be an operand (number)
+            or a closing parenthesis. Thus it is easy to flag
+            whether the next operator can be unary or not.
+
+            Additionally we need to execute a unary and a binary operator
+            differently. And we need to chose the priority of a binary operator
+            higher than all of the binary operations.
+
+            In addition it should be noted, that some unary operators
+            (e.g. unary plus and unary minus) are actually right-associative.
+
+        Right-associativity
+            Right-associative means, that whenever the priorities are equal,
+            the operators must be evaluated from right to left.
+
+            As noted above, unary operators are usually right-associative.
+            Another example for an right-associative operator is the
+            exponentiation operator (a∧b∧c is usually perceived as a^(b^c) and not as (a^b)^c.
+
+            What difference do we need to make in order to correctly handle
+            right-associative operators? It turns out that the changes
+            are very minimal. The only difference will be, if the priorities
+            are equal we will postpone the execution of the right-associative operation.
+
+            The only line that needs to be replaced is
+
+            while (!op.empty() && priority(op.top()) >= priority(cur_op))
+
+            with:
+
+            while (!op.empty() && (
+                    (left_assoc(cur_op) && priority(op.top()) >= priority(cur_op)) ||
+                    (!left_assoc(cur_op) && priority(op.top()) > priority(cur_op))
+                ))
+
+            where left_assoc is a function that decides if an
+            operator is left_associative or not.
+
+        Here is an implementation for the binary
+        operators + − ∗ / and the unary operators + and −.
+
+            bool delim(char c) {
+                return c == ' ';
+            }
+
+            bool is_op(char c) {
+                return c == '+' || c == '-' || c == '*' || c == '/';
+            }
+
+            bool is_unary(char c) {
+                return c == '+' || c=='-';
+            }
+
+            int priority (char op) {
+                if (op < 0) // unary operator get highest priority
+                    return 3; // Negative operators are right associative.
+                if (op == '+' || op == '-')
+                    return 1;
+                if (op == '*' || op == '/')
+                    return 2;
+                return -1;
+            }
+
+            void process_op(stack<int>& st, char op) {
+                if (op < 0) {
+                    int l = st.top(); st.pop();
+                    switch (-op) { // Negative operators are right associative.
+                        case '+': st.push(l); break;
+                        case '-': st.push(-l); break;
+                    }
+                } else {
+                    int r = st.top(); st.pop();
+                    int l = st.top(); st.pop();
+                    switch (op) {
+                        case '+': st.push(l + r); break;
+                        case '-': st.push(l - r); break;
+                        case '*': st.push(l * r); break;
+                        case '/': st.push(l / r); break;
+                    }
+                }
+            }
+
+            int evaluate(string& s) {
+                stack<int> st;
+                stack<char> op;
+                bool may_be_unary = true;
+                for (int i = 0; i < (int)s.size(); i++) {
+                    if (delim(s[i]))
+                        continue;
+
+                    if (s[i] == '(') {
+                        op.push('(');
+                        may_be_unary = true;
+                    } else if (s[i] == ')') {
+                        while (op.top() != '(') {
+                            process_op(st, op.top());
+                            op.pop();
+                        }
+                        op.pop();
+                        may_be_unary = false;
+                    } else if (is_op(s[i])) {
+                        char cur_op = s[i];
+                        if (may_be_unary && is_unary(cur_op))
+                            cur_op = -cur_op;
+                        while (!op.empty() && (
+                                (cur_op >= 0 && priority(op.top()) >= priority(cur_op)) ||
+                                (cur_op < 0 && priority(op.top()) > priority(cur_op))
+                            )) {
+                            process_op(st, op.top());
+                            op.pop();
+                        }
+                        op.push(cur_op);
+                        may_be_unary = true;
+                    } else {
+                        int number = 0;
+                        while (i < (int)s.size() && isalnum(s[i]))
+                            number = number * 10 + s[i++] - '0';
+                        --i;
+                        st.push(number);
+                        may_be_unary = false;
+                    }
+                }
+
+                while (!op.empty()) {
+                    process_op(st, op.top());
+                    op.pop();
+                }
+                return st.top();
+            }
 
 
 #########################################
@@ -17752,3 +24650,45 @@ https://leetcode.com/discuss/interview-question/1380561/Template-For-Dynamic-pro
 
     Please correct the approach/solution if you find anything wrong.
     And if you like my post then give a thumbs up : ) happy coding
+
+
+
+############################
++##########################3
++Linked List Practice!
+
+    DRAW IT OUT TO DO THESE PROBLEMS!!
++
++    24. Swap Nodes in Pairs
++    Medium
++    Given a linked list, swap every two adjacent nodes and return its head. 
++    You must solve the problem without modifying the values in the list's nodes (i.e., only nodes themselves may be changed.)
++    Input: head = [1,2,3,4]
++    Output: [2,1,4,3]
++    Example 2:
++    Input: head = []
++    Output: []
++    Example 3:
++    Input: head = [1]
++    Output: [1]
++    My soln:
++    class Solution:
++        def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
++            # okkk
++            
++            dummy = ListNode()
++            temp = dummy
++            curr = head
++            
++            while curr is not None and curr.next is not None:
++                next_adj_pair = curr.next.next
++                nxt = curr.next
++                temp.next = nxt
++                nxt.next = curr
++                temp = curr
++                curr = next_adj_pair
++                
++            temp.next = curr
++            
++            
++            return dummy.next     

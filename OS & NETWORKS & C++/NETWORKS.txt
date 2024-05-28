@@ -1,5 +1,12 @@
+Read those networking guides, building IP/TCP from scratch blog part 1 to 5
+https://www.saminiir.com/lets-code-tcp-ip-stack-3-tcp-handshake/
+
+
 UDP Services
-UDP is a no-frills, lightweight transport protocol, providing minimal services. UDP is connectionless, so there is no handshaking before the two processes start to communicate. UDP provides an unreliable data transfer service—that is, when a process sends a message into a UDP socket, UDP provides no guarantee that the message will ever reach the receiving process. Furthermore, messages that do arrive at the receiving process may arrive out of order. UDP does not include a congestion-control mechanism, so the sending side of UDP can pump data into the layer below (the network layer) at any rate it pleases. (Note, however, that the actual end-to-end throughput may be less than this rate due to the limited transmission capacity of intervening links or due to congestion).
+UDP is a no-frills, lightweight transport protocol, providing minimal services. UDP is connectionless, so there is no handshaking before the two processes start to communicate.
+UDP provides an unreliable data transfer service—that is, when a process sends a message into a UDP socket, UDP provides no guarantee that the message will ever reach the receiving process.
+Furthermore, messages that do arrive at the receiving process may arrive out of order. UDP does not include a congestion-control mechanism, so the sending side of UDP can pump data into
+the layer below (the network layer) at any rate it pleases. (Note, however, that the actual end-to-end throughput may be less than this rate due to the limited transmission capacity of intervening links or due to congestion).
 
 
 When do DNS queries use TCP instead of UDP?
@@ -63,16 +70,20 @@ The gateway address should be set within each subnet.
 
 
 HTTP with Non-Persistent Connections
-Let’s walk through the steps of transferring a Web page from server to client for the case of non-persistent connections. Let’s suppose the page consists of a base HTML file and 10 JPEG images, and that all 11 of these objects reside on the same server. Further suppose the URL for the base HTML file is
+Let’s walk through the steps of transferring a Web page from server to client for the case of non-persistent connections. Let’s suppose
+the page consists of a base HTML file and 10 JPEG images, and that all 11 of these objects reside on the same server. Further suppose the URL for the base HTML file is
 
 http://www.someSchool.edu/someDepartment/home.index
 
 Here is what happens:
 
-The HTTP client process initiates a TCP connection to the server www.someSchool.edu on port number 80, which is the default port num- ber for HTTP. Associated with the TCP connection, there will be a socket at the client and a socket at the server.
+The HTTP client process initiates a TCP connection to the server www.someSchool.edu on port number 80, which is the default port num- ber for HTTP. Associated with the TCP connection,
+there will be a socket at the client and a socket at the server.
 TheHTTPclientsendsanHTTPrequestmessagetotheserverviaitssocket.The request message includes the path name /someDepartment/home.index. (We will discuss HTTP messages in some detail below.)
-The HTTP server process receives the request message via its socket, retrieves the object /someDepartment/home.index from its storage (RAM or disk), encapsulates the object in an HTTP response message, and sends the response message to the client via its socket.
+The HTTP server process receives the request message via its socket, retrieves the object /someDepartment/home.index from its storage (RAM or disk), encapsulates the object in an HTTP response
+message, and sends the response message to the client via its socket.
 The HTTP server process tells TCP to close the TCP connection. (But TCP doesn’t actually terminate the connection until it knows for sure that the client has received the response message intact.)
-The HTTP client receives the response message. The TCP connection termi- nates. The message indicates that the encapsulated object is an HTML file. The client extracts the file from the response message, examines the HTML file, and finds references to the 10 JPEG objects.
+The HTTP client receives the response message. The TCP connection termi- nates. The message indicates that the encapsulated object is an HTML file. The client extracts the file from the response
+message, examines the HTML file, and finds references to the 10 JPEG objects.
 The first four steps are then repeated for each of the referenced JPEG objects.
 

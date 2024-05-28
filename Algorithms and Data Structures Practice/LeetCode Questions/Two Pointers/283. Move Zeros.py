@@ -21,7 +21,15 @@ Note:
 You must do this in-place without making a copy of the array.
 Minimize the total number of operations.
 
+ 0 1 0 3 1
+ ^ ^
 
+ 1 0 0 3 1
+   ^   ^
+1 3 0  0 1
+    ^    ^
+
+1 3 1 0 0
 '''
 
 class Solution:

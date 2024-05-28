@@ -64,6 +64,7 @@ class Solution:
         
         if targetTuple in deadendSet or (0,0,0,0) in deadendSet:
             return -1
+        # DOUBLE BFS
         
         def move(queue, distA, distB):
             node = queue.pop()

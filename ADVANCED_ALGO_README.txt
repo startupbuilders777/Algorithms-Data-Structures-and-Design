@@ -932,7 +932,161 @@ LCA - IMPLEMENTATION OF ABOVE IDEA:
         }
     };
 
+########################################################
 
+LCA - BINARY LIFTING AGAIN! (GEEKS FOR GEEKS)
+ (https://www.geeksforgeeks.org/lca-in-a-tree-using-binary-lifting-technique/)
+
+
+    Given a binary tree, the task is to find the Lowest Common Ancestor of the given two nodes in the tree.
+    Let G be a tree then LCA of two nodes u and v is defined as the node w in the tree which is an ancestor of both u and v
+    and is farthest from the root node.If one node is the ancestor of another one than that particular node is the LCA of those two nodes.
+
+    Binary Lifting is a dynamic programming approach where we pre-compute an array
+    memo[1, n][1, log(n)] where memo[i][j] contains 2^j-th ancestor of node i.
+    For computing the values of memo[][], the following recursion may be used
+
+
+    memo state:
+
+    memo[i][j] = i-th node’s 2^(j)th ancestor in the path
+
+    memo initialization:
+
+    memo[i][j] = memo[i][0] (first parent (2^0) of each node is given)
+
+    memo trans:
+
+    memo[i][j] = memo[ memo [i][j – 1]]
+
+    meaning: A(i,2^j)=A( A(i , 2^(j-1) ) , 2^(j-1) )
+
+    To find the (2^j)-th ancestor of i, recursively find i-th node’s 2^(j-1)th ancestor’s 2^(j-1)th ancestor. (2^(j) = 2^(j-1) + 2^(j-1))
+
+    So:
+
+    memo[i][j] = parent[i] if j = 0 and
+    memo[i][j] = memo[memo[i][j – 1]][j – 1] if j > 0.
+
+    So you first store your parent,
+    j = 0 -> store your parent.
+    then j = 1 -> store grandparent which is parents parent
+    j = 2 -> store grandparent's grandparent!!
+    etc, tect
+
+
+    We first check whether a node is an ancestor of other or not and if one node is ancestor of
+    other then it is the LCA of these two nodes otherwise
+    we find a node which is not the common ancestor of both u and v and is
+    highest(i.e. a node x such that x is not the common ancestor of u and v but memo[x][0] is)
+    in the tree. After finding such a node (let it be x), we print the first ancestor of x i.e.
+    memo[x][0] which will be the required LCA.
+    Below is the implementation of the above approach:
+
+
+    # Python3 implementation of the above approach
+    import math
+
+    # Pre-processing to calculate values of memo[][]
+    def dfs(u, p, memo, lev, log, g):
+
+        # Using recursion formula to calculate
+        # the values of memo[][]
+        memo[u][0] = p
+        for i in range(1, log + 1):
+            memo[u][i] = memo[memo[u][i - 1]][i - 1]
+
+        for v in g[u]:
+            if v != p:
+                lev[v] = lev[u] + 1
+                dfs(v, u, memo, lev, log, g)
+
+    # Function to return the LCA of nodes u and v
+    def lca(u, v, log, lev, memo):
+
+        # The node which is present farthest
+        # from the root node is taken as u
+        # If v is farther from root node
+        # then swap the two
+        if lev[u] < lev[v]:
+            swap(u, v)
+
+        # Finding the ancestor of u
+        # which is at same level as v
+        for i in range(log, -1, -1):
+            if (lev[u] - pow(2, i)) >= lev[v]:
+                u = memo[u][i]
+
+        # If v is the ancestor of u
+        # then v is the LCA of u and v
+        if u == v:
+            return v
+
+        # Finding the node closest to the
+        # root which is not the common ancestor
+        # of u and v i.e. a node x such that x
+        # is not the common ancestor of u
+        # and v but memo[x][0] is
+        for i in range(log, -1, -1):
+            if memo[u][i] != memo[v][i]:
+                u = memo[u][i]
+                v = memo[v][i]
+
+        # Returning the first ancestor
+        # of above found node
+        return memo[u][0]
+
+    # Driver code
+
+    # Number of nodes
+    n = 9
+
+    log = math.ceil(math.log(n, 2))
+    g = [[] for i in range(n + 1)]
+
+    memo = [[-1 for i in range(log + 1)]
+                for j in range(n + 1)]
+
+    # Stores the level of each node
+    lev = [0 for i in range(n + 1)]
+
+    # Add edges
+    g[1].append(2)
+    g[2].append(1)
+    g[1].append(3)
+    g[3].append(1)
+    g[1].append(4)
+    g[4].append(1)
+    g[2].append(5)
+    g[5].append(2)
+    g[3].append(6)
+    g[6].append(3)
+    g[3].append(7)
+    g[7].append(3)
+    g[3].append(8)
+    g[8].append(3)
+    g[4].append(9)
+    g[9].append(4)
+
+    dfs(1, 1, memo, lev, log, g)
+
+    print("The LCA of 6 and 9 is", lca(6, 9, log, lev, memo))
+    print("The LCA of 5 and 9 is", lca(5, 9, log, lev, memo))
+    print("The LCA of 6 and 8 is", lca(6, 8, log, lev, memo))
+    print("The LCA of 6 and 1 is", lca(6, 1, log, lev, memo))
+
+    # This code is contributed by Bhaskar
+
+
+    Output:
+    The LCA of 6 and 9 is 1
+    The LCA of 5 and 9 is 1
+    The LCA of 6 and 8 is 3
+    The LCA of 6 and 1 is 1
+
+
+    Time Complexity: The time taken in pre-processing is O(NlogN) and every query takes O(logN) time. So the overall time complexity of the solution is O(NlogN).
+    Auxiliary Space: O(NlogN)
 
 ##########################################################
 LCA - Lowest Common Ancestor - Binary Lifting 
@@ -1028,6 +1182,7 @@ LCA - Lowest Common Ancestor - Binary Lifting
         up.assign(n, vector<int>(l + 1));
         dfs(root, root);
     }
+
 
 
 ##########################################################
@@ -1506,6 +1661,128 @@ RMQ PRACTICAL IMPLEMENTATIONS:
 ######################################################################
 MAX FLOW MIN CUT:
 
+EXAMPLE LEETCODE:
+
+41) FORD FULKERSON ALGORITHM PYTHON (MAX FLOW MIN CUT):
+    class Graph:
+
+        def __init__(self,graph):
+            self.graph = graph # residual graph
+            self. ROW = len(graph)
+
+        '''Returns true if there is a path from source 's' to sink 't' in
+        residual graph. Also fills parent[] to store the path '''
+        def BFS(self,s, t, parent):
+
+            # Mark all the vertices as not visited
+            visited =[False]*(self.ROW)
+            queue=[]
+            queue.append(s)
+            visited[s] = True
+
+            while queue:
+
+                #Dequeue a vertex from queue and print it
+                u = queue.pop(0)
+
+                # Get all adjacent vertices of the dequeued vertex u
+                # If a adjacent has not been visited, then mark it
+                # visited and enqueue it
+                for ind, val in enumerate(self.graph[u]):
+                    if visited[ind] == False and val > 0 :
+                        queue.append(ind)
+                        visited[ind] = True
+                        parent[ind] = u
+
+            return True if visited[t] else False
+
+        # Returns tne maximum flow from s to t in the given graph
+        def FordFulkerson(self, source, sink):
+
+            # This array is filled by BFS and to store path
+            parent = [-1]*(self.ROW)
+
+            max_flow = 0 # There is no flow initially
+
+            # Augment the flow while there is path from source to sink
+            while self.BFS(source, sink, parent) :
+
+                # Find minimum residual capacity of the edges along the
+                # path filled by BFS. Or we can say find the maximum flow
+                # through the path found.
+                path_flow = float("Inf")
+                s = sink
+
+                # Get the limiting flow in the path. Traverse parents array to get path
+                while(s !=  source):
+                    path_flow = min (path_flow, self.graph[parent[s]][s])
+                    s = parent[s]
+
+                # Add path flow to overall flow
+                max_flow +=  path_flow
+
+                # update residual capacities of the edges and reverse edges along the path
+                v = sink
+                while(v !=  source):
+                    u = parent[v]
+                    self.graph[u][v] -= path_flow
+                    self.graph[v][u] += path_flow
+                    v = parent[v]
+
+            return max_flow
+
+    graph = [[0, 16, 13, 0, 0, 0],
+            [0, 0, 10, 12, 0, 0],
+            [0, 4, 0, 0, 14, 0],
+            [0, 0, 9, 0, 0, 20],
+            [0, 0, 0, 7, 0, 4],
+            [0, 0, 0, 0, 0, 0]]
+    g = Graph(graph)
+    source = 0; sink = 5
+    print ("The maximum possible flow is %d " % g.FordFulkerson(source, sink))
+
+    Output:
+    The maximum possible flow is 23
+
+42) Bipartite matching problem: (Max flow 1)
+    n students. d dorms. Each student wants to live in one of
+    the dorms of his choice.
+    Each dorm can accomodate at most one student.
+
+    Problem: Find an assignment that maximizes the number of
+    students who get a housing.
+
+    Add source and sink.
+    make edges between students and dorms.
+    all edges weight are 1
+    S-> all students -> all dorms -> T
+
+    Find the max-flow. Then find the optimal assignment from the chosen
+    edges.
+
+    If dorm j can accomodate cj students -> make edge with capacity
+    cj from dorm j to the sink.
+
+43) Decomposing a DAG into nonintersecting paths:
+    -> Split each vertex v into vleft and vright
+    -> For each edge u->v in the DAG, make an edge from uleft to vright
+
+44) Min Cost Max Flow:
+    A varient of max-flow problem. Each edge has capacity c(e) and
+    cost cost(e). You have to pay cost(e) amount of money per unit
+    flow per unit flow flowing through e
+    -> Problem: Find the max flow that has the minimum total cost.
+    -> Simple algo (Slow):
+        Repeat following:
+            Take the residual graph
+            Find a negative cost cycle using Bellman Ford
+                -> If there is none, finish.
+            Circulate flow through the cycle to decrease the total cost,
+            until one of the edges is saturated.
+                -> Total amount of flow doesnt change .
+
+
+
 COOL NOTES PART -3: NETWORK FLOW Tutorial: maxflow and mincut
     COMPUTING MAX FLOW:
         Given directed graph, each edge e assocaited with 
@@ -1624,6 +1901,9 @@ COOL NOTES PART -3: NETWORK FLOW Tutorial: maxflow and mincut
 
         3) All edges which are from a reachable vertex 
         to non-reachable vertex are minimum cut edges. Print all such edges.
+
+
+
 
 ############################################################################################
 ########################################################################################

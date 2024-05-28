@@ -48,7 +48,9 @@ Modern concurrency constructs with multicore processors
 Paging, segmentation and virtual memory (video)
 Interrupts (video)
 Process resource needs (memory: code, static storage, stack, heap, and also file descriptors, i/o)
-Thread resource needs (shares above (minus stack) with other threads in the same process but each has its own pc, stack counter, registers, and stack)
+Thread resource needs (shares above (minus stack) with other threads in the same process but each has its own pc,
+    stack counter, registers, and stack)
+
 Forking is really copy on write (read-only) until the new process writes to memory, then it does a full copy.
 Context switching
 How context switching is initiated by the operating system and underlying hardware
@@ -61,6 +63,9 @@ reference
  David Beazley - Python Concurrency From the Ground Up: LIVE! - PyCon 2015
  Keynote David Beazley - Topics of Interest (Python Asyncio)
  Mutex in Python
+#############################
+
+
 
 
 

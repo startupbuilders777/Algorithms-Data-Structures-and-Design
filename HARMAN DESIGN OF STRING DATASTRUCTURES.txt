@@ -1,70 +1,348 @@
+INDEXING WITH SUFFXIES:
 
-##############################################################################
 
-    Tries
-    Tries are some kind of rooted trees in which each edge has a character on it. 
-    Actually, trie is some kind of DFA (Determining Finite Automata). For a bunch of 
-    strings, their trie is the smallest rooted tree with a character on each edge and 
-    each of these strings can be build by writing down the characters in the path 
-    from the root to some node.
+sUFFIX tRIE -> SUFFIX TREE -> SUFFIX ARRAY -> FM INDEX
 
-    It's advantage is, LCP (Longest Common Prefix) of two of these strings is the 
-    LCA (Lowest Common Ancestor) of their nodes in the trie(a node that we can 
-    build the string by writing down the characters in the 
-    path from the root to that node).
+###############################################3
 
-    Generating the trie :
+ROPE DATA structure
 
-    Root is vertex number 0 (C++)
 
-    int x[MAX_NUMBER_OF_NODES][MAX_ASCII_CODE], next = 1; //initially all numbers in x are -1
-    void build(string s){
-        int i = 0, v = 0;
-        while(i < s.size()){
-            if(x[v][s[i]] == -1)
-                v = x[v][s[i++]] = next ++;
-            else
-                v = x[v][s[i++]];
+25.5)   GOOGLE ROPE DATASTRUCTURE TO MANIPULATE LONG STRINGS:
+
+        class LongString {
+
+            public LongString(String s) {
+                // todo
+            }
+
+            /**
+            * Returns the character at position 'i'.
+            */
+            public char charAt(int i) {
+                // todo
+            }
+
+            /**
+            * Deletes the specified character substring.
+            * The substring begins at the specified 'start' and extends to the character at index 'end - 1' or to the end of the sequence
+            * if no such character exists.
+            * If 'start' is equal to 'end', no changes are made.
+            *
+            * @param      start  The beginning index, inclusive.
+            * @param      end    The ending index, exclusive.
+            * @throws     StringIndexOutOfBoundsException  if 'start' is negative, greater than length, or greater than 'end'.
+            */
+            public void delete(int start, int end) {
+                // todo
+            }
         }
-    }
 
-    let f be the matrix representation of your trie
+        ok so...
 
-    let f[k] be the list of links for the k-th node (NOT ASCII LETTER NODE niggaaHHH)
+        In computer programming, a rope, or cord, is a data structure composed of smaller strings
+        that is used to efficiently store and manipulate a very long string.
+        For example, a text editing program may use a rope to represent the text being edited, so that operations
+        such as insertion, deletion, and random access can be done efficiently.[1]
 
-    let f[k][x] = m, the node who represents the son of k-th node 
-        using x-th character, m = -1 is there is not a link.
+        NAIVE:
 
-    int MAX = Max number of nodes
-    int CHARSET = alphabet size
-    int ROOT = 0
-    int sz = 1;
+            Forget all these other complicated solutions.
+            Best solution is to use something similar to a segment tree, however, instead of storing the index ranges for each node, we store the number of characters under each node.
+            This way, when we get an index, we can figure out quickly whether to traverse the left or right sub-tree.
+            When we get a delete(), we can find the appropriate upper node and decrement the numbers of characters for each left or right sub-tree of that node or nodes.
+            Easy peezy guys.
 
-    f[MAX][CHARSET]
+        NAIVE IMPLEMENTATION (SEGMENT TREE TYPE)
 
-    void init() {
-    fill(f, -1);
-    }
+        import math
 
-    void insert(char [] s) {
-    int node = ROOT;
-    for (int i = 0; i < size(s); i++) {
-    if ( f[node][ s[i] ] == -1 )
-        f[node][ s[i] ] = sz++;
-    node = f[node][ s[i] ];
-    }
-    }
+        class Node:
+            def __init__(self, data, lc, rc):
+                self.data = data
+                self.lc = lc
+                self.rc = rc
 
-    Notes: Root node is at f[0] sz is the numbers of nodes currently in trie
+            def __repr__(self):
+                return f'{self.data}_{self.lc}_{self.rc}'
 
-    I guess would be easy to you implement other functions.
+        class LongString:
 
-    what about ababc?
-    abbc 
+            def __init__(self, s):
+                self.items, self.tree_height = self._build_tree(s)
 
-    a -> b -> a -> b ->
-        -> b   
+            def __repr__(self):
+                return f'{self.items}'
 
+            def _build_tree(self, s):
+                def build(node_i, start, end):
+                    if (start == end):
+                        if (start < len(s)):
+                            items[node_i] = Node(s[start], 0, 0)
+                            return 1
+                        else:
+                            items[node_i] = Node(None, 0, 0)
+                            return 0
+
+                    mid = start + (end - start) // 2
+                    left_count = build((node_i*2) + 1, start, mid)
+                    right_count = build((node_i*2) + 2, mid + 1, end)
+
+                    items[node_i] = Node(None, left_count, right_count)
+                    return left_count + right_count
+
+
+                height_tree = int(math.ceil(math.log2(len(s))))
+                number_items = (2**height_tree) + (2**height_tree) - 1
+                items = [None] * number_items
+                build(0, 0, 2**height_tree - 1)
+                return items, height_tree
+
+            # Returns the character at position 'i'.
+            def charAt(self, i):
+                node_i = 0
+
+                start_idx = 0
+                for _ in range(self.tree_height + 1):
+                    node = self.items[node_i]
+                    right_start_idx = node.lc + start_idx
+
+                    if (node.lc == 0 and node.rc == 0 and right_start_idx == i):
+                        return node.data
+
+                    if (i < right_start_idx):
+                        node_i = (node_i*2) + 1
+                    else:
+                        node_i = (node_i*2) + 2
+                        start_idx = right_start_idx
+
+                return None
+
+            # Idea is to reach a complete intersection, and bubble up the intersected node count as 0
+            def delete(self, d_start, d_end):
+                def traverse(start_idx, node_i):
+                    if (node_i >= len(self.items)):
+                        return 0
+
+                    node = self.items[node_i]
+                    right_start = node.lc + start_idx
+
+                    start = start_idx
+                    end = right_start + node.rc
+
+                    if (start >= d_start and end <= d_end):
+                        node.lc = 0
+                        node.rc = 0
+                        return 0
+
+                    if (d_end < right_start):
+                        # Go left
+                        node.lc = traverse(start_idx, (node_i * 2) + 1)
+                    elif (d_start >= right_start):
+                        # Go right
+                        node.rc = traverse(right_start, (node_i * 2) + 2)
+                    else:
+                        node.lc = traverse(start_idx, (node_i * 2) + 1)
+                        node.rc = traverse(right_start, (node_i * 2) + 2)
+
+                    return node.lc + node.rc
+
+                d_end = d_end - 1
+
+                if (d_start > d_end):
+                    return
+
+                traverse(0, 0)
+
+
+
+        a = LongString("ABCD")
+        print(a)
+        for i in range(8):
+            print(i, a.charAt(i))
+
+        a.delete(1, 3)
+        print(a)
+        for i in range(8):
+            print(i, a.charAt(i))
+
+
+        a = LongString("ABCDEF")
+        print(a)
+        for i in range(8):
+            print(i, a.charAt(i))
+        a.delete(1, 3)
+        for i in range(8):
+            print(i, a.charAt(i))
+        a.delete(1, 3)
+
+        print(a)
+        for i in range(8):
+            print(i, a.charAt(i))
+
+
+    Correct soln: read wiki guide on rope datastructure:
+    https://en.wikipedia.org/wiki/Rope_(data_structure)
+
+
+        Description
+        A rope is a binary tree where each leaf (end node) holds a string and a length (also known as a "weight"), and each node further up the tree holds the
+        sum of the lengths of all the leaves in its left subtree. A node with two children thus divides the whole string into two parts: the left subtree stores the first
+        part of the string, the right subtree stores the second part of the string, and a node's weight is the length of the first part.
+
+        For rope operations, the strings stored in nodes are assumed to be constant immutable objects in the typical nondestructive case, allowing for some copy-on-write behavior.
+        Leaf nodes are usually implemented as basic fixed-length strings with a reference count attached for deallocation when no longer needed, although other garbage
+        collection methods can be used as well.
+
+        Insert
+        Definition: Insert(i, S’): insert the string S’ beginning at position i in the string s, to form a new string C1, …, Ci, S', Ci + 1, …, Cm.
+        Time complexity: {\displaystyle O(\log N)}O(\log N).
+        This operation can be done by a Split() and two Concat() operations. The cost is the sum of the three.
+
+
+        Index
+
+        Figure 2.1: Example of index lookup on a rope.
+        Definition: Index(i): return the character at position i
+        Time complexity: {\displaystyle O(\log N)}O(\log N)
+        To retrieve the i-th character, we begin a recursive search from the root node:
+
+        function index(RopeNode node, integer i)
+            if node.weight <= i and exists(node.right) then
+                return index(node.right, i - node.weight)
+            end
+
+            if exists(node.left) then
+                return index(node.left, i)
+            end
+
+            return node.string[i]
+        end
+
+        For example, to find the character at i=10 in Figure 2.1 shown on the right, start at the root node (A), find that 22 is greater than 10 and
+        there is a left child, so go to the left child (B). 9 is less than 10, so subtract 9 from 10 (leaving i=1) and go to the right child (D). Then because 6 is greater
+        than 1 and there's a left child, go to the left child (G). 2 is greater than 1 and there's a left child, so go to the left child again (J). Finally 2 is greater than
+        1 but there is no left child, so the character at index 1 of the short string "na" (ie "a") is the answer.
+
+        Concat
+
+        Figure 2.2: Concatenating two child ropes into a single rope.
+        Definition: Concat(S1, S2): concatenate two ropes, S1 and S2, into a single rope.
+        Time complexity: {\displaystyle O(1)}O(1) (or {\displaystyle O(\log N)}O(\log N) time to compute the root weight)
+        A concatenation can be performed simply by creating a new root node with left = S1 and right = S2, which is constant time. The weight of the parent node is set to the length
+        of the left child S1, which would take {\displaystyle O(\log N)}O(\log N) time, if the tree is balanced.
+
+        As most rope operations require balanced trees, the tree may need to be re-balanced after concatenation.
+
+
+        Split
+
+        Figure 2.3: Splitting a rope in half.
+        Definition: Split (i, S): split the string S into two new strings S1 and S2, S1 = C1, …, Ci and S2 = Ci + 1, …, Cm.
+        Time complexity: {\displaystyle O(\log N)}O(\log N)
+        There are two cases that must be dealt with:
+
+        The split point is at the end of a string (i.e. after the last character of a leaf node)
+        The split point is in the middle of a string.
+        The second case reduces to the first by splitting the string at the split point to create two new leaf nodes, then creating a new node that is the parent of the two component strings.
+
+        For example, to split the 22-character rope pictured in Figure 2.3 into two equal component ropes of length 11, query the 12th character to locate the node K at the bottom level. Remove the link between K and G. Go to the parent of G and subtract the weight of K from the weight of D. Travel up the tree and remove any right links to subtrees covering characters past position 11, subtracting the weight of K from their parent nodes (only node D and A, in this case). Finally, build up the newly orphaned nodes K and H by concatenating them together and creating a new parent P with weight equal to the length of the left node K.
+
+        As most rope operations require balanced trees, the tree may need to be re-balanced after splitting.
+
+
+        Delete
+        Definition: Delete(i, j): delete the substring Ci, …, Ci + j − 1, from s to form a new string C1, …, Ci − 1, Ci + j, …, Cm.
+
+        Time complexity: {\displaystyle O(\log N)}O(\log N).
+        This operation can be done by two Split() and one Concat() operation. First, split the rope in three, divided by i-th and i+j-th character respectively,
+        which extracts the string to delete in a separate node. Then concatenate the other two nodes.
+
+
+        Report
+        Definition: Report(i, j): output the string Ci, …, Ci + j − 1.
+        Time complexity: {\displaystyle O(j+\log N)}{\displaystyle O(j+\log N)}
+        To report the string Ci, …, Ci + j − 1, find the node u that contains Ci and weight(u) >= j, and then traverse
+        T starting at node u. Output Ci, …, Ci + j − 1 by doing an in-order traversal of T starting at node u.
+
+
+        WRITE MORE NOTES FROM WIKI article
+####################################3
+
+25.9) Does this trie code work? (https://codeforces.com/blog/entry/15729 )
+
+        Tries
+        Tries are some kind of rooted trees in which each edge has a character on it. Actually, trie is some kind
+        of DFA (Determining Finite Automata). For a bunch of strings, their trie is the smallest rooted tree with a character on
+        each edge and each of these strings can be build by writing down the characters in the path from the root to some node.
+
+        It's advantage is, LCP (Longest Common Prefix) of two of these strings is the LCA (Lowest Common Ancestor) of their nodes in the
+        trie(a node that we can build the string by writing down the characters in the path from the root to that node).
+
+        Generating the trie :
+
+        Root is vertex number 0 (C++)
+
+        int x[MAX_NUMBER_OF_NODES][MAX_ASCII_CODE], next = 1; //initially all numbers in x are -1
+        void build(string s){
+            int i = 0, v = 0;
+            while(i < s.size()){
+                if(x[v][s[i]] == -1)
+                    v = x[v][s[i++]] = next ++;
+                else
+                    v = x[v][s[i++]];
+            }
+        }
+
+        In the given Trie code ( as posted by PrinceOfPersia) , It is only possible to search for prefix, How can we search if the word exist or not ?
+
+        public boolean search(String word) {
+                int v = 0;
+                for(int i  = 0; i < word.length(); i++) {
+                    v  = x[v][word.charAt(i)];
+                    if(v == -1 )
+                        return false;
+                }
+                // THIS WON"T WORK
+                return true;
+            }
+
+
+        You can add a boolean array, call it something like ends and initialize it to false, for each word you
+        insert you set ends to true only in the last character of the word, so in your search method change the "return true"
+        line to "return ends[v]". If you insert the word partition, if you look for part, it will
+        return false, instead of true (which is what your code is doing).
+
+        We'd have to maintain another array of type : bool end[MAX][ALF] for that.
+
+        (https://codeforces.com/blog/entry/50357)
+        Badge of honor for supporting Codeforces on its 10th anniversary
+        arknave
+        5 years ago, # |  Vote: I like it +1 Vote: I do not like it
+        Each row in your array represents a node in the trie structure. Node 0 is the root.
+
+        When you want to insert a new string, begin at node 0. Let c be the first character of your string, and see if trie[0][c] is valid or not. If it is not valid "allocate" a new node by incrementing the size of your trie and set trie[0][c] to the newly allocated node.
+
+        Here's a simple example. I'm using -1 to signify that there is no node there.
+
+        Initially:
+
+        0: -1 -1 -1 ...
+        1: -1 -1 -1 ...
+        2: -1 -1 -1 ...
+        3: -1 -1 -1 ...
+        Size of the trie is 1 (because of the root node). Now let's insert string "ABC". Then since trie[0]['A'] is -1, we need to allocate a new node and set trie[0]['A'] to it. Then our structure is
+
+        0:  1 -1 -1 ...
+        1: -1 -1 -1 ...
+        2: -1 -1 -1 ...
+        3: -1 -1 -1 ...
+        Now we are currently at node 1 and need to insert "BC". Following this procedure twice, our trie looks like
+
+        0:  1 -1 -1 ...
+        1: -1  2 -1 ...
+        2: -1 -1  3 ...
+        3: -1 -1 -1 ...
 
 
 
@@ -961,7 +1239,783 @@ class Trie(object):
 
 
 
-
++##############################################################################
++
++TODO IMPLEMENT IN PYTHON
++COMPRESSED TRIES (PATRICIA TRIES)
++
++Compressed Tries (Patricia Tries)
++Patricia: Practical Algorithm To Retrieve Information Coded in
++Alphanumeric
++Introduced by Morrison (1968)
++Reduces storage requirement: eliminate unflagged nodes with only
++one child
++Every path of one-child unflagged nodes is compressed to a single
++edge
++Each node stores an index indicating the next bit to be tested during
++a search (index= 0 for the first bit, index= 1 for the second bit, etc)
++A compressed trie storing n keys always has at most n − 1 internal
++(non-leaf) node
++
++Each node stores an index indicating the next bit to be tested during
++a search (Look at CS240 note for visualization) AND a key, which is the completed word for that node 
++from the dictionary of words the trie is generated from 
++
++
++Search(x):
++    Follow the proper path from the root down in the tree to a leaf
++    If search ends in an unflagged node, it is unsuccessful
++    If search ends in a flagged node, we need to check if the key stored is
++    indeed x (because we are skipping checks, and checking random indexes, so we store 
++    in each node of the trie, the complete word for that leaf.)
++
++Delete(x):
++    Perform Search(x)
++    if search ends in an internal node, then
++        if the node has two children, then unflag the node and delete the key
++        else delete the node and make his only child, the child of its parent
++    if search ends in a leaf, then delete the leaf and
++    if its parent is unflagged, then delete the parent
++
++Insert(x):
++    Perform Search(x)
++    -> If the search ends at a leaf L with key y , compare x against y .
++    ->If y is a prefix of x, add a child to y containing x.
++    ->Else, determine the first index i where they disagree and create a new
++        node N with index i.
++        Insert N along the path from the root to L so that the parent of N has
++        index < i and one child of N is either L or an existing node on the path
++        from the root to L that has index > i.
++        The other child of N will be a new leaf node containing x.
++    ->If the search ends at an internal node, we find the key corresponding to
++    that internal node and proceed in a similar way to the previous case.
++
++
++##################################################################################
++##################################################################################
++##################################################################################
++STRING SEARCH ALGORITHMS:
++        KMP string searching
++        Manacher’s Algorithm
++        Aho–Corasick string matching algorithm;
++        Z ALGORITHM
++
++###########################################################################
++#############################################################################
++
++Here are some typical thoughts on search types:
++
++Boyer-Moore: works by pre-analyzing the pattern and comparing from right-to-left. 
++If a mismatch occurs, the initial analysis is used to determine how far the pattern can 
++be shifted w.r.t. the text being searched. This works particularly well for long search 
++patterns. In particular, it can be sub-linear, as you do not need to read 
++every single character of your text.
++
++Knuth-Morris-Pratt: also pre-analyzes the pattern, but tries to re-use whatever 
++was already matched in the initial part of the pattern to avoid having to rematch that. 
++This can work quite well, if your alphabet is small (f.ex. DNA bases), as you get a 
++higher chance that your search patterns contain reuseable subpatterns.
++
++Aho-Corasick: Needs a lot of preprocessing, but does so for a number of patterns. 
++If you know you will be looking for the same search patterns over and over again, 
++then this is much better than the other, because you need to 
++analyse patterns only once, not once per search.
++
++Space Usage favors Rabin-Karp
++One major advantage of Rabin-Karp is that it uses O(1) auxiliary storage space, 
++which is great if the pattern string you're looking for is very large. 
++For example, if you're looking for all occurrences of a string of length 107 
++in a longer string of length 109, not having to allocate a table of 107 
++machine words for a failure function or shift table is a major win. 
++Both Boyer-Moore and KMP use Ω(n) memory on a pattern string of 
++length n, so Rabin-Karp would be a clear win here.
++
++Worst-Case Single-Match Efficiency Favors Boyer-Moore or KMP
++Rabin-Karp suffers from two potential worst cases. First, 
++if the particular prime numbers used by Rabin-Karp are 
++known to a malicious adversary, that adversary could
++potentially craft an input that causes the rolling hash to match the 
++hash of a pattern string at each point in time, causing the algorithm's 
++performance to degrade to Ω((m - n + 1)n) on a string of length m and 
++pattern of length n. If you're taking untrusted strings as input, this 
++could potentially be an issue. Neither Boyer-Moore 
++nor KMP have these weaknesses.
++
++Worst-Case Multiple-Match Efficiency favors KMP.
++Similarly, Rabin-Karp is slow in the case where you want to find all matches of a 
++pattern string in the case where that pattern appears a large number of times. 
++For example, if you're looking for a string of 105 copies of the letter a 
++in text string consisting of 109copies of the letter a with Rabin-Karp, 
++then there will be lots of spots where the pattern string appears, 
++and each will require a linear scan. This can also lead 
++to a runtime of Ω((m + n - 1)n).
++
++Many Boyer-Moore implementations suffer from this second rule, but will not 
++have bad runtimes in the first case. 
++And KMP has no pathological worst-cases like these.
++
++Best-Case Performance favors Boyer-Moore
++One advantage of the Boyer-Moore algorithm is that it doesn't necessarily 
++have to scan all the characters of the input string. Specifically, 
++the Bad Character Rule can be used to skip over huge regions of 
++the input string in the event of a mismatch. More specifically, 
++the best-case runtime for Boyer-Moore is O(m / n), which is much 
++faster than what Rabin-Karp or KMP can provide.
++
++Generalizations to Multiple Strings favor KMP
++Suppose you have a fixed set of multiple text strings that you want to 
++search for, rather than just one. You could, if you wanted to, run multiple passes 
++of Rabin-Karp, KMP, or Boyer-Moore across the strings to find all the matches. 
++However, the runtime of this approach isn't great, as it scales linearly 
++with the number of strings to search for. On the other hand, KMP generalizes 
++nicely to the Aho-Corasick string-matching algorithm, which runs in time
++O(m + n + z), where z is the number of matches found and n is the 
++combined length of the pattern strings. Notice that there's no dependence 
++here on the number of different pattern strings being searched for!
++
++###################################################
++
++◮ T = AGCATGCTGCAGTCATGCTTAGGCTA
++◮ P = GCT
++◮ P appears three times in T
++◮ A naive method takes O(mn) time
++– Initiate string comparison at every starting point
++– Each comparison takes O(m) time
++◮ We can do much better!
++
++
++##################################################
++
++HASH TABLE CHECKING: 
++
++◮ A function that takes a string and outputs a number
++◮ A good hash function has few collisions
++– i.e., If x 6= y, H(x) 6= H(y) with high probability
++◮ An easy and powerful hash function is a polynomial mod some
++prime p
++– Consider each letter as a number (ASCII value is fine)
++– H(x1 . . . xk) = x1a^(k−1) + x2a^(k−2) + · · · + xk−1a + xk (mod p)
++– How do we find H(x2 . . . xk+1) from H(x1 . . . xk)?
++
++
++Hash Table
++◮ Main idea: preprocess T to speedup queries
++– Hash every substring of length k
++– k is a small constant
++◮ For each query P, hash the first k letters of P to retrieve all
++the occurrences of it within T
++◮ Don’t forget to check collisions!
++
++
++Pros:
++– Easy to implement
++– Significant speedup in practice
++◮ Cons:
++– Doesn’t help the asymptotic efficiency
++◮ Can still take Θ(nm) time if hashing is terrible or data is
++difficult
++– A lot of memory consumption
++
++######################################
++Introduction to suffix trees:
++
++PROGRESSION:
++suffix trie -> suffix ARRAY  (https://web.stanford.edu/class/cs97si/10-string-algorithms.pdf)
++(https://en.wikipedia.org/wiki/Suffix_tree#/media/File:Suffix_tree_BANANA.svg)
++
++
++In computer science, a suffix tree (also called PAT tree or, in an earlier form, position tree) is a compressed trie 
++containing all the suffixes of the given text as their keys and positions in the text as their values. Suffix trees allow 
++particularly fast implementations of many important string operations.
++
++The construction of such a tree for the string S takes time and space linear in the length of S.
++Once constructed, several operations can be performed quickly, for instance locating a substring in 
++S, locating a substring if a certain number of mistakes are allowed, locating matches for a
++regular expression pattern etc. Suffix trees also provide one of the first linear-time solutions for the 
++longest common substring problem. These speedups come at a cost: storing a string's suffix tree typically 
++requires significantly more space than storing the string itself.
++
++
++A suffix tree can be viewed as a data structure built on top of a trie where, instead of just adding the
++string itself into the trie, you would also add every possible suffix of that string. As an example, 
++if you wanted to index the string banana in a suffix tree, you would build a trie with the following strings:
++
++banana
++anana
++nana
++ana
++na
++a
++Once that's done you can search for any n-gram and see if it is present in your indexed string. In other words, 
++the n-gram search is a prefix search of all possible suffixes of your string.
++
++This is the simplest and slowest way to build a suffix tree. It turns out that there are many fancier variants on this
++data structure that improve on either or both space and build time. I'm not well versed enough in this domain to 
++give an overview but you can start by looking into suffix arrays or this class advanced data structures (lecture 16 and 18).
++
++This answer also does a wonderfull job explaining a variant of this data-structure.
++
++The suffix tree for the string S of length n is defined as a tree such that
++
++    The tree has exactly n leaves numbered from 1 to n.
++    Except for the root, every internal node has at least two children.
++    Each edge is labelled with a non-empty substring of S.
++    No two edges starting out of a node can have string-labels beginning with the same character.
++    The string obtained by concatenating all the string-labels found on the path from the root to leaf i spells out suffix S[i..n], 
++        for {\displaystyle i}i from {\displaystyle 1}1 to {\displaystyle n}n.
++    Since such a tree does not exist for all strings, {\displaystyle S}S is padded with a terminal symbol not 
++    seen in the string (usually denoted $). This ensures that no suffix is a prefix of another, 
++    and that there will be n leaf nodes, one for each of the n suffixes of S. Since all internal non-root nodes are 
++    branching, there can be at most n −  1 such nodes, and n + (n − 1) + 1 = 2n nodes in total (n leaves, n − 1 internal non-root nodes, 1 root).
++
++    Suffix links are a key feature for older linear-time construction algorithms, although most newer algorithms, which are based 
++    on Farach's algorithm, dispense with suffix links. In a complete suffix tree, all internal non-root nodes 
++    have a suffix link to another internal node. If the path from the root to a node spells the string \chi\alpha, where \chi  is a single character and 
++    \alpha  is a string (possibly empty), it has a suffix link to the internal node representing \alpha . See for example the suffix link from 
++    the node for ANA to the node for NA in the figure above. Suffix links are also used in some algorithms running on the tree.
++
++A generalized suffix tree is a suffix tree made for a set of strings 
++instead of a single string. It represents all suffixes from this set of strings. 
++Each string must be terminated by a different termination symbol.
++
++If you imagine a Trie in which you put some word's suffixes, you would be able to query it for the string's substrings 
++very easily. This is the main idea behind suffix tree, it's basically a "suffix trie".
++
++But using this naive approach, constructing this tree for a string of size n would be O(n^2) and take a lot of memory.
++
++Since all the entries of this tree are suffixes of the same string, they share a lot of information, so there are 
++optimized algorithms that allows you to create them more efficiently. Ukkonen's algorithm, for example, allows you 
++to create a suffix tree online in O(n) time complexity.
++
++
++
++######################################
++Suffix tries (Part 2 progression):
++A suffix tree is a compressed version of a suffix trie. 
++A suffix trie is just a trie that contains all the suffixes of a word. With that trie you can:
++
++• determine whether q is a substring of T?
++    Follow the path for q starting from the root.
++    If you exhaust the query string, then q is in T
++
++• check whether q is a suffix of T?
++    Follow the path for q starting from the root.
++    If you end at a leaf at the end of q, then q is a suffix of T
++
++
++• count how many times q appears in T?
++    Follow the path for q starting from the root.
++    The number of leaves under the node you end up in is the
++    number of occurrences of q.
++
++
++• find the longest repeat in T?
++    Find the deepest node that has at least 2 leaves under it.
++
++-> Find the lexicographically (alphabetically) first suffix:
++    Start at the root, and follow the edge labeled with the
++    lexicographically (alphabetically) smallest letter.
++
++
++
++A node represents the prefix of some
++suffix:
++
++abaaba$
++   __
++
++The node’s suffix link should link to the
++prefix of the suffix s that is 1 character
++shorter.
++Since the suffix trie contains all
++suffixes, it contains a path representing
++s, and therefore contains a node
++representing every prefix of s.
++
++
++
++
++MAIN IDEA: every substring of s is a prefix of some suffix of s.
++
++
++Explanation of Suffix links:
++
++
++One important feature of suffix trees are suffix links. Suffix links are well defined for suffix trees. If
++there is a node v in the tree with a label ca, where c is a character and a is a string (non-empty), then the
++suffix link of v points to s(v), which is a node with label a. If a is empty, then the suffix link of v, i.e,
++s(v) is the root. Suffix links exist for every internal (non-leaf) node of a suffix tree. This can be easily
++proved. (Refer Lemma 6.1.1, Corollary 6.1.1 and Corollary 6.1.2 of Gusfield).
++Suffix links are similar to failure functions of Aho-Corasick algorithm. By following these links, one can
++jump from one suffix to another, each suffix starting exactly one character after the first character of its
++preceding suffix. Thus using suffix links it is possible to get a linear time algorithm for the previously
++stated problem: matching the longest common substring. It is because suffix links keep track of what or
++how much of the string has been matched so far. When we see a mismatch, we can jump along the suffix
++link to see if there is any match later in the text and the string. Not only that, this jumping trick also helps
++us to save computation time while constructing suffix trees. Thus suffix links are very important
++constructs of suffix trees.  (Read more here: http://www.cbcb.umd.edu/confcour/Spring2010/CMSC858W-materials/lecture5.pdf)
++
++
++
++-> Find the longest common substring of T and q:
++
++    Walk down the tree following q.
++    If you hit a dead end, save the current depth,
++    and follow the suffix link from the current
++    node.
++    When you exhaust q, return the longest
++    substring found.
++
++
++T = abaaba$  -> suffix tree made for this. 
++q = bbaa
++
++We traverse b, reach dead end go to suffix link (end up at root because there is no prefix to charaacter b in string), 
++    traverse b, see a, see another a, so max is 3?
++
++##################################################
++
++CONSTRUCTING SUFFIX TREES: 
++
++Suppose we want to build suffix trie for string:
++s = abbacabaa
++We will walk down the string from left to right:
++building suffix tries for s[0], s[0..1], s[0..2], ..., s[0..n]
++
++To build suffix trie for s[0..i], we
++will use the suffix trie for s[0..i-1]
++built in previous step
++
++To convert SufTrie(S[0..i-1]) → SufTrie(s[0..i]), add character s[i] to all the suffixes:
++
++Need to add nodes for
++the suffixes: (Lets add c)
++
++abbac
++bbac
++bac
++ac
++c
++
++Purple are suffixes that
++will exist in
++SufTrie(s[0..i-1]) Why?
++How can we find these
++suffixes quickly?
++
++Where is the new
++deepest node? (aka
++longest suffix)
++
++How do we add the
++suffix links for the
++new nodes?
++
++To build SufTrie(s[0..i]) from SufTrie(s[0..i-1]):
++
++CurrentSuffix = longest (aka deepest suffix)
++
++Repeat: (Until you reach the root or the current node already has an edge labeled s[i] leaving it)
++    Add child labeled s[i] to CurrentSuffix.
++    Follow suffix link to set CurrentSuffix to next shortest suffix
++
++
++Add suffix links connecting nodes you just added in
++the order in which you added them. (In practice, you add these links as you go
++along, rather than at the end.)
++Because if you
++already have a node
++for suffix αs[i]
++then you have a
++node for every
++smaller suffix.
++
++##########################################
++
++PYTHON CODE TO BUILD SUFFIX TREES:
++
++class SuffixNode:
++    def __init__(self, suffix_link = None):
++        self.children = {}
++        if suffix_link is not None:
++            self.suffix_link = suffix_link
++        else:
++            self.suffix_link = self
++    
++    def add_link(self, c, v):
++        """link this node to node v via string c"""
++        self.children[c] = v
++
++def build_suffix_trie(s):
++     """Construct a suffix trie."""
++    assert len(s) > 0
++    
++    # explicitly build the two-node suffix tree
++    Root = SuffixNode() # the root node
++    Longest = SuffixNode(suffix_link = Root)
++    Root.add_link(s[0], Longest)
++
++    # for every character left in the string
++    for c in s[1:]:
++        Current = Longest; Previous = None
++        while c not in Current.children:
++            # create new node r1 with transition Current-c->r1
++            r1 = SuffixNode()
++            Current.add_link(c, r1)
++            # if we came from some previous node, make that
++            # node's suffix link point here
++            if Previous is not None:
++                Previous.suffix_link = r1
++            # walk down the suffix links
++            Previous = r1
++            Current = Current.suffix_link
++        # make the last suffix link
++        if Current is Root:
++            Previous.suffix_link = Root
++        else:
++            Previous.suffix_link = Current.children[c]
++        
++        # move to the newly added child of the longest path
++        # (which is the new longest path)
++        Longest = Longest.children[c]
++    return Root
++
++CAN YOU KEEP TAKING NOTES ON SUFFIX TREEES USING FOLLOWING PDF, AFTER READING THE ABOVE CODE PLS? 
++(https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/suffixtrees.pdf)
++Also you can follow this (http://www.cbcb.umd.edu/confcour/Spring2010/CMSC858W-materials/lecture5.pdf)
++
++
++
++• Suffix tries natural way to store a string -- search, count
++occurrences, and many other queries answerable easily.
++• But they are not space efficient: O(n2) space.
++• Suffix trees are space optimal: O(n), but require a little more
++subtle algorithm to construct.
++• Suffix trees can be constructed in O(n) time using Ukkonen’s
++algorithm.
++• Similar ideas can be used to store sets of strings.
++
++##############################################
++Some other Suffix tree notes
++
++
++◮ Suffix trie of a string T is a rooted tree that stores all the
++suffixes (thus all the substrings)
++◮ Each node corresponds to some substring of T
++◮ Each edge is associated with an alphabet
++◮ For each node that corresponds to ax, there is a special
++pointer called suffix link that leads to the node corresponding
++to x
++◮ Surprisingly easy to implement!
++
++◮ Given the suffix tree for T1 . . . Tn
++    – Then we append Tn+1 = a to T, creating necessary nodes
++◮ Start at node u corresponding to T1 . . . Tn
++    – Create an a-transition to a new node v
++◮ Take the suffix link at u to go to u′, corresponding to T2 . . . Tn
++    – Create an a-transition to a new node v′
++    – Create a suffix link from v to v′
++
++
++◮ Repeat the previous process:
++– Take the suffix link at the current node
++– Make a new a-transition there
++– Create the suffix link from the previous node
++◮ Stop if the node already has an a-transition
++    – Because from this point, all nodes that are reachable via suffix
++    links already have an a-transition
++
++############################################################
++
++SUFFIX ARRAY NOTES INTRO:
++
++◮ Memory usage is O(n)
++◮ Has the same computational power as suffix trie
++◮ Can be constructed in O(n) time (!)
++– But it’s hard to implement
++◮ There is an approachable O(n log2 n) algorithm
++– If you want to see how it works, read the paper on the course
++website
++– http://cs97si.stanford.edu/suffix-array.pdf
++
++Notes on String Problems
++◮ Always be aware of the null-terminators
++◮ Simple hash works so well in many problems
++◮ If a problem involves rotations of some string, consider
++concatenating it with itself and see if it helps
++◮ Stanford team notebook has implementations of suffix arrays
++and the KMP matcher
++
++
++(https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/suffixarrays.pdf)
++
++
++Suffix arrays are a more efficient way to store the suffixes that can do
++most of what suffix trees can do, but just a bit slower.
++• Slight space vs. time tradeoff.
++
++s = attcatg$
++Idea: lexicographically sort
++all the suffixes.
++• Store the starting indices of
++the suffixes in an array
++
++
++attcatg$
++ttcatg$
++tcatg$
++catg$
++atg$
++tg$
++g$
++$
++1
++
++sort the suffixes
++alphabetically
++the indices just
++“come along for
++the ride
++
++[
++8 $
++5 atg$
++1 attcatg$
++4 catg$
++7 g$
++3 tcatg$
++6 tg$
++2 ttcatg$
++]
++
++Use case:
++Does string “at” occur in s?
++• Binary search to find “at”.   in suffix array
++• What about “tt”?
++
++[
++8 $
++5 atg$
++1 attcatg$    <- at (yes it does)
++4 catg$
++7 g$
++3 tcatg$
++6 tg$
++2 ttcatg$
++]
++
++How many times does “at”
++occur in the string?
++• All the suffixes that start with
++“at” will be next to each other
++in the array.
++• Find one suffix that starts with
++“at” (using binary search).
++• Then count the neighboring
++sequences that start with at.
++
++K-mer counting
++Problem: Given a string s, an integer k, output all pairs (b, i) such
++that b is a length-k substring of s that occurs exactly i times. 
++
++k=2 then: 
++                Current Count
++[
++8 $                   1
++5 atg$                1
++1 attcatg$            2
++4 catg$               1 (at, 2)
++7 g$                  2
++3 tcatg$              1 (ca, 2)
++6 tg$                 1 (t$, 1)
++2 ttcatg$             1  (tc, 1)
++]                     1  (tt, 1)
++
++How to code:
++1. Build a suffix array.
++2. Walk down the suffix array, keeping a
++CurrentCount count
++    If the current suffix has length < k, skip it
++    If the current suffix starts with the same
++    length-k string as the previous suffix:
++        increment CurrentCount
++    else
++        output CurrentCount and previous length-k suffix
++        CurrentCount := 1
++Output CurrentCount & length-k suffix.
++
++
++Constructing Suffix Arrays
++Easy O(n2 log n) algorithm:
++sort the n suffixes, which takes O(n log n) comparisons,
++where each comparison takes O(n).
++
++
++There are several direct O(n) algorithms for constructing suffix
++arrays that use very little space.
++• The Skew Algorithm is one that is based on divide-and-conquer.
++• An simple O(n) algorithm: build the suffix tree, and exploit the
++relationship between suffix trees and suffix arrays (next slide)
++
++The Skew Algorithm 
++
++Main idea: Divide suffixes into 3 groups:
++• Those starting at positions i=0,3,6,9,.... (i mod 3 = 0)
++• Those starting at positions 1,4,7,10,... (i mod 3 = 1)
++• Those starting at positions 2,5,8,11,... (i mod 3 = 2)
++
++For simplicity, assume text length is a multiple of 3 after padding
++with a special character.
++mississippi$$
++
++Basic Outline:
++• Recursively handle suffixes from the i mod 3 = 1 and i mod 3 = 2
++groups.
++• Merge the i mod 3 = 0 group at the end.
++
++Handing the 1 and 2 groups
++s = mississippi$$
++1 ->  iss iss ipp i$$ 
++2 ->  ssi ssi ppi
++
++triples for groups
++1 and 2 groups
++
++assign each triple
++a token in
++lexicographical
++order
++
++          iss iss ipp i$$  ssi ssi ppi
++t      =   C   C   B   A    E   E  D
++
++Every suffix of t corresponds
++to a suffix of s.
++
++recursively compute
++the suffix array for
++tokenized string
++
++AEED 4
++BAEED 3
++CBAEED 2
++CCBAEED 1
++D 7
++ED 6
++EED 5
++
++Key Point #1: The order of the suffixes of t is the same as the order of the
++group 1 & 2 suffixes of s.
++
++t = CCBAEED
++       ____ (t4)
++
++Why?
++    Every suffix of t corresponds to some suffix of s (perhaps with some extra
++    letters at the end of it --- in this case EED)
++    Because the tokens are sorted in the same order as the triples, the sort
++    order of the suffix of t matches that of s.
++
++So: The recursive computational of the suffix array for t gives you the ordering
++of the group 1 and group 2 suffixes.
++
++Run Radix Sort:
++O(n)-time sort for n items when items can be divided into
++constant # of digits.
++• Put into buckets based on least-significant digit, flatten, repeat
++with next-most significant digit, etc.
++• Example items: 100 123 042 333 777 892 236
++
++# of passes = # of digits
++• Each pass goes through the numbers once.
++
++
++Handling 0 Suffixes
++• First: sort the group 0 suffixes, using the representation (s[i], Si+1)
++• Since the Si+1 suffixes are already in the array sorted, we can just stably
++sort them with respect to s[i], again using radix sort.
++
++1,2-array: ipp iss iss i$$ ppi ssi ssi
++0-array:   mis pi$ sip sis
++
++• We have to merge the group 0 suffixes into the suffix array for group 1 and 2.
++
++Given suffix Si and Sj, need to decide which should come first.
++• If Si and Sj are both either group 1 or group 2, then the recursively
++computed suffix array gives the order.
++• If one of i or j is 0 (mod 3), see next slide.
++
++Comparing 0 suffix Sj with 1 or 2 suffix Si
++
++Represent Si and Sj using subsequent suffixes:
++
++i (mod 3) = 1:
++(s[i],Si+1)       < (s[j],Sj+1)
++≣ 2 (mod 3)           ≣ 1 (mod 3)
++
++i (mod 3) = 2:
++(s[i],s[i+1],Si+2) < (s[j],s[j+1],Sj+2)
++≣ 1 (mod 3)           ≣ 2 (mod 3)
++
++-> the suffixes can be compared quickly because the relative order
++of Si+1, Sj+1 or Si+2, Sj+2 is known from the 1,2-array we already
++computed.
++
++Running Time
++Solves to T(n) = O(n):
++• Expand big-O notation: T(n) ≤ cn + T(2n/3) for some c.
++• Guess: T(n) ≤ 3cn
++• Induction step: assume that is true for all i < n.
++• T(n) ≤ cn + 3c(2n/3) = cn + 2cn = 3cn ☐
++
++
++T(n) = O(n) + T(2n/3)
++time to sort and
++merge
++array in recursive calls
++is 2/3rds the size of
++starting array
++
++
++#################################################################################
++STRING ALGORITHM: Suffix Tries and Suffix Trees
++
++What if we want to search for many patterns P within the same fixed
++text T ?
++
++Idea: Preprocess the text T rather than the pattern P
++Observation: P is a substring of T if and only if P is a prefix of some
++suffix of T .
++We will call a trie that stores all suffixes of a text T a suffix trie, and the
++compressed suffix trie of T a suffix tree.
++
++Build the suffix trie, i.e. the trie containing all the suffixes of the text
++Build the suffix tree by compressing the trie above (like in Patricia
++trees)
++Store two indexes l, r on each node v (both internal nodes and
++leaves) where node v corresponds to substring T [l..r ]
++
++T = bananaban
++SUFFIXES: {bananaban$, ananaban$, nanaban$, anaban$, naban$, aban$, ban$, an$, n$}
++
++Use $ to indicate end of suffixes in trie
++CREATE TRIE!
++then create compressed trie aka suffix tree (and each node contains 2 indexes l,r )
++
++
++Suffix Trees: Pattern Matching
++    To search for pattern P of length m:
++    Similar to Search in compressed trie with the difference that we are
++    looking for a prefix match rather than a complete match
++    If we reach a leaf with a corresponding string length less than m, then
++    search is unsuccessful
++    Otherwise, we reach a node v (leaf or internal) with a corresponding
++    string length of at least m
++    It only suffices to check the first m characters against the substring of
++    the text between indices of the node, to see if there indeed is a match
++    We can then visit all children of the node to report all matches
++
++
 
 
 ################################################################################
@@ -980,9 +2034,18 @@ SUFFIX ARRAYS:
     speeds up pattern matching on the suffix array[3] and is a 
     prerequisite for compressed suffix trees.
 
+    Difference between LCP array and suffix array:
 
+    Suffix array: Represents the lexicographic rank of each suffix of an array.
+    LCP array: Contains the maximum length prefix match between two consecutive suffixes, after they are sorted lexicographically.
 
+    Write about applications from here(https://en.wikipedia.org/wiki/LCP_array)
+    As noted by Abouelhoda, Kurtz & Ohlebusch (2004) several string processing problems can
+    be solved by the following kinds of tree traversals:
 
+    bottom-up traversal of the complete suffix tree
+    top-down traversal of a subtree of the suffix tree
+    suffix tree traversal using the suffix links.
 
 
     Suffix array
@@ -1106,142 +2169,151 @@ SUFFIX ARRAYS:
     (Codes by mukel)
 
 
+#######################################################333
+FAST KMP EXPLANATION: (https://web.stanford.edu/class/cs97si/10-string-algorithms.pdf)
+
+Knuth-Morris-Pratt (KMP) Matcher
+◮ A linear time (!) algorithm that solves the string matching
+problem by preprocessing P in Θ(m) time
+– Main idea is to skip some comparisons by using the previous
+comparison result
+◮ Uses an auxiliary array π that is defined as the following:
+– π[i] is the largest integer smaller than i such that P1 . . . Pπ[i]
+is
+a suffix of P1 . . . Pi
+◮ ... It’s better to see an example than the definition
+
+
+EXAMPLE:
+
+i    1     2    3    4     5    6    7    8    9    10
+Pi   a     b    a    b     a    b    a    b    c    a
+π[i] 0     0    1    2     3    4    5    6    0    1
+
+
+◮ π[i] is the largest integer smaller than i such that P1 . . . Pπ[i]
+is a suffix of P1 . . . Pi
+– e.g., π[6] = 4 since abab is a suffix of ababab
+– e.g., π[9] = 0 since no prefix of length ≤ 8 ends with c
+◮ Let’s see why this is useful
 
 
 
-##############################################################################
-
-TODO IMPLEMENT IN PYTHON
-COMPRESSED TRIES (PATRICIA TRIES)
-
-Compressed Tries (Patricia Tries)
-Patricia: Practical Algorithm To Retrieve Information Coded in
-Alphanumeric
-Introduced by Morrison (1968)
-Reduces storage requirement: eliminate unflagged nodes with only
-one child
-Every path of one-child unflagged nodes is compressed to a single
-edge
-Each node stores an index indicating the next bit to be tested during
-a search (index= 0 for the first bit, index= 1 for the second bit, etc)
-A compressed trie storing n keys always has at most n − 1 internal
-(non-leaf) node
-
-Each node stores an index indicating the next bit to be tested during
-a search (Look at CS240 note for visualization) AND a key, which is the completed word for that node 
-from the dictionary of words the trie is generated from 
+◮ T = ABC ABCDAB ABCDABCDABDE
+◮ P = ABCDABD
+◮ π = (0, 0, 0, 0, 1, 2, 0)
+◮ Start matching at the first position of T:
 
 
-Search(x):
-    Follow the proper path from the root down in the tree to a leaf
-    If search ends in an unflagged node, it is unsuccessful
-    If search ends in a flagged node, we need to check if the key stored is
-    indeed x (because we are skipping checks, and checking random indexes, so we store 
-    in each node of the trie, the complete word for that leaf.)
+A, B, C match -> mismtach on D
+◮ Mismatch at the 4th letter of P!
 
-Delete(x):
-    Perform Search(x)
-    if search ends in an internal node, then
-        if the node has two children, then unflag the node and delete the key
-        else delete the node and make his only child, the child of its parent
-    if search ends in a leaf, then delete the leaf and
-    if its parent is unflagged, then delete the parent
+◮ We matched k = 3 letters so far, and π[k] = 0
+– Thus, there is no point in starting the comparison at T2, T3
+(crucial observation)
+◮ Shift P by k − π[k] = 3 letters
 
-Insert(x):
-    Perform Search(x)
-    -> If the search ends at a leaf L with key y , compare x against y .
-    ->If y is a prefix of x, add a child to y containing x.
-    ->Else, determine the first index i where they disagree and create a new
-        node N with index i.
-        Insert N along the path from the root to L so that the parent of N has
-        index < i and one child of N is either L or an existing node on the path
-        from the root to L that has index > i.
-        The other child of N will be a new leaf node containing x.
-    ->If the search ends at an internal node, we find the key corresponding to
-    that internal node and proceed in a similar way to the previous case.
+12345678901
+ABC ABCDAB ABCDABCDABDE
+   ABCDABD
+
+Mismatch at T4 again
 
 
-##################################################################################
-##################################################################################
-##################################################################################
-STRING SEARCH ALGORITHMS:
-        KMP string searching
-        Manacher’s Algorithm
-        Aho–Corasick string matching algorithm;
-        Z ALGORITHM
+◮ We matched k = 0 letters so far
+◮ Shift P by k − π[k] = 1 letter (we define π[0] = −1)
 
-###########################################################################
-#############################################################################
 
-Here are some typical thoughts on search types:
+ABC ABCDAB ABCDABCDABDE
+    ABCDABD
 
-Boyer-Moore: works by pre-analyzing the pattern and comparing from right-to-left. 
-If a mismatch occurs, the initial analysis is used to determine how far the pattern can 
-be shifted w.r.t. the text being searched. This works particularly well for long search 
-patterns. In particular, it can be sub-linear, as you do not need to read 
-every single character of your text.
+Mistmatch at T11,
 
-Knuth-Morris-Pratt: also pre-analyzes the pattern, but tries to re-use whatever 
-was already matched in the initial part of the pattern to avoid having to rematch that. 
-This can work quite well, if your alphabet is small (f.ex. DNA bases), as you get a 
-higher chance that your search patterns contain reuseable subpatterns.
+◮ π[6] = 2 means P1P2 is a suffix of P1 . . . P6
+◮ Shift P by 6 − π[6] = 4 letters
 
-Aho-Corasick: Needs a lot of preprocessing, but does so for a number of patterns. 
-If you know you will be looking for the same search patterns over and over again, 
-then this is much better than the other, because you need to 
-analyse patterns only once, not once per search.
 
-Space Usage favors Rabin-Karp
-One major advantage of Rabin-Karp is that it uses O(1) auxiliary storage space, 
-which is great if the pattern string you're looking for is very large. 
-For example, if you're looking for all occurrences of a string of length 107 
-in a longer string of length 109, not having to allocate a table of 107 
-machine words for a failure function or shift table is a major win. 
-Both Boyer-Moore and KMP use Ω(n) memory on a pattern string of 
-length n, so Rabin-Karp would be a clear win here.
+ABC ABCDAB ABCDABCDABDE
+    ABCDABD
+->      ABCDABD (SHIFTED BY 2 LETTERS)
 
-Worst-Case Single-Match Efficiency Favors Boyer-Moore or KMP
-Rabin-Karp suffers from two potential worst cases. First, 
-if the particular prime numbers used by Rabin-Karp are 
-known to a malicious adversary, that adversary could
-potentially craft an input that causes the rolling hash to match the 
-hash of a pattern string at each point in time, causing the algorithm's 
-performance to degrade to Ω((m - n + 1)n) on a string of length m and 
-pattern of length n. If you're taking untrusted strings as input, this 
-could potentially be an issue. Neither Boyer-Moore 
-nor KMP have these weaknesses.
+◮ Currently 2 letters are matched
+◮ Shift P by 2 − π[2] = 2 letters   -> OK
 
-Worst-Case Multiple-Match Efficiency favors KMP.
-Similarly, Rabin-Karp is slow in the case where you want to find all matches of a 
-pattern string in the case where that pattern appears a large number of times. 
-For example, if you're looking for a string of 105 copies of the letter a 
-in text string consisting of 109copies of the letter a with Rabin-Karp, 
-then there will be lots of spots where the pattern string appears, 
-and each will require a linear scan. This can also lead 
-to a runtime of Ω((m + n - 1)n).
+ABC ABCDAB ABCDABCDABDE
+          ABCDABD
 
-Many Boyer-Moore implementations suffer from this second rule, but will not 
-have bad runtimes in the first case. 
-And KMP has no pathological worst-cases like these.
+mISMATCH
+◮ Currently no letters are matched
+◮ Shift P by 0 − π[0] = 1 letter
 
-Best-Case Performance favors Boyer-Moore
-One advantage of the Boyer-Moore algorithm is that it doesn't necessarily 
-have to scan all the characters of the input string. Specifically, 
-the Bad Character Rule can be used to skip over huge regions of 
-the input string in the event of a mismatch. More specifically, 
-the best-case runtime for Boyer-Moore is O(m / n), which is much 
-faster than what Rabin-Karp or KMP can provide.
 
-Generalizations to Multiple Strings favor KMP
-Suppose you have a fixed set of multiple text strings that you want to 
-search for, rather than just one. You could, if you wanted to, run multiple passes 
-of Rabin-Karp, KMP, or Boyer-Moore across the strings to find all the matches. 
-However, the runtime of this approach isn't great, as it scales linearly 
-with the number of strings to search for. On the other hand, KMP generalizes 
-nicely to the Aho-Corasick string-matching algorithm, which runs in time
-O(m + n + z), where z is the number of matches found and n is the 
-combined length of the pattern strings. Notice that there's no dependence 
-here on the number of different pattern strings being searched for!
+ABC ABCDAB ABCDABCDABDE
+           ABCDABD
+                 ^
+◮ Mismatch at T18
+
+◮ Currently 6 letters are matched
+◮ Shift P by 6 − π[6] = 4 letters
+
+
+ABC ABCDAB ABCDABCDABDE
+               ABCDABD
+
+matched!!
+
+◮ Currently all 7 letters are matched
+◮ After recording this match (at T16 . . . T22, we shift P again in
+order to find other matches
+– Shift by 7 − π[7] = 7 letters
+
+Computing π
+
+◮ Observation 1: if P1 . . . Pπ[i]
+is a suffix of P1 . . . Pi, then P1 . . . Pπ[i]−1 is a suffix of P1 . . . Pi−1
+    – Well, obviously...
+
+◮ Observation 2: all the prefixes of P that are a suffix of
+P1 . . . Pi can be obtained by recursively applying π to i
+    – e.g., P1 . . . Pπ[i], P1 . . . , Pπ[π[i]], P1 . . . , Pπ[π[π[i]]] are all suffixes of P1 . . . Pi
+
+
+
+◮ A non-obvious conclusion:
+    – First, let’s write π(k)[i] as π[·] applied k times to i
+    – e.g., π(2)[i] = π[π[i]]
+    – π[i] is equal to π(k)[i − 1] + 1, where k is the smallest integer that satisfies Pπ(k)[i−1]+1 = Pi
+        -> ◮ If there is no such k, π[i] = 0
+
+◮ Intuition: we look at all the prefixes of P that are suffixes of
+P1 . . . Pi−1, and find the longest one whose next letter
+matches Pi
+
+Implementation:
+
+pi[0] = -1;
+int k = -1;
+for(int i = 1; i <= m; i++) {
+    while(k >= 0 && P[k+1] != P[i])
+        k = pi[k];
+    pi[i] = ++k;
+}
+
+Patten Matching Impl:
+int k = 0;
+for(int i = 1; i <= n; i++) {
+    while(k >= 0 && P[k+1] != T[i])
+        k = pi[k];
+    k++;
+    if(k == m) {
+        // P matches T[i-m+1..i]
+        k = pi[k];
+    }
+}
+
+
+
+
 
 #################################################################################
 STRING ALGORITHM: RABIN KARP
@@ -1360,8 +2432,7 @@ is examined once.
 
 The construction of the stringmatching automaton is based on
 the given pattern. The time of this
-construction may be O(m3
-|S|)
+construction may be O(m3 |S|)
 
 A finite automaton M is a 5-tuple (Q,q0 ,A,S,d),
 where
@@ -1900,43 +2971,6 @@ STRING ALGORITHM: BOYER Moore COMBINED
 
 COMPLETE THIS THANK YOU!!
 
-#################################################################################
-STRING ALGORITHM: Suffix Tries and Suffix Trees
-
-What if we want to search for many patterns P within the same fixed
-text T ?
-
-Idea: Preprocess the text T rather than the pattern P
-Observation: P is a substring of T if and only if P is a prefix of some
-suffix of T .
-We will call a trie that stores all suffixes of a text T a suffix trie, and the
-compressed suffix trie of T a suffix tree.
-
-Build the suffix trie, i.e. the trie containing all the suffixes of the text
-Build the suffix tree by compressing the trie above (like in Patricia
-trees)
-Store two indexes l, r on each node v (both internal nodes and
-leaves) where node v corresponds to substring T [l..r ]
-
-T = bananaban
-SUFFIXES: {bananaban$, ananaban$, nanaban$, anaban$, naban$, aban$, ban$, an$, n$}
-
-Use $ to indicate end of suffixes in trie
-CREATE TRIE!
-then create compressed trie aka suffix tree (and each node contains 2 indexes l,r )
-
-
-Suffix Trees: Pattern Matching
-    To search for pattern P of length m:
-    Similar to Search in compressed trie with the difference that we are
-    looking for a prefix match rather than a complete match
-    If we reach a leaf with a corresponding string length less than m, then
-    search is unsuccessful
-    Otherwise, we reach a node v (leaf or internal) with a corresponding
-    string length of at least m
-    It only suffices to check the first m characters against the substring of
-    the text between indices of the node, to see if there indeed is a match
-    We can then visit all children of the node to report all matches
 
 
 #########################################################################
@@ -2730,3 +3764,72 @@ COOL NOTES: Z ALGORITHM FOR STRINGS:
     Finding a string T of shortest length such that S can be represented as a 
     concatenation of one or more copies of T
 
+##############################################################################
+
+    Tries
+    [THE BELOW CODE DOESNT MAKE SENSE, DOESNT WORK, DONT WASTE TIME ON IT]
+
+
+    Tries are some kind of rooted trees in which each edge has a character on it.
+    Actually, trie is some kind of DFA (Determining Finite Automata). For a bunch of
+    strings, their trie is the smallest rooted tree with a character on each edge and
+    each of these strings can be build by writing down the characters in the path
+    from the root to some node.
+
+    It's advantage is, LCP (Longest Common Prefix) of two of these strings is the
+    LCA (Lowest Common Ancestor) of their nodes in the trie(a node that we can
+    build the string by writing down the characters in the
+    path from the root to that node).
+
+    Generating the trie :
+
+    Root is vertex number 0 (C++)
+
+    int x[MAX_NUMBER_OF_NODES][MAX_ASCII_CODE], next = 1; //initially all numbers in x are -1
+    void build(string s){
+        int i = 0, v = 0;
+        while(i < s.size()){
+            if(x[v][s[i]] == -1)
+                v = x[v][s[i++]] = next ++;
+            else
+                v = x[v][s[i++]];
+        }
+    }
+
+    let f be the matrix representation of your trie
+
+    let f[k] be the list of links for the k-th node (NOT ASCII LETTER NODE niggaaHHH)
+
+    let f[k][x] = m, the node who represents the son of k-th node
+        using x-th character, m = -1 is there is not a link.
+
+    int MAX = Max number of nodes
+    int CHARSET = alphabet size
+    int ROOT = 0
+    int sz = 1;
+
+    f[MAX][CHARSET]
+
+    void init() {
+    fill(f, -1);
+    }
+
+    void insert(char [] s) {
+    int node = ROOT;
+    for (int i = 0; i < size(s); i++) {
+    if ( f[node][ s[i] ] == -1 )
+        f[node][ s[i] ] = sz++;
+    node = f[node][ s[i] ];
+    }
+    }
+
+    Notes: Root node is at f[0] sz is the numbers of nodes currently in trie
+
+    I guess would be easy to you implement other functions.
+
+    what about ababc?
+    abbc
+
+    a -> b -> a -> b -> c
+    1    2    3    4    5
+        -> b

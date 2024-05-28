@@ -4,10 +4,52 @@ Record knowledge for 88. Merge Sorted Array
 PLEASE TAKE NOTES ON THE SOLUTIONS OF find median from datastream. 
 
 
+SOLVE HRT DP PROBLEM -> CLEANING PLATES
+...
+
+Do parallel courses 3! on leetcode
+
+Complete the question and write notes on advanced sliding window:
+The following problems:
+https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/
+https://leetcode.com/problems/longest-substring-without-repeating-characters/
+https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/
+
+
+
+Cool problem to figure out:
+https://www.lintcode.com/problem/851/description -> Pour water
+
+
+
+write notes on stone game 3 and do it bottom up.
+
+Write sql notes in sqlnotes.txt
+
+
+
 TAKES NOTES ON 73.  SET MATRIX ZEROS. 
+
+Do candy crush problem.
+
+REVIEW FIND PEAK ELEMENT 2DD VERSION!
+
+
+
+FOR integerbreak -> look at math soln
+
+Completed convertTernaryToBinaryTree. Finish up the  iterative stack soln for it, as well as
+    add notes on it in Algo README, on the wierd shit you had to do.
+    The iterative soln would be very helpful to know!!!!
+
+    -> Also do its friend problem -> Construct Binary Tree from String
+    -> Also do basic calculaor, 1,2,3,4
+
 
 For generate parenthesis can you do DP? GET NOTES FOR THIS. 
 
+
+REVIEW BIDIRECTIONAL BFS PYTHON SOLUTION FOR Open the Lock in important questions.
 
 RESAARCH RESULTS FOR 33. Search in Rotated Sorted Array 
         
@@ -80,8 +122,36 @@ read discussion for decode ways bottom up.
 
 Write notes for maximal square LC problem. 
 
-PUT HRT 2 MONOTONIC QUENE PROBLEM IN ALGO README + question
-
 
 REVIEW SLIDING WINDOW MEDIAN, TRY WITH PYTHON AND READ NOTES. 
 
+
+Write notes on below questions:
+
+Cap1 OA, first 2 questions were easy and tbh cannot remember them
+3rd one was basically: you're given a var schedules, a list of lists; each schedule[i] is the schedule of a person that contains
+intervals in the form of [start, end] of the  meetings they have in a  24 hour period. You are also given length, the length of a
+meeting you want to schedule. You need to find the earliest time for the meeting to start s.t. all the people can join. If there
+is no such time, find a time s.t. the greatest number of people can join
+
+Find the intervals they dont have meetings (do the inverse of the intervals they have in the 24 hour day).
+Order those intervals by start time.
+
+process starts, increment counter, process ends decrement counter.
+    If counter == # of people check if interval > lengthOfmeeting and return.
+
+To deal with: If there is no such time, find a time s.t. the greatest number of people can join
+
+When you process start and end intervals:
+    -> keep track of the max ppl available (which is max(maxcounter, counter)) + start interval for that end interval, and check if the interval you are checking is > lengthofmeeting,
+    to answer the question (and then you can start time for the meeting with the greatest # of ppl)
+
+(does this logic look correct?)
+
+
+
+4th one was: you're given a list operations, where each elem of operations is the form [0,a,b] or [1,a,b], where 0 or 1 is an operation,
+a,b are the length/width of a rectangle (a x b). If op == 0, you create and save the rectangle. If op == 1, then you take your current
+rectangle and check to see if it can fit in all previously saved rectangles. You can rotate your current rectangle (s.t. the dimensions
+are now b x a instead of a x b). If it can fit in all previous rectangles, append True to a res array. If it does not, append False to
+a res array. Then return your res array.
