@@ -15,6 +15,9 @@ https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-charac
 https://leetcode.com/problems/longest-substring-without-repeating-characters/
 https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/
 
+Put inserted into sorted cirtcular list from leetcode copy into here. 
+
+
 
 
 Cool problem to figure out:

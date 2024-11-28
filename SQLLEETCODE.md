@@ -1,3 +1,23 @@
+
+SELECT
+    employee_id,
+    first_name,
+    last_name,
+    department_id,
+    salary,
+    ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) AS dept_row_num,
+    RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS dept_rank,
+    DENSE_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS dept_dense_rank,
+    LAG(salary, 1) OVER (PARTITION BY department_id ORDER BY salary) AS prev_salary,
+    LEAD(salary, 1) OVER (PARTITION BY department_id ORDER BY salary) AS next_salary,
+    SUM(salary) OVER (PARTITION BY department_id ORDER BY salary) AS running_total,
+    AVG(salary) OVER (PARTITION BY department_id ORDER BY salary) AS running_avg,
+    MIN(salary) OVER (PARTITION BY department_id ORDER BY salary) AS min_salary,
+    MAX(salary) OVER (PARTITION BY department_id ORDER BY salary) AS max_salary
+FROM 
+    employees;
+
+
 1555)1555. Bank Account Summary
         Solved
         Medium
@@ -98,7 +118,7 @@
             SELECT u.user_id, u.user_name, coalesce(g.amt, 0) - coalesce(l.amt, 0) + u.credit as credit, 
             CASE
                 WHEN coalesce(g.amt, 0) - coalesce(l.amt, 0) + u.credit < 0 THEN 'Yes'
-            ELSE 'No'
+                ELSE 'No'
             END as credit_limit_breached
 
             FROM users u 
@@ -124,7 +144,9 @@
         | amount           | int  |
         +------------------+------+
         transaction_id is the primary key of this table. 
+
         Each row contains information about transactions that includes unique (customer_id, transaction_date) along with the corresponding customer_id and amount.  
+
         Write an SQL query to find the customers who have made consecutive transactions with increasing amount for at least three consecutive days. Include the customer_id, start date of the consecutive transactions period and the end date of the consecutive transactions period. There can be multiple consecutive transactions by a customer.
 
         Return the result table ordered by customer_id in ascending order.
@@ -965,3 +987,361 @@
         7, 4, 3
         8, 5, 3
         10, 6, 4
+
+
+
+1083. Sales Analysis II
+        Attempted
+        Easy
+        Topics
+        Companies
+        SQL Schema
+        Pandas Schema
+        Table: Product
+
+        +--------------+---------+
+        | Column Name  | Type    |
+        +--------------+---------+
+        | product_id   | int     |
+        | product_name | varchar |
+        | unit_price   | int     |
+        +--------------+---------+
+        product_id is the primary key (column with unique values) of this table.
+        Each row of this table indicates the name and the price of each product.
+        Table: Sales
+
+        +-------------+---------+
+        | Column Name | Type    |
+        +-------------+---------+
+        | seller_id   | int     |
+        | product_id  | int     |
+        | buyer_id    | int     |
+        | sale_date   | date    |
+        | quantity    | int     |
+        | price       | int     |
+        +-------------+---------+
+        This table might have repeated rows.
+        product_id is a foreign key (reference column) to the Product table.
+        buyer_id is never NULL. 
+        sale_date is never NULL. 
+        Each row of this table contains some information about one sale.
+        
+
+        Write a solution to report the buyers who have bought S8 but not iPhone. Note that S8 and iPhone are products presented in the Product table.
+
+        Return the result table in any order.
+
+        The result format is in the following example.
+
+        
+
+        Example 1:
+
+        Input: 
+        Product table:
+        +------------+--------------+------------+
+        | product_id | product_name | unit_price |
+        +------------+--------------+------------+
+        | 1          | S8           | 1000       |
+        | 2          | G4           | 800        |
+        | 3          | iPhone       | 1400       |
+        +------------+--------------+------------+
+        Sales table:
+        +-----------+------------+----------+------------+----------+-------+
+        | seller_id | product_id | buyer_id | sale_date  | quantity | price |
+        +-----------+------------+----------+------------+----------+-------+
+        | 1         | 1          | 1        | 2019-01-21 | 2        | 2000  |
+        | 1         | 2          | 2        | 2019-02-17 | 1        | 800   |
+        | 2         | 1          | 3        | 2019-06-02 | 1        | 800   |
+        | 3         | 3          | 3        | 2019-05-13 | 2        | 2800  |
+        +-----------+------------+----------+------------+----------+-------+
+        Output: 
+        +-------------+
+        | buyer_id    |
+        +-------------+
+        | 1           |
+        +-------------+
+        Explanation: The buyer with id 1 bought an S8 but did not buy an iPhone. The buyer with id 3 bought both.
+
+
+        SOLN:
+
+        SELECT s.buyer_id
+        FROM Sales AS s INNER JOIN Product AS p
+        ON s.product_id = p.product_id
+        GROUP BY s.buyer_id
+        HAVING SUM(CASE WHEN p.product_name = 'S8' THEN 1 ELSE 0 END) > 0
+        AND SUM(CASE WHEN p.product_name = 'iPhone' THEN 1 ELSE 0 END) = 0;
+
+        Without CASE:
+
+        SELECT b.buyer_id
+        FROM Product AS a
+        JOIN Sales AS b
+        ON a.product_id = b.product_id 
+        GROUP BY b.buyer_id 
+        HAVING SUM(a.product_name = 'S8') > 0 and SUM(a.product_name = 'iPhone') = 0;
+
+
+
+614. Second Degree Follower
+        Solved
+        Medium
+        SQL Schema
+        Pandas Schema
+        Table: Follow
+
+        +-------------+---------+
+        | Column Name | Type    |
+        +-------------+---------+
+        | followee    | varchar |
+        | follower    | varchar |
+        +-------------+---------+
+        (followee, follower) is the primary key (combination of columns with unique values) for this table.
+        Each row of this table indicates that the user follower follows the user followee on a social network.
+        There will not be a user following themself.
+        
+
+        A second-degree follower is a user who:
+
+        follows at least one user, and
+        is followed by at least one user.
+        Write a solution to report the second-degree users and the number of their followers.
+
+        Return the result table ordered by follower in alphabetical order.
+
+        The result format is in the following example.
+
+        
+
+        Example 1:
+
+        Input: 
+        Follow table:
+        +----------+----------+
+        | followee | follower |
+        +----------+----------+
+        | Alice    | Bob      |
+        | Bob      | Cena     |
+        | Bob      | Donald   |
+        | Donald   | Edward   |
+        +----------+----------+
+        Output: 
+        +----------+-----+
+        | follower | num |
+        +----------+-----+
+        | Bob      | 2   |
+        | Donald   | 1   |
+        +----------+-----+
+        Explanation: 
+        User Bob has 2 followers. Bob is a second-degree follower because he follows Alice, so we include him in the result table.
+        User Donald has 1 follower. Donald is a second-degree follower because he follows Bob, so we include him in the result table.
+        User Alice has 1 follower. Alice is not a second-degree follower because she does not follow anyone, so we don not include her in the result table.
+
+
+        SELECT f.followee follower, COUNT(f.follower) num
+        From Follow f
+        WHERE exists ( SELECT 1 FROM Follow f2 where f2.follower = f.followee)
+        GROUP BY f.followee 
+        ORDER BY f.followee
+
+        ALTERNATE SOLN:
+
+        SELECT followee AS follower, COUNT(follower) num
+        FROM Follow
+        WHERE followee IN 
+        (
+            SELECT follower FROM Follow
+        )
+        GROUP BY followee
+        ORDER BY followee
+
+
+
+1194. Tournament Winners
+        Hard
+        Topics
+        Companies
+        SQL Schema
+        Pandas Schema
+        Table: Players
+
+        +-------------+-------+
+        | Column Name | Type  |
+        +-------------+-------+
+        | player_id   | int   |
+        | group_id    | int   |
+        +-------------+-------+
+        player_id is the primary key (column with unique values) of this table.
+        Each row of this table indicates the group of each player.
+        Table: Matches
+
+        +---------------+---------+
+        | Column Name   | Type    |
+        +---------------+---------+
+        | match_id      | int     |
+        | first_player  | int     |
+        | second_player | int     | 
+        | first_score   | int     |
+        | second_score  | int     |
+        +---------------+---------+
+        match_id is the primary key (column with unique values) of this table.
+        Each row is a record of a match, first_player and second_player contain the player_id of each match.
+        first_score and second_score contain the number of points of the first_player and second_player respectively.
+        You may assume that, in each match, players belong to the same group.
+        
+
+        The winner in each group is the player who scored the maximum total points within the group. In the case of a tie, the lowest player_id wins.
+
+        Write a solution to find the winner in each group.
+
+        Return the result table in any order.
+
+        The result format is in the following example.
+
+        
+
+        Example 1:
+
+        Input: 
+        Players table:
+        +-----------+------------+
+        | player_id | group_id   |
+        +-----------+------------+
+        | 15        | 1          |
+        | 25        | 1          |
+        | 30        | 1          |
+        | 45        | 1          |
+        | 10        | 2          |
+        | 35        | 2          |
+        | 50        | 2          |
+        | 20        | 3          |
+        | 40        | 3          |
+        +-----------+------------+
+        Matches table:
+        +------------+--------------+---------------+-------------+--------------+
+        | match_id   | first_player | second_player | first_score | second_score |
+        +------------+--------------+---------------+-------------+--------------+
+        | 1          | 15           | 45            | 3           | 0            |
+        | 2          | 30           | 25            | 1           | 2            |
+        | 3          | 30           | 15            | 2           | 0            |
+        | 4          | 40           | 20            | 5           | 2            |
+        | 5          | 35           | 50            | 1           | 1            |
+        +------------+--------------+---------------+-------------+--------------+
+        Output: 
+        +-----------+------------+
+        | group_id  | player_id  |
+        +-----------+------------+ 
+        | 1         | 15         |
+        | 2         | 35         |
+        | 3         | 40         |
+        +-----------+------------+
+
+
+        Join Players and Matches on player_id in (first_player, second_player).
+        Sum up the first_score and the second_score whenever the player_id equals to the first_player or the second_player respctively
+        Rank the total scores in desc and player_id in asc
+        Select from sub-query where rank = 1
+        
+        
+        select	group_id, player_id from
+            (	select 	p.group_id, p.player_id,
+                rank() over (partition by p.group_id order by
+                sum(case when p.player_id = m.first_player then m.first_score else m.second_score end) desc,
+                p.player_id asc) rk
+            from players p	join matches m on
+                p.player_id in (m.first_player, m.second_player)
+            group by p.group_id, p.player_id
+            )  t where rk = 1
+
+
+        Good question ! The short answer to your questions is "order of execution". In this solution, the 
+        "GROUP BY" executes before the window function. Window functions execute in the SELECT clause (last if
+         you don't have an ORDER BY or LIMIT clause). In my opinion, this solution is very efficient cause it 
+         solves the problem with 2 table scans, only.( 1 table scan call to Matches and 1 table scan call to Player)
+
+    
+
+1699. Number of Calls Between Two Persons
+    Solved
+    Medium
+    Topics
+    Companies
+    SQL Schema
+    Pandas Schema
+    Table: Calls
+
+    +-------------+---------+
+    | Column Name | Type    |
+    +-------------+---------+
+    | from_id     | int     |
+    | to_id       | int     |
+    | duration    | int     |
+    +-------------+---------+
+    This table does not have a primary key (column with unique values), it may contain duplicates.
+    This table contains the duration of a phone call between from_id and to_id.
+    from_id != to_id
+    
+
+    Write a solution to report the number of calls and the total call duration between each pair of distinct persons (person1, person2) where person1 < person2.
+
+    Return the result table in any order.
+
+    The result format is in the following example.
+
+    
+
+    Example 1:
+
+    Input: 
+    Calls table:
+    +---------+-------+----------+
+    | from_id | to_id | duration |
+    +---------+-------+----------+
+    | 1       | 2     | 59       |
+    | 2       | 1     | 11       |
+    | 1       | 3     | 20       |
+    | 3       | 4     | 100      |
+    | 3       | 4     | 200      |
+    | 3       | 4     | 200      |
+    | 4       | 3     | 499      |
+    +---------+-------+----------+
+    Output: 
+    +---------+---------+------------+----------------+
+    | person1 | person2 | call_count | total_duration |
+    +---------+---------+------------+----------------+
+    | 1       | 2       | 2          | 70             |
+    | 1       | 3       | 1          | 20             |
+    | 3       | 4       | 4          | 999            |
+    +---------+---------+------------+----------------+
+    Explanation: 
+    Users 1 and 2 had 2 calls and the total duration is 70 (59 + 11).
+    Users 1 and 3 had 1 call and the total duration is 20.
+    Users 3 and 4 had 4 calls and the total duration is 999 (100 + 200 + 200 + 499).
+
+
+    # Write your MySQL query statement below
+
+    SELECT from_id person1, to_id person2, SUM(cnt) call_count, SUM(dur) total_duration
+
+    FROM (SELECT c.from_id, c.to_id, COUNT(*) cnt, SUM(c.duration) dur
+    From Calls c
+    where c.from_id < c.to_id 
+    group by c.from_id, c.to_id
+    UNION 
+    SELECT c.to_id as from_id, c.from_id as to_id, COUNT(*) cnt, SUM(c.duration) dur
+    From Calls c
+    where c.from_id > c.to_id 
+    group by c.from_id, c.to_id) tab 
+
+    GROUP BY from_id, to_id
+
+
+    BETTER SOLN:
+    
+    SELECT LEAST(from_id, to_id) AS person1,
+        GREATEST(from_id, to_id) AS person2,
+        COUNT(*) AS call_count,
+        SUM(duration) AS total_duration
+    FROM Calls
+    GROUP BY person1, person2;

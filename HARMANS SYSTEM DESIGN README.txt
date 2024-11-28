@@ -1,6 +1,841 @@
 scrape this:
 https://leetcode.com/discuss/interview-question/4366889/System-Design-100-topics-to-learn
 
+SCRAPE THIS (GOOD ADVANCED SYSTEM DESIGN NOTES) THEORETICAL. 
+https://tikv.org/deep-dive/consensus-algorithm/raft/
+
+GOOD NOTES ON PATTERNS HERE SCRAPE THIS:
+https://microservices.io/patterns/data/cqrs.html
+
+SCARPE THIS BLOG, ITS REALLY GOOD, READ ALL ITS POSTS: 
+best system design prep: 
+https://systemdesign.one/live-comment-system-design/
+^ THIS IS THE MAIN BLOG LEARN BOTEC FROM HERE. 
+
+
+1 million requests/day = 12 requests/second
+
+L1 and L2 caches: 1 ns, 10 ns
+E.g.: They are usually built onto the microprocessor chip. Unless you work with hardware directly, you probably don’t need to worry about them.
+
+RAM access: 100 ns
+E.g.: It takes around 100 ns to read data from memory. Redis is an in-memory data store, so it takes about 100 ns to read data from Redis.
+
+Send 1K bytes over 1 Gbps network: 10 us
+E.g.: It takes around 10 us to send 1KB of data from Memcached through the network.
+
+Read from SSD: 100 us
+E.g.: RocksDB is a disk-based K/V store, so the read latency is around 100 us on SSD.
+
+Database insert operation: 1 ms.
+E.g.: Postgresql commit might take 1ms. The database needs to store the data, create the index, and flush logs. 
+All these actions take time.
+
+Send packet CA->Netherlands->CA: 100 ms
+E.g.: If we have a long-distance Zoom call, the latency might be around 100 ms.
+
+Retry/refresh internal: 1-10s
+E.g: In a monitoring system, the refresh interval is usually set to 5~10 seconds (default value on Grafana).
+
+
+
+
+The real-time Application Programming Interface (API) can be implemented for faster user experiences and instant delivery of live comments. The average time for a human to blink is 100 ms, and the average reaction time for a human is around 250 ms. Therefore, the actions performed within 250 ms are perceived as real-time or live 4, 5. An event-driven architecture can be used to build a real-time data platform. The general subscription models for an API are the following 6:
+
+push-based (server-initiated)
+pull-based (client-initiated)
+The popular protocols for an event-driven API are the following
+
+Protocol	Description	Use Cases	Subscription Model
+Webhook	HTTP-based callback function that allows lightweight, event-driven infrequent communication between APIs	trigger automation workflows	push-based
+WebSub	communication channel for frequent messages between web content publishers and subscribers based on HTTP webhooks	news aggregator platforms, stock exchanges, and air traffic networks	push-based
+WebSockets	provides full-duplex communication channels over a single TCP connection with lower overhead than half-duplex alternatives such as HTTP polling	financial tickers, location-based apps, and chat solutions	pull-based
+SSE	lightweight and subscribe-only protocol for event-driven data streams	live score updates	pull-based
+MQTT	protocol for streaming data between devices with limited CPU power and low bandwidth networks	Internet of Things	pull-based
+
+The client creates a regular HTTP long poll connection with the server with server-sent events (SSE). The server can push a continuous stream of data to the client on the same connection as events occur. The client doesn’t need to perform subsequent requests 7.
+
+
+The only difference for SSE from a regular HTTP request is that the Accept header on the HTTP request holds the value text/event-stream. The EventSource interface is used by the client to receive and process server-sent events independently in text/event-stream format without closing the connection. All modern web browsers support the EventSource interface natively. The EventSource interface can be implemented on iOS and Android platforms with lightweight libraries 7, 8.
+
+The predefined fields of an SSE connection are the following 6:
+
+Field	Description
+event	the event type defined by the server
+data	the payload of the event
+id	ID for each event
+retry	the client attempts to reconnect with the server after a specific timeframe if the connection was closed
+The following are the drawbacks of SSE 6:
+
+the data format is restricted to transporting UTF-8 messages with no support for binary data
+only up to six concurrent SSE connections can be opened per web browser on pre-HTTP/2 networks
+The components in the system expose the Application Programming Interface (API) endpoints to the client through Representational State Transfer (REST). The description of HTTP Request headers is the following:
+
+Header	Description
+accept	type of content the client can understand
+authorization	authorize your user account
+content-encoding	compression type used by the data payload
+method	HTTP Verb
+content-type	type of data format (JSON or XML)
+The description of HTTP Response headers is the following:
+
+Header	Description
+status code	shows if the request was successful
+content-type	type of data format
+
+How does the receiver subscribe to a specific live video?
+The client must subscribe to a live video for viewing the live comments. The client executes an HTTP PUT request for subscribing to a live video. The PUT requests are idempotent. The PUT method is used instead of the GET method because the in-memory subscription store will be modified when a client subscribes to a live video.
+
+/videos/:video-id/subscriptions
+method: PUT
+accept: text/event-stream
+authorization: Bearer <JWT>
+content-length: 20
+content-type: application/json
+content-encoding: gzip
+
+{
+  user_id: <int>
+}
+The accept: text/event-stream HTTP request header indicates that the client is waiting for an open connection to the event stream from the server to fetch live comments 9. The server responds with status code 200 OK on success.
+
+
+status code: 200 OK
+content-type: text/event-stream
+The content-type: text/event-stream HTTP response header indicates that the server established an open connection to the event stream to dispatch events to the client. The response event stream contains the live comments.
+
+
+id: 1
+event: comment
+data: {"awesome"}
+data: {"hey there"}
+
+
+Type of Data Store
+The content of live comments contains only textual data and does not include any media files. A very fast and reliable database that not only persistently store data but also access the data quickly is a key feature for building the live comment service. The persistent storage of live comments is needed to retrieve the comments at a later point in time. In addition, the data kept in persistent storage can be used for auditing purposes 10. The relational database offers well-defined structures for comments, users, and videos. The relational database will be an optimal choice when the dataset is small. However, the relational database will be a suboptimal solution for live comment service due to the following scalability limitations 5:
+
+the internal data structure adds delay to the data operations
+complex queries are needed to reintegrate data because of data segregation
+The creation of database indexes on video_id and created_at columns will improve the performance of the read operations at the expense of slow write operations. The NoSQL database such as Apache Cassandra can be used as persistent data storage for live comments due to the following reasons 5:
+
+Log-structured merge-tree (LSM) based storage engine offers extremely high performance on writes
+schemaless data model reduces the overhead of joining different tables
+optimized natively for time series data
+Apache Cassandra is not optimized for read operations due to the nature of the LSM-based storage engine. An in-memory database such as Redis can be used in combination with Apache Cassandra to improve the read performance and make the data storage layer scalable and performant for live comments. The geo-replication enabled Redis cache with a time to live (TTL) of 1 second can be added as a cache layer on top of Apache Cassandra to improve the read performance. In addition, live comments published on an extremely popular live video can be kept in the cache on network edges to improve the latency 10.
+
+The sets data type in Redis can be used to efficiently store the live comments. The native deduplication logic of sets data type ensures that live comments are stored in memory without having an additional logic to prevent repeated live comments. The sorted set data type in Redis can be used for data integrity by maintaining the reverse chronological ordering of live comments. The sorted set data type can make use of the timestamp on live comments for sorting the live comments without implementing a custom sorting algorithm. The metadata of the publisher of a live comment can be stored in Redis hash data type for quick retrieval 4, 11, 5.
+
+The receivers who are geographically located closer to the publisher of the live comment will see the live comment instantly while the receivers who are located on a different continent might see the live comment with a slight delay (lower than 250 ms) to favor availability and partition tolerance in the CAP theorem 10.
+
+
+
+Capacity Planning
+The rate of clients viewing the live comments is significantly higher than the rate of clients publishing the live comments. The calculated numbers are approximations. A few helpful tips on capacity planning during system design are the following:
+
+1 million requests/day = 12 requests/second
+round off the numbers for quicker calculations
+write down the units while doing conversions
+
+Traffic
+The live comment service is a read-heavy system. The Daily Active Users (DAU) count is 100 million. 
+On average, the total number of daily live videos is 200 million. A live video receives 10 comments on average.
+
+Description	Value
+DAU (write)	2 billion
+QPS (write)	12 thousand
+read: write	100: 1
+QPS (read)	1.2 million
+
+
+SECONDS IN DAY -> 86400
+
+
+Bandwidth
+Ingress is the network traffic that enters the server when live comments are written. 
+Egress is the network traffic that exits the servers when live comments are viewed. 
+The network bandwidth is spread out across the globe depending on the location of the clients.
+
+Description	Calculation	Total
+Ingress	2 billion comments/day * 2 KB/comment * 10^(-5) day/sec	40 MB/sec
+Egress	200 billion comments/day * 2 KB/comment * 10^(-5) day/sec	4 GB/sec
+
+Memory
+The in-memory subscription store keeps the client viewership associations.
+
+Description	Calculation	Total
+Subscription store	100 million users/day * 16 bytes/user	1.6 GB/day
+
+
+spark ARCHITECTURE
+https://www.slideshare.net/slideshow/apache-spark-architecture/54851426
+
+ZOOKEEPER:
+https://www.slideshare.net/slideshow/introduction-to-apache-zookeeper/16567274
+
+HDFS & MAP REDUCE
+
+CHUBBY
+
+HBase
+
+
+C*
+
+
+Redis
+
+
+time series db
+
+KAFKA
+
+PRESTO
+
+APACHE PINOT
+
+sys design doc:
+https://docs.google.com/document/d/16wtG6ZsThlu_YkloeyX8pp2OEjVebure/edit
+##########
+
+
+SYSTEM DESIGN SPECIFICS
+
+Complex system design requires knowledge of threads and how they can be used to wait until something is complete
+
+Use couting semaphores, tasks, threads, jobs, pipelines, for we
+CONSISTENCY LEVELS AND EVENTUALLY CONSISTENT. 
+
+aUHTORIZATION, Authentication
+
+Talk about different stakeholders of system, talk about sister teams, talk about analytics, and ML divisions during system design conversion
+TALK about how each feature scales using NFR
+
+ELASTIC SEARCH REINDEXING jobs
+BUILD FASTERING INDEXING READ DOORDASH GUIDE ON ELASTIC SEARCH:
+
+https://doordash.engineering/2021/07/14/open-source-search-indexing/
+
+read doordash guide on cassandra:
+
+https://doordash.engineering/2024/01/30/cassandra-unleashed-how-we-enhanced-cassandra-fleets-efficiency-and-performance/
+https://doordash.engineering/2023/11/07/leveraging-flink-to-detect-user-sessions-and-engage-doordash-consumers-with-real-time-notifications/
+https://doordash.engineering/2023/02/07/how-we-scaled-new-verticals-fulfillment-backend-with-cockroachdb/
+https://doordash.engineering/2023/02/22/how-doordash-designed-a-successful-write-heavy-scalable-and-reliable-inventory-platform/
+
+
+C* notes:
+    Schema design is important
+    How will you deal with hot spots? 
+
+    Updates and deletes are expensive in C*
+    Partition key is hashed, -> use hot spot free key. 
+    Try to make it so you only read one partition at a time, when you query and not multiple partitions. 
+    Clustering column is importaant for range queries. 
+
+
+    Avoid large partitions -> detreimental to C* performance. long garbage collection pauses, increased read latencies, challenges in compaction! 
+    Consider the implications of secondary indexes: Secondary indexes in Cassandra can be useful but come with trade-offs. 
+    They can add overhead and may not always be efficient, '
+    especially if the indexed columns have high cardinality or if the query patterns do not leverage the strengths of secondary indexes.
+
+    TTL and tombstones management: Time-to-live, or TTL, is a powerful feature in Cassandra for managing data expiration. However, it’s important to understand how TTL and 
+    the resulting tombstones affect performance. Improper handling of tombstones 
+    can lead to performance degradation over time. If possible, avoid deletes.
+
+    Update strategies: Understand how updates work in Cassandra. Because updates are essentially write operations, 
+    they can lead to the creation of multiple versions of a row that need to be resolved at read time, which impacts performance.
+    Design your update patterns to minimize such impacts. If possible, avoid updates
+
+    Understanding consistency levels: In Cassandra, consistency levels range from ONE (where the operation requires confirmation from a single node) to ALL (where the operation needs acknowledgment from all replicas in the cluster). There are also levels like QUORUM (requiring a majority of the nodes) and LOCAL_QUORUM (a majority within the local data center). Each of these levels has its own implications on performance and data accuracy. You can learn more about those levels in the configurations here. 
+    Performance vs. accuracy trade-off: Lower consistency levels like ONE can offer higher performance because they require fewer nodes to respond. However, they also carry a higher risk of data inconsistency. Higher levels like ALL ensure strong consistency but can significantly impact performance and availability, especially in a multi-datacenter setup.
+    Impact on availability and fault tolerance: Higher consistency levels can also impact the availability of your application. For example, if you use a consistency level of ALL, and even one replica is down, the operation will fail. Therefore, it's important to balance the need for consistency with the potential for node failures and network issues.
+    Dynamic adjustment based on use case: One strategy is to dynamically adjust consistency levels based on the criticality of the operation or the current state of the cluster. This approach requires a more sophisticated application logic but can optimize both performance and data accuracy.
+
+
+    Compaction is a maintenance process in Cassandra that merges multiple SSTables, or  sorted string tables, into a single one. 
+    Compaction is performed to reclaim space, improve read performance, clean up tombstones, and optimize disk I/O.
+
+    Users should choose from three main strategies to trigger compaction in Cassandra users based on their use cases. Each strategy is optimized for different things: 
+
+    Size-tiered compaction strategy, or STCS
+        Trigger mechanism:
+        The strategy monitors the size of SSTables. When a certain number reach roughly the same size, the compaction process is triggered for those SSTables. For example, if the system has a threshold set for four, when four SSTables reach a similar size they will be merged into one during the compaction process.
+        When to use:
+        Write-intensive workloads
+        Consistent SSTable sizes
+        Pros:
+        Reduced write amplification
+        Good writing performance
+        Cons:
+        Potential drop in read performance because of increased SSTable scans
+        Merges older and newer data over time
+        You must leave much larger spare disk to effectively run this compaction strategy
+    Leveled compaction strategy, or LCS
+        Trigger mechanism:
+        Data is organized into levels. Level 0 (L0) is special and contains newly flushed or compacted SSTables. When the number of SSTables in L0 surpasses a specific threshold (for example 10 SSTables), these SSTables are compacted with the SSTables in Level 1 (L1). When L1 grows beyond its size limit, it gets compacted with L2, and so on.
+        When to use:
+        Read-intensive workloads
+        Needing consistent read performance
+        Disk space management is vital
+        Pros:
+        Predictable read performance because of fewer SSTables
+        Efficient disk space utilization
+        Cons:
+        Increased write amplification
+    TimeWindow compaction strategy, or TWCS
+        Trigger mechanism:
+        SSTables are grouped based on the data's timestamp, creating distinct time windows such as daily or hourly. When a time window expires — meaning we've moved to the next window — the SSTables within that expired window become candidates for compaction. Only SSTables within the same window are compacted together, ensuring temporal data locality.
+        When to use:
+        Time-series data or predictable lifecycle data
+        TTL-based expirations
+        Pros:
+        Efficient time-series data handling
+        Reduced read amplification for time-stamped queries
+        Immutable older SSTables
+        Cons:
+        Not suitable for non-temporal workloads
+        Potential space issues if data within a time window is vast and varies significantly between windows
+        
+        In our experience, unless you are strictly storing time series data with predefined TTL, LCS should be your default choice. 
+        Even when your application is write-intensive, the extra disk space required by progressively large SSTables under STCS makes 
+        this strategy unappealing. LCS is a no-brainer in read-intensive use cases.
+
+
+        It’s easy to forget that each compaction strategy should have a different bloom filter cache size. When you switch between compaction strategies, 
+        do not forget to adjust this  cache size accordingly. 
+
+
+    To batch or not to batch? It’s a hard question
+        In traditional relational databases, batching operations is a common technique to improve performance because it can reduce network round trips and streamline transaction management. However, when working with a distributed database like Cassandra, the batching approach, whether for reads or writes, requires careful consideration because of its unique architecture and data distribution methods.
+
+        Batched writes: The trade-offs
+        Cassandra, optimized for high write throughput, handles individual write operations efficiently across its distributed nodes. But batched writes, rather than improving performance, can introduce several challenges, such as:
+
+        Increased load on coordinator nodes: Large batches can create bottlenecks at the coordinator node, which is responsible for managing the distribution of these write operations.
+        Write amplification: Batching can lead to more data being written to disk than necessary, straining the I/O subsystem.
+        Potential for latency and failures: Large batch operations might exceed timeout thresholds, leading to partial writes or the need for retries.
+        Given these factors, we often find smaller, frequent batches or individual writes more effective, ensuring a more balanced load distribution and consistent performance.
+
+
+        Batched reads: A different perspective
+        Batched reads in Cassandra, or multi-get operations, involve fetching data from multiple rows or partitions. 
+        While seemingly efficient, this approach comes with its own set of complications:
+
+        Coordinator and network overhead: The coordinator node must query across multiple nodes, potentially increasing response times.
+        Impact on large partitions: Large batched reads can lead to performance issues, especially from big partitions.
+        Data locality and distribution: Batching can disrupt data locality, a key factor in Cassandra's performance, leading to slower operations.
+        Risk of hotspots: Unevenly distributed batched reads can create hotspots, affecting load balancing across the cluster.
+        To mitigate these issues, it can be more beneficial to work with targeted read operations that align with Cassandra’s strengths in handling distributed data.
+
+    In our journey at DoorDash, we've learned that batching in Cassandra does not follow the conventional wisdom 
+    of traditional RDBMS systems. Whether it's for reads or writes, each batched operation must be carefully evaluated in the 
+    context of Cassandra’s distributed nature and data handling characteristics. By doing so, we've managed to optimize our 
+    Cassandra use, achieving a balance between performance, reliability, and resource efficiency.
+
+
+You can use elastic search to store a user index, which contains information about the user like geohash, etc. 
+
+Then you can query for users around you using leastic search geohash index!
+Inverted indexes are so useful to search for anything you want. 
+
+REMBER YOU CAN LEVELRAGE THE CLIENTS PHONE, OR CLIENTS DEVIDE, AND CREATE A CACHE THERE AS WELL AS DO LOGIC ON THE CLIENT DEVIDE TO 
+REDUCE LOAD ON THE BACKEND. 
+
+
+Great design! Realized that keeping recent updates in a cache for a short TTL can actually work as a design pattern
+ whenever eventual consistency becomes an issue.
+
+BTW in reality, isn't it more likely that Tinder like apps will use a ML pipeline to feed a queue of recommendations? My first thought was to go in that direction (not sure what kind of traps I would run into though :)).
+
+
+https://www.hellointerview.com/learn/system-design/answer-keys/tinder
+
+Going through this guys stuff is agold mine ^^^^
+
+
+
+
+
+Elastic search reindex job looks like this
+
+CDC -> KAFKA -> assembler job takes id and calls api to get complete data -> kafka -> ES SINK flink job has a ES connector to sink a batch write to elastic search. 
+etl -> kafka 
+batch reads/writes!!
+
+Fault tolerance -> talk about what happens when different parts fail and how it is addressed so that entire system is production ready. 
+node failures, network issues, event dellays, etc. 
+
+Compliance -> tlak about gdpr support + 
+security.
+data encryption for security!
+
+CLOUDFRONT SIGNED URLS WITH BUILTIN AUTHENTICATED S3 links
+
+if you use redis make sure to specify TTL and Cache eviction policy LRU 
+Cassandra also has TTL -> and ssl table compression settings, etc... -> which favors reads/writes 
+
+kafka, events, compression, binary, avro, etc. 
+
+
+GRPC, 
+Vectors for conflict resolution of writes... multileader replication and total ordering vs causal -> vector clocks, 
+rEAD REPAIR FOR CASSANDRA + backgrpund thread for repair 
+
+read repair, quorums, gossip protocols, ... ANTI ENTROPY PROTOCL
+read+ write quorums > nodes 
+
+Sloppy quorums and hinted handoff1
+lamport clocks and arbitrary ordering to do Last writer wins write conflicts... or keep all data there and have custom application logic to deal with 
+multiple writes or use CRDTS so that all writes can go in the same way, and get processed properly idempotently even if there are conflicts, 
+
+
+CDC is change data capture and CDC is a mechanism that reads data changes from the databse and applies the changes to another data system 
+one comon solution is debezium, it uses a source connector to read changes from a db and applies them to cache solutions such as Redis. 
+
+maintain consistency between SQL db and cache using CDC. 
+
+SAGA --> a saga is a sequence of local transactoions. eah transaction updates and publishes messages to trigger the next trasnaction setep. 
+if a step fails, the saga executes a ompensating tx to undo the cahnges that were made by precedeing transactions. 2PC works asa s ingle commit to 
+perofrm acid tx, while saga consits of multiple steps and relies on eventual consistency. 
+
+pessimistic locking vs optimizing locking with version numbers v1/v2 vs database constraints -> these are the 3 ways to deal with high contention data!!
+
+learn ticketmaster for distributed locks 
+
+rmbr to talb about pagination in api endpoints whne youdescibe them 
+
+
+SERIALIZED and desearialize data to binary to save on networking cost + batching 
+
+dont forget to talk about alerting, monitoring, promql, processing, oncall, tasks, handoff, kaka queue size alert make sure its small,
+cpu/memory, slack channel where alerts can be seen, 
+
+Dont forget to talk about analytics team, machine learning team, database team -> include them in overall discussion of design and use cases. 
+
+whne you are done main design, add more funcitonal requirements and non funciton and explain how all the non functionals are being met. 
+
+talk about kafka  +cache somewhere, redis pub/sub, cdns, APIM gateway, design principles and domain driven design databases, 
+ACID databases VS BASE, CAP theorem for each data base, and 
+RMBR TO go over apis before startign your high level design, and go over numbers after FR/NFR, or say you will do numbers in a bit. 
+
+
+
+make sure to always be talking, DO NOT BE HAND WAYY LIKE IN THE AIRBNB INTERVIEW, PLEASE RIGHT OUT ALL THE DATABASE TABLE NAMES, AND COLUMNS 
+
+AND KEEP ADDING DETAIL TOT HE MAIN DESIGN!, WRITE OUT ALL THE API CALL REST/POST/GRPC, SERVER SIDE EVENTS VS WEBSOCKETS, choose SSE
+
+talk about how to stream downloads as multipart files, 
+
+Kafka uses topic partitioning to improve scalability. In partitioning a topic, Kafka breaks 
+it into fractions and stores each of them in different nodes of its distributed system. That 
+number of fractions is determined by us or by the cluster default configurations.
+
+Kafka guarantees the order of the events within the same topic partition. However, by default, 
+it does not guarantee the order of events across all partitions.
+
+kafka -> toppics -> each topic has partitions, use partition key here -> then partitions are replicated, and then kafka brokers exist .
+brokers hold partitions, scale topic capcity by expanding the number of partitions hwihc is sharding. 
+servers of kafka are brokers. EACH PARTITION HAS OFFSET PER CONSUMER .
+
+the choice of batching messages is a classic tradeoff between throughput and latency 
+
+each consumer group has a coordinator node in kafka? which is also the broker in kafka. 
+coordinates the consumer group. 
+consumer fetches based on committed offset. consumer commits the offset to the broker. 
+there is also consumer rebalancing by broker. 
+coordinator receives heartbeats from consumers. 
+
+rebalance is done so that if consumer dies, other consumers can read partitions of topic to ensure all mesages are read. 
+there is a leader in the consumer group generates a new partitions dispatch plan. 
+
+
+REDIS HAS CRDTs and CRDB -> conflict replicated data type. 
+
+
+Producers can produces messages to kafka with different ACK settings ACK=all means all partition replicas must have replicated message and 
+all replicas and leader are in sync, ack=1 means only leader needs to commit and not wait for in sync replicas, ack=0 means producer doesnt 
+care when partition has ackowledged receienved message and can lead to data loss, ack=1 can also lead to data loss a tradeoff between 
+latency and durability for kafka.
+
+if consumer in consumer group fails, or leaves, the broker node acting as coordination service will help reestablish the consumer group with new 
+consumer group leader to do partition dispatch plan.
+
+replicas should not be in the same broker node, incase broker node fails, then we cannot access this partition at all which is very bad!!
+
+dead letter queue for retrying messages, to not block incoming messages. 
+
+Use a storage system like HDFS or object store to store historical kafka event data in cold storage.
+
+
+
+IF THE number of consumers of a grpip is larger than the number of partitions of a topic, 
+some consumers will not get data from this topic. 
+parallelism max here. 
+
+point to points vs publish subscribe!!
+
+Coordination service:
+service discovery -> which kafka brokers are still alive. 
+leader election -> one of the brokers is selected as the active controller -> only one active controller in the cluster and is responsible
+        for assigning partitions. 
+        zookeeper can be used for leader election here. or etcd. 
+    
+
+
+
+
+
+
+GOSSIP PROTOCOL VS ZOOKEEPER CONSENSUS BTW
+
+KAFKA, topics, flink, figure out which kafka keys to use to leveraged keyed streams in flink and process events per key to reduce hotspots
+and also figure out how to maximize parallelism both in flink and kafka based on number of partitions of the kafka topic, and increaseing 
+the amount fo consumers in the consumer group (amd flink maps to one consumer group). 
+
+GEOHASH vs QUAD TREE SERVER WHICH BUILDS QUAD TREE FROM READING IN S3. 
+all of redis features, zookeeper... PAXOS, RAFT, 2 PHASE COMMIT, 2 PHASE LOCKING, SERIALIZABLE TRANSACTIONS, SERIALIZABLE SNAPSHOT, 
+DISTRIButed transactions, ... LINEARIZABILITY.
+
+Hot strage vs cold storage considerations
+
+think about if you need a reconcilation job using snowflake and cdc to improve performacne
+
+think about if you need kafka to update redis cache
+
+
+USE THE CLIENT TO make it easier for backend server to process such as form zoom, client encodes all 3 signals and sends, instead of 
+server doing all the work
+
+also client can batch calls before sending to optimize performance instead of server dealing with all events!(reduces write qps for us )
+
+cdn and point of presence servers which are edge servers to clients
+
+
+instead of using a database you can just store parquet files in object storage, and have them sorted by geohash or howeever you want to access
+and heavily cache files. this way dont have to pay costs of database. 
+
+Okay, a bit about your use case: Parquet is the better option for you. This is why:
+
+You aggregate raw data on really large and not splitted datasets
+Your Spark ML Job sounds like a scheduled, not long-running job. (onces a week, day?)
+This fits more in the use cases of Parquet. Parquet is a solution for ad-hoc analysis, filter analysis stuff. Parquet is really nice if you need to run a query 1 or 2 times a month. Parquet is also a nice solution if a marketing guy wants to know one thing and the response time is not so important. Simply and short:
+
+Use Cassandra if you know the queries.
+Use Cassandra if a query will be used in a daily business
+Use Cassandra if Realtime matters (I talk about a maximum of 30 seconds latency, from, customer makes an action and I can see the result in my dashboard)
+
+Use Parquet if Realtime doesn't matter
+
+Use Parquet if the query will not perform 100x a day.
+Use Parquet if you want to do batch processing stuff
+
+Parquet files support complex nested data structures in a flat format and offer multiple compression options.
+
+Parquet is broadly accessible. It supports multiple coding languages, including Java, C++, and Python, to reach a broad audience. This makes it usable in nearly any big data setting. As it’s open source, it avoids vendor lock-in.
+
+Parquet is also self-describing. It contains metadata that includes file schema and structure. You can use this to separate different services for writing, storing, and reading Parquet files.  
+
+Parquet files are composed of row groups, header and footer. Each row group contains data from the same columns. The same columns are stored together in each row group:
+
+Ideal Parquet format use cases
+
+Storing big data of any kind (structured data tables, images, videos, documents).
+Ideal for services such as AWS Athena and Amazon Redshift Spectrum, which are serverless, interactive technologies.
+A good fit for Snowflake as it supports extremely efficient compression and encoding schemes. 
+When your full dataset has many columns, but you only need to access a subset.
+When you want multiple services to consume the same data from object storage.
+When you’re largely or wholly dependent on Spark.
+
+Ideal ORC format use cases
+
+When reads constitute a significantly higher volume than writes.
+When you rely on Hive.
+When compression flexibility/options are key.
+
+
+Ideal Avro format use cases
+
+Write-heavy operations (such as ingestion into a data lake) due to serialized row-based storage. 
+When writing speed with schema evolution (adaptability to change in metadata) is critical.
+
+
+S3 is not built "on top of" or "in line with" HDFS. HDFS and Amazon S3 are both ways to store lots of data, like giant digital filing cabinets. HDFS is like a big file cabinet where many people can work together on the same project, while S3 is like a really big, easy-to-access storage room where you can keep lots of different things. HDFS is used when people want to do complicated things with big sets of data, like analyzing patterns or making predictions, while S3 is used when you need a safe and easily accessible place to keep all your digital stuff. They both store data, but they're designed for different purposes and work in different ways.
+
+
+As per Spark documentation, Spark can run without Hadoop.
+
+You may run it as a Standalone mode without any resource manager.
+
+But if you want to run in multi-node setup, you need a resource manager like YARN or Mesos and a distributed file system like HDFS,S3 etc.
+
+
+
+discss about
+
+hotspots
+
+zookeeper and consistent hash ring to maintain a large list of redis pub/sub servers and determine which redis/pub server channel lives on 
+using the consistent hash ring saved in zookeeper so websocket servers know which server + channel tO SUBscribe toooo
+
+cASSANDRA what is partition key and what is clustering key know these things!
+
+KAPPA vs lambda architecture
+
+List of unique algorithms and write their pseudo code if you want to. 
+
+
+active/passive failover vs active active failover in case redis fails there is an active standby
+
+redis has active active also has geohash
+
+Think about multileader replication vs leaderless vs single leader and how this affects databases and how you can shard database, 
+and put db in different data centers in different geo zones so that writes can come from specific geozone go to that data center. 
+
+Redis is also good for distributed locking by setting keys in redis for reservation systems like ticketmaster. 
+can be done with redlock or can be done with 
+A very simple distributed lock with a timeout might use the atomic increment (INCR) with a TTL. 
+When we want to try to acquire the lock, we run INCR. If the response is 1 (i.e. we own the lock), 
+we proceed. If the response is > 1 (i.e. someone else has the lock), we wait and retry again later. 
+When we're done with the lock, we can DEL the key so that other proceesses can make use of it.
+
+
+Redis for Leaderboards
+Redis' sorted sets maintain ordered data which can be queried in log time which make them appropriate for leaderboard applications. 
+The high write throughput and low read latency make this especially useful for scaled applications where something like a SQL DB will start to struggle.
+
+In Tweet Search we have a need to find the tweets which contain a given keyword (e.g. "tiger") 
+which have the most likes (e.g. "Tiger Woods made an appearance..." @ 500 likes).
+
+We can use Redis' sorted sets to maintain a list of the top liked tweets for a given keyword. Periodically, we can remove low-ranked tweets to save space.
+
+ZADD tiger_tweets 500 "SomeId1" # Add the Tiger woods tweet
+ZADD tiger_tweets 1 "SomeId2" # Add some tweet about zoo tigers
+ZREMRANGEBYRANK tiger_tweets 0 -5 # Remove all but the top 5 tweets
+
+
+Redis for Rate Limiting
+As a data structure server, implementing a wide variety of rate limiting algorithms is possible. A common algorithm is a 
+fixed-window rate limiter where we guarantee that the number of requests does not exceed N over some fixed window of time W.
+
+Implementation of this in Redis is simple. When a request comes in, we increment (INCR) the key for our rate limiter and 
+check the response. If the response is greater than N, we wait. If it's less than N, we can proceed. We call EXPIRE on 
+our key so that after time period W, the value is reset.
+
+
+Redis for Proximity Search
+Redis natively supports geospatial indexes with commands like GEOADD and GEORADIUS. The basic commands are simple:
+
+GEOADD key longitude latitude member # Adds "member" to the index at key "key"
+GEORADIUS key longitude latitude radius # Searches the index at key "key" at specified position and radius
+The search command, in this instance, runs in O(N+log(M)) time where N is the number of elements in the radius and M is the number of members in our index.
+
+Redis can be replicated to have main and Secondary
+
+or you can have a redis cluster which handles different key ranges
+
+2. Estimations [5 min]
+	(1) Throughput
+		  - Queries per second (QPS) for read and write queries.
+	(2) Latency
+		  - Expected latency for read and write queries.
+	(3) Read/Write Ratio
+	(4) Traffic Estimates
+		  - Write (QPS, volume of data).
+		  - Read (QPS, volume of data).
+	(5) Storage Estimates
+	(6) Memory Estimates
+		  - If we are using a cache, what kind of data do we want to store in the cache?
+		  - How much RAM and how many machines are needed?
+		  - Amount of data to store on disk/SSD
+
+6. Justify [5 min]
+	(1) Throughput of Each Layer
+	(2) Latency Caused Between Each Layer
+	(3) Overall Latency Justification
+7. Key Metrics to Measure [3 min]
+	(1) Identify key metrics relevant to your system's design
+	(2) Define metrics for infrastructure and resources
+			- Tools like Graphana with Prometheus, AppDynamics, etc., can be used.
+8. System Health Monitoring [2 min]
+	(1) Measure app index and latency of microservices
+	(2) Tools like New Relic, AppDynamics can be used
+			-  Use Grafana with Prometheus or AppDynamics for monitoring
+	(3) Canaries - to simulate customer experience and pro-actively detect service degradation
+9. Log Systems [2 min]
+	(1) Implement tools to gather and visualize metrics	
+			- Availability
+			- Latency 
+			- Throttling 
+			- Request Patterns/Volume
+	(2) Collect and analyze logs with ELK (Elastic, Logstash, Kibana) or Splunk.
+
+10. Security [2 min]
+	(1) Firewall, encryptions at rest and in transit
+	(2) TLS
+	(3) Authentication, Authorization (AuthN/Z)
+	(4) Limited Egress/Ingress
+	(5) Principle of least privilege
+
+############
+
+Long polling vs client polling vs subscribe to webhook vs event based kafka stream vs skinny payloads vs atleast once vs large water mark 
+
+saga pattern:
+
+Advantages of Saga
+This event-driven microservices architecture offers a highly scalable or loosely linked consistency with the use of transactions.
+Using NoSQL databases without 2PC support is possible to offer surface-through transactions.
+
+
+Choreography is like having a choreographer set all the rules. Then the dancers on stage (the microservices) interact according to them. Service choreography 
+describes this exchange of messages and the rules by which the microservices interact.
+Orchestration is different. The orchestrator acts as a center of authority. It is responsible for invoking and combining the services. It
+ 38
+describes the interactions between all the participating services. It is just like a conductor leading the musicians in a musical symphony. The orchestration pattern also includes the transaction management among different services.
+The benefits of orchestration:
+1. Reliability - orchestration has built-in transaction management and error handling, while choreography is point-to-point communications and the fault tolerance scenarios are much more complicated.
+2. Scalability - when adding a new service into orchestration, only the orchestrator needs to modify the interaction rules, while in choreography all the interacting services need to be modified.
+Some limitations of orchestration:
+1. Performance - all the services talk via a centralized orchestrator, so latency is higher than it is with choreography. Also, the throughput is bound to the capacity of the orchestrator.
+2. Single point of failure - if the orchestrator goes down, no services can talk to each other. To mitigate this, the orchestrator must be highly available.
+Real-world use case: Netflix Conductor is a microservice orchestrator and you can read more details on the orchestrator design.
+
+3.2 Aggregator Pattern
+3.3 API Gateway Design Pattern
+
+3.4 Strangler Pattern
+
+3.5 Event Sourcing Design Pattern
+
+3.6 Command Query Responsibility Segregation (CQRS)
+Basically, the command component in the command query responsibility segregation microservice 
+design pattern implies that it will be in charge of creating, deleting, and updating the statements 
+of the application while on the other hand, the query section will be reading all the statements.
+
+Advantages of Command Query Responsibility Segregation
+CQRS enables the availability of data with better speed.
+With this pattern, data reading in event-driven Microservices is possible at a faster level.
+It enables developers to scale both read and write systems independently.
+
+Advantages of Decomposition Patterns
+Decomposition pattern enables cohesive and loosely coupled approaches. 
+It allows developers to decompose applications based on business capabilities or sub-domains of the applications.
+Both business capabilities and sub-domains are relatively stable with this architecture.
+
+Cache miss attack -> USE BLOOM FILTER TO ADDRESS THIS or store key = null in cache. 
+
+Optimistic locking and saving db rows with higher version counts. 
+
+
+CACHING STRATEGIES:
+cache aside read Cache-Aside (Lazy Loading)
+When your application needs to read data from the database, it checks the cache first to determine whether the data is available. If the data is available (a cache hit), the cached data is returned, and the response is issued to the caller.
+
+while Read/Write Through provides a hands-free option for maintaining cache consistency. 
+Write Behind/Write Back shines when optimizing for write-heavy workloads and can tolerate eventual consistency.
+
+The main differences between read-through and cache-aside is that in a cache-aside strategy the application is responsible for fetching the data and populating the cache, while in a read-through setup, the logic is done by a library or some separate cache provider.
+
+What is read-through caching?
+Using Read-through & Write-through in Distributed Cache - NCache
+Auto-refresh cache on expiration: Read-through allows the cache to automatically reload an object from the database when it expires. This means that your application does not have to hit the database in peak hours because the latest data is always in the cache.
+
+
+read through 
+
+write around (write to cache and db seperately. )
+write back (write from cache to db once in a while)
+write through (write to immedeitly to db from cache)
+
+
+FANOUT ON READ VS FANOUT ON WRITE?
+
+When to use OLAP vs. OLTP. Online analytical processing (OLAP) and online transaction processing (OLTP) are two different data 
+processing systems designed for different purposes. 
+OLAP is optimized for complex data analysis and reporting, while OLTP is optimized for transactional processing and real-time updates.
+
+Common database categories include: 🔹
+Relational
+Columnar
+Key-value
+In-memory
+Wide column
+Time Series
+Immutable ledger
+Geospatial
+Graph
+Document
+Text search
+Blob
+
+push vs pull based. 
+
+analytics vs writes:
+
++1. Matt - look up OLTP and OLAP. Use one database to support fast transactional work (such as to support an app), 
+and ETL data as required to a another database built to be reported off. As they are separate you don't get performance 
+hits on one affecting the other. Moving data between the databases is a complex issue on it's own - depending on how 
+much data there is to move, and how often; when people say they want "real-time" replication between sources what do 
+they actually mean (you need to verify) because real-time to a computer is much faster than 'real-time' to a human.
+
+
+2 Phase locking is a mechanism implemented within a single database instance to achieve serializeable isolation level. 
+Serializeable transaction level is the strongest isolation where even with parallely executing transactions, 
+the end result is same as if the transactions where executed serially. It works as follows:
+
+Whenever the transaction wants to update an object/row, it must acquire a write/exclusive lock. When transactions 
+wants to read an object/row, it must acquire a read/shared lock. Instead of releasing the lock immediately after each query, 
+the locks must be held till the end of the transaction(commit or abort). So while the transaction is being executed, the number of locks 
+held by the transaction expand/grow. (Read/write lock behavior is similar to any other reader/writer locking mechanisms, so not discussing here)
+
+At the end of the transaction, the locks are released and number of locks held by the transactions shrinks.
+
+Since the locks are acquired in one phase and released in another phase i.e., there are no lock releases in acquire phase and no new lock acquire in 
+release phase, this is called 2 phase locking.
+
+2 phase commit is an algorithm for implementing distributed transaction across multiple database instances to ensure all nodes either commit or abort the transaction.
+
+It works by having coordinator(could be a separate service or library within the application initiating the transaction) issue two requests - PREPARE to all nodes in phase 1 and COMMIT(if all nodes returned OK in PREPARE phase) or ABORT(if any node returned NOT OK in PREPARE PHASE) to all nodes in phase 2.
+
+TLDR:
+
+2 phase locking - for serializable isolation within a single database instance
+
+2 phase commit - atomic commit across multiple nodes of a distributed database/datastores
+
+
+47
+
+I am trying to understand the difference between paxos and two phase commit as means to reach consensus among multiple machines. Two phase commit and three phase commit is very easy to understand. It also seems that 3PC solves the failure problem that would block in 2PC. So I don't really understand what Paxos is solving. Can anyone illuminate me about what problem does Paxos exactly solve?
+
+2PC blocks if the transaction manager fails, requiring human intervention to restart. 3PC algorithms (there are several such algorithms) try to fix 2PC by electing a new transaction manager when the original manager fails.
+
+Paxos does not block as long as a majority of processes (managers) are correct. Paxos actually solves the more general problem of consensus, hence, it can be used to implement transaction commit as well. In comparison to 2PC it requires more messages, but it is resilient to manager failures. In comparison to most 3PC algorithms, Paxos renders a simpler, more efficient algorithm (minimal message delay), and has been proved to be correct.
+
+Gray and Lamport compare 2PC and Paxos in an excellent paper titled "Consensus on Transaction Commit".
+
+(In the answer of peter, I think he is mixing 2PC with 2PL (two-phase locking).)
+
+And then three is Raft which is a more light-weight version of Paxos. There are a lot of open-source systems using raft right now. Such as Etcd, Consul, Cockroachdb, etc.
+
+2-PC is the most traditional transaction commit protocol and powers the core of atomicity of transactions. But it is blocking in nature, i.e. if the transaction manager/coordinator fails in between, it will cause the protocol to block and no process will be aware of it. It requires manual intervention to repair the coordinator.
+
+While Paxos being a distributed consensus protocol has multiple such coordinators and if a majority of the coordinators agree to the transaction completion, it becomes a successful atomic transaction.
+
+
+Problem
+When data needs to be atomically stored on multiple cluster nodes, nodes cannot make the data accessible to clients until the decision of other cluster nodes is known. Each node needs to know if other nodes successfully stored the data or if they failed.
+
+Solution
+The essence of two-phase commit, unsurprisingly, is that it carries out an update in two phases:
+
+The prepare phase asks each node if it can promise to carry out the update.
+The commit phase actually carries it out.
+
+As part of the prepare phase, each node participating in the transaction acquires whatever it needs to assure that it will be able to do the commit in the second phase—for example, any locks that are required. Once each node is able to ensure it can commit in the second phase, it lets the coordinator know, promising the coordinator that it can and will commit in the second phase. If any node is unable to make that promise, then the coordinator tells all nodes to roll back, releasing any locks they have, and the transaction is aborted. Only if all the participants agree to go ahead does the second phase commence—at which point it's expected they will all successfully update. It is crucial for each participant to ensure the durability of their decisions using pattern like Write-Ahead Log. This means that even if a node crashes and subsequently restarts, it should be capable of completing the protocol without any issues.
+
+
+
 1. Feature Expectations [5 min]
 	(1) Use Cases
 	(2) Scenarios That Will Not Be Covered
@@ -103,8 +938,76 @@ https://leetcode.com/discuss/interview-question/4366889/System-Design-100-topics
 	(3) Authentication, Authorization (AuthN/Z)
 	(4) Limited Egress/Ingress
 	(5) Principle of least privilege
+6. Justify [5 min]
+	(1) Throughput of Each Layer
+	(2) Latency Caused Between Each Layer
+	(3) Overall Latency Justification
+7. Key Metrics to Measure [3 min]
+	(1) Identify key metrics relevant to your system's design
+	(2) Define metrics for infrastructure and resources
+			- Tools like Graphana with Prometheus, AppDynamics, etc., can be used.
+8. System Health Monitoring [2 min]
+	(1) Measure app index and latency of microservices
+	(2) Tools like New Relic, AppDynamics can be used
+			-  Use Grafana with Prometheus or AppDynamics for monitoring
+	(3) Canaries - to simulate customer experience and pro-actively detect service degradation
+9. Log Systems [2 min]
+	(1) Implement tools to gather and visualize metrics	
+			- Availability
+			- Latency 
+			- Throttling 
+			- Request Patterns/Volume
+	(2) Collect and analyze logs with ELK (Elastic, Logstash, Kibana) or Splunk.
+
+10. Security [2 min]
+	(1) Firewall, encryptions at rest and in transit
+	(2) TLS
+	(3) Authentication, Authorization (AuthN/Z)
+	(4) Limited Egress/Ingress
+	(5) Principle of least privilege
 Extension of: https://leetcode.com/discuss/career/229177/my-system-design-template
 
+
+Write-through#
+Using the write-through policy, data is written to the cache and the backing store location at the same time. The significance here is not the order in which it happens or whether it happens in parallel. The significance is that I/O completion is only confirmed once the data has been written to both places.
+
+def write_through(cache, backing_store, datum):
+    cache.write(datum)
+    backing_store.write(datum)
+Advantage: Ensures fast retrieval while making sure the data is in the backing store and is not lost in case the cache is disrupted.
+
+Disadvantage: Writing data will experience latency as you have to write to two places every time.
+
+What is it good for?#
+The write-through policy is good for applications that write and then re-read data frequently. This will result in slightly higher write latency but low read latency. So, it’s ok to spend a bit longer writing once, but then benefit from reading frequently with low latency.
+
+Write-around#
+Using the write-around policy, data is written only to the backing store without writing to the cache. So, I/O completion is confirmed as soon as the data is written to the backing store.
+
+def write_around(backing_store, datum):
+    backing_store.write(datum)
+Advantage: Good for not flooding the cache with data that may not subsequently be re-read.
+
+Disadvsntage: Reading recently written data will result in a cache miss (and so a higher latency) because the data can only be read from the slower backing store.
+
+What is it good for?#
+The write-around policy is good for applications that don’t frequently re-read recently written data. This will result in lower write latency but higher read latency which is a acceptable trade-off for these scenarios.
+
+Write-back#
+Using the write-back policy, data is written to the cache and Then I/O completion is confirmed. The data is then typically also written to the backing store in the background but the completion confirmation is not blocked on that.
+
+def write_back(cache, datum):
+    cache.write(datum)
+    # Maybe kick-off writing to backing store asynchronously, but don't wait for it.
+Advantage: Low latency and high throughput for write-intensive applications.
+
+Disadvantage: There is data availability risk because the cache could fail (and so suffer from data loss) before the data is persisted to the backing store. This result in the data being lost.
+
+What is it good for?#
+The write-back policy is the best performer for mixed workloads as both read and write I/O have similar response time levels. In reality, you can add resiliency (e.g. by duplicating writes) to reduce the likelihood of data loss.
+
+Which one should I use?#
+If this post is all you know about caching policies then you’ll need to do more research. The post covered three basic caching policies at a _very high level just to give you a basic understanding and to spark an interest. In practice, there are many other (often hybrid) policies and lots of subtle nuggets to consider when implementing them.
 
 ##########
 Frugal Streaming
@@ -228,6 +1131,164 @@ Add Bloom Filters and Count-Min Sketch into the list.
 +Server-side page fragment composition
 +Client-side UI composition
 +
+
+
+REDIS------
+Some of the most fundamental data structures supported by Redis:
+
+Strings
+Hashes (Objects)
+Lists
+Sets
+Sorted Sets (Priority Queues)
+Bloom Filters
+Geospatial Indexes
+Time Series
+
+In addition to simple data structures, Redis also supports different communication patterns like Pub/Sub and Streams, partially standing in for more complex setups like Apache Kafka or Amazon's Simple Notification Service.
+
+The core structure underneath Redis is a key-value store. All data structures stored in Redis are stored in keys: whether those be simple like a string or complex like a sorted set of bloom filter.
+
+Commands
+Redis' wire protocol is a custom query language comprised of simple strings which are used for all functionality of Redis. The CLI is really simple, you can literally connect to a Redis instance and run these commands from the CLI.
+
+SET foo 1  
+GET foo     # Returns 1
+INCR foo    # Returns 2
+XADD mystream * name Sara surname OConnor # Adds an item to a stream
+
+Each node maintains some awareness of other nodes via a gossip protocol so, in limited instances, if you request a key from the wrong node you can be redirected to the correct node. But Redis' emphasis is on performance so hitting the correct endpoint first is a priority.
+
+Compared to most databases, Redis clusters are surprisingly basic (and thus, have some pretty severe limitations on what they can do). Rather than solving scalability problems for you, Redis can be thought of as providing you some basic primitives on which you can solve them. As an example, with few exceptions, Redis expects all the data for a given request to be on a single node! Choosing how to structure your keys is how you scale Redis.
+
+Redis as a Distributed Lock
+Another common use of Redis in system design settings is as a distributed lock. Occasionally we have data in our system and we need to maintain consistency during updates (e.g. the very common Design Ticketmaster system design question), or we need to make sure multiple people aren't performing an action at the same time (e.g. Design Uber).
+
+Most databases (including Redis) will offer some consistency guarantees. If your core database can provide consistency, don't rely on a distributed lock which may introduce extra complexity and issues. Your interviewer will likely ask you to think through the edge cases in order to make sure you really understand the concept.
+
+A very simple distributed lock with a timeout might use the atomic increment (INCR) with a TTL. When we want to try to acquire the lock, we run INCR. If the response is 1 (i.e. we own the lock), we proceed. If the response is > 1 (i.e. someone else has the lock), we wait and retry again later. When we're done with the lock, we can DEL the key so that other proceesses can make use of it.
+
+More sophisticated locks in Redis can use the Redlock algorithm.
+
+Redis for Leaderboards
+Redis' sorted sets maintain ordered data which can be queried in log time which make them appropriate for leaderboard applications. The high write throughput and low read latency make this especially useful for scaled applications where something like a SQL DB will start to struggle.
+
+In Tweet Search we have a need to find the tweets which contain a given keyword (e.g. "tiger") which have the most likes (e.g. "Tiger Woods made an appearance..." @ 500 likes).
+
+We can use Redis' sorted sets to maintain a list of the top liked tweets for a given keyword. Periodically, we can remove low-ranked tweets to save space.
+
+ZADD tiger_tweets 500 "SomeId1" # Add the Tiger woods tweet
+ZADD tiger_tweets 1 "SomeId2" # Add some tweet about zoo tigers
+ZREMRANGEBYRANK tiger_tweets 0 -5 # Remove all but the top 5 tweets
+
+Redis for Rate Limiting
+As a data structure server, implementing a wide variety of rate limiting algorithms is possible. A common algorithm is a fixed-window rate limiter where we guarantee that the number of requests does not exceed N over some fixed window of time W.
+
+Implementation of this in Redis is simple. When a request comes in, we increment (INCR) the key for our rate limiter and check the response. If the response is greater than N, we wait. If it's less than N, we can proceed. We call EXPIRE on our key so that after time period W, the value is reset.
+
+Redis for Proximity Search
+Redis natively supports geospatial indexes with commands like GEOADD and GEORADIUS. The basic commands are simple:
+
+GEOADD key longitude latitude member # Adds "member" to the index at key "key"
+GEORADIUS key longitude latitude radius # Searches the index at key "key" at specified position and radius
+
+
+
+Reliability
+The presence database (Redis) should not lose the current status of the clients on a node failure. The following methods can be used to persist Redis data on persistent storage such as solid-state disk (SSD) 13, 14:
+
+Redis Database (RDB) persistence performs point-in-time snapshots of the dataset at periodic intervals
+Append Only File (AOF) persistence logs every write operation on the server for fault-tolerance
+The RDB method is optimal for disaster recovery. However, there is a risk of data loss on unpredictable node failure because the snapshots are taken periodically. The AOF method is relatively more durable through an append-only log at the expense of larger storage needs. The general rule of thumb for improved reliability with Redis is to use both RDB and AOF persistence methods simultaneously 13.
+
+Latency
+The network hops in the presence platform are very few because the client SSE connections on the real-time platform are reused for the implementation of the presence feature. On top of that, the pipelining feature in Redis can be used to batch the query operations on the presence database for reducing the round-trip time (RTT) 15.
+
+
+The sets data type in Redis is an unordered collection of unique members with no duplicates. The sets data type can be used to store the presence status of the clients at the expense of not showing the last active timestamp of the client. The user IDs of the connections of a particular client can be stored in a set named connections and the user IDs of every online user on the platform can be stored in a set named online.
+
+The sets data type in Redis supports intersection operation between multiple sets. The intersection operation between the set online and set connections can be performed to identify the list of connections of a particular client, who is currently online. The following Redis set commands can be useful to prototype the presence platform 5, 6:
+
+Command	Description
+SADD	add the user to the online set
+SISMEMBER	check if the user is online
+SREM	remove the user from the online set
+SCARD	fetch the total count of online users
+SINTER	identify connections who are online
+The set operations such as adding, removing, or checking whether an item is a set member take constant time complexity, O(1). The time complexity of the set intersection is O(n*m), where n is the cardinality of the smallest set and m is the number of sets. Alternatively, the bloom filter or cuckoo filter can be used to reduce memory usage at the expense of approximate results 5.
+
+
+The INCR Redis command is used to increment the counter atomically. Redis can be deployed in the leader-follower replication topology for improved performance. The Redis proxy can be used as the sharding proxy to route the reads to the Redis follower instances and redirect the writes to the Redis leader instance. The hot standby configuration of Redis using replicas improves the fault tolerance of the distributed counter 16. The write-behind cache pattern can be used to asynchronously persist the counter in the relational database for improved durability.
+
+Alternatively, Redis can be deployed in an active-active topology for low latency and high availability. Instead of aggregating the count by querying every shard on read operations, the shards can communicate with each other using the gossip protocol to prevent the read operation overhead. However, this approach will result in unnecessary bandwidth usage and increased storage needs 5.
+
+The count update operations must be idempotent for conflict-free count synchronization across multiple data centers. The drawback of using native data types in Redis is that the count update operations are not idempotent and it is also non-trivial to check whether a command execution on Redis was successful during a network failure, which might result in an inaccurate counter. As a workaround to network failures, the Lua script can be executed on the Redis server to store the user IDs or keep the user IDs in a Redis set data type 5. In conclusion, do not use native data types in Redis to create the distributed counter.
+
+CRDT Distributed Counter
+The distributed counter is a replicated integer. The primary benefit of the eventual consistency model is that the database will remain available despite network partitions. The eventual consistency model typically handles conflicts due to concurrent writes on the same item through the following methods 3, 13:
+
+Conflict resolution	Description	Tradeoffs
+last write wins (LWW)	timestamp-based synchronization	difficult to synchronize the system clocks
+quorum-based eventual consistency	wait for an acknowledgment from a majority of the replicas	increased network latency
+merge replication	merge service resolves the conflicts	prone to bugs and slow in real-time
+conflict-free replicated data type (CRDT)	mathematical properties for data convergence	conflict resolution semantics are predefined and cannot be overridden
+The Conflict-free Replicated Data Type (CRDT) is a potential option for implementing the distributed counter. The CRDTs are also known as Convergent Replicated Data Types and Commutative Replicated Data Types. The CRDT is a replicated data type that enables operations to always converge to a consistent state among all replicas nodes 17. The CRDT allows lock-free concurrent reads and writes to the distributed counter on any replica node 18. The CRDT internally uses mathematically proven rules for automatic and deterministic conflict resolution. The CRDT strictly employs the following mathematical properties 3, 13:
+
+Property	Formula
+commutative	a * b = b * a
+associative	a * ( b * c ) = ( a * b ) * c
+idempotence	a * a = a
+The idempotence property in CRDT prevents duplicating items on replication 3, 13. The order of replication does not matter because the commutative property in CRDT prevents race conditions 18.
+
+CRDT-based consistency is a popular approach for multi-leader support because the CRDT offers high throughput, low latency for reads and writes, and tolerates network partitions 13, 19, 20. The CRDT achieves high availability by relaxing consistency constraints 21, 22. The CRDT can even accept writes on the nodes that are disconnected from the cluster because the data updates will eventually get merged with other nodes when the network connection is re-established 17.
+
+The internal implementation of CRDT is independent of the underlying network layer. For example, the communication layer can use gossip protocol for an efficient replication across CRDT replicas 23, 24. The CRDT replication exchanges not only the data but also the operations performed on the data including their ordering and causality. The merging technique in CRDT will execute the received operations on the data. The following are the benefits of using CRDT to build the distributed counter 18, 23, 22, 21:
+
+offers local latency on read and write operations through multi-leader replication
+enables automatic and deterministic conflict resolution
+tolerant to network partitions
+allow concurrent count updates without coordination between replica nodes
+achieves eventual consistency through asynchronous data updates
+An active-active architecture is a data-resilient architecture that enables data access over different data centers. An active-active architecture can be accomplished in production by leveraging the CRDT-based data types in Redis Enterprise 18, 19, 17. The CRDTs in Redis are based on an alternative implementation of most Redis commands and native data types. Some of the popular CRDTs used in the industry are the following 3, 13:
+
+G-counters (Grow-only)
+PN-counters (Positive-Negative)
+G-sets (Grow-only sets)
+
+
+G-Counter
+The G-Counter (Grow-only) is an increment-only CRDT counter. The major limitations of the G-Counter are that the counter can only be incremented and the number of replicas must be known beforehand. The G-Counter will not be able to satisfy the elastic scalability requirements 23, 22.
+
+PN-Counter
+The PN-Counter (Positive-Negative) is a distributed counter that supports increment and decrement operations. The PN-Counter internally uses two count variables for the increments and decrements respectively 25. The PN-Counter supports read-your-writes (RYW) and monotonic reads for strong eventual consistency 22, 21. In addition, the PN-Counter supports an arbitrary number of replicas for elastic scalability 25. In summary, the PN-Counter can be used to build the distributed counter.
+
+Handoff Counter
+The Handoff Counter is a distributed counter, which is eventually consistent. The Handoff Counter is relatively more scalable than PN-Counter by preventing the identity explosion problem. The state of the G-Counter is linear to the number of independent replicas that incremented the counter. In other words, each replica in CRDT has a unique identity, and CRDTs work by keeping the identities of the participating replicas.
+
+The set of identities kept on each replica grows over time and might hinder scalability. The Handoff Counter prevents the global propagation of identities and performs garbage collection of transient entries. The Handoff Counter assigns a tier number to each replica to promote a hierarchical structure for scalability 24. In summary, the Handoff Counter can also be used to build the distributed counter.
+
+How does CRDT work?
+The CRDT-based counter support count synchronization across multiple data centers with reduced storage, low latency, and high performance. The updates on the counter are stored on the CRDT database in the local data center and asynchronously replicated to the CRDT database in peer data centers 22, 26. The CRDT replicas will converge to a consistent state as time elapses 22, 21. Every count update operation is transferred to all replicas to achieve eventual consistency.
+
+The commutative property of CRDT operations ensures count accuracy among replicas. The following set of guidelines can be followed to ensure a consistent user experience by taking the best advantage of the CRDT-based database 3:
+
+keep the application service stateless
+choose the correct CRDT data type
+Figure 15: CRDT counter replicas across multiple data centersFigure 15: CRDT counter replicas across multiple data centers
+Each replica will keep only its count and count update operations instead of the total count. A replica would never increment the count contained in another replica. The count updates on a particular replica are assumed to occur in a monotonic fashion. The vector clock is used to identify the causality of count update operations among CRDT replicas 18, 3, 13. The following is the rough data schema of the counter CRDT 27, 28, 22:
+
+1
+2
+3
+4
+{ 
+  "replica-1": { "increments": 2500, "decrements": 817 }, 
+  "replica-2": { "increments": 21000, "decrements": 9919 } 
+}
+The total count is calculated by summing up all the count values. The total count would equal 2500 + 21000 - 817 - 9919.
+
+The Redis keyspace notifications can be used instead of the Lua script for notifications at the expense of more CPU power and increased delay. The heartbeat signals must be replaced with HTTP events to publish Facebook likes or reactions through the real-time platform. The article on the real-time presence platform describes in-depth the handling of jittery client connections 30.
+
 +
 +----------------------------------
 +
@@ -714,10 +1775,7 @@ Add Bloom Filters and Count-Min Sketch into the list.
 +
 +
 +https://leetcode.com/discuss/study-guide/901324/My-System-Design-Interview-Checklist-A-Gateway-to-FAANGs
-+
-+
-+
-+
+
 +Usually, the System Design interviews are lengthy and cover a lot of complex components. This makes it very easy to get 
 +lost in small things and miss out on the big picture. Therefore, it becomes very important to structure your interview in a 
 +way such that you can easily convey the whole picture without wasting time on anything which does not add value.
@@ -1055,19 +2113,6 @@ References:
 
 Rfc 2616
 SO Thread
-#############################################################################
-
-- For system design: System Design Primer and Designing Data Intensive Applications.
-
-- If you have time, read Grokking the system design interview but don't let it fool you. You will NOT have 
-time during an interview to go through all the steps listed on Grokking. Instead, ask the interviewers what 
-areas of the design they'd like to focus on, they will almost always tell you. Following the grokking blueprint 
-might actually work against you and make you seem unready for a senior role.
-
-
-
-- Get very good at designing APIs. They came up in all of my system design interviews. You don't need to focus 
-on a particular implementation (HTTP, RPC, etc). Just be ready to discuss inputs, outputs, error handling, etc.
 
 
 ####################################
@@ -1819,6 +2864,7 @@ Consistent Hashing
 
 Exploring the concept of Consistent Hashing in System Design. Discussing the 
 requirement for consistent hashing and drawbacks related to this conceptSystem Design Concepts
+
 May 16, 2020
 Saurav Prateek | Author
   IntroductionConsistent Hashing is a concept extensively used in Load Balancing. In a typical Load Balancer we use hashing in order to map the requests to their corresponding Servers. Here when we had to add or remove any Server then the Hash Values of all the earlier requests got modified which caused our cache to become obsolete. In order to avoid this problem we use the concept of Consistent Hashing. Using consistent hashing in our system we can avoid the change in the hash function of all the earlier Requests whenever any new server is added or removed. It allows only a small amount of requests to change hence making our cache very much in use.Understanding the ProblemSuppose you have a Load Balancer which distributes your requests among three servers : S1, S2 and S3. We have used a hash function to direct the requests to one of the servers in the system. The entire method used looks like this :
@@ -1895,25 +2941,37 @@ to none. Possibly log(N) or log(M) where N is the Number of available Servers an
 CONSISTENT HASHING PART 2:
 
 Here’s a problem. I have a set of keys and values. I also have some servers for a key-value store. This could be memcached, Redis, MySQL, whatever. I want to distribute the keys across the servers so I can find them again. And I want to do this without having to store a global directory.
+
 One solution is called mod-N hashing.
 First, choose a hash function to map a key (string) to an integer. Your hash function should be fast. This tends to rule out cryptographic ones like SHA-1 or MD5. Yes they are well distributed but they are also too expensive to compute — there are much cheaper options available. Something like MurmurHash is good, but there are slightly better ones out there now. Non-cryptographic hash functions like xxHash, MetroHash or SipHash1–3 are all good replacements.
+
 If you have N servers, you hash your key with the hash function and take the resulting integer modulo N.
  server := serverList[hash(key) % N]
 This setup has a number of advantages. First, it’s very easy to explain. It’s also very cheap to compute. The modulo can be expensive but it’s almost certainly cheaper than hashing the key. If your N is a power of two then you can just mask off the lower bits. (This is a great way to shard a set of locks or other in-memory data structure.)
+
 What are the downsides of this approach? The first is that if you change the number of servers, almost every key will map somewhere else. This is bad.
 Let’s consider what an “optimal” function would do here.
 When adding or removing servers, only 1/nth of the keys should move.
 Don’t move any keys that don’t need to move.
+
 To expand on the first point, if we’re moving from 9 servers to 10, then the new server should be filled with 1/10th of all the keys. And those keys should be evenly chosen from the 9 “old” servers. And keys should only move to the new server, never between two old servers. Similarly, if we need to remove a server (say, because it crashed), then the keys should be evenly distributed across the remaining live servers.
-Luckily, there’s a paper that solves this. In 1997, the paper “Consistent Hashing and Random Trees: Distributed Caching Protocols for Relieving Hot Spots on the World Wide Web” was released. This paper described the approach used by Akamai in their distributed content delivery network.
+
+Luckily, there’s a paper that solves this. In 1997, the paper “Consistent Hashing and Random Trees: Distributed Caching Protocols for Relieving Hot Spots on the World Wide Web” 
+was released. This paper described the approach used by Akamai in their distributed content delivery network.
+
 It took until 2007 for the ideas to seep into the popular consciousness. That year saw two works published:
 last.fm’s Ketama memcached client.
+
 Dynamo: Amazon’s Highly Available Key-value Store
-These cemented consistent hashing’s place as a standard scaling technique. It’s now used by Cassandra, Riak, and basically every other distributed system that needs to distribute load over servers.
-This algorithm is the popular ring-based consistent hashing. You may have seen a “points-on-the-circle” diagram. When you do an image search for “consistent hashing”, this is what you get:
+These cemented consistent hashing’s place as a standard scaling technique. It’s now used by Cassandra, 
+Riak, and basically every other distributed system that needs to distribute load over servers.
+This algorithm is the popular ring-based consistent hashing. You may have seen a “points-on-the-circle” diagram. 
+When you do an image search for “consistent hashing”, this is what you get:
 Image for post
+
 It scrolls on like this for a while
 You can think of the circle as all integers 0 ..2³²-1. The basic idea is that each server is mapped to a point on a circle with a hash function. To lookup the server for a given key, you hash the key and find that point on the circle. Then you scan forward until you find the first hash value for any server.
+
 In practice, each server appears multiple times on the circle. These extra points are called “virtual nodes”, or “vnodes”. This reduces the load variance among servers. With a small number of vnodes, different servers could be assigned wildly different numbers of keys.
 (A brief note on terminology. The original consistent hashing paper called servers “nodes”. Papers will generally talk about“nodes”, “servers”, or “shards”. This article will use all three interchangeably.)
 One of the other nice things about ring hashing is that the algorithm is straight-forward. Here’s a simple implementation taken from groupcache (slightly modified for clarity):
@@ -1948,13 +3006,18 @@ unsigned int numbuckets;
 float pct;
 The answer is this:
 limit := int(float32(float64(pct) * 40.0 * float64(numbuckets)))
+
 And the reason is because of C’s arithmetic promotion rules and because the 40.0 constant is a float64.
 And once I had this sorted out for my go-ketama implementation, I immediately wrote my own ring hash library (libchash) which didn’t depend on floating point round-off error for correctness. My library is also slightly faster because it doesn’t use MD5 for hashing.
+
 Lesson: avoid implicit floating point conversions, and probably floating point in general, if you’re building anything that needs to be cross-language.
 End of interlude.
+
 “Are we done?” OR “Why Is This Still a Research Topic?”
+
 Ring hashing presents a solution to our initial problem. Case closed? Not quite. Ring hashing still has some problems.
 First, the load distribution across the nodes can still be uneven. With 100 replicas (“vnodes”) per server, the standard deviation of load is about 10%. The 99% confidence interval for bucket sizes is 0.76 to 1.28 of the average load (i.e., total keys / number of servers). This sort of variability makes capacity planning tricky. Increasing the number of replicas to 1000 points per server reduces the standard deviation to ~3.2%, and a much smaller 99% confidence interval of 0.92 to 1.09.
+
 This comes with significant memory cost. For 1000 nodes, this is 4MB of data, with O(log n) searches (for n=1e6) all of which are processor cache misses even with nothing else competing for the cache.
 
 
@@ -2196,7 +3259,11 @@ RDBMS:
 
     Source: Scaling up to your first 10 million users
 
-    Federation (or functional partitioning) splits up databases by function. For example, instead of a single, monolithic database, you could have three databases: forums, users, and products, resulting in less read and write traffic to each database and therefore less replication lag. Smaller databases result in more data that can fit in memory, which in turn results in more cache hits due to improved cache locality. With no single central master serializing writes you can write in parallel, increasing throughput.
+    Federation (or functional partitioning) splits up databases by function. For example, instead of a single, 
+    monolithic database, you could have three databases: forums, users, and products, resulting in less read 
+    and write traffic to each database and therefore less replication lag. Smaller databases result in more data 
+    that can fit in memory, which in turn results in more cache hits due to improved cache locality. With no 
+    single central master serializing writes you can write in parallel, increasing throughput.
 
     Disadvantage(s): federation
     Federation is not effective if your schema requires huge functions or tables.
@@ -2479,3 +3546,233 @@ Design a picture sharing system
 Design a recommendation system
 Design a URL-shortener system: copied from above
 Design a cache system
+
+#######
+####################
+
+
+🔹
+Serializalble: This is the highest isolation level. Concurrent transactions are guaranteed to be executed in sequence.
+🔹
+Repeatable Read: Data read during the transaction stays the same as the transaction starts.
+🔹
+Read Committed: Data modification can only be read after the transaction is committed.
+4
+🔹
+Read Uncommitted: The data modification can be read by other transactions before a transaction is committed.
+
+The isolation is guaranteed by MVCC (Multi-Version Consistency Control) and locks.
+The diagram below takes Repeatable Read as an example to demonstrate how MVCC works:
+There are two hidden columns for each row: transaction_id and roll_pointer. When transaction A starts, a new Read View with transaction_id=201 is created. Shortly afterward, transaction B starts, and a new Read View with transaction_id=202 is created.
+Now transaction A modifies the balance to 200, a new row of the log is created, and the roll_pointer points to the old row. Before transaction A commits, transaction B reads the balance data. Transaction B finds that transaction_id 201 is not committed, it reads the next committed record(transaction_id=200).
+Even when transaction A commits, transaction B still reads data based on the Read View created when transaction B starts. So transaction B always reads the data with balance=100.
+
+
+FAN OUT PATTERN:
+
+The textbook example of the fan-out design pattern is Twitter's news feed (i.e. timeline) generation service. 
+The naive approach would consist of writing tweets to a database. Then, whenever the followers open the application, the client would request the tweets from the database. As you could image, if you have millions of users and each user follows thousands of people, this would place a signicant load on the database.
+A better approach consists of pre-computing the user's timeline and storing it in a Redis cluster. In other words, when a user posts a tweet, the tweet is inserted into the timeline of each of their followers. For example, if a user has 1000 followers, then their tweet would result in 1000 writes.
+The process of writing the same data to multiple destinations simultaneously is called fan-out.
+It's worth noting that in the case of celebrities with millions of followers, we don't fan-out their tweets. Rather, the users that follow said celebrity will request the data only when they open the application.
+In one of my previous roles, we were streaming data in JSON format to our data warehouse. The amount of data was so large that we needed to create indices using separate tables that were partitioned based on different dimensions. For example, we'd have a table containing two columns, one for the geographical location and another for the record id such that the analysts could easily determine what records could be found in that region.
+Initially, we had accomplished the latter using multiple independent streams. However, we were throttling the message broker since we had multiple consumers attempting to read the same data.
+When using Spark Structured Streams, we can write to multiple destinations using the `foreachBatch` method. After making the switch, we noticed a significant performance boost. When writing to multiple Delta tables, if we specify a txnVersion and txnAppId, Databricks provides guarantees that these streaming writes will be idempotent. This is especially useful when data for multiple tables will be contained within a single record since we'd want to rollback in the event of a failure. It's worth noting that at the time of this writing, I believe this is not yet supported for non Delta tables.
+Here's an example of how we'd write to multiple tables simultaneously using Spark:
+def write_twice(microBatchDF, batchId)
+	appId = 'write_twice'
+	microBatchDF.select(
+		'id',
+		'name',
+		F.current_timestamp().alias('processed_time')
+	) \
+	.write \
+	.option('txnVersion', batchId) \
+	.option('txnAppId', appId) \
+	.mode('append') \
+	.saveAsTable('silver_name')
+
+
+	microBatchDF.select(
+		'id',
+		'value',
+		F.current_timestamp().alias('processed_time')
+	) \
+	.write \
+	.option('txnVersion', batchId) \
+	.option('txnAppId', appId) \
+	.mode('append') \
+	.saveAsTable('silver_value')
+
+
+def split_stream():
+	query = (spark.readStream
+			.table('bronze')
+			.writeStream
+			.foreachBatch(write_twice)
+			.option('checkpointLocation', checkpoint_location)
+			.trigger(availableNow=True)
+			.start())
+	query.awaitTermination():
+Can you think of any other applications of the fan-out pattern? Leave a comment below.
+
+
+#######
+#########
+
+CONSISTENCY:
+
+
+
+Strong Consistency See all previous writes.
+Eventual Consistency See subset of previous writes.
+Consistent Prefix See initial sequence of writes.
+Bounded Staleness See all “old” writes.
+Monotonic Reads See increasing subset of writes.
+Read My Writes See all writes performed by reader.
+Table 1. Six Consistency Guarantees
+
+Guarantee Consistency Performance Availability
+Strong Consistency excellent poor poor
+Eventual Consistency poor excellent excellent
+Consistent Prefix okay good excellent
+Bounded Staleness good okay poor
+Monotonic Reads okay good good
+Read My Writes okay okay okay
+
+
+Strong consistency is particularly easy to understand. It guarantees that a read operation returns the value that
+was last written for a given object. If write operations can modify or extend portions of a data object, such as
+appending data to a log, then the read returns the result of applying all writes to that object. In other words, a
+read observes the effects of all previously completed writes.
+
+Eventual consistency is the weakest of the guarantees, meaning that it allows the greatest set of possible return
+values. For whole-object writes, an eventually consistent read can return any value for a data object that was
+written in the past. More generally, such a read can return results from a replica that has received an arbitrary
+subset of the writes to the data object being read.
+
+By requesting a consistent prefix, a reader is guaranteed to observe an ordered sequence of writes starting with
+the first write to a data object. For example, the read may be answered by a replica that receives writes in order
+from a master replica but has not yet received an unbounded number of recent writes. In other words, the
+reader sees a version of the data store that existed at the master at some time in the past. This is similar to the
+“snapshot isolation” consistency offered by many database management systems.
+
+Bounded staleness ensures that read results are not too out-of-date. Typically, staleness is defined by a time
+period T, say 5 minutes. The storage system guarantees that a read operation will return any values written
+more than T minutes ago or more recently written values. Alternative, some systems have defined staleness in
+terms of the number of missing writes or even the amount of inaccuracy in a data value. I find that timebounded staleness is the 
+most natural concept for application developers.
+
+Monotonic Reads is a property that applies to a sequence of read operations that are performed by a given
+storage system client. As such, it is often called a “session guarantee.” With monotonic reads, a client can read
+arbitrarily stale data, as with eventual consistency, but is guaranteed to observe a data store that is increasingly
+up-to-date over time. In particular, if the client issues a read operation and then later issues another read to the
+same object(s), the second read will return the same value(s) or the results of later writes.
+4
+
+Read My Writes is a property that also applies to a sequence of operations performed by a single client. It
+guarantees that the effects of all writes that were performed by the client are visible to the client’s subsequent
+reads. If a client writes a new value for a data object and then reads this object, the read will return the value
+that was last written by the client (or some other value that was later written by a different client). (Note: In
+other papers, this has been called “Read Your Writes,” but I have chosen to rename it to more accurately
+describe the guarantee from the client’s viewpoint.)
+
+These last four read guarantees are all a form of eventual consistency but stronger than the eventual
+consistency model that is typically provided in systems like Amazon. None of these four guarantees is stronger
+than any of the others, meaning that each might result in a read operation returning a different value. In some
+cases, as will be shown later, applications may want to request multiple of these guarantees. For example, a
+client could request monotonic reads and read my writes so that it observes a data store that is consistent with
+its own actions.
+
+
+#######
+
+WIKIMEDIA ARCHITECTURE:
+
+Lessons Learned
+Focus on architecture, not so much on operations or nontechnical stuff.
+
+Sometimes caching costs more than recalculating or looking up at the
+data source...profiling!
+
+Avoid expensive algorithms, database queries, etc.
+
+Cache every result that is expensive and has temporal locality of reference.
+
+Focus on the hot spots in the code (profiling!).
+
+Scale by separating:
+- Read and write operations (master/slave)
+- Expensive operations from cheap and more frequent operations (query groups)
+- Big, popular wikis from smaller wikis
+
+Improve caching: temporal and spatial locality of reference and reduces the data set size per server
+
+Text is compressed and only revisions between articles are stored.
+
+Simple seeming library calls like using stat to check for a file's existence can take too long when loaded.
+
+Disk seek I/O limited, the more disk spindles, the better!
+
+Scale-out using commodity hardware doesn't require using cheap hardware. Wikipedia's database servers these days are 16GB dual or quad core boxes with 6 15,000 RPM SCSI drives in a RAID 0 setup. That happens to be the sweet spot for the working set and load balancing setup they have. They would use smaller/cheaper systems if it made sense, but 16GB is right for the working set size and that drives the rest of the spec to match the demands of a system with that much RAM. Similarly the web servers are currently 8 core boxes because that happens to work well for load balancing and gives good PHP throughput with relatively easy load balancing.
+
+It is a lot of work to scale out, more if you didn't design it in originally. Wikipedia's MediaWiki was originally written for a single master database server. Then slave support was added. Then partitioning by language/project was added. The designs from that time have stood the test well, though with much more refining to address new bottlenecks.
+
+Anyone who wants to design their database architecture so that it'll allow them to inexpensively grow from one box rank nothing to the top ten or hundred sites on the net should start out by designing it to handle slightly out of date data from replication slaves, know how to load balance to slaves for all read queries and if at all possible to design it so that chunks of data (batches of users, accounts, whatever) can go on different servers. You can do this from day one using virtualisation, proving the architecture when you're small. It's a LOT easier than doing it while load is doubling every few months!
+
+
+----------------------------------------------------------------
+
+### **Basic Algorithm of 2PC**
+
+### **`prepare` phase**
+
+The coordinator sends a `prepare` message to all cohorts and waits until it has received a reply from all cohorts.
+
+### **`commit` phase**
+
+If the coordinator received an agreement message from all cohorts during the `prepare` phase, the coordinator sends a `commit` message to all the cohorts.
+
+If any cohort votes `No` during the `prepare` phase (or the coordinator’s timeout expires), the coordinator sends a `rollback` message to all the cohorts.
+
+### **Disadvantages of 2PC**
+
+The greatest disadvantage of the two-phase commit protocol is that it is a blocking protocol. If the coordinator fails permanently, some cohorts will never resolve their transactions: after a cohort has sent an agreement message to the coordinator, it will block until a `commit` or `rollback` is received.
+
+For example, consider a transaction involving a coordinator `A` and the cohort `C1`. If `C1` receives a `prepare` message and responds to `A`, then `A` fails before sending `C1` either a `commit` or `rollback` message, then `C1` will block forever.
+
+### **2PC Practice in TiKV**
+
+In TiKV we adopt the [Percolator transaction model](https://storage.googleapis.com/pub-tools-public-publication-data/pdf/36726.pdf) which is a variant of two phase commit. To address the disadvantage of coordinator failures, percolator doesn’t use any node as coordinator, instead it uses one of the keys involved in each transaction as a coordinator. We call the coordinating key the primary key, and the other keys secondary keys. Since each key has multiple replicas, and data is kept consistent between these replicas by using a consensus protocol (Raft in TiKV), one node’s failure doesn’t affect the accessibility of data. So Percolator can tolerate node fails permanently.
+
+## **Three-Phase Commit**
+
+Unlike the two-phase commit protocol (2PC), 3PC is non-blocking. Specifically, 3PC places an upper bound on the amount of time required before a transaction either commits or aborts. This property ensures that if a given transaction is attempting to commit via 3PC and holds some resource locks, it will release the locks after the timeout.
+
+### **1st phase**
+
+The coordinator receives a transaction request. If there is a failure at this point, the coordinator aborts the transaction. Otherwise, the coordinator sends a `canCommit?` message to the cohorts and moves to the waiting state.
+
+### **2nd phase**
+
+If there is a failure, timeout, or if the coordinator receives a `No` message in the waiting state, the coordinator aborts the transaction and sends an `abort` message to all cohorts. Otherwise the coordinator will receive `Yes` messages from all cohorts within the time window, so it sends `preCommit` messages to all cohorts and moves to the prepared state.
+
+### **3rd phase**
+
+If the coordinator succeeds in the prepared state, it will move to the commit state. However if the coordinator times out while waiting for an acknowledgement from a cohort, it will abort the transaction. In the case where an acknowledgement is received from the majority of cohorts, the coordinator moves to the commit state as well.
+
+A two-phase commit protocol cannot dependably recover from a failure of both the coordinator and a cohort member during the Commit phase. If only the coordinator had failed, and no cohort members had received a commit message, it could safely be inferred that no commit had happened. If, however, both the coordinator and a cohort member failed, it is possible that the failed cohort member was the first to be notified, and had actually done the commit. Even if a new coordinator is selected, it cannot confidently proceed with the operation until it has received an agreement from all cohort members, and hence must block until all cohort members respond.
+
+The three-phase commit protocol eliminates this problem by introducing the `Prepared-to-commit` state. If the coordinator fails before sending `preCommit` messages, the cohort will unanimously agree that the operation was aborted. The coordinator will not send out a `doCommit` message until all cohort members have acknowledged that they are `Prepared-to-commit`. This eliminates the possibility that any cohort member actually completed the transaction before all cohort members were aware of the decision to do so (an ambiguity that necessitated indefinite blocking in the two-phase commit protocol).
+
+### **Disadvantages of 3PC**
+
+The main disadvantage to this algorithm is that it cannot recover in the event the network is segmented in any manner. The original 3PC algorithm assumes a fail-stop model, where processes fail by crashing and crashes can be accurately detected, and does not work with network partitions or asynchronous communication.
+
+The protocol requires at least three round trips to complete. This potentially causes a long latency in order to complete each transaction.
+
+## **Paxos Commit**
+
+The Paxos Commit algorithm runs a Paxos consensus algorithm on the commit/abort decision of each participant to achieve a transaction commit protocol that uses 2F + 1 coordinators and makes progress if at least F + 1 of them are working properly. Paxos Commit has the same stable-storage write delay, and can be implemented to have the same message delay in the fault-free case, as Two-Phase Commit, but it uses more messages. The classic Two-Phase Commit algorithm is obtained as the special F = 0 case of the Paxos Commit algorithm.
+
+In the Two-Phase Commit protocol, the coordinator decides whether to abort or commit, records that decision in stable storage, and informs the cohorts of its decision. We could make that fault-tolerant by simply using a consensus algorithm to choose the committed/aborted decision, letting the cohorts be the client that proposes the consensus value. This approach was apparently first proposed by Mohan, Strong, and Finkelstein, who used a synchronous consensus protocol. However, in the normal case, the leader must learn that each cohort has prepared before it can try to get the value committed chosen. Having the cohorts tell the leader that they have prepared requires at least one message delay.

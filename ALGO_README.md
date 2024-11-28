@@ -599,6 +599,93 @@ THESE ARE HARMAN'S PERSONAL SET OF PARADIGMS/ INTERVIEW NOTES:
 +            return OPT[n]
 
 
+        -111.10) Minimum Window Substring:
+
+            from collections import Counter
+
+            class Solution(object):    
+                def minWindow(self, s, t):
+                    """
+                    :type s: str
+                    :type t: str
+                    :rtype: str
+                    """
+                    # Super Fast 
+                    t_set = set(t)
+                    
+                    t_count =  Counter(t)
+                    
+                    
+                    filtered_s = []
+                    
+                    for idx, c in enumerate(s):
+                        if(c in t_set):
+                            filtered_s.append((idx, c))
+                        
+                    curr = set(t)
+                    l = 0
+                    r = 0
+                    
+                    curr_lidx = 0
+                    curr_ridx = None
+                    min_lidx = 0
+                    min_ridx = float("inf")
+                    curr_count = Counter()
+                    
+                    completed = set()
+                    
+                    print("FILTERED_S", filtered_s)
+                    
+                    while True:
+                        
+                        # Move right pointer. 
+                        rCompleted = False
+                        while(r < len(filtered_s)):
+                            idx, k = filtered_s[r]
+                            
+                            curr_ridx  = idx
+                            curr_count[k] += 1
+                            
+                            # print("R PROCESSED, ", r, k, curr_ridx, curr_count)
+                            
+                            r += 1
+
+                            if(curr_count[k] >= t_count[k]):
+                                completed.add(k)
+                            
+                            if(len(completed) == len(t_set)):
+                                rCompleted = True
+                                break 
+
+                        # Move left pointer towards right pointer        
+                        while(l < r): 
+                            idx2, k = filtered_s[l]
+                            
+                            curr_count[k] -= 1
+                            l += 1
+                            # print("L PROCESSED. curr_lidx", l, k, curr_lidx, idx2, curr_count)
+                            curr_lidx = idx2
+                            if(curr_count[k] < t_count[k]):
+                
+                                if(rCompleted and curr_ridx - curr_lidx < min_ridx - min_lidx):
+                                    min_ridx = curr_ridx
+                                    min_lidx = curr_lidx
+                                
+                                if k in completed:          
+                                    completed.remove(k)
+                                
+                                break
+                                
+                        
+                        if( r == len(filtered_s)):
+                            break
+                        
+                    if(min_ridx != float("inf")):
+                        return s[min_lidx:min_ridx+1]
+                    else:
+                        return ""
+
+
 
         -111.11) Do you think you could use sliding window here?? lolol
             solve this when you have time. 
@@ -12438,71 +12525,7 @@ Update the function for -ve integer division as follows
 +
 +
 +
-+        Quick Select Soln (with partiail sorting partition function):
-+            Lets reduce space to O(1) by modifying in place
-+            Try to understand the partition function!!
-+
-+            1.Return the result of a QuickSelect algorithm on the points array to kk elements.
-+            2. In the QuickSelect function:
-+                Repeatedly partition a range of elements in the given array while homing in on the k^{th}kth element.
-+            3. In the partition function:
-+                Choose a pivot element. The pivot value will be squared Euclidean distance from the origin to the pivot element and will be compared to the 
-+                    squared Euclidean distance of all other points in the partition.
-+                Start with pointers at the left and right ends of the partition, then while the two pointers have not yet met:
-+                    If the value of the element at the left pointer is smaller than the pivot value, increment the left pointer.
-+                    Otherwise, swap the elements at the two pointers and decrement the right pointer.
-+            Make sure the left pointer is past the last element whose value is lower than the pivot value.
-+            Return the value of the left pointer as the new pivot index.
-+            4. Return the first kk elements of the array.
-+
-+
-+
-+            class Solution:
-+                def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
-+                    return self.quick_select(points, k)
-+                
-+                def quick_select(self, points: List[List[int]], k: int) -> List[List[int]]:
-+                    """Perform the QuickSelect algorithm on the list"""
-+                    left, right = 0, len(points) - 1
-+                    pivot_index = len(points)
-+                    while pivot_index != k:
-+                        # Repeatedly partition the list
-+                        # while narrowing in on the kth element
-+                        pivot_index = self.partition(points, left, right)
-+                        if pivot_index < k:
-+                            left = pivot_index
-+                        else:
-+                            right = pivot_index - 1
-+                    
-+                    # Return the first k elements of the partially sorted list
-+                    return points[:k]
-+                
-+                def partition(self, points: List[List[int]], left: int, right: int) -> int:
-+                    """Partition the list around the pivot value"""
-+                    pivot = self.choose_pivot(points, left, right)
-+                    pivot_dist = self.squared_distance(pivot)
-+                    while left < right:
-+                        # Iterate through the range and swap elements to make sure
-+                        # that all points closer than the pivot are to the left
-+                        if self.squared_distance(points[left]) >= pivot_dist:
-+                            points[left], points[right] = points[right], points[left]
-+                            right -= 1
-+                        else:
-+                            left += 1
-+                    
-+                    # Ensure the left pointer is just past the end of
-+                    # the left range then return it as the new pivotIndex
-+                    if self.squared_distance(points[left]) < pivot_dist:
-+                        left += 1
-+                    return left
-+                
-+                def choose_pivot(self, points: List[List[int]], left: int, right: int) -> List[int]:
-+                    """Choose a pivot element of the list"""
-+                    return points[left + (right - left) // 2]
-+                
-+                def squared_distance(self, point: List[int]) -> int:
-+                    """Calculate and return the squared Euclidean distance."""
-+                    return point[0] ** 2 + point[1] ** 2
+
 +
 +
 +26.97)  1509. Minimum Difference Between Largest and Smallest Value in Three Moves
@@ -15119,7 +15142,9 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
 +        BRUTE FORCE
 +        We can loop through all the edges, remove them and check if it’s a cut edge or not by running a dfs and 
 +        checking the number of connected components formed. COMPLEXITY: O(E*(V+E))        
-+        OPTIMIZED APPROACH
++        
+
+        OPTIMIZED APPROACH
 +        Let’s start by defining a new term:
 +        LOWLINKS:
 +        Lowlink of a vertex v is the maximum ancestor in dfs tree to 
@@ -15142,35 +15167,40 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
 +        bridge iff the lowlink value of node v is greater than value assigned to node u. Why? Because u will have 
 +        lower value than any node in subtree of v. So a higher lowlink means there is no backedge 
 +        in subtree of v to u or any ancestor of u.
-+        Let’s look into some code now:
-+        vectorg[N];
-+        int timestamp[N];
-+        int best[N];
-+        bool visited[N];
-+        int par[N];
-+        bool iscut[N];
-+        int T=0;
-+        void dfs(int s,int p)
-+        {
-+            par[s]=p;
-+            timestamp[s]=T++;
-+            best[s]=timestamp[s];
-+            visited[s]=true;
-+            for(auto v:g[s])
-+            {
-+                if(!visited[v.first])
-+                {
-+                    dfs(v.first,s);
-+                    best[s]=min(best[s],best[v.first]);
-+                    if(best[v.first]>timestamp[s])
-+                    {
-+                        iscut[v.second]=true;
-+                    }
-+                }
-+                else if(v.first!=p)
-+                {
-+                    best[s]=min(best[s],best[v.first]);
-+                }
++        
+
+        Let’s look into some code now:
+                vectorg[N];
+                int timestamp[N];
+                int best[N];
+                bool visited[N];
+                int par[N];
+                bool iscut[N];
+                int T=0;
+                void dfs(int s,int p)
+                {
+                    par[s]=p;
+                    timestamp[s]=T++;
+                    best[s]=timestamp[s];
+                    visited[s]=true;
+                    for(auto v:g[s])
+                    {
+                        if(!visited[v.first])
+                        {
+                            dfs(v.first,s);
+                            best[s]=min(best[s],best[v.first]);
+                            if(best[v.first]>timestamp[s])
+                            {
+                                iscut[v.second]=true;
+                            }
+                        }
+                        else if(v.first!=p)
+                        {
+                            best[s]=min(best[s],best[v.first]);
+                        }
+                    }
+                }
+                
 +        Let’s try understanding what’s happening:
 +        timestamp[s]=T++ : This assigns values to nodes same as in euler tour. 
 +        Note that T is incremented before visiting subtree of s. 
@@ -15388,6 +15418,128 @@ K-way Merge helps you solve problems that involve a set of sorted arrays.
             
             return list(map(lambda x: points[x[1]], soln + left_elements))
 
+
+
+        class Solution:
+            def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
+                return self.quick_select(points, k)
+            
+            def quick_select(self, points: List[List[int]], k: int) -> List[List[int]]:
+                """Perform the QuickSelect algorithm on the list"""
+                left, right = 0, len(points) - 1
+                pivot_index = len(points)
+                while pivot_index != k:
+                    # Repeatedly partition the list
+                    # while narrowing in on the kth element
+                    pivot_index = self.partition(points, left, right)
+                    if pivot_index < k:
+                        left = pivot_index
+                    else:
+                        right = pivot_index - 1
+                
+                # Return the first k elements of the partially sorted list
+                return points[:k]
+            
+            def partition(self, points: List[List[int]], left: int, right: int) -> int:
+                """Partition the list around the pivot value"""
+                pivot = self.choose_pivot(points, left, right)
+                pivot_dist = self.squared_distance(pivot)
+                while left < right:
+                    # Iterate through the range and swap elements to make sure
+                    # that all points closer than the pivot are to the left
+                    if self.squared_distance(points[left]) >= pivot_dist:
+                        points[left], points[right] = points[right], points[left]
+                        right -= 1
+                    else:
+                        left += 1
+                
+                # Ensure the left pointer is just past the end of
+                # the left range then return it as the new pivotIndex
+                if self.squared_distance(points[left]) < pivot_dist:
+                    left += 1
+                return left
+            
+            def choose_pivot(self, points: List[List[int]], left: int, right: int) -> List[int]:
+                """Choose a pivot element of the list"""
+                return points[left + (right - left) // 2]
+            
+            def squared_distance(self, point: List[int]) -> int:
+                """Calculate and return the squared Euclidean distance."""
+                return point[0] ** 2 + point[1] ** 2
+
+
+
+        from math import sqrt
+        class Solution:
+            def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
+                if len(points) == k:
+                    return points
+
+                distance = []
+                for point in points:
+                    distance.append(sqrt(point[0]*point[0]+point[1]*point[1]))
+
+                def quick_select(nums, k):
+                    pivot = random.choice(nums)
+                    left, right = [], []
+
+                    for num in nums:
+                        if num < pivot:
+                            left.append(num)
+                        else:
+                            right.append(num)
+                    
+                    if k < len(left):
+                        return quick_select(left, k)
+                    
+                    if k > len(left):
+                        return quick_select(right, k - len(left))
+                    
+                    return pivot
+
+                pivot = quick_select(distance, k)
+                rv = []
+                for i, p in enumerate(distance):
+                    if p < pivot:
+                        rv.append(points[i])
+
+                return rv
+
+58.5) HOW TO QUICK SELECT THE RIGHT WAY IT RREQUIRES TOO MUCH THINKING FUKC
+    DO NOT DO ITERATIVE DURING INTERVIEW. 
+
+    class Solution:
+        def findKthLargest(self, nums: List[int], k: int) -> int:
+            # QUICK SELECT THIS. AND 
+            l = 0 
+            r = len(nums) -1 
+            # quick select!
+            def partitions(l, r):
+
+                # CONSIDER THE LAST ELEMETN AS PIVOT. 
+                x = nums[r]
+                lold=l
+                rold=r
+                for j in range(l, r):
+                    if nums[j] <= x:
+                        nums[l], nums[j] = nums[j], nums[l]
+                        l += 1
+
+                nums[r], nums[l] = nums[l], nums[r]
+                # i is the pivot index now. 
+                return l
+            
+            k = len(nums) - k
+            while l < r:
+                pivot = partitions(l, r)
+                if pivot == k:
+                    return nums[k]
+                elif pivot > k: 
+                    # search left side
+                    r = pivot - 1
+                else:
+                    l = pivot + 1
+            return nums[l]
 
 59)
         Given an integer array sorted in non-decreasing order, there is exactly one integer 
@@ -16087,134 +16239,6 @@ SORTED CONTAINERS USAGE PYTHON.
                 
                 # if you dont do list() it will return a SortedDictValuesView -> need to type cast it.
                 return list(res.values())
-
-+-70) Example of extracting dynamic programming traversal paths 
-+     after doing DP problem.
-+        '''
-+        CombinationSum:
-+        Given an array of integers a and an integer sum, find all of the 
-+        unique combinations in a that add up to sum.
-+        The same number from a can be used an unlimited number of times in 
-+        a combination.
-+        Elements in a combination (a1 a2 … ak) must be sorted in non-descending order, 
-+        while the combinations themselves must be sorted in ascending order.
-+        If there are no possible combinations that add up to sum, 
-+        the output should be the string "Empty".
-+
-+        Example
-+
-+        For a = [2, 3, 5, 9] and sum = 9, the output should be
-+        combinationSum(a, sum) = "(2 2 2 3)(2 2 5)(3 3 3)(9)".
-+
-+
-+        The DP problem is simple, done previously before HARMAN!!
-+
-+        Here we try to return the paths themselves, that were traversed in the DP
-+        2 ways to do so:
-+        A parents map OR as we save our results in the DP array, we also save our paths in a DP paths array.
-+        Look at both methods and learn!!
-+
-+        '''
-+        from collections import defaultdict, deque
-+        def combinationSum(a, sum):
-+            # parents map? 
-+            g = defaultdict(list)
-+            
-+            # sort a and deduplicate. 
-+            
-+            a = sorted(list(set(a)))
-+            
-+            # we could also space optimize and just use One D array, because new 
-+            # index doesnt use just previous index, but all previous indexes.
-+            # so include all of em. 
-+            OPT = [[0 for i in range(sum+1)]]
-+            OPT[0][0] = 1
-+            
-+            
-+            dp_paths = [[] for i in range(sum+1)]
-+            dp_paths[0].append([])
-+            
-+            for idx, coinVal in enumerate(a):
-+                # to compute for current index, 
-+                # first copy previous, then operate on current. 
-+                curr = OPT[-1][:]
-+                '''
-+                idx, coin?
-+                '''
-+                for i in range(sum+1):
-+                    if i >= coinVal:
-+                        # do we specify the coin type we used??
-+                        # depends if we built from previous index, or 
-+                        # coins from this index.  -> cant you use difference in amts
-+                        # to determine coins -> YESS.
-+                        # you dont need to save coinVal
-+                        curr[i] += curr[i-coinVal]
-+                        # can we save it, as we build the dp?
-+                        
-+                        parent_paths = dp_paths[i-coinVal]
-+                        for p in parent_paths:
-+                            cp = p[::]
-+                            cp.append(coinVal)
-+                            dp_paths[i].append(cp)
-+
-+                        if(curr[i-coinVal] > 0):
-+                            g[i].append(i-coinVal)
-+                                
-+                OPT.append(curr)
-+            
-+            # DP PATHS WORKS HOW YOU EXPECT. IF OPT[sum] = 6, then in DP paths there is 6 paths.
-+            print("DP_PATHS", dp_paths)
-+            print("OPT", OPT)
-+            
-+            '''
-+            Problem with getting all paths: we end up with all permutations instead of 
-+            combinations: 
-+            
-+            Output: "(2 2 2 2)(2 2 4)(2 4 2)(2 6)(4 2 2)(4 4)(6 2)(8)"
-+            Expected Output: "(2 2 2 2)(2 2 4)(2 6)(4 4)(8)"
-+            SO WE NEED LIMIT ARGUMENT.
-+            '''
-+            
-+            results = []
-+            
-+            def get_all_paths(node, path, limit):
-+                kids = g[node]
-+                if len(kids) == 0:
-+                    # nonlocal results
-+                    results.append(path)
-+                
-+                # USING A LIMIT ALLOWS YOU TO TURN 
-+                # PERMUTATONS INTO COMBINATIONS IF ITS SORTED.
-+                # BY TRAVERSING COINS FROM LARGEST TO SMALLEST ONLY. 
-+                
-+                for k in kids:
-+                    coinVal = node-k
-+                    if coinVal <= limit:
-+                        cp = path.copy()
-+                        cp.appendleft(coinVal)
-+                        get_all_paths(k, cp, min(limit, coinVal))
-+                        
-+            get_all_paths(sum, deque([]), float("inf"))
-+            final=[]
-+            
-+            # Uncomment this line and code still creates correct output!
-+            # results = dp_paths[sum]
-+
-+            for r in results:
-+                if len(r) == 0:
-+                    continue
-+                s = str(r[0])
-+                for idx in range(1, len(r)):
-+                    s += " " + str(r[idx])
-+                final.append(s)
-+            
-+            final.sort()
-+            
-+            if len(final) == 0:
-+                return "Empty"
-+                
-+            last = ")(".join(final)
-+            return "(" + last + ")" 
 
 
 #############################################################################
@@ -16994,7 +17018,7 @@ Cool Notes Part 0.5: Sliding Window with a deque
                     else:
                         lo = mi + 1
                 return lo
-        
+
     7.    Ugly Number III [Medium]
        Write a program to find the n-th ugly number. 
        Ugly numbers are positive integers which are 
@@ -17844,6 +17868,478 @@ COOL NOTES PART 0.8999: DYNAMIC PROGRAMMING PATTERNS, ILLUTRASTRAIONS AND EXAMPL
 ###################################################################################
 +##################################################################################
 +Interesting/Google Problems Fun:
+
+    220. Contains Duplicate III
+        You are given an integer array nums and two integers indexDiff and valueDiff.
+
+        Find a pair of indices (i, j) such that:
+
+        i != j,
+        abs(i - j) <= indexDiff.
+        abs(nums[i] - nums[j]) <= valueDiff, and
+        Return true if such pair exists or false otherwise.
+
+        
+
+        Example 1:
+
+        Input: nums = [1,2,3,1], indexDiff = 3, valueDiff = 0
+        Output: true
+        Explanation: We can choose (i, j) = (0, 3).
+        We satisfy the three conditions:
+        i != j --> 0 != 3
+        abs(i - j) <= indexDiff --> abs(0 - 3) <= 3
+        abs(nums[i] - nums[j]) <= valueDiff --> abs(1 - 1) <= 0
+        Example 2:
+
+        Input: nums = [1,5,9,1,5,9], indexDiff = 2, valueDiff = 3
+        Output: false
+        Explanation: After trying all the possible pairs (i, j), we cannot satisfy the three conditions, so we return false.
+
+
+            def containsNearbyAlmostDuplicateSoln1(self, nums: List[int], indexDiff: int, valueDiff: int) -> bool:
+                if len(nums) == 1:
+                    return False
+
+                
+                vals = SortedList([])
+                j = 0
+
+                for i in range(0, len(nums)):
+                    if i - j > indexDiff:
+                        # then remove the jth element and go to j+1
+                        # uhmm so we are processing ith elemtn so list should have i-j-1 elements
+                        rem_ele = nums[j]
+                        vals.remove(rem_ele)
+                        j += 1
+                    # print("Sorted list start of loop, and prcessing", vals, nums[i])
+
+                    ele = nums[i]
+                    idx = vals.bisect_left(ele)
+                    idx2 = idx - 1
+
+                    if idx < len(vals) and abs(ele - vals[idx]) <= valueDiff:
+                        return True
+
+                    if 0 <=  idx2 < len(vals) and abs(ele-vals[idx2]) <= valueDiff:
+                        return True
+                    
+                    # otherwise insert the elment into sorted
+                    vals.add(ele)
+                return False
+
+
+        Soln 2:
+
+    FAILED THISF UCKING PROBLEM FUCK:
+
+        1353. Maximum Number of Events That Can Be Attended
+        Attempted
+        Medium
+        Topics
+        Companies
+        Hint
+        You are given an array of events where events[i] = [startDayi, endDayi]. Every event i starts at startDayi and ends at endDayi.
+
+        You can attend an event i at any day d where startTimei <= d <= endTimei. You can only attend one event at any time d.
+
+        Return the maximum number of events you can attend.
+
+        
+
+        Example 1:
+
+
+        Input: events = [[1,2],[2,3],[3,4]]
+        Output: 3
+        Explanation: You can attend all the three events.
+        One way to attend them all is as shown.
+        Attend the first event on day 1.
+        Attend the second event on day 2.
+        Attend the third event on day 3.
+        Example 2:
+
+        Input: events= [[1,2],[2,3],[3,4],[1,2]]
+        Output: 4
+
+    do it bitch
+
+
+    2240: you failed to do this with DP:
+        2240. Number of Ways to Buy Pens and Pencils
+        Medium
+        Topics
+        Companies
+        Hint
+        You are given an integer total indicating the amount of money you have. You are also given two integers cost1 and cost2 indicating the price of a pen and pencil respectively. You can spend part or all of your money to buy multiple quantities (or none) of each kind of writing utensil.
+
+        Return the number of distinct ways you can buy some number of pens and pencils.
+
+        
+
+        Example 1:
+
+        Input: total = 20, cost1 = 10, cost2 = 5
+        Output: 9
+        Explanation: The price of a pen is 10 and the price of a pencil is 5.
+        - If you buy 0 pens, you can buy 0, 1, 2, 3, or 4 pencils.
+        - If you buy 1 pen, you can buy 0, 1, or 2 pencils.
+        - If you buy 2 pens, you cannot buy any pencils.
+        The total number of ways to buy pens and pencils is 5 + 3 + 1 = 9.
+        Example 2:
+
+        Input: total = 5, cost1 = 10, cost2 = 10
+        Output: 1
+        Explanation: The price of both pens and pencils are 10, which cost more than total, so you cannot buy any writing utensils. Therefore, there is only 1 way: buy 0 pens and 0 pencils.
+        
+
+        Constraints:
+
+        1 <= total, cost1, cost2 <= 106
+        
+
+        .. Practice ..
+        Understand Permutaitons DP and Combinations DP please. 
+
+        class Solution:
+            def waysToBuyPensPencils(self, total: int, cost1: int, cost2: int) -> int:
+                dp=[1]*(total+1)
+                dp[0]=1
+                
+                for coin in [cost1, cost2]:
+                    for i in range(coin, total+1):
+                        dp[i]+=dp[i-coin]
+                        
+                return dp[-1]
+
+
+    864. Shortest Path to Get All Keys
+        Attempted
+        Hard
+        Topics
+        Companies
+        You are given an m x n grid grid where:
+
+        '.' is an empty cell.
+        '#' is a wall.
+        '@' is the starting point.
+        Lowercase letters represent keys.
+        Uppercase letters represent locks.
+        You start at the starting point and one move consists of walking one space in one of the four cardinal directions. You cannot walk outside the grid, or walk into a wall.
+
+        If you walk over a key, you can pick it up and you cannot walk over a lock unless you have its corresponding key.
+
+        For some 1 <= k <= 6, there is exactly one lowercase and one uppercase letter of the first k letters of the English alphabet in the grid. This means that there is exactly one key for each lock, and one lock for each key; and also that the letters used to represent the keys and locks were chosen in the same order as the English alphabet.
+
+        Return the lowest number of moves to acquire all keys. If it is impossible, return -1.
+
+
+        from functools import lru_cache
+
+        class Solution:
+
+            """
+            The reason the below solution is wrong is because in my Dynamic programming. 
+            I am using DFS, and this is recording the wrong shortest path distances for each cell. 
+
+            I should have been doing BFS + dp? or just BFS no dp tbh. I am a dumbass. 
+
+            The reason the DFS is wrong is because it is not getting the shortest distance to each cell
+
+            If you want to use DFS you cannot use a visited set.. because the visited set in the DFS will 
+            remove the chance for you to get shortest path!!!!
+
+            take out visited set! if you want to use DFS for this solujtion FUCKK 
+
+            then you will have to limit dist and remove bad solutions by culling out solutsion going over m*n distance!
+            .. which is the limit. Ok. And save the min as you go...
+            
+
+            Only BFS you can use visited set
+            """            
+            def shortestPathAllKeysDFSVISITEDWRONG(self, grid: List[str]) -> int:
+                start = None, None
+                key_set = set() # these are our list of keys 
+
+                for ridx, row in enumerate(grid):
+                    for cidx, l in enumerate(row):
+                        if l == "@":
+                            start = ridx, cidx
+                        elif ord(l) - ord('a') <= 26 and ord(l) - ord('a') >= 0:
+                            key_set.add(l)
+
+                visited = set()
+                m = {}
+                def helper(x,y, keys: frozenset, dist):
+                    
+                    piece = grid[x][y]
+                    print("saw alphabet", piece)
+                    if piece.islower():
+                        print("found piece", piece)
+                        keys = keys.union(frozenset([piece]))    
+            
+                    
+                    if len(keys) == len(key_set):
+                        print("FOUND ALL KEYS and dist is", keys, dist)
+                        m[(x,y,keys)] =  dist
+                        return dist # steps 
+
+                    print("x, y, piece, keys, dist", x, y, grid[x][y], list(keys ), dist)
+                    visited.add((x, y, keys))
+                    
+                    min_res = float("inf")
+                    for delta in [[1, 0], [-1, 0], [0, 1], [0, -1]]:
+                        new_x, new_y = x + delta[0], y + delta[1]
+                        res = float("inf")
+                        if new_x >= 0 and new_x < len(grid) and new_y >= 0 and new_y < len(grid[0]):                    
+                            
+                            if (new_x, new_y, keys) in visited:
+                                continue
+                            elif grid[new_x][new_y] == "." or grid[new_x][new_y] == "@" or (grid[new_x][new_y].islower() and grid[new_x][new_y].isalpha()):
+                                res = helper(new_x, new_y, keys, dist+1)
+                            elif grid[new_x][new_y] == "#":
+                            continue
+                            elif grid[new_x][new_y].isalpha():
+                                piece = grid[new_x][new_y]
+                                print(f"found lock {piece} and i have set {keys}")
+                                lower = piece.lower()
+                                if lower in keys:
+                                    print(f"GOING IN! found lock {piece} and i have set {keys}")
+                                    res = helper(new_x, new_y, keys, dist+1) 
+                        min_res = min(min_res, res)
+
+                    m[(x,y,keys)] = min_res
+                    return m[(x,y,keys)]
+
+                res = helper(start[0], start[1], frozenset(), 0)
+                if res == float("inf"):
+                    return -1 
+                # DONT RETURN RES? search for the minimum state?
+                # WE HAVE TO SEARCH THE CACHE FOR THE SOLN fck. 
+
+                print(m)
+                for k, v in m.items():
+                    if k[2] == frozenset(['a', 'b']):
+                        print(k, v)
+
+                return res
+
+                """
+                DFS CORRECT.
+                But TLE
+                """
+                def shortestPathAllKeys(self, grid: List[str]) -> int:
+                    start = None, None
+                    key_set = set() # these are our list of keys 
+
+                    for ridx, row in enumerate(grid):
+                        for cidx, l in enumerate(row):
+                            if l == "@":
+                                start = ridx, cidx
+                            elif ord(l) - ord('a') <= 26 and ord(l) - ord('a') >= 0:
+                                key_set.add(l)
+                    debug = False
+
+                    m = {}
+                    def helper(x,y, keys: frozenset, dist):
+                        if dist > len(grid) * len(grid[0]):
+                            return float("inf")
+                            
+                        piece = grid[x][y]
+                        if debug: print("saw alphabet", piece)
+                        if piece.islower():
+                            if debug: print("found piece", piece)
+                            keys = keys.union(frozenset([piece]))    
+                
+                        if len(keys) == len(key_set):
+                            if debug: print("FOUND ALL KEYS and dist is", keys, dist)
+                            m[(x,y,keys)] =  dist
+                            return dist # steps 
+
+                        if debug: print("x, y, piece, keys, dist", x, y, grid[x][y], list(keys ), dist)
+                        
+                        min_res = float("inf")
+                        for delta in [[1, 0], [-1, 0], [0, 1], [0, -1]]:
+                            new_x, new_y = x + delta[0], y + delta[1]
+                            res = float("inf")
+                            if new_x >= 0 and new_x < len(grid) and new_y >= 0 and new_y < len(grid[0]):                    
+
+                                if grid[new_x][new_y] == "." or grid[new_x][new_y] == "@" or (grid[new_x][new_y].islower() and grid[new_x][new_y].isalpha()):
+                                    res = helper(new_x, new_y, keys, dist+1)
+                                elif grid[new_x][new_y] == "#":
+                                continue
+                                elif grid[new_x][new_y].isalpha():
+                                    piece = grid[new_x][new_y]
+                                    if debug: print(f"found lock {piece} and i have set {keys}")
+                                    lower = piece.lower()
+                                    if lower in keys:
+                                        if debug: print(f"GOING IN! found lock {piece} and i have set {keys}")
+                                        res = helper(new_x, new_y, keys, dist+1) 
+                            min_res = min(min_res, res)
+
+                        m[(x,y,keys)] = min_res
+                        return m[(x,y,keys)]
+
+                    res = helper(start[0], start[1], frozenset(), 0)
+                    if res == float("inf"):
+                        return -1 
+                    # DONT RETURN RES? search for the minimum state?
+                    # WE HAVE TO SEARCH THE CACHE FOR THE SOLN fck. 
+
+                    print(m)
+                    for k, v in m.items():
+                        if k[2] == frozenset(['a', 'b']):
+                            print(k, v)
+
+                    return res
+
+
+    1944. Number of Visible People in a Queue
+
+        (SUBTLE CHANGE TO QUADRACTIC TO LINEAR TIME COMPLEXITY.. REQUIRES THINKING ABOUT DOING MULTIPLE STEPS AT ONCE.)
+        (COMBINING IDEAS. )
+
+
+        Properly using a monotonic deque
+        and use a deque instead of stack if it makese the reasoning in your head simpler!
+
+        There are n people standing in a queue, and they numbered from 0 to n - 1 in left to right order.
+         You are given an array heights of distinct integers where heights[i] represents the height of the ith person.
+
+        A person can see another person to their right in the queue if everybody in between is shorter than both of them. 
+        More formally, the ith person can see the jth person if i < j and min(heights[i], heights[j]) > max(heights[i+1], heights[i+2], ..., heights[j-1]).
+
+        Return an array answer of length n where answer[i] is the number of people the ith person can see to their right in the queue.
+
+        Input: heights = [10,6,8,5,11,9]
+        Output: [3,1,2,1,1,0]
+        Explanation:
+        Person 0 can see person 1, 2, and 4.
+        Person 1 can see person 2.
+        Person 2 can see person 3 and 4.
+        Person 3 can see person 4.
+        Person 4 can see person 5.
+        Person 5 can see no one since nobody is to the right of them.
+
+
+        class Solution:
+            def canSeePersonsCountSlow(self, heights: List[int]) -> List[int]:
+                viable = deque()
+                res = [0 for i in range(len(heights) )]
+
+                for i in range(len(heights)-1, -1 , -1):
+                    
+                    for k in viable:
+                        if heights[i] > k:
+                            res[i] += 1
+                        else:
+                            # add 1 for the person we just saw..
+                            res[i] += 1 
+                            break 
+
+                    while len(viable) > 0:
+                        if heights[i] > viable[0]:
+                            viable.popleft()
+                        else:
+                            break  
+                    viable.appendleft(heights[i])
+                return res
+
+            def canSeePersonsCount(self, heights: List[int]) -> List[int]:
+                viable = deque()
+                res = [0 for i in range(len(heights) )]
+
+                for i in range(len(heights)-1, -1 , -1):
+                    
+                    while len(viable) > 0:
+                        if heights[i] > viable[0]:
+                            viable.popleft()
+                            res[i] += 1
+                        else:
+                            res[i] += 1 
+                            break  
+                    viable.appendleft(heights[i])
+                return res
+
+
+
+    426. Convert Binary Search Tree to Sorted Doubly Linked List
+    Solved
+    Medium
+    Topics
+    Companies
+
+
+    class Solution:
+        def treeToDoublyList(self, root: 'Optional[Node]') -> 'Optional[Node]':
+            dummy = Node(0)
+
+            st = [ (root, False) ]
+            prev = dummy
+
+            if root is None:
+                return None
+
+            while st:
+                node, stat = st.pop()
+                if node is None:
+                    continue 
+
+                if stat is True:
+                    prev.right = node
+                    node.left = prev 
+                    prev = node 
+                else:
+                    st.append((node.right, False))
+                    st.append((node, True))
+                    st.append((node.left, False))
+            
+            dummy.right.left = prev 
+            prev.right = dummy.right
+            return dummy.right
+
+    K CLOSEST POINTS TO ORIGIN:
+        class Solution:
+            def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
+                # QUICK SELECT?
+                # kth CLOSEST POINT + points greater than k right..
+                #hmm not a sorted list can i do quick seleecT? yes
+                lst = []
+                for idx, [x, y] in enumerate(points):
+                    lst.append( [x**2 + y**2, idx] )
+
+                # quick select.
+                # we want smallest values...
+                
+                left_elements = []
+                right_elements = []
+                soln = []
+                
+                while k != 0:
+                    pivot = random.randint(0, len(lst) - 1)
+                    pivot_val = lst[pivot]
+
+                    for i in lst:
+                        if i[0] <= pivot_val[0]:
+                            left_elements.append(i)
+                        else:
+                            right_elements.append(i)            
+
+                    if len(left_elements) <= k:
+                        lst = right_elements
+                        k = k - len(left_elements)
+                        soln += left_elements
+                        left_elements = []
+                        right_elements = []
+                    else:
+                        lst = left_elements
+                        left_elements = []
+                
+                return list(map(lambda x: points[x[1]], soln + left_elements))
+
+
+
+
 
 +    1) Given a zero-inexed array H of height of buildings, number of bricks b and number of ropes r. You start your journey from buiding 0 and 
 +        move to adjacent building either using rope or bricks. You have limited number of bricks and ropes.
@@ -21863,6 +22359,48 @@ COOL NOTES PART -1: SORTING, SEARCHING, Quick selecting
 #################################################################################
 #################################################################################
 GRAPH TRAVERSAL ALL TYPES:
+    
+    BST ITERATOR LEETCODE:
+
+        class BSTIterator:
+
+            def __init__(self, root: TreeNode) -> None:
+
+                # Stack for the recursion simulation
+                self.stack = []
+
+                # Remember that the algorithm starts with a call to the helper function
+                # with the root node as the input
+                self._leftmost_inorder(root)
+
+            def _leftmost_inorder(self, root: TreeNode) -> None:
+
+                # For a given node, add all the elements in the leftmost branch of the tree
+                # under it to the stack.
+                while root:
+                    self.stack.append(root)
+                    root = root.left
+
+            def next(self) -> int:
+                """
+                @return the next smallest number
+                """
+                # Node at the top of the stack is the next smallest element
+                topmost_node = self.stack.pop()
+
+                # Need to maintain the invariant. If the node has a right child, call the
+                # helper function for the right child
+                if topmost_node.right:
+                    self._leftmost_inorder(topmost_node.right)
+                return topmost_node.val
+
+            def hasNext(self) -> bool:
+                """
+                @return whether we have a next smallest number
+                """
+                return len(self.stack) > 0
+
+
 
 
     Morris Traversal
