@@ -1,7 +1,137 @@
 Jorda has no life notes:
 https://docs.google.com/document/d/1KfyhNgojjp-0fyBFqqV7jaGErPGFfo1BgnuN9_yDIkk/edit
 
+
+COPY AND PASTE AND LEARN ALL THE EXAMPLES FROM THIS ONE:
+https://systemdesignschool.io/problems/topk
+
+https://systemdesign.one/system-design-interview-cheatsheet/#proximity-service
+
+Reread vol1 and vol2 sys design. 
+Memorize the system design cheat sheet 
+
+Do grokking the advanced system desing and modern system desiign -> both courses are worth buying!
+Also, read the machine learning system design loool. 
+
+Read DDIA at some point + Jordans notes 
+
+https://www.techinterviewhandbook.org/system-design/
+
+https://interviewing.io/guides/system-design-interview
+
+https://gist.github.com/vasanthk/485d1c25737e8e72759f
+https://www.hellointerview.com/blog/staff-level-system-design
+
+YOUTUBE VIDEO MANIFEST FILE SYSTEM DESIGN -> https://api.video/what-is/video-manifest/
+
+
+Senior
+As candidates target senior positions, the evaluation criteria undergo a nuanced shift. While maintaining a broad knowledge base is essential, the extent of assumed knowledge increases significantly.
+I start the interview with the presumption that candidates have a thorough understanding of the fundamentals. This means when you introduce technical elements like a load balancer or an API gateway, I won't probe into their basic functionalities unless you expose a lack of understanding in your explanations. Instead, the expectation is that you are already well-equipped with this foundational knowledge. This approach is deliberate—it conserves valuable interview time, allowing us to focus more on the depth of your understanding.
+Staff+
+For staff-level and beyond, the required breadth continues to taper. At this stage, I operate under the strong assumption that you have a complete grasp of the fundamentals. The focus here shifts significantly towards how you apply your comprehensive understanding to innovate, optimize, and foresee the implications of your design choices in large-scale systems.
+Staff-level candidates are expected to demonstrate not just knowledge, but wisdom in their application, showcasing an ability to foresee potential challenges and opportunities in the architecture they propose. This level is less about covering a wide range of topics and more about the strategic application and integration of this knowledge in complex, real-world systems.
+
+
+
+
+Senior
+Senior candidates should exhibit more proactiveness. This involves early recognition of what makes the system uniquely challenging and prioritizing requirements accordingly. They are expected to proactively recognize some limitations in their own design and discuss alternatives. A senior candidate should be able to steer the interview process more confidently, bringing to light critical aspects of the system that might require special attention, and engaging in a more interactive and solution-oriented discussion with the interviewer.
+Staff+
+For staff-level candidates and above, a high degree of proactiveness is essential. These candidates should not only identify unique challenges and limitations but also propose innovative solutions and approaches. They are expected to lead almost the entire interview, demonstrating a deep understanding of the system's complexities and navigating through them with expertise. Their ability to foresee potential issues, address them preemptively, and articulate their thought process clearly sets them apart. At this level, the candidate is often seen as a peer in the conversation, contributing significantly to the discussion with insights that may even enlighten the interviewer, as mentioned earlier.
+
+
+
+---
+
+
+Remember
+The best way to accomplish this is to imagine that you’re explaining a design doc to a group of more junior engineers. They will ask you questions about your decisions and want to know what you’re trying to solve. Anticipating these questions and your responses will set you up for success in the interview.
+
+
+What your interviewer wants to see
+a broad, base-level understanding of system design fundamentals.
+back-and-forth about problem constraints and parameters.
+well-reasoned, qualified decisions based on engineering trade-offs.
+the unique direction your experience and decisions take them.
+a holistic view of a system and its users.
+
+What your interviewer is not looking for
+deep expertise in the given problem domain.
+assumptions about the prompt.
+specific answers with ironclad certainty.
+a predefined path from the beginning to end of the problem.
+strictly technical considerations.
+
+Interviewers want to engage you in a back-and-forth conversation about problem constraints and parameters, 
+so avoid making assumptions about the prompt.
+Initial prompts to system design problems tend to be intentionally light on detail. Many candidates make a mistake by extrapolating details 
+from the initial prompt and crafting a solution based on those assumptions.
+
+So how do you figure out what type of service the interviewer wants you to build? Ask them! A basic prompt leaves room for you to start a conversation with your interviewer about the system you're
+designing—what type of users does it serve, what type of traffic can it expect, what limits will it have? 
+Demonstrating that you can think critically about the parameters of your service is the first
+step in any system design interview.
+
+Interviewers are not looking for specific answers with ironclad certainty. They want to see well-reasoned, qualified decisions based on engineering trade-offs.
+Be very careful any time you find yourself responding immediately to a prompt in a system design interview. Even aspects of your design that seem insignificant need at least cursory consideration. Let’s use IDs as an example.
+
+Be very careful any time you find yourself responding immediately to a prompt in a system design interview. Even aspects of your design that seem insignificant need at least cursory consideration. Let’s use IDs as an example.
+
+A candidate will often start a discussion of a data model with a statement like, "I'll use auto incrementing IDs," or "I'll use GUID here" as kind of a default approach to assigning IDs to data. In many applications, however, the type of ID you assign to your data has practical consequences.
+
+Is this ID going to be exposed to users? If so, how long does it need to be to avoid collisions? If we auto-increment it, are we worried about the visibility that will give third parties into our traffic patterns or the possibilities of users guessing the IDs to each others' data? If it's intended to be shared, is it convenient to type? If you print it on a business card or a flier, does it contain characters that you could confuse for each other (e.g., “1” and “I”, “0” and “O”)?
+
+You don't need to hold an inquiry for every minor detail, but always be sure to give some justification for the decisions you make and let your interviewer know how your decisions would change in different circumstances. System design problems don't have a single definitive answer, so interviewers just want to see that you can justify your answers.
+
+
+Even if you're not choosing directly, you can still influence an interview's direction. As you talk your way through a solution, it’s OK to specifically note the parts that you have experience in and explain when you're making educated guesses. Your interviewer won't expect you to know everything, but giving them a better idea of what you do know will help them steer the interview in ways that reveal your strengths and problem-solving ability.
+
+
+The important thing is to discuss the possible approaches and their consequences for the user experience with your interviewer before making a decision. You can never go wrong by making the end user the driving force in your design.
+
+Red Flag #1: You believe that to pass a system design interview, you should just “play the game, keep talking, and make sure nobody explodes.”
+
+Red Flag #2: You find yourself pushing against interviewer feedback.
+
+Keep in mind that your interviewers use the same problems over and over again, and they frequently see candidates make the same mistakes. If they try to divert you from a course of action, it's likely because they've seen others flounder when using the same approach. You may be the one candidate in a hundred who finds a unique and better solution—we've had this happen before!—but carefully consider the odds before proceeding with a solution against the interviewer's advice.
+
+With that said, there is an art to pushing back against your interviewer when the situation calls for it, and later in this guide we’ll teach you how and when to employ this strategy .
+
+Red Flag #3: You skip over questions and ignore interviewer prompts, trying to move the interview ahead without addressing their concerns.
+
+Green Flag #3: Your role determines who should drive the focus and pace of the interview.
+
+Simply put, at the above-senior level an awkward pause will be held against you—that’s basically guaranteed. But at mid-level, most of your attempts to fill in an awkward pause may hurt you more than keeping silent.
+
+Another way to think of it: when you are not leading the conversation, you signal that you’re not really far above mid-level. (But if you are comfortable at mid-level, this is not a downside!)
+
+The saying, ‘Better to remain silent and be thought a fool than to speak out and remove all doubt’ can be true for mid-level interviews but not for seniors or above-senior.”
+
+Red Flag #4: You leave long stretches (several minutes) of silence multiple times throughout the interview.
+If you're struggling to provide an answer, give yourself a little bit of time to come up with something. If you're truly stuck, however, you should ask your interviewer for help. They can't tell that you're at an impasse unless you tell them, and you may waste valuable interview time while they debate whether it's been long enough to interrupt you.
+
+A common failure point occurs when candidates don’t make decisions
+Often, candidates will say things like: “we could use this type of DB, or this other, or that other, and these are some pros and cons…” and then they move on to another component. It’s a good practice to talk about benefits and tradeoffs, but then you have to make a decision. In the real world you have to make decisions—the same thing applies to the interview. If the interviewer challenges you with some questions, it’s totally fine to change your mind and alter the component (if you think there are better choices).
+
+
+
+
+
+
+
+
 ----------------------------------------------------------------
+HTTP Live Streaming (HLS)
+Developed by Apple, HLS is a protocol that breaks video into segments and uses HTTP streaming to adapt bitrate in real-time. HLS is used by popular streaming platforms like Netflix, Hulu, and Amazon Prime Video. 
+Real-Time Messaging Protocol (RTMP)
+Developed by Adobe, RTMP is a legacy protocol that transfers audio and video files between a streaming server and the Adobe Flash Player. RTMP is still the most popular live streaming protocol, but it lacks support for newer technologies and has relatively higher latency. 
+Real-Time Streaming Protocol (RTSP)
+Developed by RealNetworks, Netscape, and Columbia University, RTSP is a control protocol that allows users to pause, rewind, and fast-forward streams. RTSP is often used in IP cameras, video conferencing systems, and streaming media servers. 
+WebRTC
+An open-source standard for real-time communications that supports high-quality VP8 and VP9, as well as the Opus audio codec. WebRTC enables real-time voice, text, and video streaming between web browsers and devices. 
+Other streaming protocols include: SRT, MSS, and MPEG-DASH
+
 
 A POP CDN can drop the latency from 300 ms to origin server down to 10 ms to access a resource btw. 
 
@@ -21,6 +151,20 @@ A POP CDN can drop the latency from 300 ms to origin server down to 10 ms to acc
 
     tiME SERIES influx db can handle 250k writes per second with 8 cores and 32 gig ram. and 25 queries per second. and 1 million uniqe series. 
 
+Many types of encoding formats are available; however, most of them contain two parts:
+• Container: This is like a basket that contains the video file, audio, and metadata. You can tell the container format by the 
+file extension, such as .avi, .mov, or .mp4.
+• Codecs: These are compression and decompression algorithms aim to reduce the video size while preserving the video quality. 
+The most used video codecs are H.264, VP9, and HEVC.
+
+• Video encodings: Videos are converted to support different resolutions, codec, bitrates, etc. Figure 14-9 shows an example of video encoded files.
+
+
+
+CDN Cost:
+
+Let us use Amazon’s CDN CloudFront for cost estimation (Figure 14-2) [3]. Assume 100% of traffic is served from the United States. The average cost per GB is $0.02. For simplicity, we only calculate the cost of video streaming.
+• 5 million * 5 videos * 0.3GB * $0.02 = $150,000 per day.
 
 Back of the envelope calculations (BOTEC)
 
@@ -196,6 +340,7 @@ Redis, an open source in-memory NoSQL database, can handle a large number of tra
         Redis persistence: We could enable Redis persistence mechanisms like RDB (Redis Database) or AOF (Append-Only File) to periodically save the in-memory data to disk.
         Redis Sentinel: We could use Redis Sentinel for high availability. Sentinel provides automatic failover if the master node goes down, ensuring that a replica is promoted to master.
 
+MYSQL -> mysql can even handle 2000 qps per server, so if you shard it with 30 K qps over 16 shards -> mysql can handle taht 1875 qps load. 
 
 
 
@@ -212,7 +357,8 @@ QPS AND LATENCY FORMULA:
 
     for example, if you look at fastly's live stats at the bottom of their network page:https://www.fastly.com/network-map/
 
-    they show a response time of about 0.166ms. so thats 1000/0.166 = ~6000 req/s/cpu. put that on a dual socket 16 (real) core/socket server and they can do about 192k req/s/server, but again in order to keep the tail end of that latency distribution from getting bad you want to run around a third of that, so 64k req/s/server. also, since that time was just for the hits and they say thats 88% of the requests, we have to assume the real number is much less than that as the 12% of misses are probably an order of magnitude slower, so right off the bat you can assume you cut the number in half (32k req/s/server).
+    they show a response time of about 0.166ms. so thats 1000/0.166 = ~6000 req/s/cpu. put that on a dual socket 16 (real) core/socket server and they can do about 192k req/s/server, 
+    but again in order to keep the tail end of that latency distribution from getting bad you want to run around a third of that, so 64k req/s/server. also, since that time was just for the hits and they say thats 88% of the requests, we have to assume the real number is much less than that as the 12% of misses are probably an order of magnitude slower, so right off the bat you can assume you cut the number in half (32k req/s/server).
 
     conversely, as a much more common example, a standard wordpress install with a small handful of popular and not even 'that bad' plugins will typically return the home page in 300 - 400ms. that means your single-core VPS running your wordpress site can handle about 1 request per second
 
@@ -220,7 +366,8 @@ QPS AND LATENCY FORMULA:
 
         For the platform I work on, we target 50% to maybe 60% CPU usage on easily scalable things like API servers and 20% to 33% on systems that take more time to scale.
 
-        Any higher on the API servers and latency becomes a concern. We can tolerate it briefly during a traffic spike, but in general you never want to see anything interactive hit 80% or more. Not only does latency go up, but resource occupancy for things TCP sockets spikes. Not just from the volume, but also the duration as each request is taking longer to fulfill. If you have antique software that spawns a thread per request (like Apache or Jetty), this can also lead to spending more time context swapping than doing actual work.
+        Any higher on the API servers and latency becomes a concern. We can tolerate it briefly during a traffic spike, but in general you never want to see anything interactive 
+        hit 80% or more. Not only does latency go up, but resource occupancy for things TCP sockets spikes. Not just from the volume, but also the duration as each request is taking longer to fulfill. If you have antique software that spawns a thread per request (like Apache or Jetty), this can also lead to spending more time context swapping than doing actual work.
 
         Remember when you're looking at a CPU usage stat and see 50%, that means the CPU is being used at 100% half the time. The higher you go on usage, 
         the more likely a second request will be stalled waiting for cycles.
@@ -1275,6 +1422,76 @@ amazon (todo):
 
 I would like to know how system is design for like amazon order syste, how do they deliver prime order so fast, how the cart is designed ? etc .. where can i find some blogs or good resources for system design like above scenarios ?
 
+----------------------------------------------------------------
+
+
+    RMBR TO SAY THIS IN INTEVIEW BEFORE API DESIGN: 
+    
+    "I am going to outline some simple APIs, but may come back and improve them as we delve deeper into the design."
+
+
+    2) How do we support resumable uploads?
+    In order to support resumable uploads for larger videos, we'll need to consider how we'll track progress for the video upload flow. Of note, this refers to tracking progress of the original upload.
+    If you've read our Dropbox guide, you'll recognize this deep dive has strong overlap with the Dropbox deep dive involving how to support large file uploads. The TL;DR is that:
+    The client would divide the video file into chunks, each with a fingerprint hash. A chunk would be small, ~5-10MB in size.
+    VideoMetadata would have a field called chunks which would be a list of chunk JSONs, each with fingerprint and status field.
+    The client would POST request to the backend to update the VideoMetadata with the list of chunks, each with status NotUploaded.
+    The client would upload each chunk to S3.
+    S3 would fire S3 event notifications to an AWS Lambda that would update the VideoMetadata by marking the chunk (identified by its fingerprint) as Uploaded.
+    If the client stopped uploading, it could resume by fetching the VideoMetadata to see the uploaded chunks and to skip chunks that had been uploaded already.
+    Below is how the system looks after we implement resumable uploads:
+
+
+    The above, in practice, is handled by AWS multipart upload. However, diving into the details in an 
+    interview like this is important to represent your depth of understanding of how file uploads occur in practice.
+
+    Improvements:
+
+    Based on the above analysis, we identified a few opportunities to improve our design's ability to scale and provide a great user experience to a wide userbase.
+    To address the "hot" video problem, we can consider tuning Cassandra to replicate data to a few nodes that can share the burden of storing video metadata. This will mean that several nodes can service queries for video data. Additionally, we can add a cache that will store accessed video metadata. This cache can store popular video metadata to avoid having to query the DB for it. The cache can be distributed, use the least-recently-used (LRU) strategy, and partitioned on videoId as well. The cache would be a faster way to retrieve data for popular videos and would insulate the DB a bit.
+
+    To address the streaming issues for users who might be far away from data centers with S3, we can consider employing CDNs. CDNs could cache popular video files (both segments and manifest files) and would be geographically proximate to many users via a network of edge servers. This would mean that video data would have to travel a significantly shorter distance to reach users, reducing slowness / buffering. Also, if all the data (manifest files and segments) was in the CDN, then the service would never need to interact with the backend at all to continue streaming a video.
+    Below is our final system, with the above enhancements applied:
+
+
+
+    Resume streaming where the user left off -- would it only involve having a DB table where we keep a relationship between User and the video id and the timestamp they left off and based on the timestamp and the video segments created we calculate the segment # and the resolution to start streaming from by using the manifest files?
+    Serve Video catalog, and it should be searchable with title names, last added date, and view counts -- how do we approach this? Do we really need to use ElasticSearch here?
+
+
+        looks very reasonable, I think there's a lot of different solutions. One extreme is what you suggest: the service should do an excellent job of tracking watch progress across the user's clients. That would argue for storage in a DB with a very long or infinite TTL. In the other extreme the client-side front end can store video->time pairs in the browser's cache, and if it gets lost, then oh well. A middle ground could be browser cache plus a Redis-like k-v store with a TTL on the order of days, and cleared when done watching. In other words do a simple best-effort approach to sync across devices assuming that people will finish watching within a day or two. Empirically YT doesn't have any recording of watch progress so doing something quick and dirty is probably okay.
+
+        I'm not strong on search but my guess is we'd indeed really need ElasticSearch or similar. Google has order 10B videos so making it all searchable at scale seems like a significant undertaking. I don't think there's time to do a deep dive into an ElasticSearch-like service in addition to all the other things that need to be discussed, so name-dropping "to make it searchable we'd probably want a separate search subsystem for indexing and serving queries, such as ElasticSearch" is probably the "right" answer.
+
+
+
+    how does the video metadata have a videoId when we initially try to upload the video?
+        It's common to generate the id client side and send it within the post request. 
+        This also ensures idempotency. It's just a random uuid, or cuid, etc.
+
+        Choose UUID when standardization and wide recognition are important, especially in enterprise or cross-system scenarios. 
+        Opt for CUID when you need sortable IDs or are working in a distributed system with a focus on collision resistance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------
+
+Fitness Tracking App
+Hotel Booking App (Hotels.com)
+
+
+
 
 ----------------------------------------------------------------
 
@@ -1468,13 +1685,355 @@ share with Facebook these days, although it does mean they get to aggressively m
 Most of Instagram's uniqueness comes from their client-side features — they have those cool filters and stickers and typography features.
 
 
+----------------------------------------------------------------
+
+    Design Stock price Notification System (TODO)
+
+        Design a system in which user is subscribing to some stocks from list of stocks. User will set some rules on basis of which if the rules are broken we have to sent notificaiton to user. For eg: let say user have subscribed to uber stock and set rule that if stock price goes above 60$ send me notification.
+        FR:
+
+
+        Different rules that can be set by users are opening price, current price, moving average, etc. User can choose comparators like less than, equal to, greater than a particular number.
+        User should get the notification within a minute.
+        NFR:
+
+
+        System should be able to scan and check more than 1 million rules set by users and send notification if any rule is satisfied.
+        Edit: Attaching Design Diagram here.
+
+
+        Core entities
+
+
+        stock price
+        user_rule
+        notification
+        APIs/interfaces
+
+
+        POST /rule
+        {
+        symbol: AAPL
+        metric type: rsi, price
+        value: 150, rule_type: above
+        }
+
+
+        POST /notification
+        {
+        user_id
+        rule_id
+        }
+
+
+        A kafka stream to ingest stock price updates.
+
+
+        DB choices:
+
+
+        for stock prices
+        a. we can use time series Database, like influx DB. why?
+        provides high write throughput
+        allows efficient time series related queries. - can easily handle large volume of updates.
+        rules/user_subscriptions:
+        use relational database like MySQL.
+        DB design
+
+
+        stock price
+        symbol
+        price
+        timestamp
+        rsi(precomputed using continuous queries)
+        rule
+        rule_id
+        metric type
+        value
+        rule_type
+        subscribers
+        There can millions of user rules which need to be evaluated when a new stock prices comes up. How can we make this fast ?
+
+
+        Partition Rules by Stock Symbol: Since each rule is linked to a specific stock symbol, you can partition or shard the user rule table by stock symbol.
+        Use an in-memory cache like Redis to store user rules for fast lookups.
+        Store rules in sorted data structures like Redis Sorted Sets or B-trees. These can allow for efficient range queries on thresholds.
+        If users frequently set similar rules (e.g., "above $60" or "below $50"), aggregate these rules.
+        What if rules are complex for eg- average price of stock in last 7 days, moving average, rsi ? How will we store and query them with low latency ?
+
+
+        Time series databases like InfluxDB and TimescaleDB are specifically designed for handling time-based data, making them ideal for pre-computing derived metrics like moving averages and RSI.
+        Store derived metrics in the same time series database:
+        Use Redis for caching: Cache the most recent precomputed metrics (e.g., 7-day moving average, RSI) for quick access during rule evaluation.
+        how will we handle the scenario if a rule set on a stock symbol keeps becoming true and then false and then true as stock price fluctuate ?
+
+
+        Cooldown or Debouncing Period
+        Introduce a buffer zone around the threshold condition to avoid triggering notifications for minor price changes.
+        Limit the number of notifications sent within a specific time window for a single rule.
+        The system only evaluates the rule again once the price falls below the threshold, and no further notifications are sent until the rule switches from false to true again.
+
+----------------------------------------------------------------
 
 
 
 
 
 
+----------------------------------------------------------------
 
+    Design video sharing platform like Youtube 
+
+    https://leetcode.com/discuss/interview-question/system-design/496042/Design-video-sharing-platform-like-Youtube
+
+        Thanks for sharing the post, I learnt a few things from post. If I were you I would have touched upon the following questions as well
+
+
+        Have you thought about memory requirement? Scaling the memory? Cost also plays an improtant role.
+        How many years would you save a particular video?
+        Which mechanism will you use to delete a particular video? (This also involves finding the video in the servers)
+        Laslty, If a user wants to expose the video to particular set of members, how would you evovle your system?
+        All the best.
+
+
+        Although I agree with you to a lot of extent but Sql brings with it ACID constraints (Which is awesome btw!) but that is it's Achilles 
+        heel too as it misses out on partition tolerance.
+        Now we could get away with a small service which is spatially closely clustered but for something like Youtube, a massively distributed 
+        system is warranted and you'hd be advised to be ready in your design for partition tolerance. I'hd go with NoSql party solely for this reason.
+
+
+            Functional requirements
+
+
+            Users can watch videos on the platform
+            Users can upload their own videos
+            Non-functional requirements
+
+
+            The platform should be highly available
+            The response time for users in different regions should be at the same level
+            The platform should scale while userbase is increasing
+            Estimation
+            The goal of this step is to come up with estimated numbers of how scalable our system should be.
+
+
+            We have two types of requests, read and write. Write request(upload videos) will take much longer time and is ususally much less than read requests (recall how often you watch videos on Youtue and the times you upload videos).
+
+
+            So, let's focus on read request firstly. As an easy start, assume our service receives and completes 1000 request per second (RPS). I use request to reflect common server requirements rather than functionality specific requirements eg. Tweets, Views ... because it's business independent. Functionality specific requirements will be eventually mapped to server requirements anyway.
+
+
+            For one day, we'll have 1000 * 24 * 60 * 60 ~= 1000 * 30 * 3000 = 90 million = 90 M requests
+            For one year, we'll hvae 90M * 12 * 30 = 90 M * 360 ~= 100 M * 300 = 30 billion = 30 B requests
+            For five years, we'll have 30B * 5 = 150 billion = 150 B requests in total.
+
+
+            The next assumption I'm going to make is the response time. Assume our response time SLA is 200ms.
+
+
+            Then I need to have 1000 / (1s / 200ms) = 200 threads in total to handle 1000 RPS. So, the next question will be how many servers do I need to have 200 threads. One simple formula for estimating ideal Java thread pool size is
+
+
+            Number of threads = Number of Available Cores * Target CPU utilization * (1 + Wait time / Service time)
+
+
+            Waiting time - is the time spent waiting for IO bound tasks to complete, say waiting for HTTP response from remote service.
+            Service time - is the time spent being busy, say processing the HTTP response, marshaling/unmarshaling, etc.
+            Because our video sharing web service is not computing-intensive application(though it can be, considering video encoding, compression), I assume the Wait time / Service time ratio will be relatively large, say 50. And also assume our server has 2 CPU cores running at 50% utilization.
+
+
+            Then, each of this kind of server can support 2 * 0.5 * (1 + 50) ~= 50 threads and since we need to have 200 threads to handle 1000 RPS, so we need 200 / 50 = 4 servers to handle 1000 RPS.
+
+
+            Let's switch to write requests (upload video). Assume the read / write or say watch / upload ratio is 100. So, we're expecting 1000 / 100 = 10 write requests per second. Please note that the uploading time varies because the video size and network speed play important roles here. So, the estimate is even more subjective.
+
+
+            Assume average video size is 500 MB and network bandwidth on customer side is 100 mbps. Then,
+
+
+            each video would take 500 MB / (100 mbps / 8) = 40 seconds to upload
+            since we have 10 upload request per second, we have 40 * 10 = 400 concurrent uploading, the bandwidth requirement on our side will be 400 * 100 mbps = 40000 mbps
+            total memory usage will be 40000 mbps / 8 = 5000 MB = 5GB, if our server has 2GB RAM, then we need to have 3 servers for uploading. However, because we have 400 concurrent uploading, it requires 400 threads to serve. This time the Wait time / Service time ratio is close to 1, and if we still use 2 CPU cores server running at 50% utilization, each server could support 2 * 0.5 * (1+1) = 2 threads. So, we need 400 / 2 = 200 servers for video uploading.
+            Design Goals
+            Latency - Is our service latency sensitive (Or in other words, Are requests with high latency and a failing request, equally bad?)
+            Yes, to provide great customer experience, latency is very important for video service
+
+
+            Consistency - Does our service require tight consistency?
+            Not really, it's okay if things are eventually consistent.
+
+
+            Availability - Does this problem require 100% availability?
+            Yes
+
+
+            System interface definition
+            At this step, I'm designing the APIs that our service exposes to clients. Based on features and requirements I gathered at the first step, the video platform I'm going to design is apparently a web application. The best practice is to decouple the frontend and backend so that the frontend and backend can evolve independently as long as they obey the contract(backend service provides API and clients consume the API).
+
+
+            There are different API design style, SOAP, REST, and graphQL. I'll create a set of RESTful API as it's lightweight compared with SOAP and it's the broadly supported and the most popular one among developers.
+
+
+            Designing RESTful API requires us to first identity resources and then map HTTP methods to operations.
+
+
+            Apparently, we have at least two resources, video and user.
+
+
+            Our service supports operations including upload video, play video, create user, get user info. So, we can have following APIs.
+
+
+            Upload video API
+
+
+            POST  /v1/videos
+                    Request header
+                        Content-Type: multipart/form-data
+                    Request body
+                        userID
+                        videoTitle
+                        videoDescription
+                        language
+                        videoFile binary data
+                    Response body
+                        videoProcessingJobID
+            The upload API uses HTTP POST method and v1/videos endpoint to upload a video file with videoTitle, videoDescription...... metadata passed in the request body. Wheter adding API versioning like "v1" in the API is still controversal but I think it'll help us evolve APIs freely. So, I use it in my design.
+
+
+            Using HTTP POST to upload a bianry file is not as simple as we expect. The Content-Type has to be multipart/form-data and the video file binary data will be included between boundary parameters. I'm not going to cover technical details at here. And also, we can even split the big video file and upload chunks in parallel. Again, that's implementation details.
+
+
+            Please note that the response of video uploading request will return a videoProcessingJobID that clients can use to check processing status. The reason is that once video is uploaded to our service, we'll do a series of time-consuming operations like deduplication, compression and create copies with different resolutions, etc.. I'd like to do them in an asynchronous way to provide a good customer experience. Client can polling with the videoProcessingJobID to check the progress later on.
+
+
+            The watch API is also straight forward and it's like
+
+
+            GET /v1/videos/<videoID>
+                    Request header
+                        access_token
+                    Response body
+                        videoURL
+            As we learned earlier, authentication and authorization is out of the scope of this problem. I simply add the access_token to the request header. Idealy, once the user is done authentication during login, an id_token or access_token (depends on the OIDC flow that the authentication flow is using) would be issued to the user and it'll be passed to backend, decoded and validated there.
+
+
+            At here, I just ignore the access control part for videos. In reality, the returned videoURL has to be either short lived or has some authorzation mechanism to prevent undesired access.
+
+
+            Next is the user creation and fetching user info API
+
+
+            POST /v1/users
+                Request body
+                    userName
+                    region
+                    age
+                Response body
+                    userID
+            GET /v1/users/<userID>
+                Request header
+                    access_token
+                Response body
+                    userID
+                    userName
+                    region
+                    age
+            Data Model
+            After APIs are ready, let's talk about data model. We have two entities, video and user. One user can have multiple videos and one video can only belong to one user.
+
+            High Level Design
+            Before we jump into the high level design, we need to have workflows in mind.
+
+
+            upload video
+            user upload video, once the upload is done, create a job and put it into the video post processing queue and return the job id to client for future progress checking
+            our service picks up job from the queue and conducts a serise processing, e.g. check duplication, compression
+            once post-processign is done, persist video in object storage (e.g. AWS S3 bucket)
+            persist video metadata (including video URL in S3 bucket)
+            watch video
+            user sends request to access a video by videoID
+            server return the URL of the requested video
+            Now, let's consider the database for user info and video metadata. Considering the scalability requirement of our service and relatively simple data model, I'm going to use NoSQL database, more specifically, AWS DynamoDB for our user info and video metadata. Using AWS S3 as the video storage.
+
+
+            Designing schema for NoSQL database is quite different from that of SQL database. In SQL schema, we first identify entites, denormalize them and put into tables. The relation between entities is expressed through foreign keys and the query flexibility is provided by SQL query language.
+
+
+            For NoSQL database, especially DynamoDB, we first identify access patterns. And then, design database schema and denormalize data if it's necessary. DynamoDB provides excellent scalability at the the cost of less access flexibility. DynamoDB recommends putting all entites into one table with carefully designed partition key and optional sort key. In case we want to support new access pattern in future, we can add GSI (Global Secondary Index) to DynamoDB, we do have flexibility to some extent.
+
+
+            The access patterns we'll support are
+
+
+            given a videoID, access the video
+            given a userID, access the user info
+            given a userID, access all videos that are uploaded by the user
+            So, I design the DynamoDB schema as below
+
+
+            *Entity*                              *Partition Key*             *Sort Key*
+                Video                                #VIDEO#<VideoID>         #METADATA#<VideoID>
+                User                                 #USER#<UserID>           #METADATA#<UserID> 
+                UserVideoMapping                     #USER#<VideoID>         #VIDEO#<VideoID>
+            The #USER and #VIDEO are like name space that avoid to have collisons between entities.
+
+
+            Recall that we have to use at least 4 servers to support 1000 RPS, the high level design is like below
+
+
+
+            Detailed Design
+            How to scale the architecture? Ideally, before making any decisions about scaling, we should first do performance tests against our system, monitor CPU and memory usage and latency and find the bottleneck. At here, I just assume our services will be running into common problems as other data intensive application scales.
+
+
+            Servers and database are usually bottlenecks while visitors are increasing. Cahce can significantly reduce the presessure to servers and databases; hence, improve the scalability
+
+
+            use CDN (AWS Cloudfront) to serve static resources, including videos, video thumbnails ...
+            use cache (AWS DAX) for user info and video metadata access
+            Besides that, since I'm using DynamoDB, a managed service, as the database storage, it does all the heavy lifting for us, e.g. master-slave replication, multi-master writes, etc.. All we need to do is to setup proper auto scale settings.
+
+
+            The next part we want to change is the "Instances" in the above diagram. Our service is now a monolithic service, all functions are coupled together. Even though, we have multiple instances running, each functions can't scale individually. For example, the video deduplication and video compression are apparently computing intensive and require hardware with powerful CPU while the web serving part could be potentially memory intensive as it needs more RAM to serve incoming requests.
+
+
+            The solution is to break monolithic service into micro-services. Micro-services expose APIs to outside and they use APIs to communicate with others. As the number of services and hence, APIs increased, it's impossbile to ask clients to call each fine-grained APIs directly and we actually only want to expose stable coarse-grained APIs to clients so that client applications don't need to update their code frequently. To solve this problem, we introduce API gateway into our system. API gateway will encapsulate fine-grained APIs provided by each micro-services and provide APIs to clients.
+
+            Detailed Design
+            How to scale the architecture? Ideally, before making any decisions about scaling, we should first do performance tests against our system, monitor CPU and memory usage and latency and find the bottleneck. At here, I just assume our services will be running into common problems as other data intensive application scales.
+
+
+            Servers and database are usually bottlenecks while visitors are increasing. Cahce can significantly reduce the presessure to servers and databases; hence, improve the scalability
+
+
+            use CDN (AWS Cloudfront) to serve static resources, including videos, video thumbnails ...
+            use cache (AWS DAX) for user info and video metadata access
+            Besides that, since I'm using DynamoDB, a managed service, as the database storage, it does all the heavy lifting for us, e.g. master-slave replication, multi-master writes, etc.. All we need to do is to setup proper auto scale settings.
+
+
+            The next part we want to change is the "Instances" in the above diagram. Our service is now a monolithic service, all functions are coupled together. Even though, we have multiple instances running, each functions can't scale individually. For example, the video deduplication and video compression are apparently computing intensive and require hardware with powerful CPU while the web serving part could be potentially memory intensive as it needs more RAM to serve incoming requests.
+
+
+            The solution is to break monolithic service into micro-services. Micro-services expose APIs to outside and they use APIs to communicate with others. As the number of services and hence, APIs increased, it's impossbile to ask clients to call each fine-grained APIs directly and we actually only want to expose stable coarse-grained APIs to clients so that client applications don't need to update their code frequently. To solve this problem, we introduce API gateway into our system. API gateway will encapsulate fine-grained APIs provided by each micro-services and provide APIs to clients.
+
+            Please note that I only drew two micro-services above; it's over-simplified. In reality, it'll definitely have more services and orchestrators that aggregate responses from subsets of micro-services. Anyway, it at least shows the basic idea that each micro-service can scale independently.
+
+
+            Summary
+            I just write up a skeleton of the design. There can be numerous details to dive deep, like
+
+
+            Add more features
+            how to add view count to a video
+            how to add user interaction, "Like", "+1", to a video,
+            how to follow a user
+            System implementation details, with and without leveraging AWS
+            load balancing strategy, health check, service high availability
+            database sharding, fault tolerance
+            large volume of uploading requests, how to queueing them
+            Once again, thanks for reading, comments are appreciated.
+
+        Don't put the version of the API in the URL, this is a bad practice. This should be at the request header.
 
 
 
@@ -2039,9 +2598,11 @@ Then I estimated the storage 1Kb per record * 3M records per day=3GB/day. This i
 store in a SQL database so I proposed to use a NoSQL database for the archival(storing records older
 than a fixed time, say 6 months). Interviewer seemed happy with the choices made.
 
-They mentioned that the vendor api which we are calling to process a payment might take hours, so I mentioned a async polling based architecture, where we return a url to the client to poll to find the status of a transaction.
+They mentioned that the vendor api which we are calling to process a payment might take hours, so I mentioned a async polling based architecture, 
+where we return a url to the client to poll to find the status of a transaction.
 
-The intreviewer also discussed about the failure cases, what happens if any of the services in the system went down. I discussed about using Kubernetes which can restart the pods or using a Active-Passive failover model.
+The intreviewer also discussed about the failure cases, what happens if any of the services in the system went down. I discussed about using Kubernetes which can restart the pods 
+or using a Active-Passive failover model.
 
 ----------------------------------------------------------------
 
@@ -3600,6 +4161,76 @@ Sol2:
 ---------------------------------------------------------------- 
 Youtube system design system design interview book:
 
+    Encoded video is the final output of the encoding pipeline. Here is an example of the output: funny_720p.mp4. System optimizations At this point, you ought to have good understanding about the video uploading flow, video streaming flow and video transcoding. Next, we will refine the system with optimizations, including speed, safety, and cost-saving.
+
+
+        Speed optimization: parallelize video uploading
+        Uploading a video as a whole unit is inefficient. We can split a video into smaller chunks by GOP alignment as shown in Figure 14-22.
+
+        Another way to improve the upload speed is by setting up multiple upload centers across the globe (Figure 14-24). People in the United States can upload videos to the North America upload center, and people in China can upload videos to the Asian upload center. To achieve this, we use CDN as upload centers.
+        peed optimization: place upload centers close to users
+
+
+
+        The preprocessor has 4 responsibilities:
+
+
+        Video splitting. Video stream is split or further split into smaller Group of Pictures (GOP) alignment. GOP is a group/chunk of frames arranged in a specific order. Each chunk is an independently playable unit, usually a few seconds in length.
+        Some old mobile devices or browsers might not support video splitting. Preprocessor split videos by GOP alignment for old clients.
+        DAG generation. The processor generates DAG based on configuration files client programmers write. Figure 14-12 is a simplified DAG representation which has 2 nodes and 1 edge:
+
+        Cache data. The preprocessor is a cache for segmented videos. For better reliability, the preprocessor stores GOPs and metadata in temporary storage. If video encoding fails, the system could use persisted data for retry operations.
+
+        The DAG scheduler splits a DAG graph into stages of tasks and puts them in the task queue in the resource manager. Figure 14-15 shows an example of how the DAG scheduler works.
+
+        As shown in Figure 14-15, the original video is split into three stages: Stage 1: video, audio, and metadata. The video file is further split into two tasks in stage 2: video encoding and thumbnail. The audio file requires audio encoding as part of the stage 2 tasks.
+
+
+
+        The resource manager is responsible for managing the efficiency of resource allocation. It contains 3 queues and a task scheduler as shown in Figure 14-17.
+        • Task queue: It is a priority queue that contains tasks to be executed.
+        • Worker queue: It is a priority queue that contains worker utilization info.
+        • Running queue: It contains info about the currently running tasks and workers running the tasks.
+        • Task scheduler: It picks the optimal task/worker, and instructs the chosen task worker to execute the job.
+
+
+
+        The resource manager is responsible for managing the efficiency of resource allocation. It contains 3 queues and a task scheduler as shown in Figure 14-17.
+        • Task queue: It is a priority queue that contains tasks to be executed.
+        • Worker queue: It is a priority queue that contains worker utilization info.
+        • Running queue: It contains info about the currently running tasks and workers running the tasks.
+        • Task scheduler: It picks the optimal task/worker, and instructs the chosen task worker to execute the job.
+
+        The resource manager works as follows:
+        •The task scheduler gets the highest priority task from the task queue.
+        •The task scheduler gets the optimal task worker to run the task from the worker queue.
+        •The task scheduler instructs the chosen task worker to run the task.
+        •The task scheduler binds the task/worker info and puts it in the running queue.
+        •The task scheduler removes the job from the running queue once the job is done.
+
+        Task workers run the tasks which are defined in the DAG. Different task workers may run different tasks as shown in Figure 14-19.
+
+        Multiple storage systems are used here. The choice of storage system depends on factors like data type, data size, access frequency, data life span, etc. For instance, metadata is frequently accessed by workers, and the data size is usually small. Thus, caching metadata in memory is a good idea. For video or audio data, we put them in blob storage. Data in temporary storage is freed up once the corresponding video processing is complete.
+
+
+        Speed optimization: parallelism everywhere
+        Achieving low latency requires serious efforts. Another optimization is to build a loosely coupled system and enable high parallelism. Our design needs some modifications to achieve high parallelism. Let us zoom in to the flow of how a video is transferred from original storage to the CDN. The flow is shown in Figure 14-25, revealing that the output depends on the input of the previous step. This dependency makes parallelism difficult.
+
+
+        To make the system more loosely coupled, we introduced message queues as shown in Figure 14-26. Let us use an example to explain how message queues make the system more loosely coupled.
+        • Before the message queue is introduced, the encoding module must wait for the output of the download module.
+        • After the message queue is introduced, the encoding module does not need to wait for the output of the download module anymore. If there are events in the message queue, the encoding module can execute those jobs in parallel.
+
+
+        The upload flow is updated as follows:
+
+
+        The client makes a HTTP request to API servers to fetch the pre-signed URL, which gives the access permission to the object identified in the URL. The term pre-signed URL is used by uploading files to Amazon S3. Other cloud service providers might use a different name. For instance, Microsoft Azure blob storage supports the same feature, but call it “Shared Access Signature” [10].
+        API servers respond with a pre-signed URL.
+        Once the client receives the response, it uploads the video using the pre-signed URL.
+
+
+
     Back of the envelope estimation
     The following estimations are based on many assumptions, so it is important to communicate with the interviewer to make sure she is on the same page.
     • Assume the product has 5 million daily active users (DAU). • Users watch 5 videos per day.
@@ -3668,6 +4299,49 @@ CDN is a crucial component of our system. It ensures fast video delivery on a gl
 Previous research shows that YouTube video streams follow long-tail distribution [11] [12]. It means a few popular videos are accessed frequently but many others have few or no viewers. Based on this observation, we implement a few optimizations:
 1. Only serve the most popular videos from CDN and other videos from our high capacity
 storage video servers (Figure 14-28).
+
+For less popular content, we may not need to store many encoded video versions. Short videos can be encoded on-demand.
+
+
+Some videos are popular only in certain regions. There is no need to distribute these videos to other regions.
+
+
+Build your own CDN like Netflix and partner with Internet Service Providers (ISPs). Building your CDN is a giant project; however, this could make sense for large streaming companies. An ISP can be Comcast, AT&T, Verizon, or other internet providers. ISPs are located all around the world and are close to users. By partnering with ISPs, you can improve the viewing experience and reduce the bandwidth charges.
+
+Error handling
+For a large-scale system, system errors are unavoidable. To build a highly fault-tolerant system, we must handle errors gracefully and recover from them fast. Two types of errors exist:
+• Recoverable error. For recoverable errors such as video segment fails to transcode, the general idea is to retry the operation a few times. If the task continues to fail and the system believes it is not recoverable, it returns a proper error code to the client.
+• Non-recoverable error. For non-recoverable errors such as malformed video format, the system stops the running tasks associated with the video and returns the proper error code to the client.
+
+
+Typical errors for each system component are covered by the following playbook:
+• Upload error: retry a few times.
+• Split video error: if older versions of clients cannot split videos by GOP alignment, the entire video is passed to the server. The job of splitting videos is done on the server-side.
+• Transcoding error: retry
+• Preprocessor error: regenerate DAG diagram
+• DAG scheduler error: reschedule a task
+• Resource manager queue down: use a replica
+• Task worker down: retry the task on a new worker
+• API server down: API servers are stateless so requests will be directed to a different API server.
+• Metadata cache server down: data is replicated multiple times. If one node goes down, you can still access other nodes to fetch data. We can bring up a new cache server to replace the dead one.
+• Metadata DB server down:
+• Master is down. If the master is down, promote one of the slaves to act as the new master.
+• Slave is down. If a slave goes down, you can use another slave for reads and bring up another database server to replace the dead one.
+
+
+Step 4 - Wrap up
+In this chapter, we presented the architecture design for video streaming services like YouTube. If there is extra time at the end of the interview, here are a few additional points:
+• Scale the API tier: Because API servers are stateless, it is easy to scale API tier horizontally.
+• Scale the database: You can talk about database replication and sharding.
+• Live streaming: It refers to the process of how a video is recorded and broadcasted in real time. Although our system is not designed specifically for live streaming, live streaming and non-live streaming have some similarities: both require uploading, encoding, and streaming. The notable differences are:
+• Live streaming has a higher latency requirement, so it might need a different streaming protocol.
+• Live streaming has a lower requirement for parallelism because small chunks of data are already processed in real-time.
+• Live streaming requires different sets of error handling. Any error handling that takes too much time is not acceptable.
+• Video takedowns: Videos that violate copyrights, pornography, or other illegal acts shall be removed. Some can be discovered by the system during the upload process, while others might be discovered through user flagging.
+
+
+
+
 
 
 ---------------------------------------------------------------- Design Google drive

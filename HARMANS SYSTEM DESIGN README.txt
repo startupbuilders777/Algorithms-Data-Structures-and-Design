@@ -37,10 +37,11 @@ E.g.: If we have a long-distance Zoom call, the latency might be around 100 ms.
 Retry/refresh internal: 1-10s
 E.g: In a monitoring system, the refresh interval is usually set to 5~10 seconds (default value on Grafana).
 
+ 
 
 
-
-The real-time Application Programming Interface (API) can be implemented for faster user experiences and instant delivery of live comments. The average time for a human to blink is 100 ms, and the average reaction time for a human is around 250 ms. Therefore, the actions performed within 250 ms are perceived as real-time or live 4, 5. An event-driven architecture can be used to build a real-time data platform. The general subscription models for an API are the following 6:
+The real-time Application Programming Interface (API) can be implemented for faster user experiences and instant delivery of live comments. 
+The average time for a human to blink is 100 ms, and the average reaction time for a human is around 250 ms. Therefore, the actions performed within 250 ms are perceived as real-time or live 4, 5. An event-driven architecture can be used to build a real-time data platform. The general subscription models for an API are the following 6:
 
 push-based (server-initiated)
 pull-based (client-initiated)
@@ -137,7 +138,7 @@ round off the numbers for quicker calculations
 write down the units while doing conversions
 
 Traffic
-The live comment service is a read-heavy system. The Daily Active Users (DAU) count is 100 million. 
+The live comment service is a read-heavy sfystem. The Daily Active Users (DAU) count is 100 million. 
 On average, the total number of daily live videos is 200 million. A live video receives 10 comments on average.
 
 Description	Value
@@ -911,33 +912,6 @@ As part of the prepare phase, each node participating in the transaction acquire
 				- REST
 				- RPC
 				- WebSockets
-6. Justify [5 min]
-	(1) Throughput of Each Layer
-	(2) Latency Caused Between Each Layer
-	(3) Overall Latency Justification
-7. Key Metrics to Measure [3 min]
-	(1) Identify key metrics relevant to your system's design
-	(2) Define metrics for infrastructure and resources
-			- Tools like Graphana with Prometheus, AppDynamics, etc., can be used.
-8. System Health Monitoring [2 min]
-	(1) Measure app index and latency of microservices
-	(2) Tools like New Relic, AppDynamics can be used
-			-  Use Grafana with Prometheus or AppDynamics for monitoring
-	(3) Canaries - to simulate customer experience and pro-actively detect service degradation
-9. Log Systems [2 min]
-	(1) Implement tools to gather and visualize metrics	
-			- Availability
-			- Latency 
-			- Throttling 
-			- Request Patterns/Volume
-	(2) Collect and analyze logs with ELK (Elastic, Logstash, Kibana) or Splunk.
-
-10. Security [2 min]
-	(1) Firewall, encryptions at rest and in transit
-	(2) TLS
-	(3) Authentication, Authorization (AuthN/Z)
-	(4) Limited Egress/Ingress
-	(5) Principle of least privilege
 6. Justify [5 min]
 	(1) Throughput of Each Layer
 	(2) Latency Caused Between Each Layer
